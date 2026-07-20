@@ -79,22 +79,29 @@ body {
 .hero-cloud-elementor-top {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
+    min-width: 1000px;
     height: 140px;
     z-index: 5;
     pointer-events: none;
+    object-fit: cover;
+    object-position: center;
 }
 
 .hero-cloud-elementor-bottom {
+    position: absolute;
     bottom: -1px;
-    left: 0;
-    margin-bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(180deg);
     width: 100%;
+    min-width: 1000px;
     height: 150px;
     z-index: 5;
-    rotate:180deg;
     pointer-events: none;
+    object-fit: cover;
+    object-position: center;
 }
 
 /* Hero Section */
@@ -837,9 +844,9 @@ body {
     .nav-links a { font-size: 0.9rem; padding: 4px 6px; }
     .admin-btn { padding: 6px 16px; font-size: 0.85rem; }
 
-    /* Cloud Dividers */
-    .hero-cloud-elementor-top { height: 80px; }
-    .hero-cloud-elementor-bottom { height: 85px; margin-bottom: -5px; }
+    /* Cloud Dividers - Maintain un-squished natural cloud proportions on mobile */
+    .hero-cloud-elementor-top { height: 80px; min-width: 750px; left: 50%; transform: translateX(-50%); }
+    .hero-cloud-elementor-bottom { height: 85px; min-width: 750px; left: 50%; transform: translateX(-50%) rotate(180deg); }
 
     /* Hero Section */
     .hero-section { padding: 50px 15px 60px 15px; min-height: auto; }
