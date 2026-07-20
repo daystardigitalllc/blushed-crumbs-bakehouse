@@ -20,6 +20,19 @@ class StorefrontController extends Controller
             ->orWhere('slug', 'blushedcrumbs')
             ->first();
 
+        // Safe Fallback: Auto-create tenant if database is empty or fresh
+        if (!$tenant) {
+            $tenant = Tenant::firstOrCreate(
+                ['slug' => 'blushedcrumbs'],
+                [
+                    'name' => 'Blushed Crumbs Bakehouse',
+                    'domain' => 'blushed-crumbs-bakehouse.test',
+                    'subdomain' => 'blushedcrumbs',
+                    'owner_name' => 'Baker',
+                ]
+            );
+        }
+
         // 2. If visiting the main SaaS domain (e.g. bakebox.daystardigital.co), render SaaS Landing Page
         if ($host === 'bakebox.daystardigital.co' && !$request->has('tenant')) {
             return view('saas.landing', [
