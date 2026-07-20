@@ -29,6 +29,8 @@ class StorefrontController extends Controller
                     'domain' => 'blushed-crumbs-bakehouse.test',
                     'subdomain' => 'blushedcrumbs',
                     'owner_name' => 'Baker',
+                    'email' => 'orders@blushedcrumbsbakehouse.com',
+                    'plan_tier' => 'pro',
                 ]
             );
         }
