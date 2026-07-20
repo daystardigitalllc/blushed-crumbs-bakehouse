@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     init12StepOrderForm();
     initAdminPortal();
     renderInteractiveCalendar();
+    initOrderModalTrigger();
 });
 
 // State Store
@@ -21,9 +22,29 @@ const state = {
     deposit: 0
 };
 
+// Modal Order Form Triggers
+function initOrderModalTrigger() {
+    // Open order modal from any Order button
+    document.querySelectorAll('.trigger-order-modal').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openOrderModal();
+        });
+    });
+}
+
+window.openOrderModal = function() {
+    const modal = document.getElementById('order-modal-popup');
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeOrderModal = function() {
+    const modal = document.getElementById('order-modal-popup');
+    if (modal) modal.style.display = 'none';
+};
+
 // 12-Step Form Navigation Logic
 function init12StepOrderForm() {
-    // Step 1: Product Selection
     const productGrid = document.getElementById('product-grid');
     if (productGrid) {
         productGrid.addEventListener('click', (e) => {
@@ -45,7 +66,6 @@ function init12StepOrderForm() {
         });
     }
 
-    // Step 2 & 3 & Step Transitions
     document.querySelectorAll('.next-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const nextStepId = btn.id.replace('to-step-', '');
@@ -60,16 +80,10 @@ function init12StepOrderForm() {
         });
     });
 
-    // Step 3: Flavors
     setupMultiSelectGrid('flavor-list', state.selectedFlavors);
-
-    // Step 4: Frosting
     setupMultiSelectGrid('frosting-list', state.selectedFrosting);
-
-    // Step 5: Fillings
     setupMultiSelectGrid('filling-list', state.selectedFillings);
 
-    // Step 7: Fulfillment
     const fulfillmentGrid = document.getElementById('fulfillment-grid');
     if (fulfillmentGrid) {
         fulfillmentGrid.addEventListener('click', (e) => {
@@ -84,7 +98,6 @@ function init12StepOrderForm() {
         });
     }
 
-    // Step 9: Social Media Discounts
     const socialGrid = document.getElementById('social-grid');
     if (socialGrid) {
         socialGrid.addEventListener('click', (e) => {
@@ -95,7 +108,6 @@ function init12StepOrderForm() {
         });
     }
 
-    // Step 11: Terms Checkbox
     const termsCheck = document.getElementById('terms-agree-checkbox');
     const step11Next = document.getElementById('to-step-12');
     if (termsCheck && step11Next) {
@@ -104,7 +116,6 @@ function init12StepOrderForm() {
         });
     }
 
-    // Step 12: Order Submission
     const orderForm = document.getElementById('order-form');
     if (orderForm) {
         orderForm.addEventListener('submit', (e) => {
@@ -113,11 +124,9 @@ function init12StepOrderForm() {
             const clientEmail = document.getElementById('contact-email').value;
             const clientPhone = document.getElementById('contact-phone').value;
 
-            // Hide form and show confirmation
             document.getElementById('form-container-toggle').style.display = 'none';
             document.getElementById('thank-you-container').style.display = 'block';
 
-            // Add order to Admin Queue dynamically!
             const newOrderNumber = 'BC-' + Math.floor(1000 + Math.random() * 9000);
             const orderObj = {
                 order_number: newOrderNumber,
@@ -194,7 +203,6 @@ function setupMultiSelectGrid(elementId, targetArray) {
     });
 }
 
-// Interactive Date Picker Calendar
 function renderInteractiveCalendar() {
     const calGrid = document.getElementById('interactive-calendar-grid');
     if (!calGrid) return;
@@ -223,9 +231,8 @@ function renderInteractiveCalendar() {
     }
 }
 
-// Bakesy Mobile Admin Controller
+// Bakesy Mobile Admin Controller & Visual Form Builder
 function initAdminPortal() {
-    // Admin Tab Navigation
     const tabBtns = document.querySelectorAll('.admin-tabs .tab-btn');
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -238,7 +245,7 @@ function initAdminPortal() {
         });
     });
 
-    // Add Product Form
+    // Form & Product Builder Form
     const prodForm = document.getElementById('add-product-form');
     if (prodForm) {
         prodForm.addEventListener('submit', (e) => {
@@ -247,18 +254,32 @@ function initAdminPortal() {
             const price = parseFloat(document.getElementById('new-prod-price').value);
             const category = document.getElementById('new-prod-category').value;
 
-            const grid = document.getElementById('products-admin-grid');
-            const row = document.createElement('div');
-            row.className = 'product-item-row';
-            row.innerHTML = `
-                <span><strong>${name}</strong> (${category})</span>
-                <div>
-                    <input type="number" class="price-input" value="${price.toFixed(2)}">
-                    <button class="btn btn-sm btn-secondary" onclick="updateProductPrice(this)">Save Price</button>
-                </div>
-            `;
-            grid.prepend(row);
-            alert(`Product "${name}" added to storefront menu!`);
+            // Dynamically add to product grid in Order Form Step 1!
+            const step1Grid = document.getElementById('product-grid');
+            if (step1Grid) {
+                const prodCard = document.createElement('div');
+                prodCard.className = 'product';
+                prodCard.dataset.name = name;
+                prodCard.dataset.price = price;
+                prodCard.innerHTML = `<strong>${name}</strong><br>$${price.toFixed(0)}`;
+                step1Grid.prepend(prodCard);
+            }
+
+            const adminGrid = document.getElementById('products-admin-grid');
+            if (adminGrid) {
+                const row = document.createElement('div');
+                row.className = 'product-item-row';
+                row.innerHTML = `
+                    <span><strong>${name}</strong> (${category})</span>
+                    <div>
+                        <input type="number" class="price-input" value="${price.toFixed(2)}">
+                        <button class="btn btn-sm btn-secondary" onclick="updateProductPrice(this)">Save Price</button>
+                    </div>
+                `;
+                adminGrid.prepend(row);
+            }
+
+            alert(`Product "${name}" added to order builder & live storefront!`);
             prodForm.reset();
         });
     }
@@ -269,41 +290,21 @@ function initAdminPortal() {
         revForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const name = document.getElementById('rev-client-name').value;
-            const rating = parseInt(document.getElementById('rev-rating').value);
             const text = document.getElementById('rev-text').value;
 
             const pubGrid = document.getElementById('public-reviews-grid');
             if (pubGrid) {
                 const revCard = document.createElement('div');
-                revCard.className = 'review-card';
-                revCard.innerHTML = `
-                    <div class="rating">${'★'.repeat(rating)}</div>
-                    <p>"${text}"</p>
-                    <h4>- ${name}</h4>
-                `;
+                revCard.className = 'cloud-review-card';
+                revCard.innerHTML = `<p>"${text}"</p><h4>${name}</h4>`;
                 pubGrid.prepend(revCard);
             }
-            alert('Review published directly to live storefront!');
+            alert('Review published directly to storefront!');
             revForm.reset();
-        });
-    }
-
-    // Quick Invoice Form
-    const invForm = document.getElementById('quick-invoice-form');
-    if (invForm) {
-        invForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('inv-client-name').value;
-            const email = document.getElementById('inv-client-email').value;
-            const total = parseFloat(document.getElementById('inv-amount').value);
-
-            generateInvoiceFromOrder('BC-INV-' + Math.floor(100 + Math.random() * 900), name, total, total * 0.5);
-            invForm.reset();
         });
     }
 }
 
-// Global Invoice Modal Functions
 window.generateInvoiceFromOrder = function(invNum, clientName, total, deposit) {
     document.getElementById('modal-inv-num').innerText = invNum;
     document.getElementById('modal-inv-client').innerText = clientName;
@@ -318,33 +319,7 @@ window.closeInvoiceModal = function() {
 };
 
 window.copyClientPayLink = function(orderNum) {
-    alert(`Invoice payment link for Order #${orderNum} copied to clipboard! (Link: https://blushedcrumbsbakehouse.com/invoice/${orderNum})`);
-};
-
-window.markDepositPaid = function(btnEl) {
-    const card = btnEl.closest('.order-card');
-    const statusTag = card.querySelector('.status-tag');
-    if (statusTag) {
-        statusTag.className = 'status-tag status-in_progress';
-        statusTag.innerText = 'IN PROGRESS';
-    }
-    btnEl.innerText = '✅ Deposit Received';
-    btnEl.disabled = true;
-};
-
-window.filterAdminOrders = function(type) {
-    document.querySelectorAll('.filter-pills .pill').forEach(p => p.classList.remove('active'));
-    event.target.classList.add('active');
-
-    document.querySelectorAll('#admin-orders-list .order-card').forEach(card => {
-        if (type === 'all') {
-            card.style.display = 'block';
-        } else if (type === 'urgent') {
-            card.style.display = card.classList.contains('urgent-border') ? 'block' : 'none';
-        } else {
-            card.style.display = card.dataset.fulfillment === type ? 'block' : 'none';
-        }
-    });
+    alert(`Invoice payment link for Order #${orderNum} copied!`);
 };
 
 function appendOrderToAdminQueue(order) {
@@ -370,7 +345,6 @@ function appendOrderToAdminQueue(order) {
         </div>
         <div class="order-card-actions">
             <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder('${order.order_number}', '${order.client_name}', ${order.total_price}, ${order.deposit_amount})">💳 Create Invoice</button>
-            <button class="btn btn-sm btn-secondary" onclick="markDepositPaid(this)">✅ Mark Deposit Paid</button>
         </div>
     `;
     queue.prepend(card);

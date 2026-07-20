@@ -25,7 +25,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Site Header integrated into Pink Cloud Frame */
+/* Site Header */
 .site-header {
     background-color: transparent;
     padding: 20px 0 0 0;
@@ -59,7 +59,7 @@ body {
     color: #4a2133;
     font-weight: 600;
     font-size: 1.05rem;
-    transition: color 0.2s;
+    cursor: pointer;
 }
 
 .nav-links a:hover {
@@ -98,20 +98,19 @@ body {
 .hero-section {
     background-color: var(--pink-bg);
     text-align: center;
-    padding: 40px 20px 60px 20px;
+    padding: 50px 20px 70px 20px;
     position: relative;
     min-height: 580px;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: visible;
 }
 
 .hero-wrapper {
-    max-width: 750px;
+    max-width: 700px;
     margin: 0 auto;
     position: relative;
-    z-index: 20;
+    z-index: 30;
 }
 
 .subheading {
@@ -124,11 +123,10 @@ body {
 
 .hero-wrapper h1 {
     font-family: 'Great Vibes', cursive;
-    font-size: 5.2rem;
+    font-size: 5rem;
     color: #4a2133;
     line-height: 1.1;
     margin-bottom: 35px;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
 }
 
 .hero-buttons {
@@ -166,52 +164,41 @@ body {
     box-shadow: 0 6px 20px rgba(232, 219, 252, 0.5);
 }
 
-.btn-secondary:hover {
-    transform: translateY(-3px);
-    background-color: #dfcbfd;
-}
-
 .btn-dark {
     background-color: white;
     color: #4a2133;
 }
 
-/* Floating Cakes Raining Down Animation */
+/* Floating Cakes (Separated, No Duplicates, Raining Animation) */
 .raining-cake {
     position: absolute;
     z-index: 15;
-    filter: drop-shadow(0 12px 20px rgba(74, 33, 51, 0.2));
+    filter: drop-shadow(0 12px 20px rgba(74, 33, 51, 0.25));
     opacity: 0;
     animation: cakeRain 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards, floatGently 3.5s ease-in-out infinite 1.4s alternate;
 }
 
-/* Cake Positions matching the reference screenshot */
-.cake-pos-1 { /* Top Right Purple Crown Cake */
-    top: 5px; right: 8%; width: 230px;
+/* 4 Unique Separated Cake Positions */
+.cake-pos-top-left {
+    top: 5%; left: 3%; width: 220px;
     animation-delay: 0.1s, 1.4s;
 }
 
-.cake-pos-2 { /* Middle Left Pink Crown Heart Cake */
-    top: 15%; left: 6%; width: 250px;
+.cake-pos-top-right {
+    top: 5%; right: 4%; width: 220px;
     animation-delay: 0.3s, 1.6s;
 }
 
-.cake-pos-3 { /* Middle Right Chocolate 3-Tier Cake */
-    top: 25%; right: 4%; width: 260px;
+.cake-pos-bottom-left {
+    bottom: 5%; left: 2%; width: 210px;
     animation-delay: 0.5s, 1.8s;
 }
 
-.cake-pos-4 { /* Bottom Left White Heart Cake */
-    bottom: 20px; left: 4%; width: 220px;
+.cake-pos-bottom-right {
+    bottom: 5%; right: 3%; width: 230px;
     animation-delay: 0.7s, 2.0s;
 }
 
-.cake-pos-5 { /* Bottom Right Floral Cake */
-    bottom: 10px; right: 12%; width: 230px;
-    animation-delay: 0.9s, 2.2s;
-}
-
-/* Raining Down Animation Keyframes */
 @keyframes cakeRain {
     0% {
         transform: translateY(-450px) scale(0.6) rotate(-20deg);
@@ -227,7 +214,6 @@ body {
     }
 }
 
-/* Gentle Floating Animation Keyframes */
 @keyframes floatGently {
     0% { transform: translateY(0px) rotate(0deg); }
     50% { transform: translateY(-12px) rotate(2deg); }
@@ -262,16 +248,8 @@ body {
     font-size: 1.3rem;
 }
 
-.highlight-item h4 {
-    font-size: 1.05rem;
-    color: white;
-    margin-bottom: 4px;
-}
-
-.highlight-item p {
-    font-size: 0.85rem;
-    color: #fce7ef;
-}
+.highlight-item h4 { font-size: 1.05rem; color: white; margin-bottom: 4px; }
+.highlight-item p { font-size: 0.85rem; color: #fce7ef; }
 
 /* Video Promo Banner */
 .video-promo-banner {
@@ -303,12 +281,7 @@ body {
     padding: 20px;
 }
 
-.video-overlay-content h2 {
-    font-size: 2.8rem;
-    color: white;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
+.video-overlay-content h2 { font-size: 2.8rem; color: white; font-weight: 700; margin-bottom: 10px; }
 
 /* Categories Section */
 .categories-section {
@@ -340,66 +313,55 @@ body {
     transition: transform 0.3s;
 }
 
-.category-card:hover { transform: translateY(-5px); }
+.category-card img { width: 100%; height: 340px; object-fit: cover; }
+.category-card h3 { padding: 15px; font-size: 1.15rem; color: var(--dark-text); }
 
-.category-card img {
-    width: 100%;
-    height: 340px;
-    object-fit: cover;
-}
-
-.category-card h3 {
-    padding: 15px;
-    font-size: 1.15rem;
-    color: var(--dark-text);
-}
-
-/* Whimsical Section */
+/* Whimsical Section matching attached screenshot layout */
 .whimsical-section {
     background-color: var(--burgundy-bg);
     color: white;
     padding: 70px 25px;
+    text-align: left;
 }
 
-.whimsical-container {
-    max-width: 1100px;
+.whimsical-container-stacked {
+    max-width: 850px;
     margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 50px;
-    flex-wrap: wrap;
 }
 
-.whimsical-img img {
-    max-width: 380px;
+.whimsical-cake-featured {
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.whimsical-cake-featured img {
+    max-width: 320px;
     width: 100%;
-    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
 }
 
-.whimsical-text h2 {
+.whimsical-heading-script {
     font-family: 'Great Vibes', cursive;
     font-size: 3.8rem;
     color: white;
     margin-bottom: 25px;
+    line-height: 1.1;
 }
 
-.whimsical-text ul {
+.whimsical-bullets {
     list-style: none;
-    line-height: 1.8;
+    line-height: 2.2;
 }
 
-.whimsical-text ul li {
-    margin-bottom: 12px;
+.whimsical-bullets li {
     font-size: 0.95rem;
-    position: relative;
-    padding-left: 20px;
+    color: #fce7ef;
 }
 
-.whimsical-text ul li::before {
-    content: "✦";
-    position: absolute;
-    left: 0;
-    color: var(--pink-accent);
+.whimsical-bullets li span.plus-icon {
+    color: white;
+    font-weight: 700;
+    margin-right: 8px;
 }
 
 /* Reviews Section */
@@ -456,18 +418,10 @@ body {
     filter: brightness(0.5);
 }
 
-.cta-content {
-    position: relative;
-    z-index: 2;
-}
+.cta-content { position: relative; z-index: 2; }
+.cta-content h2 { font-family: 'Great Vibes', cursive; font-size: 4rem; color: white; }
 
-.cta-content h2 {
-    font-family: 'Great Vibes', cursive;
-    font-size: 4rem;
-    color: white;
-}
-
-/* Footer */
+/* Site Footer */
 .site-footer {
     background-color: #401829;
     color: white;
@@ -475,10 +429,7 @@ body {
     text-align: center;
 }
 
-.footer-logo img {
-    height: 90px;
-    margin-bottom: 15px;
-}
+.footer-logo img { height: 90px; margin-bottom: 15px; }
 
 .footer-nav {
     display: flex;
@@ -494,94 +445,58 @@ body {
     font-size: 2rem;
 }
 
-/* Order Form */
-.order-section {
-    max-width: 900px;
-    margin: 50px auto;
-    padding: 0 20px;
+/* POPUP MODAL ORDER FORM BUILDER */
+.order-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    backdrop-filter: blur(5px);
 }
 
-#cake-order-builder {
+.order-modal-card {
     background: white;
     border-radius: 25px;
+    max-width: 900px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
     padding: 35px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 20px; right: 25px;
+    border: none; background: #f0f0f0;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Form Builder in Admin */
+.form-builder-card {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
     box-shadow: var(--card-shadow);
+    margin-bottom: 25px;
 }
 
-.step { display: none; }
-.step.active { display: block; }
-.step h2 { text-align: center; font-size: 2rem; margin-bottom: 15px; color: var(--primary); }
-
-#product-grid, #flavor-list, #frosting-list, #filling-list, #social-grid {
+.form-builder-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 15px;
-    margin: 25px 0;
+    margin-top: 15px;
 }
 
-.product {
-    background: #fdf7f9;
-    border: 2px solid var(--pink-accent);
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.product:hover, .product.selected {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
-.cart-bar {
-    background: var(--pink-bg);
-    padding: 20px;
-    border-radius: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 25px;
-}
-
-.nav-buttons { display: flex; gap: 15px; }
-.next-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 20px; cursor: pointer; font-weight: 600; }
-.next-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.back-btn { background: #eee; border: none; padding: 12px 25px; border-radius: 20px; cursor: pointer; }
-
-#interactive-calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    max-width: 380px;
-    margin: 20px auto;
-    text-align: center;
-}
-
-.cal-day {
-    padding: 12px 0;
-    background: #ddffcc;
-    border: 1px solid #b2eec4;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.cal-day.booked {
-    background: #ffc0bd;
-    border-color: #ffb3b3;
-    color: #880000;
-    cursor: not-allowed;
-}
-
-.cal-day.selected {
-    background: var(--primary);
-    color: white;
-}
-
-@media (max-width: 768px) {
-    .header-container { flex-direction: column; gap: 10px; }
-    .hero-wrapper h1 { font-size: 3.2rem; }
-    .raining-cake { width: 140px !important; }
+@media (max-width: 992px) {
+    .raining-cake { display: none; }
+    .hero-wrapper h1 { font-size: 3.5rem; }
 }
