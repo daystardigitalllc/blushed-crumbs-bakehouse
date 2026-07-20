@@ -24,7 +24,7 @@
         </a>
         <nav class="nav-links">
             <a href="#home" onclick="toggleView('storefront')">Home</a>
-            <a href="#categories" onclick="toggleView('storefront')">About</a>
+            <a href="#about" onclick="toggleView('about')">About</a>
             <a href="#gallery" onclick="toggleView('gallery')">Gallery</a>
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
             <a href="#admin" onclick="toggleView('admin')" class="admin-btn">🔑 Baker Admin Portal</a>
@@ -175,7 +175,67 @@
     </section>
 </div>
 
-<!-- PAGE 2: DEDICATED GALLERY PAGE VIEW -->
+<!-- PAGE 2: DEDICATED ABOUT PAGE VIEW -->
+<div id="about-page-view" style="display:none;">
+    <section class="gallery-page-section">
+        <div style="text-align:center; margin-bottom:50px;">
+            <span class="subheading" style="font-size:2.2rem; display:block;">Our Story & Passion</span>
+            <h1 class="section-title-script" style="font-size:4.5rem; margin-bottom:15px;">About Blushed Crumbs</h1>
+            <p style="font-size:1.15rem; color:#4a2133; max-width:750px; margin:0 auto; line-height:1.7;">
+                Welcome to <strong>Blushed Crumbs Bakehouse</strong>! We are a boutique cottage bakery dedicated to creating handcrafted, artisanal custom cakes, cupcakes, and gourmet treats for life’s sweetest milestones.
+            </p>
+        </div>
+
+        <div class="whimsical-two-column" style="margin-bottom:60px;">
+            <div class="whimsical-col-left">
+                <img src="public/images/IMG_8117.jpg" alt="Blushed Crumbs Bakehouse Creation" style="border-radius:24px; box-shadow:var(--card-shadow); max-width:100%;">
+            </div>
+            <div class="whimsical-col-right">
+                <h2 style="font-size:3.2rem; margin-bottom:20px;">Baked With Love & Premium Ingredients</h2>
+                <p style="margin-bottom:15px; font-size:1.05rem; color:#4a2133;">
+                    Every single order that leaves our kitchen is baked fresh to order right before your event. We believe that a great cake should not only look breathtaking, but also taste incredibly moist, rich, and unforgettable.
+                </p>
+                <ul class="whimsical-bullet-list">
+                    <li><strong>Custom Wedding & Celebration Cakes:</strong> Tailored to match your theme, color scheme, and personal taste.</li>
+                    <li><strong>Scratch-Baked Goodness:</strong> Prepared using premium flours, pure vanilla, real butter, and velvety custom buttercream frostings.</li>
+                    <li><strong>Local Delivery & Easy Pickups:</strong> Convenient, stress-free scheduling for your birthdays, weddings, and special events.</li>
+                </ul>
+                <hr class="whimsical-hr">
+            </div>
+        </div>
+
+        <div class="highlights-bar" style="border-radius:25px; margin-bottom:60px;">
+            <div class="highlight-item">
+                <div class="icon-circle">🎂</div>
+                <h4>Easy Catering</h4>
+                <p>Add custom baked goods to any occasion</p>
+            </div>
+            <div class="highlight-item">
+                <div class="icon-circle">🚚</div>
+                <h4>Freshly Baked</h4>
+                <p>Made to order right before your event</p>
+            </div>
+            <div class="highlight-item">
+                <div class="icon-circle">📦</div>
+                <h4>Local Delivery</h4>
+                <p>Flexible pickup & delivery options</p>
+            </div>
+            <div class="highlight-item">
+                <div class="icon-circle">💖</div>
+                <h4>Baked with Love</h4>
+                <p>Cottage bakery crafted with care</p>
+            </div>
+        </div>
+
+        <div style="text-align:center; padding:40px 20px; background:white; border-radius:24px; box-shadow:var(--card-shadow);">
+            <h2 class="section-title-script" style="font-size:3.8rem; margin-bottom:15px;">Ready for Your Dream Cake?</h2>
+            <p style="font-size:1.1rem; color:#666; margin-bottom:25px;">Let’s create something sweet together for your next celebration.</p>
+            <button onclick="openOrderModal()" class="btn btn-primary" style="padding:14px 40px; font-size:1.1rem;">Place a Custom Order</button>
+        </div>
+    </section>
+</div>
+
+<!-- PAGE 3: DEDICATED GALLERY PAGE VIEW -->
 <div id="gallery-page-view" style="display:none;">
     <section class="gallery-page-section">
         <div style="text-align:center; margin-bottom:40px;">
@@ -250,7 +310,7 @@
     </section>
 </div>
 
-<!-- PAGE 3: BAKER ADMIN PORTAL VIEW -->
+<!-- PAGE 4: BAKER ADMIN PORTAL VIEW -->
 <div id="admin-portal-view" style="display:none;">
     <div class="admin-wrapper">
         <header class="admin-header">
@@ -436,7 +496,6 @@
 
         <div id="cake-order-builder">
             <div class="order-content" id="form-container-toggle">
-                
                 <!-- Step 1: Products -->
                 <section class="step active" id="step-1">
                     <h2>Build Your Order</h2>
@@ -547,7 +606,7 @@
     </div>
     <div class="footer-nav">
         <a href="#home" onclick="toggleView('storefront')">Home</a>
-        <a href="#categories" onclick="toggleView('storefront')">About</a>
+        <a href="#about" onclick="toggleView('about')">About</a>
         <a href="#gallery" onclick="toggleView('gallery')">Gallery</a>
         <a href="#" onclick="openOrderModal()">Order</a>
     </div>

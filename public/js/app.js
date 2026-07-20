@@ -18,9 +18,11 @@ function handleHashNavigation() {
     const hash = window.location.hash;
     if (hash === '#gallery') {
         toggleView('gallery');
+    } else if (hash === '#about') {
+        toggleView('about');
     } else if (hash === '#admin' || hash === '#admin-portal-view') {
         toggleView('admin');
-    } else if (hash === '#home' || hash === '' || hash === '#categories') {
+    } else if (hash === '#home' || hash === '') {
         toggleView('storefront');
     }
 }
@@ -28,10 +30,12 @@ function handleHashNavigation() {
 // Global View Navigation Switcher
 window.toggleView = function(view) {
     const storefront = document.getElementById('storefront-view');
+    const aboutPage = document.getElementById('about-page-view');
     const galleryPage = document.getElementById('gallery-page-view');
     const adminPortal = document.getElementById('admin-portal-view');
 
     if (storefront) storefront.style.display = 'none';
+    if (aboutPage) aboutPage.style.display = 'none';
     if (galleryPage) galleryPage.style.display = 'none';
     if (adminPortal) adminPortal.style.display = 'none';
 
@@ -41,6 +45,9 @@ window.toggleView = function(view) {
     } else if (view === 'gallery') {
         if (galleryPage) galleryPage.style.display = 'block';
         window.location.hash = 'gallery';
+    } else if (view === 'about') {
+        if (aboutPage) aboutPage.style.display = 'block';
+        window.location.hash = 'about';
     } else {
         if (storefront) storefront.style.display = 'block';
         window.location.hash = 'home';

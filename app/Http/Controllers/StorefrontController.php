@@ -52,6 +52,26 @@ class StorefrontController extends Controller
         return view('storefront.index', compact('tenant', 'products', 'reviews', 'gallery'));
     }
 
+    public function about(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
+        if (!$tenant) {
+            $tenant = Tenant::firstOrCreate(
+                ['slug' => 'blushedcrumbs'],
+                [
+                    'name' => 'Blushed Crumbs Bakehouse',
+                    'domain' => 'blushed-crumbs-bakehouse.test',
+                    'subdomain' => 'blushedcrumbs',
+                    'owner_name' => 'Baker',
+                    'email' => 'orders@blushedcrumbsbakehouse.com',
+                    'plan_tier' => 'pro',
+                ]
+            );
+        }
+
+        return view('storefront.about', compact('tenant'));
+    }
+
     public function gallery(Request $request)
     {
         $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
