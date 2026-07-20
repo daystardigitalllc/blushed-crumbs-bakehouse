@@ -22,8 +22,11 @@ function handleHashNavigation() {
         toggleView('about');
     } else if (hash === '#admin' || hash === '#admin-portal-view') {
         toggleView('admin');
-    } else if (hash === '#home' || hash === '') {
+    } else if (hash === '#home') {
         toggleView('storefront');
+        if (history.replaceState) {
+            history.replaceState(null, null, window.location.pathname);
+        }
     }
 }
 
@@ -50,7 +53,9 @@ window.toggleView = function(view) {
         window.location.hash = 'about';
     } else {
         if (storefront) storefront.style.display = 'block';
-        window.location.hash = 'home';
+        if (window.location.hash === '#home' && history.replaceState) {
+            history.replaceState(null, null, window.location.pathname);
+        }
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });

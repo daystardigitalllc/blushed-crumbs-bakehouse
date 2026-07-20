@@ -19,11 +19,11 @@
 <!-- GLOBAL NAVIGATION HEADER -->
 <header class="site-header">
     <div class="header-container">
-        <a href="#home" onclick="toggleView('storefront')" class="logo">
+        <a href="./" onclick="toggleView('storefront'); return false;" class="logo">
             <img src="public/images/blushedlogo.png" alt="Blushed Crumbs Bakehouse Logo">
         </a>
         <nav class="nav-links">
-            <a href="#home" onclick="toggleView('storefront')">Home</a>
+            <a href="./" onclick="toggleView('storefront'); return false;">Home</a>
             <a href="#about" onclick="toggleView('about')">About</a>
             <a href="#gallery" onclick="toggleView('gallery')">Gallery</a>
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
@@ -605,7 +605,7 @@
         <img src="public/images/blushedlogo.png" alt="Blushed Crumbs Logo">
     </div>
     <div class="footer-nav">
-        <a href="#home" onclick="toggleView('storefront')">Home</a>
+        <a href="./" onclick="toggleView('storefront'); return false;">Home</a>
         <a href="#about" onclick="toggleView('about')">About</a>
         <a href="#gallery" onclick="toggleView('gallery')">Gallery</a>
         <a href="#" onclick="openOrderModal()">Order</a>
