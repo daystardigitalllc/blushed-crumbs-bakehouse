@@ -23,7 +23,7 @@
         </a>
         <nav class="nav-links">
             <a href="{{ route('storefront.index') }}">Home</a>
-            <a href="{{ route('storefront.index') }}#categories">About</a>
+            <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
             <a href="{{ route('admin.dashboard') }}" class="admin-btn">🔑 Baker Admin Portal</a>
@@ -213,7 +213,7 @@
     </div>
     <div class="footer-nav">
         <a href="{{ route('storefront.index') }}">Home</a>
-        <a href="{{ route('storefront.index') }}#categories">About</a>
+        <a href="{{ route('storefront.about') }}">About</a>
         <a href="{{ route('storefront.gallery') }}">Gallery</a>
     </div>
     <p class="copyright-text">Copyright © 2026 Blushed Crumbs Bakehouse | Powered by Daystar Digital</p>
