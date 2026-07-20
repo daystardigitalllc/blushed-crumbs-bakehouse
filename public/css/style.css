@@ -169,7 +169,7 @@ body {
     color: #4a2133;
 }
 
-/* Floating Cakes Raining Down Animation */
+/* Floating Cakes */
 .raining-cake {
     position: absolute;
     z-index: 15;
@@ -250,21 +250,22 @@ body {
 .video-overlay-content { position: relative; z-index: 2; max-width: 700px; padding: 20px; }
 .video-overlay-content h2 { font-size: 2.8rem; color: white; font-weight: 700; margin-bottom: 10px; }
 
-/* Categories Section */
+/* Categories Section matching attached exact screenshot */
 .categories-section {
-    background: white;
-    padding: 60px 25px;
+    background: linear-gradient(180deg, #fceaf0 0%, #ffffff 100%);
+    padding: 70px 25px 80px 25px;
     text-align: center;
 }
 
 .section-title-script {
     font-family: 'Great Vibes', cursive;
-    font-size: 4rem;
+    font-size: 4.8rem;
     color: #e67399;
-    margin-bottom: 40px;
+    margin-bottom: 50px;
+    font-weight: 500;
 }
 
-.categories-grid {
+.categories-grid-exact {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
@@ -272,18 +273,44 @@ body {
     margin: 0 auto;
 }
 
-.category-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.3s;
+.category-card-exact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.category-card img { width: 100%; height: 340px; object-fit: cover; }
-.category-card h3 { padding: 15px; font-size: 1.15rem; color: var(--dark-text); }
+.category-image-frame {
+    width: 100%;
+    height: 440px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(64, 24, 41, 0.12);
+    border: 3px solid #ffffff;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    background: #fdf5f8;
+}
 
-/* Whimsical Section matching attached exact screenshot */
+.category-card-exact:hover .category-image-frame {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 45px rgba(230, 115, 153, 0.25);
+}
+
+.category-image-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.category-card-exact h3 {
+    margin-top: 18px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #401829;
+    letter-spacing: 0.3px;
+}
+
+/* Whimsical Section matching attached screenshot */
 .whimsical-section {
     background-color: var(--burgundy-bg);
     color: white;
@@ -429,7 +456,7 @@ body {
     font-size: 2rem;
 }
 
-/* FULLY RESTORED & ENHANCED POPUP ORDER FORM MODAL STYLING */
+/* POPUP ORDER FORM MODAL STYLING */
 .order-modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
