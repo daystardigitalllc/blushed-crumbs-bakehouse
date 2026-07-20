@@ -3,7 +3,7 @@
     --primary: #e67399;
     --primary-hover: #d25a82;
     --pink-bg: #fcebf1;
-    --pink-cloud-vibrant: #ff8dae;
+    --pink-cloud-vibrant: #f896b8;
     --pink-accent: #ffd6e0;
     --burgundy-bg: #401829;
     --dark-text: #4a2133;
@@ -75,18 +75,19 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-/* PROMINENT VIBRANT PINK CLOUD BORDERS (Matched to Screenshot) */
-.hero-cloud-prominent-top {
+/* EXACT ELEMENTOR WORDPRESS CLOUD DIVIDERS */
+.hero-cloud-elementor-top {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 140px;
     z-index: 5;
+    transform: rotate(180deg);
     pointer-events: none;
 }
 
-.hero-cloud-prominent-bottom {
+.hero-cloud-elementor-bottom {
     position: absolute;
     bottom: -1px;
     left: 0;
@@ -100,7 +101,7 @@ body {
 .hero-section {
     background-color: var(--pink-bg);
     text-align: center;
-    padding: 70px 20px 90px 20px;
+    padding: 80px 20px 100px 20px;
     position: relative;
     min-height: 640px;
     display: flex;
@@ -173,7 +174,7 @@ body {
     color: #4a2133;
 }
 
-/* Floating Cakes Raining Down & Encircling Text (Exact Screenshot Match) */
+/* Floating Cakes Raining Down & Encircling Text */
 .raining-cake {
     position: absolute;
     z-index: 15;
@@ -183,35 +184,35 @@ body {
 }
 
 /* 5 Cakes Encircling H1 Text & Buttons */
-.hero-cake-top-right { /* Lavender Crown Butterfly Cake */
+.hero-cake-top-right {
     top: 25px;
     right: 22%;
     width: 175px;
     animation-delay: 0.1s, 1.4s;
 }
 
-.hero-cake-middle-left { /* Pink 2-Tier Crown Heart Cake */
+.hero-cake-middle-left {
     top: 20%;
     left: 12%;
     width: 240px;
     animation-delay: 0.3s, 1.6s;
 }
 
-.hero-cake-far-right { /* Chocolate 2-Tier Ruffles Cake */
+.hero-cake-far-right {
     top: 18%;
     right: 1%;
     width: 270px;
     animation-delay: 0.5s, 1.8s;
 }
 
-.hero-cake-bottom-left { /* White Vintage Heart Cake */
+.hero-cake-bottom-left {
     bottom: 90px;
     left: 6%;
     width: 210px;
     animation-delay: 0.7s, 2.0s;
 }
 
-.hero-cake-bottom-right { /* Floral Square Pillar Cake */
+.hero-cake-bottom-right {
     bottom: 50px;
     right: 14%;
     width: 220px;
