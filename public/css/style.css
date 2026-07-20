@@ -2,8 +2,8 @@
 :root {
     --primary: #e67399;
     --primary-hover: #d25a82;
-    --pink-bg: #f9c7d8;
-    --pink-cloud-border: #f896b8;
+    --pink-bg: #fcebf1;
+    --pink-cloud-vibrant: #ff8dae;
     --pink-accent: #ffd6e0;
     --burgundy-bg: #401829;
     --dark-text: #4a2133;
@@ -28,7 +28,7 @@ body {
 /* Site Header */
 .site-header {
     background-color: transparent;
-    padding: 20px 0 0 0;
+    padding: 15px 0 0 0;
     position: relative;
     z-index: 100;
 }
@@ -43,7 +43,7 @@ body {
 }
 
 .logo img {
-    height: 70px;
+    height: 75px;
     width: auto;
     display: block;
 }
@@ -75,39 +75,42 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-/* Fluffy Cloud Framing for Hero */
-.hero-cloud-frame-top {
-    width: 100%;
-    height: 120px;
-    margin-top: -50px;
-    display: block;
-    position: relative;
-    z-index: 10;
-}
-
-.hero-cloud-frame-bottom {
+/* PROMINENT VIBRANT PINK CLOUD BORDERS (Matched to Screenshot) */
+.hero-cloud-prominent-top {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 140px;
-    margin-bottom: -1px;
-    display: block;
-    position: relative;
-    z-index: 10;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.hero-cloud-prominent-bottom {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    z-index: 5;
+    pointer-events: none;
 }
 
 /* Hero Section */
 .hero-section {
     background-color: var(--pink-bg);
     text-align: center;
-    padding: 50px 20px 70px 20px;
+    padding: 70px 20px 90px 20px;
     position: relative;
-    min-height: 580px;
+    min-height: 640px;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: visible;
 }
 
 .hero-wrapper {
-    max-width: 700px;
+    max-width: 650px;
     margin: 0 auto;
     position: relative;
     z-index: 30;
@@ -127,6 +130,7 @@ body {
     color: #4a2133;
     line-height: 1.1;
     margin-bottom: 35px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
 }
 
 .hero-buttons {
@@ -169,24 +173,64 @@ body {
     color: #4a2133;
 }
 
-/* Floating Cakes */
+/* Floating Cakes Raining Down & Encircling Text (Exact Screenshot Match) */
 .raining-cake {
     position: absolute;
     z-index: 15;
-    filter: drop-shadow(0 12px 20px rgba(74, 33, 51, 0.25));
+    filter: drop-shadow(0 14px 22px rgba(74, 33, 51, 0.2));
     opacity: 0;
     animation: cakeRain 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards, floatGently 3.5s ease-in-out infinite 1.4s alternate;
 }
 
-.cake-pos-top-left { top: 5%; left: 3%; width: 220px; animation-delay: 0.1s, 1.4s; }
-.cake-pos-top-right { top: 5%; right: 4%; width: 220px; animation-delay: 0.3s, 1.6s; }
-.cake-pos-bottom-left { bottom: 5%; left: 2%; width: 210px; animation-delay: 0.5s, 1.8s; }
-.cake-pos-bottom-right { bottom: 5%; right: 3%; width: 230px; animation-delay: 0.7s, 2.0s; }
+/* 5 Cakes Encircling H1 Text & Buttons */
+.hero-cake-top-right { /* Lavender Crown Butterfly Cake */
+    top: 25px;
+    right: 22%;
+    width: 175px;
+    animation-delay: 0.1s, 1.4s;
+}
+
+.hero-cake-middle-left { /* Pink 2-Tier Crown Heart Cake */
+    top: 20%;
+    left: 12%;
+    width: 240px;
+    animation-delay: 0.3s, 1.6s;
+}
+
+.hero-cake-far-right { /* Chocolate 2-Tier Ruffles Cake */
+    top: 18%;
+    right: 1%;
+    width: 270px;
+    animation-delay: 0.5s, 1.8s;
+}
+
+.hero-cake-bottom-left { /* White Vintage Heart Cake */
+    bottom: 90px;
+    left: 6%;
+    width: 210px;
+    animation-delay: 0.7s, 2.0s;
+}
+
+.hero-cake-bottom-right { /* Floral Square Pillar Cake */
+    bottom: 50px;
+    right: 14%;
+    width: 220px;
+    animation-delay: 0.9s, 2.2s;
+}
 
 @keyframes cakeRain {
-    0% { transform: translateY(-450px) scale(0.6) rotate(-20deg); opacity: 0; }
-    70% { transform: translateY(18px) scale(1.05) rotate(4deg); opacity: 1; }
-    100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+    0% {
+        transform: translateY(-480px) scale(0.5) rotate(-25deg);
+        opacity: 0;
+    }
+    70% {
+        transform: translateY(20px) scale(1.05) rotate(4deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
 }
 
 @keyframes floatGently {
@@ -197,13 +241,15 @@ body {
 
 /* Highlights Bar */
 .highlights-bar {
-    background: #ff9ebb;
+    background: #ff8dae;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 10px 25px 40px 25px;
+    position: relative;
+    z-index: 10;
 }
 
 .highlight-item { text-align: center; }
@@ -250,7 +296,7 @@ body {
 .video-overlay-content { position: relative; z-index: 2; max-width: 700px; padding: 20px; }
 .video-overlay-content h2 { font-size: 2.8rem; color: white; font-weight: 700; margin-bottom: 10px; }
 
-/* Categories Section matching attached exact screenshot */
+/* Categories Section */
 .categories-section {
     background: linear-gradient(180deg, #fceaf0 0%, #ffffff 100%);
     padding: 70px 25px 80px 25px;
@@ -310,7 +356,7 @@ body {
     letter-spacing: 0.3px;
 }
 
-/* Whimsical Section matching attached screenshot */
+/* Whimsical Section */
 .whimsical-section {
     background-color: var(--burgundy-bg);
     color: white;
@@ -536,10 +582,7 @@ body {
     user-select: none;
 }
 
-.product:hover {
-    border-color: var(--primary);
-    background: #fff0f5;
-}
+.product:hover { border-color: var(--primary); background: #fff0f5; }
 
 .product.selected {
     background: var(--primary) !important;
