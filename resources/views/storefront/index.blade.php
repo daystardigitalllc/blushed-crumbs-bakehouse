@@ -99,7 +99,7 @@
         <div class="categories-grid-exact">
             <div class="category-card-exact">
                 <div class="category-image-frame">
-                    <img src="/images/IMG_8117.jpg" alt="Single Tier Cakes">
+                    <img src="/images/IMG_8042.jpg" alt="Single Tier Cakes">
                 </div>
                 <h3>Single Tier Cakes</h3>
             </div>
@@ -111,7 +111,7 @@
             </div>
             <div class="category-card-exact">
                 <div class="category-image-frame">
-                    <img src="/images/IMG_8042.jpg" alt="By The Dozen">
+                    <img src="/images/IMG_8117.jpg" alt="By The Dozen">
                 </div>
                 <h3>By The Dozen</h3>
             </div>
