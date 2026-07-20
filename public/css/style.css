@@ -825,11 +825,102 @@ body {
     text-align: left;
 }
 
+/* COMPREHENSIVE TABLET & MOBILE RESPONSIVE DESIGN SYSTEM */
+
+/* Tablet & Mobile (<= 768px) */
 @media (max-width: 768px) {
-    .header-container { flex-direction: column; gap: 10px; }
-    .hero-wrapper h1 { font-size: 3.2rem; }
-    .raining-cake { display: none; }
-    .whimsical-two-column { flex-direction: column; }
-    .whimsical-col-right h2 { font-size: 3rem; }
-    .cart-bar { flex-direction: column; gap: 15px; text-align: center; }
+    /* Header & Navigation */
+    .site-header { padding: 10px 0 0 0; }
+    .header-container { flex-direction: column; gap: 12px; padding: 0 15px; text-align: center; }
+    .logo img { height: 60px; margin: 0 auto; }
+    .nav-links { gap: 15px; flex-wrap: wrap; justify-content: center; width: 100%; }
+    .nav-links a { font-size: 0.9rem; padding: 4px 6px; }
+    .admin-btn { padding: 6px 16px; font-size: 0.85rem; }
+
+    /* Cloud Dividers */
+    .hero-cloud-elementor-top { height: 80px; }
+    .hero-cloud-elementor-bottom { height: 85px; margin-bottom: -5px; }
+
+    /* Hero Section */
+    .hero-section { padding: 50px 15px 60px 15px; min-height: auto; }
+    .subheading { font-size: 2rem; margin-bottom: 5px; }
+    .hero-wrapper h1 { font-size: 3rem; margin-bottom: 22px; line-height: 1.15; }
+    .hero-buttons { flex-direction: column; width: 100%; max-width: 280px; margin: 0 auto; gap: 12px; }
+    .hero-buttons .btn { width: 100%; text-align: center; padding: 12px 24px; font-size: 0.95rem; }
+
+    /* Scaled Mobile Raining Cakes (Keep 3 cakes safely out of text flow) */
+    .hero-cake-top-right { top: 10px; right: 4%; width: 90px; opacity: 0.9; }
+    .hero-cake-middle-left { top: 12%; left: 2%; width: 100px; opacity: 0.9; }
+    .hero-cake-far-right { display: none; }
+    .hero-cake-bottom-left { display: none; }
+    .hero-cake-bottom-right { bottom: 20px; right: 4%; width: 95px; opacity: 0.9; }
+
+    /* Highlights Bar */
+    .highlights-bar { grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px 15px 30px 15px; }
+    .highlight-item .icon-circle { width: 40px; height: 40px; font-size: 1.1rem; margin-bottom: 6px; }
+    .highlight-item h4 { font-size: 0.95rem; }
+    .highlight-item p { font-size: 0.78rem; }
+
+    /* Banners */
+    .video-promo-banner, .cta-video-banner { height: 260px; padding: 15px; }
+    .video-overlay-content h2, .cta-content h2 { font-size: 2.2rem; margin-bottom: 8px; }
+    .video-overlay-content p, .cta-content p { font-size: 0.9rem; }
+
+    /* Categories Section */
+    .categories-section { padding: 45px 15px 55px 15px; }
+    .section-title-script { font-size: 3.4rem; margin-bottom: 30px; }
+    .categories-grid-exact { grid-template-columns: 1fr; max-width: 340px; margin: 0 auto; gap: 25px; }
+    .category-image-frame { height: 380px; }
+
+    /* Whimsical Section */
+    .whimsical-section { padding: 50px 15px; }
+    .whimsical-two-column { flex-direction: column; gap: 30px; text-align: center; }
+    .whimsical-col-left img { max-width: 270px; }
+    .whimsical-col-right { min-width: 100%; text-align: left; }
+    .whimsical-col-right h2 { font-size: 3rem; text-align: center; margin-bottom: 20px; }
+    .whimsical-bullet-list li { font-size: 0.88rem; margin-bottom: 12px; }
+
+    /* Reviews Section */
+    .reviews-section { padding: 45px 15px; }
+    .reviews-grid { grid-template-columns: 1fr; gap: 16px; }
+    .cloud-review-card { padding: 22px 18px; border-radius: 20px; }
+    .cloud-review-card h4 { font-size: 1.8rem; }
+
+    /* Popup Order Modal */
+    .order-modal-card { width: 95%; max-height: 94vh; padding: 25px 15px; border-radius: 20px; }
+    .modal-close-btn { top: 12px; right: 12px; width: 34px; height: 34px; font-size: 1.1rem; }
+    .step h2 { font-size: 1.6rem; margin-bottom: 15px; }
+    #product-grid, #flavor-list, #frosting-list, #filling-list, #social-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin: 15px 0;
+    }
+    .product { padding: 12px 8px; font-size: 0.85rem; border-radius: 10px; }
+    .cart-bar { flex-direction: column; gap: 12px; padding: 15px; border-radius: 14px; text-align: center; }
+    .nav-buttons { width: 100%; justify-content: space-between; gap: 10px; }
+    .next-btn, .back-btn { flex: 1; text-align: center; padding: 11px 15px; font-size: 0.9rem; }
+    #interactive-calendar-grid { gap: 6px; max-width: 100%; }
+    .cal-day { padding: 10px 0; font-size: 0.85rem; border-radius: 8px; }
+
+    /* Admin Portal */
+    .admin-header { flex-direction: column; gap: 12px; text-align: center; padding: 15px; }
+    .admin-tabs { width: 100%; }
+    .order-card { padding: 16px; }
+    .order-card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
 }
+
+/* Extra Small Phones (<= 480px) */
+@media (max-width: 480px) {
+    .subheading { font-size: 1.7rem; }
+    .hero-wrapper h1 { font-size: 2.4rem; }
+    .section-title-script { font-size: 2.8rem; }
+    .whimsical-col-right h2 { font-size: 2.4rem; }
+    .category-image-frame { height: 320px; }
+    #product-grid, #flavor-list, #frosting-list, #filling-list, #social-grid {
+        grid-template-columns: 1fr;
+    }
+    .hero-cake-top-right { width: 70px; }
+    .hero-cake-middle-left { width: 80px; }
+    .hero-cake-bottom-right { width: 75px; }
+}
+
