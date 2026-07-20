@@ -12,37 +12,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- CSS Assets -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
 
-<div id="storefront-view">
-    <!-- Header Navigation -->
-    <header class="site-header">
-        <div class="header-container">
-            <a href="#home" class="logo">
-                <img src="/images/blushedlogo.png" alt="Blushed Crumbs Bakehouse Logo">
-            </a>
-            <nav class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#categories">About</a>
-                <a href="#gallery">Gallery</a>
-                <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
-                <a href="#admin-portal-view" onclick="toggleView('admin')" class="admin-btn">🔑 Baker Admin Portal</a>
-            </nav>
-        </div>
-    </header>
+<header class="site-header">
+    <div class="header-container">
+        <a href="{{ route('storefront.index') }}" class="logo">
+            <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Bakehouse Logo">
+        </a>
+        <nav class="nav-links">
+            <a href="{{ route('storefront.index') }}">Home</a>
+            <a href="{{ route('storefront.index') }}#categories">About</a>
+            <a href="{{ route('storefront.gallery') }}">Gallery</a>
+            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
+            <a href="{{ route('admin.dashboard') }}" class="admin-btn">🔑 Baker Admin Portal</a>
+        </nav>
+    </div>
+</header>
 
+<div id="storefront-view">
     <!-- Official Elementor WordPress Top Cloud Divider -->
-    <img src="/images/clouds.svg" class="hero-cloud-elementor-top" alt="Top Cloud Divider">
+    <img src="{{ asset('images/clouds.svg') }}" class="hero-cloud-elementor-top" alt="Top Cloud Divider">
 
     <!-- Hero Section with 5 Raining Cakes Encircling Headline & Buttons -->
     <section id="home" class="hero-section">
-        <img src="/images/purplecake.png" class="raining-cake hero-cake-top-right" alt="Top Right Lavender Crown Cake">
-        <img src="/images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png" class="raining-cake hero-cake-middle-left" alt="Middle Left Pink Crown Heart Cake">
-        <img src="/images/chocolatecake.png" class="raining-cake hero-cake-far-right" alt="Chocolate 2-Tier Ruffles Cake">
-        <img src="/images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png" class="raining-cake hero-cake-bottom-left" alt="Bottom Left White Heart Cake">
-        <img src="/images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png" class="raining-cake hero-cake-bottom-right" alt="Bottom Right Floral Vintage Cake">
+        <img src="{{ asset('images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png') }}" class="raining-cake hero-cake-top-right" alt="Top Right Lavender Crown Cake">
+        <img src="{{ asset('images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png') }}" class="raining-cake hero-cake-middle-left" alt="Middle Left Pink Crown Heart Cake">
+        <img src="{{ asset('images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png') }}" class="raining-cake hero-cake-far-right" alt="Chocolate 2-Tier Ruffles Cake">
+        <img src="{{ asset('images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png') }}" class="raining-cake hero-cake-bottom-left" alt="Bottom Left White Heart Cake">
+        <img src="{{ asset('images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png') }}" class="raining-cake hero-cake-bottom-right" alt="Bottom Right Floral Vintage Cake">
 
         <div class="hero-wrapper">
             <span class="subheading">Welcome to Blushed Crumbs Bakehouse</span>
@@ -55,7 +54,7 @@
     </section>
 
     <!-- Official Elementor WordPress Bottom Cloud Divider -->
-    <img src="/images/clouds.svg" class="hero-cloud-elementor-bottom" alt="Bottom Cloud Divider">
+    <img src="{{ asset('images/clouds.svg') }}" class="hero-cloud-elementor-bottom" alt="Bottom Cloud Divider">
 
     <!-- Highlights Bar -->
     <section class="highlights-bar">
@@ -84,7 +83,7 @@
     <!-- Video Background Promo Banner -->
     <section class="video-promo-banner">
         <video autoplay loop muted playsinline>
-            <source src="/images/download (2) (1).mp4" type="video/mp4">
+            <source src="{{ asset('images/download (2) (1).mp4') }}" type="video/mp4">
         </video>
         <div class="video-overlay-content">
             <h2>$10 Off Your First Order!</h2>
@@ -99,19 +98,19 @@
         <div class="categories-grid-exact">
             <div class="category-card-exact">
                 <div class="category-image-frame">
-                    <img src="/images/IMG_8042.jpg" alt="Single Tier Cakes">
+                    <img src="{{ asset('images/IMG_8117.jpg') }}" alt="Single Tier Cakes">
                 </div>
                 <h3>Single Tier Cakes</h3>
             </div>
             <div class="category-card-exact">
                 <div class="category-image-frame">
-                    <img src="/images/IMG_8084.jpg" alt="Multi Tier Cakes">
+                    <img src="{{ asset('images/IMG_8084.jpg') }}" alt="Multi Tier Cakes">
                 </div>
                 <h3>Multi Tier Cakes</h3>
             </div>
             <div class="category-card-exact">
                 <div class="category-image-frame">
-                    <img src="/images/IMG_8117.jpg" alt="By The Dozen">
+                    <img src="{{ asset('images/IMG_8042.jpg') }}" alt="By The Dozen">
                 </div>
                 <h3>By The Dozen</h3>
             </div>
@@ -122,7 +121,7 @@
     <section class="whimsical-section">
         <div class="whimsical-two-column">
             <div class="whimsical-col-left">
-                <img src="/images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png" alt="Whimsical Mermaid Cake on Silver Stand">
+                <img src="{{ asset('images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png') }}" alt="Whimsical Mermaid Cake on Silver Stand">
             </div>
             <div class="whimsical-col-right">
                 <h2>Whimsical Creations<br>for Every Milestone</h2>
@@ -164,7 +163,7 @@
     <!-- Footer Call to Action Video Banner -->
     <section class="cta-video-banner">
         <video autoplay loop muted playsinline>
-            <source src="/images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4" type="video/mp4">
+            <source src="{{ asset('images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4') }}" type="video/mp4">
         </video>
         <div class="cta-content">
             <h2>Ready For Your Perfect Cake?</h2>
@@ -210,11 +209,16 @@
 
 <footer class="site-footer">
     <div class="footer-logo">
-        <img src="/images/blushedlogo.png" alt="Blushed Crumbs Logo">
+        <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Logo">
+    </div>
+    <div class="footer-nav">
+        <a href="{{ route('storefront.index') }}">Home</a>
+        <a href="{{ route('storefront.index') }}#categories">About</a>
+        <a href="{{ route('storefront.gallery') }}">Gallery</a>
     </div>
     <p class="copyright-text">Copyright © 2026 Blushed Crumbs Bakehouse | Powered by Daystar Digital</p>
 </footer>
 
-<script src="/js/app.js"></script>
+<script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

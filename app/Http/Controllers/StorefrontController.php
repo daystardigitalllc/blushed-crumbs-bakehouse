@@ -14,8 +14,7 @@ class StorefrontController extends Controller
     {
         $host = $request->getHost();
 
-        // 1. Multi-Tenant Domain Routing:
-        // If request is from client domain (blushedcrumbsbakehouse.com) or fallback slug
+        // 1. Multi-Tenant Domain Routing
         $tenant = Tenant::where('domain', $host)
             ->orWhere('slug', 'blushedcrumbs')
             ->first();
@@ -51,5 +50,26 @@ class StorefrontController extends Controller
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
 
         return view('storefront.index', compact('tenant', 'products', 'reviews', 'gallery'));
+    }
+
+    public function gallery(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
+        if (!$tenant) {
+            $tenant = Tenant::firstOrCreate(
+                ['slug' => 'blushedcrumbs'],
+                [
+                    'name' => 'Blushed Crumbs Bakehouse',
+                    'domain' => 'blushed-crumbs-bakehouse.test',
+                    'subdomain' => 'blushedcrumbs',
+                    'owner_name' => 'Baker',
+                    'email' => 'orders@blushedcrumbsbakehouse.com',
+                    'plan_tier' => 'pro',
+                ]
+            );
+        }
+
+        $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
+        return view('storefront.gallery', compact('tenant', 'gallery'));
     }
 }

@@ -16,30 +16,30 @@
 </head>
 <body>
 
-<div id="storefront-view">
-    <!-- Header Navigation -->
-    <header class="site-header">
-        <div class="header-container">
-            <a href="#home" class="logo">
-                <img src="public/images/blushedlogo.png" alt="Blushed Crumbs Bakehouse Logo">
-            </a>
-            <nav class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#categories">About</a>
-                <a href="#gallery">Gallery</a>
-                <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
-                <a href="#admin-portal-view" onclick="toggleView('admin')" class="admin-btn">🔑 Baker Admin Portal</a>
-            </nav>
-        </div>
-    </header>
+<!-- GLOBAL NAVIGATION HEADER -->
+<header class="site-header">
+    <div class="header-container">
+        <a href="#home" onclick="toggleView('storefront')" class="logo">
+            <img src="public/images/blushedlogo.png" alt="Blushed Crumbs Bakehouse Logo">
+        </a>
+        <nav class="nav-links">
+            <a href="#home" onclick="toggleView('storefront')">Home</a>
+            <a href="#categories" onclick="toggleView('storefront')">About</a>
+            <a href="#gallery" onclick="toggleView('gallery')">Gallery</a>
+            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
+            <a href="#admin" onclick="toggleView('admin')" class="admin-btn">🔑 Baker Admin Portal</a>
+        </nav>
+    </div>
+</header>
 
+<!-- PAGE 1: STOREFRONT VIEW -->
+<div id="storefront-view">
     <!-- Official Elementor WordPress Top Cloud Divider -->
     <img src="public/images/clouds.svg" class="hero-cloud-elementor-top" alt="Top Cloud Divider">
 
     <!-- Hero Section with 5 Raining Cakes Encircling Headline & Buttons -->
     <section id="home" class="hero-section">
-        <!-- 5 Floating Cakes Encircling the Headline & Buttons (Matched to User Screenshot) -->
-        <img src="public/images/purplecake.png" class="raining-cake hero-cake-top-right" alt="Top Right Lavender Crown Cake">
+        <img src="public/images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png" class="raining-cake hero-cake-top-right" alt="Top Right Lavender Crown Cake">
         <img src="public/images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png" class="raining-cake hero-cake-middle-left" alt="Middle Left Pink Crown Heart Cake">
         <img src="public/images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png" class="raining-cake hero-cake-far-right" alt="Chocolate 2-Tier Ruffles Cake">
         <img src="public/images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png" class="raining-cake hero-cake-bottom-left" alt="Bottom Left White Heart Cake">
@@ -95,24 +95,24 @@
     </section>
 
     <!-- Categories Section -->
-     <section id="categories" class="categories-section">
+    <section id="categories" class="categories-section">
         <h2 class="section-title-script">Our Categories</h2>
         <div class="categories-grid-exact">
             <div class="category-card-exact">
                 <div class="category-image-frame">
-                    <img src="public/images/IMG_8042.jpg" alt="Single-Tier Cakes">
+                    <img src="public/images/IMG_8117.jpg" alt="Single Tier Cakes">
                 </div>
                 <h3>Single Tier Cakes</h3>
             </div>
             <div class="category-card-exact">
                 <div class="category-image-frame">
-                    <img src="public/images/IMG_8084.jpg" alt="Multi-Tier Cakes">
+                    <img src="public/images/IMG_8084.jpg" alt="Multi Tier Cakes">
                 </div>
                 <h3>Multi Tier Cakes</h3>
             </div>
             <div class="category-card-exact">
                 <div class="category-image-frame">
-                    <img src="public/images/IMG_8117.jpg" alt="By The Dozen">
+                    <img src="public/images/IMG_8042.jpg" alt="By The Dozen">
                 </div>
                 <h3>By The Dozen</h3>
             </div>
@@ -175,6 +175,260 @@
     </section>
 </div>
 
+<!-- PAGE 2: DEDICATED GALLERY PAGE VIEW -->
+<div id="gallery-page-view" style="display:none;">
+    <section class="gallery-page-section">
+        <div style="text-align:center; margin-bottom:40px;">
+            <h1 class="section-title-script" style="font-size:4.5rem; margin-bottom:10px;">Our Gallery</h1>
+            <p style="font-size:1.1rem; color:#4a2133; max-width:600px; margin:0 auto;">Explore our latest custom creations uploaded directly from our kitchen!</p>
+        </div>
+
+        <div class="gallery-filter-bar">
+            <button class="filter-btn active" data-filter="all">All Sweets</button>
+            <button class="filter-btn" data-filter="Cakes">Custom Cakes</button>
+            <button class="filter-btn" data-filter="Cupcakes">Cupcakes & Shooters</button>
+            <button class="filter-btn" data-filter="Treats">Chocolate Treats</button>
+            <button class="filter-btn" data-filter="Weddings">Weddings</button>
+        </div>
+
+        <div class="gallery-masonry-grid" id="public-gallery-grid">
+            <div class="gallery-card" data-category="Cakes" onclick="openLightbox('public/images/IMG_8117.jpg', 'Lavender Princess Birthday Crown Cake')">
+                <div class="gallery-card-img-wrap">
+                    <img src="public/images/IMG_8117.jpg" alt="Lavender Princess Birthday Crown Cake">
+                </div>
+                <div class="gallery-card-info">
+                    <h4>Lavender Princess Birthday Crown</h4>
+                    <span class="gallery-tag">Cakes</span>
+                </div>
+            </div>
+            <div class="gallery-card" data-category="Cakes" onclick="openLightbox('public/images/IMG_8084.jpg', 'Minecraft TNT Tiered Cake')">
+                <div class="gallery-card-img-wrap">
+                    <img src="public/images/IMG_8084.jpg" alt="Minecraft TNT Tiered Cake">
+                </div>
+                <div class="gallery-card-info">
+                    <h4>Minecraft TNT Multi-Tier</h4>
+                    <span class="gallery-tag">Cakes</span>
+                </div>
+            </div>
+            <div class="gallery-card" data-category="Cupcakes" onclick="openLightbox('public/images/IMG_8042.jpg', 'Frozen Snowflake Cupcake Dozen Box')">
+                <div class="gallery-card-img-wrap">
+                    <img src="public/images/IMG_8042.jpg" alt="Frozen Snowflake Cupcake Dozen Box">
+                </div>
+                <div class="gallery-card-info">
+                    <h4>Frozen Snowflake Cupcake Box</h4>
+                    <span class="gallery-tag">Cupcakes</span>
+                </div>
+            </div>
+            <div class="gallery-card" data-category="Weddings" onclick="openLightbox('public/images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png', 'Whimsical Ocean Mermaid Cake')">
+                <div class="gallery-card-img-wrap">
+                    <img src="public/images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png" alt="Whimsical Ocean Mermaid Cake">
+                </div>
+                <div class="gallery-card-info">
+                    <h4>Whimsical Ocean Mermaid Cake</h4>
+                    <span class="gallery-tag">Weddings</span>
+                </div>
+            </div>
+            <div class="gallery-card" data-category="Cakes" onclick="openLightbox('public/images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png', 'Pink Royal Crown Vintage Cake')">
+                <div class="gallery-card-img-wrap">
+                    <img src="public/images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png" alt="Pink Royal Crown Vintage Cake">
+                </div>
+                <div class="gallery-card-info">
+                    <h4>Pink Royal Crown Heart Cake</h4>
+                    <span class="gallery-tag">Cakes</span>
+                </div>
+            </div>
+            <div class="gallery-card" data-category="Cakes" onclick="openLightbox('public/images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png', 'Classic Pearl Heart Vintage Cake')">
+                <div class="gallery-card-img-wrap">
+                    <img src="public/images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png" alt="Classic Pearl Heart Vintage Cake">
+                </div>
+                <div class="gallery-card-info">
+                    <h4>Classic Pearl Heart Vintage</h4>
+                    <span class="gallery-tag">Cakes</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- PAGE 3: BAKER ADMIN PORTAL VIEW -->
+<div id="admin-portal-view" style="display:none;">
+    <div class="admin-wrapper">
+        <header class="admin-header">
+            <div class="admin-brand">
+                <span class="logo-icon" style="font-size:2rem;">🌸</span>
+                <div>
+                    <h2>Blushed Crumbs Baker Admin</h2>
+                    <span class="badge badge-pro">Pro Tier Plan ($50/mo)</span>
+                </div>
+            </div>
+            <button onclick="toggleView('storefront')" class="btn btn-secondary">← Back to Storefront</button>
+        </header>
+
+        <div class="admin-tabs">
+            <button class="tab-btn active" data-tab="tab-orders">📅 Orders Queue</button>
+            <button class="tab-btn" data-tab="tab-form-builder">🛠️ Form & Product Builder</button>
+            <button class="tab-btn" data-tab="tab-gallery-manager">📷 Gallery Uploader</button>
+            <button class="tab-btn" data-tab="tab-invoices">💳 Invoices & Payments</button>
+            <button class="tab-btn" data-tab="tab-reviews">⭐ Customer Reviews</button>
+            <button class="tab-btn" data-tab="tab-support">💬 Custom Support</button>
+        </div>
+
+        <div class="admin-content">
+            <!-- TAB 1: Priority Orders Queue -->
+            <div id="tab-orders" class="tab-content active">
+                <div class="section-header">
+                    <h3>📅 Priority Order Queue</h3>
+                    <p class="subtitle">Sorted chronologically by <strong>due date</strong> so you know exactly what is due first!</p>
+                </div>
+                <div class="orders-list-grid" id="admin-orders-list">
+                    <div class="order-card urgent-border">
+                        <div class="order-card-header">
+                            <div class="due-badge due-urgent">⏰ DUE: Tomorrow (9:30 AM)</div>
+                            <span class="status-tag status-in_progress">IN PROGRESS</span>
+                        </div>
+                        <div class="order-card-body">
+                            <h4>#BC-1092 - Sarah Jenkins</h4>
+                            <p><strong>Phone:</strong> (555) 234-8890 | <strong>Email:</strong> sarah.j@example.com</p>
+                            <p><strong>Item:</strong> 6” Cake ($65.00) | <strong>Flavor:</strong> Strawberry Bliss | <strong>Frosting:</strong> Vanilla Buttercream</p>
+                            <p class="notes-box" style="background:#fff7fa; padding:8px 12px; border-radius:8px; margin-top:8px;"><strong>Special Notes:</strong> "Happy 30th Birthday Emma!" in gold lettering</p>
+                            <div class="pricing-breakdown" style="margin-top:10px;">
+                                <span>Total: <strong>$60.00</strong></span> | <span>50% Deposit: <strong>$30.00</strong> (✅ Paid)</span>
+                            </div>
+                        </div>
+                        <div class="order-card-actions">
+                            <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder('BC-1092', 'Sarah Jenkins', 60, 30)">💳 Create Invoice</button>
+                            <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('BC-1092')">📋 Copy Invoice Link</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Form & Product Builder -->
+            <div id="tab-form-builder" class="tab-content">
+                <div class="section-header">
+                    <h3>🛠️ Custom Order Form & Product Builder</h3>
+                    <p class="subtitle">Add items, update prices, upload product images, and customize your customer order form!</p>
+                </div>
+
+                <div class="form-builder-card">
+                    <h4>Add New Product & Price to Order Form</h4>
+                    <form id="add-product-form" class="form-builder-grid">
+                        <input type="text" id="new-prod-name" placeholder="Product Name (e.g. 6” Heart Cake)" required style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+                        <input type="number" id="new-prod-price" placeholder="Price ($)" step="0.01" required style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+                        <select id="new-prod-category" style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+                            <option value="Single Tier">Single Tier</option>
+                            <option value="Multi-Tier">Multi-Tier</option>
+                            <option value="By The Dozen">By The Dozen</option>
+                            <option value="Treats">Treats</option>
+                            <option value="Party Packs">Party Packs</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">+ Add Item to Form</button>
+                    </form>
+                </div>
+
+                <div class="form-builder-card">
+                    <h4>Current Items & Live Prices</h4>
+                    <div id="products-admin-grid">
+                        <div class="product-item-row" style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;">
+                            <span><strong>6” Cake</strong> (Single Tier)</span>
+                            <div>
+                                <input type="number" value="65.00" style="width:80px; padding:5px; border-radius:6px; border:1px solid #ccc;">
+                                <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
+                            </div>
+                        </div>
+                        <div class="product-item-row" style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;">
+                            <span><strong>Baddie On a Budget 🎀</strong> (Single Tier)</span>
+                            <div>
+                                <input type="number" value="45.00" style="width:80px; padding:5px; border-radius:6px; border:1px solid #ccc;">
+                                <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Gallery Photo Uploader -->
+            <div id="tab-gallery-manager" class="tab-content">
+                <div class="section-header">
+                    <h3>📷 Gallery Photo Uploader</h3>
+                    <p class="subtitle">Upload photos of your baked goods directly to your public <strong>/gallery</strong> page!</p>
+                </div>
+
+                <div class="form-builder-card">
+                    <h4>Upload New Photo to Public Gallery</h4>
+                    <form id="add-gallery-form" class="form-builder-grid">
+                        <input type="text" id="gal-title" placeholder="Photo Title (e.g. Lavender Crown Cake)" required style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+                        <select id="gal-category" style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+                            <option value="Cakes">Custom Cakes</option>
+                            <option value="Cupcakes">Cupcakes & Shooters</option>
+                            <option value="Treats">Chocolate Treats</option>
+                            <option value="Weddings">Weddings</option>
+                        </select>
+                        <input type="file" id="gal-image-file" accept="image/*" style="padding:8px; border-radius:8px; border:1px solid #ccc; background:#fafafa;">
+                        <button type="submit" class="btn btn-primary">📷 Publish to Gallery</button>
+                    </form>
+                </div>
+
+                <div class="form-builder-card">
+                    <h4>Current Published Gallery Photos</h4>
+                    <div id="admin-gallery-list">
+                        <div style="display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+                            <div style="display:flex; align-items:center; gap:15px;">
+                                <img src="public/images/IMG_8117.jpg" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+                                <div>
+                                    <strong>Lavender Princess Birthday Crown</strong><br>
+                                    <span style="font-size:0.8rem; color:#888;">Cakes</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-outline" style="color:#d9534f;" onclick="this.parentElement.remove()">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Invoices -->
+            <div id="tab-invoices" class="tab-content">
+                <div class="section-header">
+                    <h3>💳 Invoices & Payment Links</h3>
+                    <p class="subtitle">Send digital invoices & accept payments directly via Venmo, CashApp, PayPal, or Zelle!</p>
+                </div>
+                <div class="payment-methods-card" style="background:white; padding:20px; border-radius:15px; box-shadow:var(--card-shadow); margin-bottom:20px;">
+                    <h4>Active Payment Handles</h4>
+                    <p>• Venmo: <strong>@Blushed_Crumbs</strong> | CashApp: <strong>$BlushedCrumbs</strong> | Zelle: <strong>orders@blushedcrumbsbakehouse.com</strong></p>
+                </div>
+            </div>
+
+            <!-- TAB 5: Customer Reviews -->
+            <div id="tab-reviews" class="tab-content">
+                <div class="section-header">
+                    <h3>⭐ Customer Reviews Manager</h3>
+                    <p class="subtitle">Add client reviews directly to your homepage!</p>
+                </div>
+                <div class="add-review-box" style="background:white; padding:20px; border-radius:15px; box-shadow:var(--card-shadow);">
+                    <form id="add-review-form" class="admin-form">
+                        <input type="text" id="rev-client-name" placeholder="Client Name" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;">
+                        <textarea id="rev-text" placeholder="Paste review text here..." required style="width:100%; height:80px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;"></textarea>
+                        <button type="submit" class="btn btn-primary">Publish Review</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 6: Support -->
+            <div id="tab-support" class="tab-content">
+                <div class="section-header">
+                    <h3>💬 Custom Code & Support Request</h3>
+                    <p class="subtitle">Direct support request form for custom features ($50/mo Pro Tier perk)</p>
+                </div>
+                <form id="support-request-form" class="admin-form" style="background:white; padding:20px; border-radius:15px;">
+                    <input type="text" placeholder="Subject" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;">
+                    <textarea placeholder="Describe custom code or support request..." required style="width:100%; height:100px; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;"></textarea>
+                    <button type="submit" class="btn btn-primary">Send Support Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- POPUP MODAL ORDER FORM BUILDER -->
 <div id="order-modal-popup" class="order-modal-overlay" style="display:none;">
     <div class="order-modal-card">
@@ -195,27 +449,6 @@
                         <div class="product" data-name="10” Cake" data-price="115"><strong>10” Cake</strong><br>$115</div>
                         <div class="product" data-name="Bento Box" data-price="45"><strong>Bento Box</strong><br>$45</div>
                         <div class="product" data-name="Smash Cake" data-price="35"><strong>Smash Cake</strong><br>$35</div>
-                        <div class="product" data-name="Quarter-Sheet Cake" data-price="75"><strong>Quarter-Sheet Cake</strong><br>$75</div>
-                        <div class="product" data-name="Baddie On a Budget 🎀" data-price="45"><strong>Baddie On a Budget 🎀</strong><br>$45</div>
-                        <div class="product" data-name="1/2 Dozen Cupcakes" data-price="18"><strong>1/2 Dozen Cupcakes</strong><br>$18</div>
-                        <div class="product" data-name="Dozen Cupcakes" data-price="35"><strong>Dozen Cupcakes</strong><br>$35</div>
-                        <div class="product" data-name="Dozen Cake Shooters" data-price="50"><strong>Dozen Cake Shooters</strong><br>$50</div>
-                        <div class="product" data-name="Dozen Chocolate Covered Strawberries" data-price="30"><strong>Dozen Chocolate Covered Strawberries</strong><br>$30</div>
-                        <div class="product" data-name="Dozen Chocolate Covered Oreo" data-price="35"><strong>Dozen Chocolate Covered Oreo</strong><br>$35</div>
-                        <div class="product" data-name="Dozen Chocolate Covered Marshmallows" data-price="20"><strong>Dozen Chocolate Covered Marshmallows</strong><br>$20</div>
-                        <div class="product" data-name="Cakesickles" data-price="40"><strong>Cakesickles</strong><br>$40</div>
-                        <div class="product" data-name="Chocolate Rice Krispies" data-price="35"><strong>Chocolate Rice Krispies</strong><br>$35</div>
-                        <div class="product" data-name="Small Party Pack" data-price="100"><strong>Small Party Pack</strong><br>$100</div>
-                        <div class="product" data-name="Medium Party Pack" data-price="165"><strong>Medium Party Pack</strong><br>$165</div>
-                        <div class="product" data-name="Large Party Pack" data-price="220"><strong>Large Party Pack</strong><br>$220</div>
-                        <div class="product" data-name="Extra Large Party Pack" data-price="335"><strong>Extra Large Party Pack</strong><br>$335</div>
-                        <div class="product" data-name="Medium 2 Tiered Cake" data-price="175"><strong>Medium 2 Tiered Cake</strong><br>$175</div>
-                        <div class="product" data-name="Small 2 Tiered Cake" data-price="120"><strong>Small 2 Tiered Cake</strong><br>$120</div>
-                        <div class="product" data-name="Large 2 Tiered Cake" data-price="245"><strong>Large 2 Tiered Cake</strong><br>$245</div>
-                        <div class="product" data-name="2 Tiered Heart Cake" data-price="145"><strong>2 Tiered Heart Cake</strong><br>$145</div>
-                        <div class="product" data-name="Small 3 Tiered Cake" data-price="325"><strong>Small 3 Tiered Cake</strong><br>$325</div>
-                        <div class="product" data-name="Wedding Consultation" data-price="0"><strong>Wedding Consultation</strong><br>$0</div>
-                        <div class="product" data-name="Wedding Tasting Pack" data-price="50"><strong>Wedding Tasting Pack</strong><br>$50</div>
                     </div>
                     
                     <div class="cart-bar">
@@ -264,200 +497,11 @@
                         <div class="product" data-name="Chocolate Dream">Chocolate Dream</div>
                         <div class="product" data-name="Creamy Hazelnut">Creamy Hazelnut</div>
                         <div class="product" data-name="Confetti Explosion">Confetti Explosion</div>
-                        <div class="product" data-name="Red Velvet">Red Velvet</div>
-                        <div class="product" data-name="Swirly Marble">Swirly Marble</div>
-                        <div class="product" data-name="Lemon Drop">Lemon Drop</div>
-                        <div class="product" data-name="Golden Carrot">Golden Carrot</div>
-                        <div class="product" data-name="Raspberry Swirl">Raspberry Swirl</div>
-                        <div class="product lux" data-name="Almond Elegance (LUX)">Almond Elegance (LUX)</div>
-                        <div class="product lux" data-name="Pistachio ice (LUX)">Pistachio ice (LUX)</div>
-                        <div class="product lux" data-name="Coconut Cream (LUX)">Coconut Cream (LUX)</div>
-                        <div class="product lux" data-name="Cinnamon spice (LUX)">Cinnamon spice (LUX)</div>
-                        <div class="product lux" data-name="Cotton candy temptation (LUX)">Cotton candy temptation (LUX)</div>
-                        <div class="product lux" data-name="Espresso Bean (LUX)">Espresso Bean (LUX)</div>
-                        <div class="product lux" data-name="Cherry Bark (LUX)">Cherry Bark (LUX)</div>
-                        <div class="product lux" data-name="Cookie Butter (LUX)">Cookie Butter (LUX)</div>
-                        <div class="product lux" data-name="Tres Leches (LUX)">Tres Leches (LUX)</div>
-                        <div class="product lux" data-name="Banana Creme Pie (LUX)">Banana Creme Pie (LUX)</div>
                     </div>
                     
                     <div class="nav-buttons cart-bar">
                         <button class="back-btn" id="back-step-2">Back</button>
                         <button class="next-btn" id="to-step-4">Continue</button>
-                    </div>
-                </section>
-
-                <!-- Step 4: Frosting -->
-                <section class="step" id="step-4">
-                    <h2>Select Frosting</h2>
-                    <div id="frosting-list">
-                        <div class="product" data-name="Vanilla buttercream">Vanilla buttercream</div>
-                        <div class="product" data-name="Cream Cheese">Cream Cheese</div>
-                        <div class="product" data-name="Strawberry buttercream">Strawberry buttercream</div>
-                        <div class="product" data-name="Oreo buttercream">Oreo buttercream</div>
-                        <div class="product" data-name="Chocolate buttercream">Chocolate buttercream</div>
-                        <div class="product" data-name="Confetti buttercream">Confetti buttercream</div>
-                        <div class="product" data-name="Whip Cream">Whip Cream</div>
-                    </div>
-                    
-                    <div class="nav-buttons cart-bar">
-                        <button class="back-btn" id="back-step-3">Back</button>
-                        <button class="next-btn" id="to-step-5">Continue</button>
-                    </div>
-                </section>
-
-                <!-- Step 5: Fillings -->
-                <section class="step" id="step-5">
-                    <h2>Choice of Fillings?</h2>
-                    <p style="text-align:center;">Select all that apply</p>
-                    <div id="filling-list">
-                        <div class="product" data-name="Fudge">Fudge</div>
-                        <div class="product" data-name="Cookies and cream">Cookies and cream</div>
-                        <div class="product" data-name="Strawberries and cream">Strawberries and cream</div>
-                        <div class="product" data-name="Peanut Butter">Peanut Butter</div>
-                        <div class="product" data-name="Nutella">Nutella</div>
-                        <div class="product" data-name="Edible cookie dough">Edible cookie dough</div>
-                        <div class="product" data-name="Lemon curd">Lemon curd</div>
-                        <div class="product" data-name="Plain buttercream/frosting">Plain buttercream/frosting (no additional cost)</div>
-                        <div class="product" data-name="Raspberry">Raspberry</div>
-                        <div class="product" data-name="Cheesecake">Cheesecake</div>
-                        <div class="product" data-name="Dulce de Leche">Dulce de Leche</div>
-                        <div class="product" data-name="Pineapple">Pineapple</div>
-                        <div class="product" data-name="Cream cheese">Cream cheese</div>
-                        <div class="product" data-name="Banana">Banana</div>
-                    </div>
-                    
-                    <div class="nav-buttons cart-bar">
-                        <button class="back-btn" id="back-step-4">Back</button>
-                        <button class="next-btn" id="to-step-6">Continue</button>
-                    </div>
-                </section>
-
-                <!-- Step 6: Special Requests -->
-                <section class="step" id="step-6">
-                    <h2>Special Requests</h2>
-                    <p style="text-align:center; margin-bottom: 20px;">Is there anything specific you want me to add or know about your order?</p>
-                    
-                    <textarea id="order-notes" placeholder="Type your notes here..." style="width:100%; height:120px; padding:15px; border-radius:12px; border:1px solid #ccc;"></textarea>
-                    
-                    <div class="nav-buttons cart-bar">
-                        <button class="back-btn" id="back-step-5">Back</button>
-                        <button class="next-btn" id="to-step-7">Continue</button>
-                    </div>
-                </section>
-
-                <!-- Step 7: Fulfillment Options -->
-                <section class="step" id="step-7">
-                    <h2>Fulfillment Options</h2>
-                    
-                    <div id="fulfillment-grid" class="fulfillment-options" style="display:flex; gap:20px; justify-content:center;">
-                        <div class="product token-option active" data-value="pickup" style="flex:1;"><strong>Pickup</strong></div>
-                        <div class="product token-option" data-value="delivery" style="flex:1;"><strong>Delivery</strong></div>
-                    </div>
-
-                    <div id="address-wrapper" class="hidden-field" style="display:none;">
-                        <p style="text-align:left; margin-top: 20px; font-weight: 600; color: #b35978;">Delivery Address</p>
-                        <input type="text" id="delivery-address" placeholder="Street Address, City, State, ZIP" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc;">
-                    </div>
-
-                    <div id="time-slot-wrapper">
-                        <p style="text-align:left; margin-top: 25px; font-weight: 600; color: #b35978;">Select Time Frame</p>
-                        <div class="time-radio-grid" style="display:flex; gap:10px; flex-wrap:wrap;">
-                            <label class="time-radio-card"><input type="radio" name="order-time" value="8:30" checked><span> 8:30 AM</span></label>
-                            <label class="time-radio-card"><input type="radio" name="order-time" value="9:00"><span> 9:00 AM</span></label>
-                            <label class="time-radio-card"><input type="radio" name="order-time" value="9:30"><span> 9:30 AM</span></label>
-                            <label class="time-radio-card"><input type="radio" name="order-time" value="10:00"><span> 10:00 AM</span></label>
-                            <label class="time-radio-card"><input type="radio" name="order-time" value="10:30"><span> 10:30 AM</span></label>
-                        </div>
-                    </div>
-                    
-                    <div class="nav-buttons cart-bar">
-                        <button class="back-btn" id="back-step-6">Back</button>
-                        <button class="next-btn" id="to-step-8">Continue</button>
-                    </div>
-                </section>
-
-                <!-- Step 8: Allergies -->
-                <section class="step" id="step-8">
-                    <h2>Any Allergies?</h2>
-                    <p style="text-align:center; max-width: 600px; margin: 0 auto 20px auto; font-size: 14px; line-height: 1.5; color: #888;">
-                        By answering this question you understand any allergies not listed I will not be at fault for.
-                    </p>
-                    
-                    <textarea id="order-allergies" placeholder="List any allergies here (or type 'None')..." style="width:100%; height:100px; padding:15px; border-radius:12px; border:1px solid #ccc;"></textarea>
-                    
-                    <div class="nav-buttons cart-bar">
-                        <button class="back-btn" id="back-step-7">Back</button>
-                        <button class="next-btn" id="to-step-9">Continue</button>
-                    </div>
-                </section>
-
-                <!-- Step 9: Social Media Discounts -->
-                <section class="step" id="step-9">
-                    <h2>Social Media Follows</h2>
-                    <p style="text-align:center; max-width: 600px; margin: 0 auto 25px auto;">
-                        <strong>$5 off</strong> for social media you follow or join!<br>
-                        <span style="font-size: 13px; color: #888;">(Does not apply to the ones you are already following. Select all that apply.)</span>
-                    </p>
-                    
-                    <div id="social-grid">
-                        <div class="product" data-discount="5">Instagram: (@Blushed_Crumbs)</div>
-                        <div class="product" data-discount="5">Facebook group: (Blushed Crumbs)</div>
-                        <div class="product" data-discount="5">TikTok: (@Blushed_Crumbs)</div>
-                        <div class="product" data-discount="5">Facebook page: (Blushed Crumbs)</div>
-                    </div>
-                    
-                    <div class="nav-buttons cart-bar">
-                        <button class="back-btn" id="back-step-8">Back</button>
-                        <button class="next-btn" id="to-step-10">Continue</button>
-                    </div>
-                </section>
-
-                <!-- Step 10: Inspiration Files -->
-                <section class="step" id="step-10">
-                    <h2>Inspiration Files</h2>
-                    <p style="text-align:center; margin-bottom: 25px;">Have any pictures or designs you'd like us to use for inspiration?</p>
-                    
-                    <div id="upload-container" class="upload-dropzone">
-                        <div class="upload-prompt">
-                            <span class="upload-icon" style="font-size:2rem;">✦</span>
-                            <p>Drag &amp; drop your images here or <strong>browse</strong></p>
-                            <span style="font-size: 12px; color: #aaa;">Supports PNG, JPG, JPEG</span>
-                        </div>
-                        <input type="file" id="inspiration-upload" multiple accept="image/*" style="display: none;">
-                    </div>
-
-                    <div id="preview-gallery"></div>
-
-                    <div class="nav-buttons cart-bar">
-                        <button class="back-btn" id="back-step-9">Back</button>
-                        <button class="next-btn" id="to-step-11">Continue</button>
-                    </div>
-                </section>
-
-                <!-- Step 11: Terms & Conditions -->
-                <section class="step" id="step-11">
-                    <h2>Terms &amp; Conditions</h2>
-                    <p style="text-align:center; color: #ff6b8b; font-weight: 600;">PLEASE READ BEFORE ACCEPTING ‼️‼️‼️</p>
-                    
-                    <div class="terms-scroll-box" style="max-height:180px; overflow-y:auto; background:#f9f9f9; padding:15px; border-radius:10px; margin:20px 0; font-size:13px; line-height:1.6;">
-                        <p>Please know I operate under cottage laws in Tennessee. I do not claim to be a nut free or gluten-free environment.</p>
-                        <p><strong>Deposit Requirement:</strong> A 50% non-refundable deposit is required at the time of booking to secure your order date. Orders are not confirmed until the deposit is received.</p>
-                        <p><strong>Final Payment:</strong> The remaining balance must be paid before pickup/delivery.</p>
-                        <p><strong>Cancellations:</strong> Orders must be cancelled at least 48 hours in advance of the scheduled pickup or delivery time.</p>
-                        <p><strong>Refund Policy:</strong> All deposits and payments are non-refundable.</p>
-                    </div>
-
-                    <div class="terms-acceptance-wrapper" style="text-align:center; margin:15px 0;">
-                        <label class="terms-checkbox-label" style="cursor:pointer; font-weight:600;">
-                            <input type="checkbox" id="terms-agree-checkbox">
-                            <span> I agree to the terms and conditions</span>
-                        </label>
-                    </div>
-
-                    <div class="nav-buttons cart-bar">
-                        <button class="back-btn" id="back-step-10">Back</button>
-                        <button class="next-btn" id="to-step-12" disabled>Continue</button>
                     </div>
                 </section>
 
@@ -487,101 +531,12 @@
     </div>
 </div>
 
-<!-- Baker Admin Portal View -->
-<div id="admin-portal-view" style="display:none;">
-    <div class="admin-wrapper">
-        <header class="admin-header">
-            <div class="admin-brand">
-                <span class="logo-icon">🌸</span>
-                <div>
-                    <h2>Blushed Crumbs Admin</h2>
-                    <span class="badge badge-pro">Pro Tier Plan ($50/mo)</span>
-                </div>
-            </div>
-            <button onclick="toggleView('storefront')" class="btn btn-secondary">← Back to Storefront</button>
-        </header>
-
-        <div class="admin-tabs">
-            <button class="tab-btn active" data-tab="tab-orders">📅 Orders Queue</button>
-            <button class="tab-btn" data-tab="tab-form-builder">🛠️ Order Form & Product Builder</button>
-            <button class="tab-btn" data-tab="tab-invoices">💳 Invoices & Payments</button>
-            <button class="tab-btn" data-tab="tab-reviews">⭐ Customer Reviews</button>
-            <button class="tab-btn" data-tab="tab-support">💬 Custom Support</button>
-        </div>
-
-        <div class="admin-content">
-            <div id="tab-orders" class="tab-content active">
-                <div class="section-header">
-                    <h3>📅 Priority Order Queue</h3>
-                    <p class="subtitle">Sorted chronologically by <strong>due date</strong> so you know exactly what is due first!</p>
-                </div>
-                <div class="orders-list-grid" id="admin-orders-list">
-                    <div class="order-card urgent-border">
-                        <div class="order-card-header">
-                            <div class="due-badge due-urgent">⏰ DUE: Tomorrow (9:30 AM)</div>
-                            <span class="status-tag status-in_progress">IN PROGRESS</span>
-                        </div>
-                        <div class="order-card-body">
-                            <h4>#BC-1092 - Sarah Jenkins</h4>
-                            <p><strong>Phone:</strong> (555) 234-8890 | <strong>Email:</strong> sarah.j@example.com</p>
-                            <p><strong>Item:</strong> 6” Cake ($65.00) | <strong>Flavor:</strong> Strawberry Bliss | <strong>Frosting:</strong> Vanilla Buttercream</p>
-                            <p class="notes-box"><strong>Special Notes:</strong> "Happy 30th Birthday Emma!" in gold lettering</p>
-                            <div class="pricing-breakdown" style="margin-top:10px;">
-                                <span>Total: <strong>$60.00</strong></span> | <span>50% Deposit: <strong>$30.00</strong> (✅ Paid)</span>
-                            </div>
-                        </div>
-                        <div class="order-card-actions">
-                            <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder('BC-1092', 'Sarah Jenkins', 60, 30)">💳 Create Invoice</button>
-                            <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('BC-1092')">📋 Copy Invoice Link</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: Visual Form & Product Builder -->
-            <div id="tab-form-builder" class="tab-content">
-                <div class="section-header">
-                    <h3>🛠️ Custom Order Form & Product Builder</h3>
-                    <p class="subtitle">Add items, update prices, upload product images, and customize your customer order form!</p>
-                </div>
-
-                <div class="form-builder-card">
-                    <h4>Add New Product & Price to Order Form</h4>
-                    <form id="add-product-form" class="form-builder-grid">
-                        <input type="text" id="new-prod-name" placeholder="Product Name (e.g. 6” Heart Cake)" required style="padding:10px; border-radius:8px; border:1px solid #ccc;">
-                        <input type="number" id="new-prod-price" placeholder="Price ($)" step="0.01" required style="padding:10px; border-radius:8px; border:1px solid #ccc;">
-                        <select id="new-prod-category" style="padding:10px; border-radius:8px; border:1px solid #ccc;">
-                            <option value="Single Tier">Single Tier</option>
-                            <option value="Multi-Tier">Multi-Tier</option>
-                            <option value="By The Dozen">By The Dozen</option>
-                            <option value="Treats">Treats</option>
-                            <option value="Party Packs">Party Packs</option>
-                        </select>
-                        <button type="submit" class="btn btn-primary">+ Add Item to Form</button>
-                    </form>
-                </div>
-
-                <div class="form-builder-card">
-                    <h4>Current Items & Live Prices</h4>
-                    <div id="products-admin-grid">
-                        <div class="product-item-row" style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;">
-                            <span><strong>6” Cake</strong> (Single Tier)</span>
-                            <div>
-                                <input type="number" value="65.00" style="width:80px; padding:5px; border-radius:6px; border:1px solid #ccc;">
-                                <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
-                            </div>
-                        </div>
-                        <div class="product-item-row" style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;">
-                            <span><strong>Baddie On a Budget 🎀</strong> (Single Tier)</span>
-                            <div>
-                                <input type="number" value="45.00" style="width:80px; padding:5px; border-radius:6px; border:1px solid #ccc;">
-                                <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- LIGHTBOX MODAL FOR GALLERY PREVIEWS -->
+<div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+        <button class="modal-close-btn" onclick="closeLightbox()">✕</button>
+        <img id="lightbox-img" src="" alt="Gallery Preview">
+        <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 </div>
 
@@ -591,54 +546,14 @@
         <img src="public/images/blushedlogo.png" alt="Blushed Crumbs Logo">
     </div>
     <div class="footer-nav">
-        <a href="#home">Home</a>
-        <a href="#categories">About</a>
-        <a href="#gallery">Gallery</a>
+        <a href="#home" onclick="toggleView('storefront')">Home</a>
+        <a href="#categories" onclick="toggleView('storefront')">About</a>
+        <a href="#gallery" onclick="toggleView('gallery')">Gallery</a>
         <a href="#" onclick="openOrderModal()">Order</a>
     </div>
     <p class="copyright-text">Copyright © 2026 Blushed Crumbs Bakehouse | Powered by Daystar Digital</p>
 </footer>
 
-<!-- Modal for Invoices -->
-<div id="invoice-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-card">
-        <button class="modal-close" onclick="closeInvoiceModal()">✕</button>
-        <div id="printable-invoice">
-            <div class="inv-header" style="text-align:center;">
-                <h2 style="color:var(--primary);">🌸 Blushed Crumbs Bakehouse</h2>
-                <p>Tennessee Cottage Bakery | Official Invoice</p>
-            </div>
-            <hr style="margin:15px 0;">
-            <p><strong>Invoice #:</strong> <span id="modal-inv-num">BC-INV-101</span></p>
-            <p><strong>Client:</strong> <span id="modal-inv-client">Client Name</span></p>
-            <table class="inv-table">
-                <thead><tr><th>Item</th><th>Amount</th></tr></thead>
-                <tbody>
-                    <tr><td>Custom Bakery Order</td><td id="modal-inv-total">$0.00</td></tr>
-                    <tr><td><strong>50% Non-Refundable Deposit</strong></td><td id="modal-inv-deposit"><strong>$0.00</strong></td></tr>
-                </tbody>
-            </table>
-            <div class="inv-pay-methods" style="margin-top:15px; font-size:14px;">
-                <p>• Venmo: <strong>@Blushed_Crumbs</strong></p>
-                <p>• CashApp: <strong>$BlushedCrumbs</strong></p>
-                <p>• Zelle: <strong>orders@blushedcrumbsbakehouse.com</strong></p>
-            </div>
-        </div>
-        <button class="btn btn-primary" onclick="window.print()" style="margin-top:20px; width:100%;">🖨️ Print Invoice</button>
-    </div>
-</div>
-
 <script src="public/js/app.js"></script>
-<script>
-function toggleView(view) {
-    if (view === 'admin') {
-        document.getElementById('storefront-view').style.display = 'none';
-        document.getElementById('admin-portal-view').style.display = 'block';
-    } else {
-        document.getElementById('storefront-view').style.display = 'block';
-        document.getElementById('admin-portal-view').style.display = 'none';
-    }
-}
-</script>
 </body>
 </html>

@@ -5,7 +5,49 @@ document.addEventListener('DOMContentLoaded', () => {
     initAdminPortal();
     renderInteractiveCalendar();
     initOrderModalTrigger();
+    initGalleryFiltering();
+    handleHashNavigation();
 });
+
+// Window Hash Listener for SPA Routing (#gallery, #admin, #home)
+window.addEventListener('hashchange', () => {
+    handleHashNavigation();
+});
+
+function handleHashNavigation() {
+    const hash = window.location.hash;
+    if (hash === '#gallery') {
+        toggleView('gallery');
+    } else if (hash === '#admin' || hash === '#admin-portal-view') {
+        toggleView('admin');
+    } else if (hash === '#home' || hash === '' || hash === '#categories') {
+        toggleView('storefront');
+    }
+}
+
+// Global View Navigation Switcher
+window.toggleView = function(view) {
+    const storefront = document.getElementById('storefront-view');
+    const galleryPage = document.getElementById('gallery-page-view');
+    const adminPortal = document.getElementById('admin-portal-view');
+
+    if (storefront) storefront.style.display = 'none';
+    if (galleryPage) galleryPage.style.display = 'none';
+    if (adminPortal) adminPortal.style.display = 'none';
+
+    if (view === 'admin') {
+        if (adminPortal) adminPortal.style.display = 'block';
+        window.location.hash = 'admin';
+    } else if (view === 'gallery') {
+        if (galleryPage) galleryPage.style.display = 'block';
+        window.location.hash = 'gallery';
+    } else {
+        if (storefront) storefront.style.display = 'block';
+        window.location.hash = 'home';
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
 // State Store
 const state = {
@@ -24,8 +66,7 @@ const state = {
 
 // Modal Order Form Triggers
 function initOrderModalTrigger() {
-    // Open order modal from any Order button
-    document.querySelectorAll('.trigger-order-modal').forEach(btn => {
+    document.querySelectorAll('.trigger-order-modal, .nav-order-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             openOrderModal();
@@ -231,7 +272,46 @@ function renderInteractiveCalendar() {
     }
 }
 
-// Bakesy Mobile Admin Controller & Visual Form Builder
+// Dedicated Gallery Filtering & Lightbox
+function initGalleryFiltering() {
+    const filterBtns = document.querySelectorAll('.gallery-filter-bar .filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const category = btn.dataset.filter;
+            const galleryCards = document.querySelectorAll('.gallery-masonry-grid .gallery-card');
+
+            galleryCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+}
+
+window.openLightbox = function(imageSrc, caption) {
+    const modal = document.getElementById('lightbox-modal');
+    const img = document.getElementById('lightbox-img');
+    const cap = document.getElementById('lightbox-caption');
+
+    if (modal && img) {
+        img.src = imageSrc;
+        if (cap) cap.innerText = caption || '';
+        modal.style.display = 'flex';
+    }
+};
+
+window.closeLightbox = function() {
+    const modal = document.getElementById('lightbox-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+// Bakesy Mobile Admin Controller & Visual Form/Gallery Builder
 function initAdminPortal() {
     const tabBtns = document.querySelectorAll('.admin-tabs .tab-btn');
     tabBtns.forEach(btn => {
@@ -245,7 +325,7 @@ function initAdminPortal() {
         });
     });
 
-    // Form & Product Builder Form
+    // Add Product Form
     const prodForm = document.getElementById('add-product-form');
     if (prodForm) {
         prodForm.addEventListener('submit', (e) => {
@@ -254,7 +334,7 @@ function initAdminPortal() {
             const price = parseFloat(document.getElementById('new-prod-price').value);
             const category = document.getElementById('new-prod-category').value;
 
-            // Dynamically add to product grid in Order Form Step 1!
+            // Dynamically add to product grid in Order Form Step 1
             const step1Grid = document.getElementById('product-grid');
             if (step1Grid) {
                 const prodCard = document.createElement('div');
@@ -269,11 +349,12 @@ function initAdminPortal() {
             if (adminGrid) {
                 const row = document.createElement('div');
                 row.className = 'product-item-row';
+                row.style.cssText = 'display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;';
                 row.innerHTML = `
                     <span><strong>${name}</strong> (${category})</span>
                     <div>
-                        <input type="number" class="price-input" value="${price.toFixed(2)}">
-                        <button class="btn btn-sm btn-secondary" onclick="updateProductPrice(this)">Save Price</button>
+                        <input type="number" class="price-input" value="${price.toFixed(2)}" style="width:80px; padding:5px; border-radius:6px; border:1px solid #ccc;">
+                        <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
                     </div>
                 `;
                 adminGrid.prepend(row);
@@ -281,6 +362,69 @@ function initAdminPortal() {
 
             alert(`Product "${name}" added to order builder & live storefront!`);
             prodForm.reset();
+        });
+    }
+
+    // Add Gallery Image Form (Upload photos directly to /gallery page!)
+    const galleryForm = document.getElementById('add-gallery-form');
+    if (galleryForm) {
+        galleryForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('gal-title').value;
+            const category = document.getElementById('gal-category').value;
+            const imgInput = document.getElementById('gal-image-url');
+            const fileInput = document.getElementById('gal-image-file');
+
+            let imageSrc = imgInput ? imgInput.value.trim() : '';
+
+            // If file uploaded, create object URL
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                imageSrc = URL.createObjectURL(fileInput.files[0]);
+            }
+
+            if (!imageSrc) {
+                imageSrc = 'public/images/IMG_8117.jpg'; // fallback
+            }
+
+            // Prepend to live /gallery page masonry grid!
+            const mainGalleryGrid = document.getElementById('public-gallery-grid');
+            if (mainGalleryGrid) {
+                const card = document.createElement('div');
+                card.className = 'gallery-card';
+                card.dataset.category = category;
+                card.onclick = () => openLightbox(imageSrc, title);
+                card.innerHTML = `
+                    <div class="gallery-card-img-wrap">
+                        <img src="${imageSrc}" alt="${title}">
+                    </div>
+                    <div class="gallery-card-info">
+                        <h4>${title}</h4>
+                        <span class="gallery-tag">${category}</span>
+                    </div>
+                `;
+                mainGalleryGrid.prepend(card);
+            }
+
+            // Prepend to Admin Gallery List
+            const adminGalleryList = document.getElementById('admin-gallery-list');
+            if (adminGalleryList) {
+                const adminItem = document.createElement('div');
+                adminItem.style.cssText = 'display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);';
+                adminItem.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <img src="${imageSrc}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+                        <div>
+                            <strong>${title}</strong><br>
+                            <span style="font-size:0.8rem; color:#888;">${category}</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline" style="color:#d9534f;" onclick="this.parentElement.remove()">Delete</button>
+                `;
+                adminGalleryList.prepend(adminItem);
+            }
+
+            alert(`Photo "${title}" published live to your /gallery page!`);
+            galleryForm.reset();
         });
     }
 

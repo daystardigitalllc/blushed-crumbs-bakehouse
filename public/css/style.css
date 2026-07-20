@@ -931,3 +931,153 @@ body {
     .hero-cake-bottom-right { width: 75px; }
 }
 
+/* DEDICATED GALLERY PAGE & ADMIN PORTAL GALLERY MANAGER */
+.gallery-page-section {
+    padding: 60px 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.gallery-filter-bar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.filter-btn {
+    background: white;
+    border: 2px solid var(--pink-accent);
+    color: var(--dark-text);
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.filter-btn.active, .filter-btn:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 4px 15px rgba(230, 115, 153, 0.3);
+}
+
+.gallery-masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.gallery-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.gallery-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(74, 33, 51, 0.15);
+}
+
+.gallery-card-img-wrap {
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+    position: relative;
+}
+
+.gallery-card-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.gallery-card:hover .gallery-card-img-wrap img {
+    transform: scale(1.06);
+}
+
+.gallery-card-info {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gallery-card-info h4 {
+    font-size: 1.05rem;
+    color: var(--dark-text);
+    font-weight: 600;
+}
+
+.gallery-tag {
+    background: #fce7ef;
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+}
+
+/* Lightbox Modal */
+.lightbox-modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(20, 5, 12, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 4000;
+    backdrop-filter: blur(8px);
+    padding: 20px;
+}
+
+.lightbox-content {
+    max-width: 850px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.lightbox-caption {
+    color: white;
+    margin-top: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Form Builder & Admin Cards */
+.form-builder-card {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 25px;
+}
+
+.form-builder-card h4 {
+    margin-bottom: 18px;
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.form-builder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
