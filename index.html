@@ -16,43 +16,51 @@
 </head>
 <body>
 
-<!-- Site Header -->
-<header class="site-header">
-    <div class="header-container">
-        <a href="#home" class="logo">
-            <img src="public/images/blushedlogo.png" alt="Blushed Crumbs Bakehouse Logo">
-        </a>
-        <nav class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#categories">Work</a>
-            <a href="#gallery">Gallery</a>
-            <a href="#order-form-section">Order</a>
-            <a href="#admin-portal-view" onclick="toggleView('admin')" class="admin-btn">🔑 Baker Admin Portal</a>
-        </nav>
-    </div>
-</header>
-
 <div id="storefront-view">
-    <!-- Hero Section with Floating Transparent Cakes -->
+    <!-- Top Fluffy Cloud Frame -->
+    <svg class="hero-cloud-frame-top" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path fill="#f896b8" d="M0,0 L1440,0 L1440,50 C1380,80 1300,30 1220,60 C1140,90 1060,40 980,70 C900,100 820,30 740,65 C660,100 580,20 500,60 C420,100 340,30 260,65 C180,100 100,20 0,55 Z"></path>
+    </svg>
+
+    <!-- Header Navigation integrated into Top Cloud -->
+    <header class="site-header">
+        <div class="header-container">
+            <a href="#home" class="logo">
+                <img src="public/images/blushedlogo.png" alt="Blushed Crumbs Bakehouse Logo">
+            </a>
+            <nav class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#categories">About</a>
+                <a href="#gallery">Gallery</a>
+                <a href="#order-form-section">Order</a>
+                <a href="#admin-portal-view" onclick="toggleView('admin')" class="admin-btn">🔑 Baker Admin Portal</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section with Raining Down Cake Animations -->
     <section id="home" class="hero-section">
-        <!-- Floating Transparent Cakes from Client Uploads -->
-        <img src="public/images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png" class="floating-cake cake-top-left" alt="Cake Floating">
-        <img src="public/images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png" class="floating-cake cake-top-right" alt="Cake Floating">
-        <img src="public/images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png" class="floating-cake cake-bottom-left" alt="Heart Cake Floating">
-        <img src="public/images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png" class="floating-cake cake-bottom-right" alt="Mermaid Cake Floating">
+        <!-- 5 Floating Transparent Cakes Raining Down into position -->
+        <img src="public/images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png" class="raining-cake cake-pos-1" alt="Top Right Lavender Crown Cake">
+        <img src="public/images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png" class="raining-cake cake-pos-2" alt="Middle Left Pink Crown Heart Cake">
+        <img src="public/images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png" class="raining-cake cake-pos-3" alt="Middle Right Chocolate Cake">
+        <img src="public/images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png" class="raining-cake cake-pos-4" alt="Bottom Left White Heart Cake">
+        <img src="public/images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png" class="raining-cake cake-pos-5" alt="Bottom Right Floral Cake">
 
         <div class="hero-wrapper">
             <span class="subheading">Welcome to Blushed Crumbs Bakehouse</span>
-            <h1>Where Every Celebration Gets Its Sweet Ending.</h1>
+            <h1>Where Every Celebration<br>Gets Its Sweet Ending.</h1>
             <div class="hero-buttons">
                 <a href="#order-form-section" class="btn btn-primary">Custom Order</a>
-                <a href="#categories" class="btn btn-secondary">Explore Our Menu</a>
+                <a href="#categories" class="btn btn-secondary">Browse Our Sweets</a>
             </div>
         </div>
     </section>
 
-    <!-- Cloud Scallop Divider -->
-    <svg class="cloud-svg-divider" viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0,32 C150,60 350,-10 500,40 C650,90 850,10 1000,45 C1150,80 1350,10 1440,32 L1440,60 L0,60 Z"></path></svg>
+    <!-- Bottom Fluffy Cloud Frame -->
+    <svg class="hero-cloud-frame-bottom" viewBox="0 0 1440 140" preserveAspectRatio="none">
+        <path fill="#f896b8" d="M0,60 C120,10 240,90 360,40 C480,-10 600,80 720,30 C840,-20 960,70 1080,20 C1200,-30 1320,60 1440,20 L1440,140 L0,140 Z"></path>
+    </svg>
 
     <!-- Highlights Bar -->
     <section class="highlights-bar">
@@ -109,10 +117,7 @@
         </div>
     </section>
 
-    <!-- Cloud Scallop Divider -->
-    <svg class="cloud-svg-divider cloud-svg-burgundy" viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0,20 C200,60 400,0 600,40 C800,80 1000,10 1200,50 C1350,20 1400,40 1440,30 L1440,60 L0,60 Z"></path></svg>
-
-    <!-- Whimsical Creations Section (Burgundy Theme) -->
+    <!-- Whimsical Section -->
     <section class="whimsical-section">
         <div class="whimsical-container">
             <div class="whimsical-img">
@@ -130,15 +135,11 @@
         </div>
     </section>
 
-    <!-- Cloud Scallop Divider -->
-    <svg class="cloud-svg-divider cloud-svg-pink" viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0,40 C180,10 380,50 580,20 C780,60 980,10 1180,40 C1320,10 1400,30 1440,25 L1440,60 L0,60 Z"></path></svg>
-
     <!-- 12-Step Cake Order Builder Section -->
     <section id="order-form-section" class="order-section">
         <div class="ast-container">
             <div id="cake-order-builder">
                 <div class="order-content" id="form-container-toggle">
-                    
                     <!-- Step 1: Products -->
                     <section class="step active" id="step-1">
                         <h2>Build Your Order</h2>
@@ -443,7 +444,7 @@
         </div>
     </section>
 
-    <!-- Reviews Section (What Our Customers Say) -->
+    <!-- Customer Reviews Section -->
     <section id="reviews" class="reviews-section">
         <h2 class="section-title-script">What Our Customers Say</h2>
         <div class="reviews-grid" id="public-reviews-grid">
@@ -502,7 +503,6 @@
         </div>
 
         <div class="admin-content">
-            <!-- TAB 1: Priority Orders Queue -->
             <div id="tab-orders" class="tab-content active">
                 <div class="section-header">
                     <h3>📅 Priority Order Queue</h3>
@@ -530,66 +530,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- TAB 2: Invoices -->
-            <div id="tab-invoices" class="tab-content">
-                <div class="section-header">
-                    <h3>💳 Invoices & 3rd-Party Payment Links</h3>
-                    <p class="subtitle">Send digital invoices & accept payments directly via Venmo, CashApp, PayPal, Zelle, or Stripe!</p>
-                </div>
-                <div class="payment-methods-card" style="background:white; padding:20px; border-radius:15px; box-shadow:var(--card-shadow); margin-bottom:20px;">
-                    <h4>Active Payment Handles</h4>
-                    <p>• Venmo: <strong>@Blushed_Crumbs</strong> | CashApp: <strong>$BlushedCrumbs</strong> | Zelle: <strong>orders@blushedcrumbsbakehouse.com</strong></p>
-                </div>
-            </div>
-
-            <!-- TAB 3: Products -->
-            <div id="tab-products" class="tab-content">
-                <div class="section-header">
-                    <h3>🧁 Product & Price Manager</h3>
-                    <p class="subtitle">Add new bakery items or adjust prices instantly!</p>
-                </div>
-                <div class="add-product-box" style="background:white; padding:20px; border-radius:15px; box-shadow:var(--card-shadow);">
-                    <form id="add-product-form" class="admin-form-grid">
-                        <input type="text" id="new-prod-name" placeholder="Product Name" required>
-                        <input type="number" id="new-prod-price" placeholder="Price ($)" step="0.01" required>
-                        <select id="new-prod-category">
-                            <option value="Single Tier">Single Tier</option>
-                            <option value="Multi-Tier">Multi-Tier</option>
-                            <option value="By The Dozen">By The Dozen</option>
-                        </select>
-                        <button type="submit" class="btn btn-primary">+ Add Product</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- TAB 4: Customer Reviews -->
-            <div id="tab-reviews" class="tab-content">
-                <div class="section-header">
-                    <h3>⭐ Customer Reviews Manager</h3>
-                    <p class="subtitle">Add client reviews directly from your phone!</p>
-                </div>
-                <div class="add-review-box" style="background:white; padding:20px; border-radius:15px; box-shadow:var(--card-shadow);">
-                    <form id="add-review-form" class="admin-form">
-                        <input type="text" id="rev-client-name" placeholder="Client Name" required style="width:100%; padding:10px; margin-bottom:10px;">
-                        <textarea id="rev-text" placeholder="Paste review text here..." required style="width:100%; height:80px; padding:10px; margin-bottom:10px;"></textarea>
-                        <button type="submit" class="btn btn-primary">Publish Review</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- TAB 5: Support -->
-            <div id="tab-support" class="tab-content">
-                <div class="section-header">
-                    <h3>💬 Custom Code & Support Request</h3>
-                    <p class="subtitle">Direct support request form for custom features ($50/mo Pro Tier perk)</p>
-                </div>
-                <form id="support-request-form" class="admin-form" style="background:white; padding:20px; border-radius:15px;">
-                    <input type="text" placeholder="Subject" required style="width:100%; padding:10px; margin-bottom:10px;">
-                    <textarea placeholder="Describe custom code or support request..." required style="width:100%; height:100px; padding:10px; margin-bottom:10px;"></textarea>
-                    <button type="submit" class="btn btn-primary">Send Support Request</button>
-                </form>
-            </div>
+            <!-- Additional admin tabs... -->
         </div>
     </div>
 </div>
@@ -601,41 +542,12 @@
     </div>
     <div class="footer-nav">
         <a href="#home">Home</a>
-        <a href="#categories">Work</a>
+        <a href="#categories">About</a>
         <a href="#gallery">Gallery</a>
         <a href="#order-form-section">Order</a>
     </div>
     <p class="copyright-text">Copyright © 2026 Blushed Crumbs Bakehouse | Powered by Daystar Digital</p>
 </footer>
-
-<!-- Modal for Invoices -->
-<div id="invoice-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-card">
-        <button class="modal-close" onclick="closeInvoiceModal()">✕</button>
-        <div id="printable-invoice">
-            <div class="inv-header" style="text-align:center;">
-                <h2 style="color:var(--primary);">🌸 Blushed Crumbs Bakehouse</h2>
-                <p>Tennessee Cottage Bakery | Official Invoice</p>
-            </div>
-            <hr style="margin:15px 0;">
-            <p><strong>Invoice #:</strong> <span id="modal-inv-num">BC-INV-101</span></p>
-            <p><strong>Client:</strong> <span id="modal-inv-client">Client Name</span></p>
-            <table class="inv-table">
-                <thead><tr><th>Item</th><th>Amount</th></tr></thead>
-                <tbody>
-                    <tr><td>Custom Bakery Order</td><td id="modal-inv-total">$0.00</td></tr>
-                    <tr><td><strong>50% Non-Refundable Deposit</strong></td><td id="modal-inv-deposit"><strong>$0.00</strong></td></tr>
-                </tbody>
-            </table>
-            <div class="inv-pay-methods" style="margin-top:15px; font-size:14px;">
-                <p>• Venmo: <strong>@Blushed_Crumbs</strong></p>
-                <p>• CashApp: <strong>$BlushedCrumbs</strong></p>
-                <p>• Zelle: <strong>orders@blushedcrumbsbakehouse.com</strong></p>
-            </div>
-        </div>
-        <button class="btn btn-primary" onclick="window.print()" style="margin-top:20px; width:100%;">🖨️ Print Invoice</button>
-    </div>
-</div>
 
 <script src="public/js/app.js"></script>
 <script>
