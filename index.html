@@ -22,7 +22,7 @@
         <path fill="#f896b8" d="M0,0 L1440,0 L1440,50 C1380,80 1300,30 1220,60 C1140,90 1060,40 980,70 C900,100 820,30 740,65 C660,100 580,20 500,60 C420,100 340,30 260,65 C180,100 100,20 0,55 Z"></path>
     </svg>
 
-    <!-- Header Navigation integrated into Top Cloud -->
+    <!-- Header Navigation -->
     <header class="site-header">
         <div class="header-container">
             <a href="#home" class="logo">
@@ -38,9 +38,8 @@
         </div>
     </header>
 
-    <!-- Hero Section with 4 Separated Raining Cakes (No Duplicates) -->
+    <!-- Hero Section with 4 Separated Raining Cakes -->
     <section id="home" class="hero-section">
-        <!-- 4 Unique Separated Transparent Cakes -->
         <img src="public/images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png" class="raining-cake cake-pos-top-left" alt="Pink Crown Heart Cake">
         <img src="public/images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png" class="raining-cake cake-pos-top-right" alt="Lavender Crown Cake">
         <img src="public/images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png" class="raining-cake cake-pos-bottom-left" alt="White Heart Cake">
@@ -116,19 +115,23 @@
         </div>
     </section>
 
-    <!-- Whimsical Section (Layout matched to attached screenshot!) -->
+    <!-- Whimsical Section (Exact 2-Column Match to User Screenshot!) -->
     <section class="whimsical-section">
-        <div class="whimsical-container-stacked">
-            <div class="whimsical-cake-featured">
-                <img src="public/images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png" alt="Featured Custom Cake">
+        <div class="whimsical-two-column">
+            <div class="whimsical-col-left">
+                <img src="public/images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png" alt="Whimsical Mermaid Cake on Silver Stand">
             </div>
-            <h2 class="whimsical-heading-script">Whimsical Creations for Every Milestone</h2>
-            <ul class="whimsical-bullets">
-                <li><span class="plus-icon">+</span> <strong>Custom Wedding Cakes:</strong> Elegant 2 & 3 tiered creations tailored to your theme.</li>
-                <li><span class="plus-icon">+</span> <strong>Birthday & Theme Cakes:</strong> Fun children's and adult milestone designs.</li>
-                <li><span class="plus-icon">+</span> <strong>Anniversary & Party Packs:</strong> Treat packages featuring cupcakes, cake shooters, and cake sickles.</li>
-                <li><span class="plus-icon">+</span> <strong>Gourmet Flavors:</strong> Premium luxury options including Almond Elegance, Pistachio Ice, and Cookie Butter.</li>
-            </ul>
+            <div class="whimsical-col-right">
+                <h2>Whimsical Creations<br>for Every Milestone</h2>
+                <ul class="whimsical-bullet-list">
+                    <li><strong>Custom Wedding Cakes:</strong> Elegant, timeless, and tailored entirely to your love story. We work with you to design a showstopper that tastes even better than it looks.</li>
+                    <li><strong>Birthday & Party Cakes:</strong> From whimsical children's themes to sleek, modern adult designs. If you can dream it, we can bake it.</li>
+                    <li><strong>Anniversary Cakes:</strong> Recommence your vows with a beautiful, nostalgic dessert that honors your journey together.</li>
+                    <li><strong>Signature Sheet Cakes:</strong> Perfect for larger crowds, school events, or casual get-togethers. Infinitely customizable, incredibly moist, and crowd-pleasingly delicious.</li>
+                    <li><strong>Gourmet Chocolate-Covered Strawberries:</strong> Ripe, juicy berries hand-dipped in premium, velvety chocolate. The perfect add-on gift, party favor, or elegant treat.</li>
+                </ul>
+                <hr class="whimsical-hr">
+            </div>
         </div>
     </section>
 
@@ -480,7 +483,7 @@
     </div>
 </div>
 
-<!-- Baker Admin Portal View with Visual Form Builder -->
+<!-- Baker Admin Portal View -->
 <div id="admin-portal-view" style="display:none;">
     <div class="admin-wrapper">
         <header class="admin-header">
@@ -503,7 +506,6 @@
         </div>
 
         <div class="admin-content">
-            <!-- TAB 1: Priority Orders Queue -->
             <div id="tab-orders" class="tab-content active">
                 <div class="section-header">
                     <h3>📅 Priority Order Queue</h3>
@@ -574,46 +576,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- TAB 3: Invoices -->
-            <div id="tab-invoices" class="tab-content">
-                <div class="section-header">
-                    <h3>💳 Invoices & 3rd-Party Payment Links</h3>
-                    <p class="subtitle">Send digital invoices & accept payments directly via Venmo, CashApp, PayPal, Zelle, or Stripe!</p>
-                </div>
-                <div class="payment-methods-card" style="background:white; padding:20px; border-radius:15px; box-shadow:var(--card-shadow); margin-bottom:20px;">
-                    <h4>Active Payment Handles</h4>
-                    <p>• Venmo: <strong>@Blushed_Crumbs</strong> | CashApp: <strong>$BlushedCrumbs</strong> | Zelle: <strong>orders@blushedcrumbsbakehouse.com</strong></p>
-                </div>
-            </div>
-
-            <!-- TAB 4: Customer Reviews -->
-            <div id="tab-reviews" class="tab-content">
-                <div class="section-header">
-                    <h3>⭐ Customer Reviews Manager</h3>
-                    <p class="subtitle">Add client reviews directly from your phone!</p>
-                </div>
-                <div class="add-review-box" style="background:white; padding:20px; border-radius:15px; box-shadow:var(--card-shadow);">
-                    <form id="add-review-form" class="admin-form">
-                        <input type="text" id="rev-client-name" placeholder="Client Name" required style="width:100%; padding:10px; margin-bottom:10px;">
-                        <textarea id="rev-text" placeholder="Paste review text here..." required style="width:100%; height:80px; padding:10px; margin-bottom:10px;"></textarea>
-                        <button type="submit" class="btn btn-primary">Publish Review</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- TAB 5: Support -->
-            <div id="tab-support" class="tab-content">
-                <div class="section-header">
-                    <h3>💬 Custom Code & Support Request</h3>
-                    <p class="subtitle">Direct support request form for custom features ($50/mo Pro Tier perk)</p>
-                </div>
-                <form id="support-request-form" class="admin-form" style="background:white; padding:20px; border-radius:15px;">
-                    <input type="text" placeholder="Subject" required style="width:100%; padding:10px; margin-bottom:10px;">
-                    <textarea placeholder="Describe custom code or support request..." required style="width:100%; height:100px; padding:10px; margin-bottom:10px;"></textarea>
-                    <button type="submit" class="btn btn-primary">Send Support Request</button>
-                </form>
             </div>
         </div>
     </div>
