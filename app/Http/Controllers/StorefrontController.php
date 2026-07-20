@@ -12,9 +12,25 @@ class StorefrontController extends Controller
 {
     public function index(Request $request)
     {
-        // Fetch Tenant #1 (Blushed Crumbs Bakehouse)
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
-        
+        $host = $request->getHost();
+
+        // 1. Multi-Tenant Domain Routing:
+        // If request is from client domain (blushedcrumbsbakehouse.com) or fallback slug
+        $tenant = Tenant::where('domain', $host)
+            ->orWhere('slug', 'blushedcrumbs')
+            ->first();
+
+        // 2. If visiting the main SaaS domain (e.g. bakebox.daystardigital.co), render SaaS Landing Page
+        if ($host === 'bakebox.daystardigital.co' && !$request->has('tenant')) {
+            return view('saas.landing', [
+                'pricing' => [
+                    'standard' => 29,
+                    'pro' => 50,
+                ]
+            ]);
+        }
+
+        // Render client storefront for Blushed Crumbs Bakehouse
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
         $reviews = Review::where('tenant_id', $tenant->id)->where('is_featured', true)->latest()->get();
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
