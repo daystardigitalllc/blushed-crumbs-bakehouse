@@ -92,6 +92,8 @@ window.saveSiteContentForm = function() {
     .catch(err => {
         window.showToast('Error saving content: ' + err.message, 'error');
     });
+};
+
 // Global Section Manager Reorder & Visibility Handler
 window.moveSectionUp = function(btn) {
     const row = btn.closest('.section-manager-row');
