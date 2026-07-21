@@ -96,6 +96,8 @@
     </div>
 </div>
 
+@include('storefront.partials.order_modal')
+
 <footer class="site-footer">
     <div class="footer-logo">
         <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Logo">

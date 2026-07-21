@@ -80,7 +80,7 @@ const state = {
 
 // Modal Order Form Triggers
 function initOrderModalTrigger() {
-    document.querySelectorAll('.trigger-order-modal, .nav-order-btn').forEach(btn => {
+    document.querySelectorAll('.trigger-order-modal, .nav-order-btn, .about-cta-btn, [data-trigger="order"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             openOrderModal();

@@ -173,39 +173,7 @@
     </section>
 </div>
 
-<!-- POPUP MODAL ORDER FORM BUILDER -->
-<div id="order-modal-popup" class="order-modal-overlay" style="display:none;">
-    <div class="order-modal-card">
-        <button class="modal-close-btn" onclick="closeOrderModal()">✕</button>
-
-        <div id="cake-order-builder">
-            <div class="order-content" id="form-container-toggle">
-                <!-- Step 1: Products -->
-                <section class="step active" id="step-1">
-                    <h2>Build Your Order</h2>
-                    <div id="product-grid">
-                        <div class="product" data-name="4” Cake" data-price="45"><strong>4” Cake</strong><br>$45</div>
-                        <div class="product" data-name="6” Cake" data-price="65"><strong>6” Cake</strong><br>$65</div>
-                        <div class="product" data-name="7” Cake" data-price="75"><strong>7” Cake</strong><br>$75</div>
-                        <div class="product" data-name="8” Cake" data-price="85"><strong>8” Cake</strong><br>$85</div>
-                        <div class="product" data-name="9” Cake" data-price="95"><strong>9” Cake</strong><br>$95</div>
-                        <div class="product" data-name="10” Cake" data-price="115"><strong>10” Cake</strong><br>$115</div>
-                        <div class="product" data-name="Bento Box" data-price="45"><strong>Bento Box</strong><br>$45</div>
-                        <div class="product" data-name="Smash Cake" data-price="35"><strong>Smash Cake</strong><br>$35</div>
-                    </div>
-                    
-                    <div class="cart-bar">
-                        <div id="cart-items-list">No items selected</div>
-                        <div id="cart-summary">Items: 0 <br> <strong>Total: $0</strong></div>
-                        <div class="nav-buttons">
-                            <button class="next-btn" id="to-step-2" disabled>Continue</button>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
-    </div>
-</div>
+@include('storefront.partials.order_modal')
 
 <footer class="site-footer">
     <div class="footer-logo">

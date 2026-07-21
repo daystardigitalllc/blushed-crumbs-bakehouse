@@ -130,6 +130,8 @@
     </section>
 </div>
 
+@include('storefront.partials.order_modal')
+
 <!-- ABOUT PAGE FOOTER -->
 <footer class="about-footer">
     <div class="about-footer-logo">
