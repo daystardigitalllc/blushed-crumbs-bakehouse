@@ -286,18 +286,25 @@ function updateCartSummary() {
     state.total = Math.max(0, state.subtotal - state.discounts);
     state.deposit = state.total * 0.5;
 
+    const itemsSummaryText = state.selectedProducts.length > 0
+        ? state.selectedProducts.map(p => p.name).join(', ')
+        : 'No items selected';
+
     const listEl = document.getElementById('cart-items-list');
     const summaryEl = document.getElementById('cart-summary');
+    const globalItemsEl = document.getElementById('global-cart-items-summary');
+    const globalTotalEl = document.getElementById('global-cart-total-estimate');
     const step1Next = document.getElementById('to-step-2');
 
-    if (listEl) {
-        listEl.innerHTML = state.selectedProducts.length > 0 
-            ? state.selectedProducts.map(p => p.name).join(', ')
-            : 'No items selected';
-    }
+    if (listEl) listEl.innerHTML = itemsSummaryText;
+    if (globalItemsEl) globalItemsEl.innerText = itemsSummaryText;
 
     if (summaryEl) {
         summaryEl.innerHTML = `Items: ${state.selectedProducts.length} <br> <strong>Total: $${state.total.toFixed(0)}</strong>`;
+    }
+
+    if (globalTotalEl) {
+        globalTotalEl.innerText = `$${state.total.toFixed(0)}`;
     }
 
     if (step1Next) {

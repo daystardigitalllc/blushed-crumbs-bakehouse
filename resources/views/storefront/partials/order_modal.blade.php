@@ -4,6 +4,21 @@
         <button class="modal-close-btn" onclick="closeOrderModal()">✕</button>
 
         <div id="cake-order-builder">
+            <!-- STICKY ORDER ESTIMATE BAR & PROGRESS INDICATOR -->
+            <div class="sticky-order-summary-bar" style="background: linear-gradient(135deg, #fff5f8, #fdeef4); border: 2px solid #f8c6d7; padding: 12px 20px; border-radius: 14px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(92, 29, 55, 0.05);">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:1.4rem;">🛍️</span>
+                    <div>
+                        <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#7a2b4a; font-weight:700; display:block;">Selected Items</span>
+                        <span id="global-cart-items-summary" style="font-size:0.9rem; font-weight:600; color:#5c1d37;">No items selected</span>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#7a2b4a; font-weight:700; display:block;">Estimated Total</span>
+                    <strong id="global-cart-total-estimate" style="font-size:1.35rem; color:#e67399; font-weight:800;">$0</strong>
+                </div>
+            </div>
+
             <div class="order-content" id="form-container-toggle">
                 
                 <!-- STEP 1: PRODUCTS -->
