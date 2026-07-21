@@ -44,14 +44,20 @@
         @if(!empty($sec['enabled']))
             @if($secId === 'hero')
                 <!-- Hero Section -->
-                <section class="hero-section">
+                @php $heroBg = $tenant->getSiteContent('hero_bg_url'); @endphp
+                <section class="hero-section" style="{{ !empty($heroBg) && !str_ends_with(strtolower($heroBg), '.mp4') ? 'background: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)), url(' . asset($heroBg) . ') center/cover no-repeat;' : '' }}">
+                    @if(!empty($heroBg) && str_ends_with(strtolower($heroBg), '.mp4'))
+                        <video autoplay loop muted playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.35; z-index:0;">
+                            <source src="{{ asset($heroBg) }}" type="video/mp4">
+                        </video>
+                    @endif
                     <img src="{{ asset('images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png') }}" class="raining-cake hero-cake-top-right" alt="Top Right Lavender Crown Cake">
                     <img src="{{ asset('images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png') }}" class="raining-cake hero-cake-middle-left" alt="Middle Left Pink Crown Heart Cake">
                     <img src="{{ asset('images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png') }}" class="raining-cake hero-cake-far-right" alt="Chocolate 2-Tier Ruffles Cake">
                     <img src="{{ asset('images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png') }}" class="raining-cake hero-cake-bottom-left" alt="Bottom Left White Heart Cake">
                     <img src="{{ asset('images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png') }}" class="raining-cake hero-cake-bottom-right" alt="Bottom Right Floral Vintage Cake">
 
-                    <div class="hero-wrapper">
+                    <div class="hero-wrapper" style="position:relative; z-index:2;">
                         <span class="subheading">{{ $tenant->getSiteContent('hero_subheading', 'Welcome to ' . ($tenant->name ?? 'Blushed Crumbs Bakehouse')) }}</span>
                         <h1>{{ $tenant->getSiteContent('hero_headline', 'Where Every Celebration Gets Its Sweet Ending.') }}</h1>
                         <div class="hero-buttons">

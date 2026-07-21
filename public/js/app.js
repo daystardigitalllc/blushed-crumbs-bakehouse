@@ -144,6 +144,75 @@ window.addAccordionFaqItem = function() {
     list.appendChild(div);
 };
 
+// Media Upload Handler for Section Backgrounds
+window.uploadSectionMedia = function(fileInput, targetInputId) {
+    if (!fileInput.files || !fileInput.files[0]) return;
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    window.showToast('Uploading background media...', 'info');
+
+    fetch('/admin/upload-media', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const target = document.getElementById(targetInputId);
+            if (target) {
+                target.value = data.url;
+            }
+            window.showToast('Media uploaded & linked successfully!', 'success');
+        } else {
+            window.showToast(data.message || 'Upload failed.', 'error');
+        }
+    })
+    .catch(err => {
+        window.showToast('Upload error: ' + err.message, 'error');
+    });
+};
+
+// Trust Highlight Icon Picker Modal
+window.activeIconTargetInput = null;
+window.openIconPicker = function(inputEl) {
+    window.activeIconTargetInput = inputEl;
+    let modal = document.getElementById('icon-picker-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'icon-picker-modal';
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:99999; display:flex; justify-content:center; align-items:center;';
+        modal.innerHTML = `
+            <div style="background:white; padding:24px; border-radius:16px; max-width:400px; width:90%; box-shadow:0 10px 30px rgba(0,0,0,0.2); text-align:center;">
+                <h4 style="margin:0 0 14px 0; color:#4c1d95;">🎨 Select Bakery Highlight Icon</h4>
+                <div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; font-size:1.6rem; margin-bottom:18px;">
+                    ${['🎂', '🚚', '📦', '💖', '🍰', '🧁', '📜', '🚗', '⭐', '🍪', '🏆', '👩‍🍳', '🥖', '🍓', '🎁', '📍', '⏰', '💳', '🛡️', '🎈', '💐', '🥂', '🎉', '🥐'].map(icon => `
+                        <button type="button" onclick="selectPickedIcon('${icon}')" style="background:#f5f3ff; border:1px solid #ddd6fe; border-radius:10px; padding:8px; cursor:pointer; font-size:1.5rem; transition:transform 0.1s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">${icon}</button>
+                    `).join('')}
+                </div>
+                <button type="button" onclick="document.getElementById('icon-picker-modal').style.display='none'" class="btn btn-outline btn-sm">Cancel</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    } else {
+        modal.style.display = 'flex';
+    }
+};
+
+window.selectPickedIcon = function(icon) {
+    if (window.activeIconTargetInput) {
+        window.activeIconTargetInput.value = icon;
+    }
+    const modal = document.getElementById('icon-picker-modal');
+    if (modal) modal.style.display = 'none';
+};
+
 window.moveSectionUp = function(btn) {
     const row = btn.closest('.section-manager-row');
     if (row && row.previousElementSibling) {

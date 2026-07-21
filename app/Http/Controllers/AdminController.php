@@ -366,6 +366,7 @@ class AdminController extends Controller
             'hero_headline' => $request->input('hero_headline', $currentContent['hero_headline'] ?? ''),
             'hero_cta_primary' => $request->input('hero_cta_primary', $currentContent['hero_cta_primary'] ?? ''),
             'hero_cta_secondary' => $request->input('hero_cta_secondary', $currentContent['hero_cta_secondary'] ?? ''),
+            'hero_bg_url' => $request->input('hero_bg_url', $currentContent['hero_bg_url'] ?? ''),
             'highlights' => !empty($processedHighlights) ? $processedHighlights : ($currentContent['highlights'] ?? []),
             'promo_video_url' => $request->input('promo_video_url', $currentContent['promo_video_url'] ?? ''),
             'promo_headline' => $request->input('promo_headline', $currentContent['promo_headline'] ?? ''),
@@ -392,6 +393,37 @@ class AdminController extends Controller
             'section_settings' => $tenant->getOrderedSections(),
             'site_content' => $tenant->site_content,
         ]);
+    }
+
+    public function uploadMedia(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|max:51200',
+        ]);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
+            $destinationPath = public_path('uploads');
+            
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+            
+            $file->move($destinationPath, $filename);
+            $url = 'uploads/' . $filename;
+
+            return response()->json([
+                'success' => true,
+                'url' => $url,
+                'message' => 'Media uploaded successfully!',
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'No file uploaded.',
+        ], 400);
     }
 }
 

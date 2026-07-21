@@ -608,7 +608,17 @@
                                     <!-- EXPANDABLE ACCORDION BODY WITH SECTION COPY & CONTENT EDITORS -->
                                     <div class="section-accordion-body" style="display:none; padding:18px; border-top:1px solid #e9d5ff; background:#ffffff;">
                                         @if($secId === 'hero')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Hero Copy &amp; Buttons</h6>
+                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Hero Copy, Buttons &amp; Background Media</h6>
+                                            <div style="margin-bottom:12px; background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Background Media (Image or Video)</label>
+                                                <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
+                                                    <input type="text" id="hero_bg_url" name="hero_bg_url" value="{{ data_get($siteContent, 'hero_bg_url', '') }}" placeholder="URL or uploaded path (e.g. uploads/hero.mp4)" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
+                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
+                                                        📁 Upload File
+                                                        <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'hero_bg_url')" style="display:none;">
+                                                    </label>
+                                                </div>
+                                            </div>
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
                                                 <div>
                                                     <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Subheading</label>
@@ -635,8 +645,9 @@
                                                 @for($h = 0; $h < 4; $h++)
                                                     <div style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
                                                         <label style="font-weight:700; font-size:0.8rem; color:#6d28d9;">Highlight Badge {{ $h+1 }}</label>
-                                                        <div style="display:flex; gap:8px; margin-top:6px;">
-                                                            <input type="text" name="highlights[{{ $h }}][icon]" value="{{ $hlList[$h]['icon'] ?? '🎂' }}" style="width:45px; text-align:center; padding:6px; border-radius:6px; border:1px solid #ccc; font-size:1.1rem;">
+                                                        <div style="display:flex; gap:8px; margin-top:6px; align-items:center;">
+                                                            <input type="text" id="hl-icon-input-{{ $h }}" name="highlights[{{ $h }}][icon]" value="{{ $hlList[$h]['icon'] ?? '🎂' }}" style="width:45px; text-align:center; padding:6px; border-radius:6px; border:1px solid #ccc; font-size:1.1rem;">
+                                                            <button type="button" class="btn btn-sm btn-outline" onclick="openIconPicker(document.getElementById('hl-icon-input-{{ $h }}'))" style="padding:4px 8px; font-size:0.78rem; border-color:#8b5cf6; color:#6d28d9;">🎨 Select Icon</button>
                                                             <input type="text" name="highlights[{{ $h }}][title]" value="{{ $hlList[$h]['title'] ?? '' }}" placeholder="Title..." style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.85rem;">
                                                         </div>
                                                         <input type="text" name="highlights[{{ $h }}][desc]" value="{{ $hlList[$h]['desc'] ?? '' }}" placeholder="Description..." style="width:100%; margin-top:6px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.82rem;">
@@ -662,9 +673,15 @@
                                         @elseif($secId === 'promo_video')
                                             <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">🎥 Edit Video/Image Banner Background &amp; Text</h6>
                                             <div style="display:flex; flex-direction:column; gap:10px;">
-                                                <div>
-                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background Path or URL</label>
-                                                    <input type="text" name="promo_video_url" value="{{ data_get($siteContent, 'promo_video_url', 'images/download (2) (1).mp4') }}" placeholder="images/download (2) (1).mp4" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:monospace;">
+                                                <div style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background Media</label>
+                                                    <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
+                                                        <input type="text" id="promo_video_url" name="promo_video_url" value="{{ data_get($siteContent, 'promo_video_url', 'images/download (2) (1).mp4') }}" placeholder="images/download (2) (1).mp4" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
+                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
+                                                            📁 Upload File
+                                                            <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'promo_video_url')" style="display:none;">
+                                                        </label>
+                                                    </div>
                                                 </div>
                                                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
                                                     <div>
@@ -726,9 +743,15 @@
                                         @elseif($secId === 'cta_banner')
                                             <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">🎬 Edit Footer Booking CTA Banner Text &amp; Background</h6>
                                             <div style="display:flex; flex-direction:column; gap:10px;">
-                                                <div>
-                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background Path or URL</label>
-                                                    <input type="text" name="cta_banner_url" value="{{ data_get($siteContent, 'cta_banner_url', 'images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4') }}" placeholder="images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:monospace;">
+                                                <div style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background Media</label>
+                                                    <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
+                                                        <input type="text" id="cta_banner_url" name="cta_banner_url" value="{{ data_get($siteContent, 'cta_banner_url', 'images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4') }}" placeholder="images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
+                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
+                                                            📁 Upload File
+                                                            <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'cta_banner_url')" style="display:none;">
+                                                        </label>
+                                                    </div>
                                                 </div>
                                                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
                                                     <div>

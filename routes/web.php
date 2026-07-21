@@ -20,5 +20,6 @@ Route::post('/admin/settings/email', [AdminController::class, 'saveEmailRouting'
 Route::post('/admin/theme', [AdminController::class, 'saveTheme'])->name('admin.theme.save');
 Route::post('/admin/content', [AdminController::class, 'saveContent'])->name('admin.content.save');
 Route::post('/admin/sections', [AdminController::class, 'saveSectionSettings'])->name('admin.sections.save');
+Route::post('/admin/upload-media', [AdminController::class, 'uploadMedia'])->name('admin.media.upload');
 
 
