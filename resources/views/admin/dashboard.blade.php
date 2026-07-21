@@ -605,55 +605,6 @@
                     </div>
                 </div>
 
-                <!-- TYPOGRAPHY CARD -->
-                <div class="form-builder-card">
-                    <h4>🔤 Typography</h4>
-                    <p style="font-size:0.9rem; color:#666; margin-bottom:20px;">Set font family, size, and color for each heading level and body text. Changes apply live.</p>
-
-                    <div id="typography-settings">
-                        @foreach([['h1','H1 — Main Title','3.2rem','#5c1d37'],['h2','H2 — Section Title','2rem','#5c1d37'],['h3','H3 — Card Title','1.35rem','#4a2133'],['p','Paragraph &amp; Spans','1rem','#666666']] as [$tag, $name, $defSize, $defColor])
-                        <div class="typography-row">
-                            <div class="typo-tag-label">{{ $tag }}</div>
-                            <div class="typo-controls">
-                                <div>
-                                    <label>{{ $name }}</label>
-                                </div>
-                                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:8px;">
-                                    <select class="typo-font" data-tag="{{ $tag }}" onchange="applyTypography()" style="min-width:160px;">
-                                        <option value="'Poppins', sans-serif" selected>Poppins (default)</option>
-                                        <option value="'Inter', sans-serif">Inter</option>
-                                        <option value="'Great Vibes', cursive">Great Vibes (script)</option>
-                                        <option value="'Playfair Display', serif">Playfair Display</option>
-                                        <option value="'Lato', sans-serif">Lato</option>
-                                        <option value="'Montserrat', sans-serif">Montserrat</option>
-                                        <option value="'Raleway', sans-serif">Raleway</option>
-                                        <option value="Georgia, serif">Georgia (serif)</option>
-                                    </select>
-                                    <div style="display:flex; align-items:center; gap:6px;">
-                                        <input type="number" class="typo-size" data-tag="{{ $tag }}" value="{{ $defSize }}" placeholder="1rem" style="width:80px;" oninput="applyTypography()">
-                                        <select class="typo-unit" data-tag="{{ $tag }}" onchange="applyTypography()" style="width:70px;">
-                                            <option value="rem" selected>rem</option>
-                                            <option value="px">px</option>
-                                            <option value="em">em</option>
-                                        </select>
-                                    </div>
-                                    <div style="display:flex; align-items:center; gap:8px;">
-                                        <input type="color" class="typo-color" data-tag="{{ $tag }}" value="{{ $defColor }}" oninput="applyTypography()" class="color-swatch-input">
-                                        <input type="text" class="typo-color-hex" data-tag="{{ $tag }}" value="{{ $defColor }}" style="width:90px; font-family:monospace;" oninput="syncTypoColor(this)">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-
-                    <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
-                        <button class="btn btn-primary" onclick="saveTypography()">💾 Save Typography</button>
-                        <button class="btn btn-outline" onclick="resetTypography()">↺ Reset to Defaults</button>
-                        <span id="typo-save-msg" style="font-size:0.85rem; color:#28a745; display:none; align-self:center;">✅ Saved!</span>
-                    </div>
-                </div>
-
                 <!-- SITE CONTENT EDITOR CARD -->
                 <div class="form-builder-card" style="border:2px solid #06b6d4; background:#f0fdfa; margin-top:20px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
