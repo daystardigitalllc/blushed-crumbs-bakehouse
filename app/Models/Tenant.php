@@ -153,6 +153,27 @@ class Tenant extends Model
                 'preview_bg' => '#ecfeff',
                 'preview_accent' => '#06b6d4',
             ],
+            'country_farmhouse' => [
+                'id' => 'country_farmhouse',
+                'name' => '🏡 Country Farmhouse',
+                'subtitle' => 'Barn red & forest green, warm cream, Cracker Barrel charm',
+                'preview_bg' => '#faf6f0',
+                'preview_accent' => '#8B2500',
+            ],
+            'artisan_sourdough' => [
+                'id' => 'artisan_sourdough',
+                'name' => '🍞 Artisan Sourdough',
+                'subtitle' => 'Golden wheat tones, earthy craft parchment warmth',
+                'preview_bg' => '#fdf8f0',
+                'preview_accent' => '#b8860b',
+            ],
+            'clean_minimal' => [
+                'id' => 'clean_minimal',
+                'name' => '◻️ Clean Minimal',
+                'subtitle' => 'Ultra-clean Swiss minimalism, monochrome precision',
+                'preview_bg' => '#ffffff',
+                'preview_accent' => '#111111',
+            ],
         ];
     }
 
