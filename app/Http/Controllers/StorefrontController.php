@@ -113,13 +113,27 @@ class StorefrontController extends Controller
 
     public function submitOrder(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
+
+        if (!$tenant) {
+            $tenant = Tenant::firstOrCreate(
+                ['slug' => 'blushedcrumbs'],
+                [
+                    'name' => 'Blushed Crumbs Bakehouse',
+                    'domain' => 'blushed-crumbs-bakehouse.test',
+                    'subdomain' => 'blushedcrumbs',
+                    'owner_name' => 'Baker',
+                    'email' => 'orders@blushedcrumbsbakehouse.com',
+                    'plan_tier' => 'pro',
+                ]
+            );
+        }
 
         $validated = $request->validate([
             'client_name' => 'required|string|max:255',
             'client_email' => 'required|email|max:255',
             'client_phone' => 'required|string|max:50',
-            'due_date' => 'required|string',
+            'due_date' => 'nullable|string',
             'time_slot' => 'nullable|string',
             'fulfillment_type' => 'nullable|string',
             'delivery_address' => 'nullable|string',
@@ -130,12 +144,13 @@ class StorefrontController extends Controller
             'special_notes' => 'nullable|string',
             'allergies' => 'nullable|string',
             'social_follows' => 'nullable|array',
-            'total_price' => 'required|numeric',
+            'total_price' => 'nullable|numeric',
         ]);
 
         $orderNumber = 'BC-' . rand(1000, 9999);
-        $totalPrice = (float) $validated['total_price'];
+        $totalPrice = (float) ($validated['total_price'] ?? 0.00);
         $depositAmount = round($totalPrice * 0.5, 2);
+        $dueDate = !empty($validated['due_date']) ? $validated['due_date'] : now()->addDays(7)->format('Y-m-d');
 
         $order = Order::create([
             'tenant_id' => $tenant->id,
@@ -143,7 +158,7 @@ class StorefrontController extends Controller
             'client_name' => $validated['client_name'],
             'client_email' => $validated['client_email'],
             'client_phone' => $validated['client_phone'],
-            'due_date' => $validated['due_date'],
+            'due_date' => $dueDate,
             'time_slot' => $validated['time_slot'] ?? '8:30 AM',
             'fulfillment_type' => $validated['fulfillment_type'] ?? 'pickup',
             'delivery_address' => $validated['delivery_address'] ?? null,
@@ -161,16 +176,24 @@ class StorefrontController extends Controller
 
         // Send Email Notification via SMTP to baker
         $routingEmail = $tenant->email ?? 'orders@blushedcrumbsbakehouse.com';
+        $emailSent = false;
+        $emailError = null;
+
         try {
             Mail::to($routingEmail)->send(new NewOrderNotification($order, $tenant));
+            $emailSent = true;
         } catch (\Exception $e) {
-            Log::error('SMTP Email Error: ' . $e->getMessage());
+            $emailError = $e->getMessage();
+            Log::error('SMTP Email Order Error: ' . $e->getMessage());
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Order submitted successfully!',
             'order_number' => $order->order_number,
+            'email_sent' => $emailSent,
+            'email_error' => $emailError,
+            'routing_email' => $routingEmail,
             'order' => $order,
         ]);
     }
