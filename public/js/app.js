@@ -886,17 +886,30 @@ function initAdminPortal() {
     if (galleryForm) {
         galleryForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const title = document.getElementById('gal-title').value;
-            const category = document.getElementById('gal-category').value;
+            const titleInput = document.getElementById('gal-title');
+            const catInput = document.getElementById('gal-category');
             const fileInput = document.getElementById('gal-image-file');
 
-            let imageSrc = 'public/images/IMG_8117.jpg';
+            const title = titleInput ? titleInput.value : 'Custom Bakery Creation';
+            const category = catInput ? catInput.value : 'Cakes';
+
+            let imageSrc = '/images/IMG_8117.jpg';
 
             if (galPreviewImg && galPreviewImg.src && galPreviewImg.src.startsWith('data:image')) {
                 imageSrc = galPreviewImg.src;
             } else if (fileInput && fileInput.files && fileInput.files[0]) {
                 imageSrc = URL.createObjectURL(fileInput.files[0]);
             }
+
+            const photoItem = { title, category, imageSrc };
+
+            // Persist to localStorage
+            try {
+                let saved = localStorage.getItem('custom_gallery_photos');
+                let list = saved ? JSON.parse(saved) : [];
+                list.unshift(photoItem);
+                localStorage.setItem('custom_gallery_photos', JSON.stringify(list));
+            } catch(err) {}
 
             const mainGalleryGrid = document.getElementById('public-gallery-grid');
             if (mainGalleryGrid) {
@@ -938,6 +951,53 @@ function initAdminPortal() {
             if (galPreviewWrap) galPreviewWrap.style.display = 'none';
         });
     }
+
+    // Load persisted custom gallery photos on page load
+    (function loadPersistedGalleryPhotos() {
+        try {
+            let saved = localStorage.getItem('custom_gallery_photos');
+            if (!saved) return;
+            let list = JSON.parse(saved);
+
+            const mainGalleryGrid = document.getElementById('public-gallery-grid');
+            const adminGalleryList = document.getElementById('admin-gallery-list');
+
+            list.forEach(item => {
+                if (mainGalleryGrid) {
+                    const card = document.createElement('div');
+                    card.className = 'gallery-card';
+                    card.dataset.category = item.category;
+                    card.onclick = () => openLightbox(item.imageSrc, item.title);
+                    card.innerHTML = `
+                        <div class="gallery-card-img-wrap">
+                            <img src="${item.imageSrc}" alt="${item.title}">
+                        </div>
+                        <div class="gallery-card-info">
+                            <h4>${item.title}</h4>
+                            <span class="gallery-tag">${item.category}</span>
+                        </div>
+                    `;
+                    mainGalleryGrid.prepend(card);
+                }
+
+                if (adminGalleryList) {
+                    const adminItem = document.createElement('div');
+                    adminItem.style.cssText = 'display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);';
+                    adminItem.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            <img src="${item.imageSrc}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
+                            <div>
+                                <strong style="color:#5c1d37;">${item.title}</strong><br>
+                                <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${item.category}</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Delete</button>
+                    `;
+                    adminGalleryList.prepend(adminItem);
+                }
+            });
+        } catch(e) {}
+    })();
 
     // Add Review Form
     const revForm = document.getElementById('add-review-form');

@@ -114,22 +114,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // 4. Seed Gallery Showcase Items
-        $gallery = [
-            ['title' => 'Princess Crown Lavender Cake', 'category' => 'Single Tier', 'image_url' => 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?auto=format&fit=crop&w=600&q=80'],
-            ['title' => 'TNT Multi-Tier Gamer Cake', 'category' => 'Multi-Tier', 'image_url' => 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80'],
-            ['title' => 'Winter Wonderland Cupcakes', 'category' => 'By The Dozen', 'image_url' => 'https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=600&q=80'],
-            ['title' => 'Whimsical Mermaid Cake', 'category' => 'Single Tier', 'image_url' => 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=600&q=80'],
-        ];
-
-        foreach ($gallery as $gal) {
-            GalleryItem::create([
-                'tenant_id' => $tenant->id,
-                'title' => $gal['title'],
-                'category' => $gal['category'],
-                'image_url' => $gal['image_url'],
-            ]);
-        }
+        // 4. Gallery items (Empty by default — populated via Device Gallery Uploader in Admin)
 
         // 5. Seed Sample Urgent Custom Orders (Sorted by Due Date)
         Order::create([

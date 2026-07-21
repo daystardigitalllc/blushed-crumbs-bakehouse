@@ -354,11 +354,13 @@
                         @foreach($gallery as $item)
                             <div style="display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
                                 <div style="display:flex; align-items:center; gap:15px;">
-                                    <img src="{{ asset($item->image_path) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
+                                    @php $src = $item->image_url ?? $item->image_path; @endphp
+                                    <img src="{{ asset($src) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
                                     <div>
                                         <strong style="color:#5c1d37;">{{ $item->title }}</strong><br>
                                         <span style="font-size:0.8rem; color:#e67399; font-weight:600;">{{ $item->category }}</span>
                                     </div>
+
                                 </div>
                                 <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Delete</button>
                             </div>

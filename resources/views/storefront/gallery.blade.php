@@ -45,9 +45,10 @@
 
         <div class="gallery-masonry-grid" id="public-gallery-grid">
             @forelse($gallery as $item)
-                <div class="gallery-card" data-category="{{ $item->category }}" onclick="openLightbox('{{ asset($item->image_path) }}', '{{ $item->title }}')">
+                @php $src = $item->image_url ?? $item->image_path; @endphp
+                <div class="gallery-card" data-category="{{ $item->category }}" onclick="openLightbox('{{ asset($src) }}', '{{ $item->title }}')">
                     <div class="gallery-card-img-wrap">
-                        <img src="{{ asset($item->image_path) }}" alt="{{ $item->title }}">
+                        <img src="{{ asset($src) }}" alt="{{ $item->title }}">
                     </div>
                     <div class="gallery-card-info">
                         <h4>{{ $item->title }}</h4>
@@ -55,34 +56,13 @@
                     </div>
                 </div>
             @empty
-                <div class="gallery-card" data-category="Cakes" onclick="openLightbox('{{ asset('images/IMG_8117.jpg') }}', 'Lavender Princess Birthday Crown Cake')">
-                    <div class="gallery-card-img-wrap">
-                        <img src="{{ asset('images/IMG_8117.jpg') }}" alt="Lavender Princess Birthday Crown Cake">
-                    </div>
-                    <div class="gallery-card-info">
-                        <h4>Lavender Princess Birthday Crown</h4>
-                        <span class="gallery-tag">Cakes</span>
-                    </div>
-                </div>
-                <div class="gallery-card" data-category="Cakes" onclick="openLightbox('{{ asset('images/IMG_8084.jpg') }}', 'Minecraft TNT Tiered Cake')">
-                    <div class="gallery-card-img-wrap">
-                        <img src="{{ asset('images/IMG_8084.jpg') }}" alt="Minecraft TNT Tiered Cake">
-                    </div>
-                    <div class="gallery-card-info">
-                        <h4>Minecraft TNT Multi-Tier</h4>
-                        <span class="gallery-tag">Cakes</span>
-                    </div>
-                </div>
-                <div class="gallery-card" data-category="Cupcakes" onclick="openLightbox('{{ asset('images/IMG_8042.jpg') }}', 'Frozen Snowflake Cupcake Dozen Box')">
-                    <div class="gallery-card-img-wrap">
-                        <img src="{{ asset('images/IMG_8042.jpg') }}" alt="Frozen Snowflake Cupcake Dozen Box">
-                    </div>
-                    <div class="gallery-card-info">
-                        <h4>Frozen Snowflake Cupcake Box</h4>
-                        <span class="gallery-tag">Cupcakes</span>
-                    </div>
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #888;">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 12px;">📷</span>
+                    <h3 style="color: #5c1d37; margin-bottom: 8px;">No Gallery Photos Published Yet</h3>
+                    <p style="font-size: 0.95rem;">Upload photos directly from your phone, tablet, or computer in the Baker Admin Portal under <strong>Device Gallery</strong> to display them here live!</p>
                 </div>
             @endforelse
+
         </div>
     </section>
 </div>

@@ -48,8 +48,9 @@
             <h1>Where Every Celebration<br>Gets Its Sweet Ending.</h1>
             <div class="hero-buttons">
                 <button onclick="openOrderModal()" class="btn btn-primary">Custom Order</button>
-                <a href="#categories" class="btn btn-secondary">Browse Our Sweets</a>
+                <a href="{{ route('storefront.gallery') }}" class="btn btn-secondary">Browse Our Sweets</a>
             </div>
+
         </div>
     </section>
 
