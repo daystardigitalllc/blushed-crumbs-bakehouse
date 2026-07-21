@@ -653,6 +653,90 @@
                         <span id="typo-save-msg" style="font-size:0.85rem; color:#28a745; display:none; align-self:center;">✅ Saved!</span>
                     </div>
                 </div>
+
+                <!-- SITE CONTENT EDITOR CARD -->
+                <div class="form-builder-card" style="border:2px solid #06b6d4; background:#f0fdfa; margin-top:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+                        <div>
+                            <h4 style="color:#0f766e; margin:0;">✍️ Bakery Site Copy & Content Editor</h4>
+                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Customize headlines, subtext, bullets, and contact info across your website without breaking layout guardrails.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSiteContentForm()" style="background:#0d9488; border-color:#0f766e;">💾 Save Site Content</button>
+                    </div>
+
+                    <div id="content-status-msg" style="display:none; margin-bottom:14px; background:#d1fae5; color:#065f46; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #a7f3d0;"></div>
+
+                    <form id="site-content-form" style="display:flex; flex-direction:column; gap:18px;">
+                        @csrf
+                        @php
+                            $siteContent = $tenant->site_content ?? App\Models\Tenant::getDefaultSiteContent();
+                            $bullets = data_get($siteContent, 'whimsical_bullets', []);
+                        @endphp
+
+                        <!-- HERO SECTION COPY -->
+                        <div style="background:white; padding:16px; border-radius:12px; border:1px solid #ccfbf1;">
+                            <h5 style="color:#0f766e; margin-bottom:12px; font-size:1rem; font-weight:700;">🌟 Hero Section</h5>
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                                <div>
+                                    <label style="font-weight:600; font-size:0.85rem;">Hero Subheading</label>
+                                    <input type="text" name="hero_subheading" value="{{ data_get($siteContent, 'hero_subheading') }}" placeholder="Order For Any Occasion" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.85rem;">Main Headline</label>
+                                    <input type="text" name="hero_headline" value="{{ data_get($siteContent, 'hero_headline') }}" placeholder="Blushed Crumbs Bakehouse" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.85rem;">Primary CTA Button Text</label>
+                                    <input type="text" name="hero_cta_primary" value="{{ data_get($siteContent, 'hero_cta_primary') }}" placeholder="Order Now" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.85rem;">Secondary Button Text</label>
+                                    <input type="text" name="hero_cta_secondary" value="{{ data_get($siteContent, 'hero_cta_secondary') }}" placeholder="Our Flavors" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WHIMSICAL & STORY SECTION -->
+                        <div style="background:white; padding:16px; border-radius:12px; border:1px solid #ccfbf1;">
+                            <h5 style="color:#0f766e; margin-bottom:12px; font-size:1rem; font-weight:700;">✨ Whimsical Creations & Specialties</h5>
+                            <div style="margin-bottom:12px;">
+                                <label style="font-weight:600; font-size:0.85rem;">Section Title</label>
+                                <input type="text" name="whimsical_title" value="{{ data_get($siteContent, 'whimsical_title') }}" placeholder="Whimsical Creations for Every Milestone" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <label style="font-weight:600; font-size:0.85rem;">Specialty Bullets (Up to 5)</label>
+                                <input type="text" name="whimsical_bullet_1" value="{{ $bullets[0] ?? '' }}" placeholder="Bullet 1: Custom Wedding Cakes..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
+                                <input type="text" name="whimsical_bullet_2" value="{{ $bullets[1] ?? '' }}" placeholder="Bullet 2: Birthday & Party Cakes..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
+                                <input type="text" name="whimsical_bullet_3" value="{{ $bullets[3] ?? '' }}" placeholder="Bullet 3: Anniversary Cakes..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
+                                <input type="text" name="whimsical_bullet_4" value="{{ $bullets[3] ?? '' }}" placeholder="Bullet 4: Signature Sheet Cakes..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
+                                <input type="text" name="whimsical_bullet_5" value="{{ $bullets[4] ?? '' }}" placeholder="Bullet 5: Gourmet Chocolate Berries..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                        </div>
+
+                        <!-- ABOUT & CONTACT SECTION -->
+                        <div style="background:white; padding:16px; border-radius:12px; border:1px solid #ccfbf1;">
+                            <h5 style="color:#0f766e; margin-bottom:12px; font-size:1rem; font-weight:700;">📖 About Story & Contact Details</h5>
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:12px;">
+                                <div>
+                                    <label style="font-weight:600; font-size:0.85rem;">About Section Title</label>
+                                    <input type="text" name="about_title" value="{{ data_get($siteContent, 'about_title') }}" placeholder="About Our Bakery" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.85rem;">Business Hours</label>
+                                    <input type="text" name="contact_hours" value="{{ data_get($siteContent, 'contact_hours') }}" placeholder="Mon-Sat: 8:00 AM - 6:00 PM | Sun: Closed" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.85rem;">Location & Service Area</label>
+                                    <input type="text" name="contact_location" value="{{ data_get($siteContent, 'contact_location') }}" placeholder="Nashville, TN & Surrounding Areas" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.85rem;">Bakery Bio & Story</label>
+                                <textarea name="about_bio" rows="4" placeholder="Welcome to our bakehouse..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; font-family:inherit;">{{ data_get($siteContent, 'about_bio') }}</textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <!-- TAB: Calendar & Availability Manager -->

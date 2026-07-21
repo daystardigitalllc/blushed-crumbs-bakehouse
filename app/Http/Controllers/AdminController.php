@@ -221,5 +221,63 @@ class AdminController extends Controller
             'theme_id' => $tenant->theme_id,
         ]);
     }
+
+    public function saveContent(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->first() ?? Tenant::first();
+
+        $data = $request->validate([
+            'hero_subheading' => 'nullable|string|max:255',
+            'hero_headline' => 'nullable|string|max:255',
+            'hero_cta_primary' => 'nullable|string|max:255',
+            'hero_cta_secondary' => 'nullable|string|max:255',
+            'whimsical_title' => 'nullable|string|max:255',
+            'whimsical_bullet_1' => 'nullable|string|max:500',
+            'whimsical_bullet_2' => 'nullable|string|max:500',
+            'whimsical_bullet_3' => 'nullable|string|max:500',
+            'whimsical_bullet_4' => 'nullable|string|max:500',
+            'whimsical_bullet_5' => 'nullable|string|max:500',
+            'about_title' => 'nullable|string|max:255',
+            'about_bio' => 'nullable|string|max:2000',
+            'contact_hours' => 'nullable|string|max:255',
+            'contact_location' => 'nullable|string|max:255',
+            'contact_instagram' => 'nullable|string|max:255',
+            'contact_facebook' => 'nullable|string|max:255',
+        ]);
+
+        $currentContent = $tenant->site_content ?? Tenant::getDefaultSiteContent();
+
+        $bullets = [];
+        for ($i = 1; $i <= 5; $i++) {
+            if (!empty($data["whimsical_bullet_$i"])) {
+                $bullets[] = $data["whimsical_bullet_$i"];
+            }
+        }
+
+        $updatedContent = array_merge($currentContent, [
+            'hero_subheading' => $data['hero_subheading'] ?? $currentContent['hero_subheading'],
+            'hero_headline' => $data['hero_headline'] ?? $currentContent['hero_headline'],
+            'hero_cta_primary' => $data['hero_cta_primary'] ?? $currentContent['hero_cta_primary'],
+            'hero_cta_secondary' => $data['hero_cta_secondary'] ?? $currentContent['hero_cta_secondary'],
+            'whimsical_title' => $data['whimsical_title'] ?? $currentContent['whimsical_title'],
+            'whimsical_bullets' => !empty($bullets) ? $bullets : ($currentContent['whimsical_bullets'] ?? []),
+            'about_title' => $data['about_title'] ?? $currentContent['about_title'],
+            'about_bio' => $data['about_bio'] ?? $currentContent['about_bio'],
+            'contact_hours' => $data['contact_hours'] ?? $currentContent['contact_hours'],
+            'contact_location' => $data['contact_location'] ?? $currentContent['contact_location'],
+            'contact_instagram' => $data['contact_instagram'] ?? $currentContent['contact_instagram'],
+            'contact_facebook' => $data['contact_facebook'] ?? $currentContent['contact_facebook'],
+        ]);
+
+        $tenant->update([
+            'site_content' => $updatedContent,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bakery site copy & content saved successfully!',
+            'site_content' => $tenant->site_content,
+        ]);
+    }
 }
 

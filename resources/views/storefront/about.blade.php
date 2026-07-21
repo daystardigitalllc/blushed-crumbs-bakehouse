@@ -44,8 +44,8 @@
                 <img src="{{ asset('images/baker_founder_portrait.jpg') }}" alt="Meet The Founder">
             </div>
             <div class="meet-founder-content">
-                <h2>Meet The Founder</h2>
-                <p>At Blushed Crumbs Bakehouse, we specialize in homemade custom cakes and treats that are as beautiful as they are delicious. Every single order is made fresh with quality ingredients and attention to every detail, creating unforgettable treats for your sweetest moments.</p>
+                <h2>{{ $tenant->getSiteContent('about_title', 'About Our Bakery') }}</h2>
+                <p>{{ $tenant->getSiteContent('about_bio', 'At Blushed Crumbs Bakehouse, we specialize in homemade custom cakes and treats that are as beautiful as they are delicious. Every single order is made fresh with quality ingredients and attention to every detail, creating unforgettable treats for your sweetest moments.') }}</p>
                 <div class="founder-testimonial-quote">
                     <p>"She was very friendly & easy to work with. The cake tasted amazing. Everything I was hoping for ❤️"</p>
                     <span class="founder-author-name">Pamela Cortes</span>

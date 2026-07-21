@@ -60,6 +60,40 @@ window.alert = function(msg) {
     window.showToast(msg, isError ? 'error' : 'success');
 };
 
+// Global Site Content Form Saver
+window.saveSiteContentForm = function() {
+    const form = document.getElementById('site-content-form');
+    if (!form) return;
+
+    const formData = new FormData(form);
+    const msgEl = document.getElementById('content-status-msg');
+
+    fetch('/admin/content', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            if (msgEl) {
+                msgEl.style.display = 'block';
+                msgEl.innerHTML = `✅ ${data.message} <a href="/" target="_blank" style="color:#065f46; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Site ↗</a>`;
+                setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
+            }
+            window.showToast('Site copy & content saved successfully!', 'success');
+        } else {
+            window.showToast(data.message || 'Failed to save site content.', 'error');
+        }
+    })
+    .catch(err => {
+        window.showToast('Error saving content: ' + err.message, 'error');
+    });
+};
+
 // Global Mobile Sidebar Drawer Toggle
 window.toggleAdminMobileSidebar = function toggleAdminMobileSidebar() {
     const sidebar = document.getElementById('admin-sidebar-drawer');

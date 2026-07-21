@@ -20,6 +20,7 @@ class Tenant extends Model
         'theme_id',
         'payment_settings',
         'form_schema',
+        'site_content',
         'booking_settings',
         'is_active',
     ];
@@ -27,9 +28,49 @@ class Tenant extends Model
     protected $casts = [
         'payment_settings' => 'array',
         'form_schema' => 'array',
+        'site_content' => 'array',
         'booking_settings' => 'array',
         'is_active' => 'boolean',
     ];
+
+    public static function getDefaultSiteContent()
+    {
+        return [
+            'hero_subheading' => 'Order For Any Occasion',
+            'hero_headline' => 'Blushed Crumbs Bakehouse',
+            'hero_cta_primary' => 'Order Now',
+            'hero_cta_secondary' => 'Our Flavors',
+            'highlights' => [
+                ['icon' => '🍰', 'title' => 'Cake Tastings Available', 'desc' => 'Tasting boxes for wedding planning'],
+                ['icon' => '🚗', 'title' => 'Delivery Available', 'desc' => 'To local venues and homes'],
+                ['icon' => '📜', 'title' => 'Tennessee Licensed', 'desc' => 'Cottage food operation'],
+            ],
+            'whimsical_title' => 'Whimsical Creations for Every Milestone',
+            'whimsical_bullets' => [
+                'Custom Wedding Cakes: Elegant, timeless, and tailored entirely to your love story.',
+                'Birthday & Party Cakes: From whimsical children\'s themes to sleek, modern adult designs.',
+                'Anniversary Cakes: Recommence your vows with a beautiful, nostalgic dessert.',
+                'Signature Sheet Cakes: Perfect for larger crowds, school events, or casual get-togethers.',
+                'Gourmet Chocolate-Covered Strawberries: Ripe, juicy berries hand-dipped in chocolate.'
+            ],
+            'about_title' => 'About Our Bakery',
+            'about_bio' => 'Welcome to our bakehouse! We specialize in custom artisanal cakes, gourmet treats, and unforgettable dessert experiences crafted with premium ingredients and passion.',
+            'contact_hours' => 'Mon-Sat: 8:00 AM - 6:00 PM | Sun: Closed',
+            'contact_location' => 'Nashville, TN & Surrounding Areas',
+            'contact_instagram' => '@Blushed_Crumbs',
+            'contact_facebook' => 'Blushed Crumbs',
+        ];
+    }
+
+    public function getSiteContent($key, $default = null)
+    {
+        $content = $this->site_content ?? self::getDefaultSiteContent();
+        $val = data_get($content, $key);
+        if ($val !== null && $val !== '') {
+            return $val;
+        }
+        return data_get(self::getDefaultSiteContent(), $key, $default);
+    }
 
     public static function getAvailableThemes()
     {

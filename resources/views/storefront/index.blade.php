@@ -45,13 +45,12 @@
         <img src="{{ asset('images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png') }}" class="raining-cake hero-cake-bottom-right" alt="Bottom Right Floral Vintage Cake">
 
         <div class="hero-wrapper">
-            <span class="subheading">Welcome to Blushed Crumbs Bakehouse</span>
-            <h1>Where Every Celebration<br>Gets Its Sweet Ending.</h1>
+            <span class="subheading">{{ $tenant->getSiteContent('hero_subheading', 'Welcome to ' . ($tenant->name ?? 'Blushed Crumbs Bakehouse')) }}</span>
+            <h1>{{ $tenant->getSiteContent('hero_headline', 'Where Every Celebration Gets Its Sweet Ending.') }}</h1>
             <div class="hero-buttons">
-                <button onclick="openOrderModal()" class="btn btn-primary">Custom Order</button>
-                <a href="{{ route('storefront.gallery') }}" class="btn btn-secondary">Browse Our Sweets</a>
+                <button onclick="openOrderModal()" class="btn btn-primary">{{ $tenant->getSiteContent('hero_cta_primary', 'Custom Order') }}</button>
+                <a href="{{ route('storefront.gallery') }}" class="btn btn-secondary">{{ $tenant->getSiteContent('hero_cta_secondary', 'Browse Our Sweets') }}</a>
             </div>
-
         </div>
     </section>
 
@@ -126,13 +125,14 @@
                 <img src="{{ asset('images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png') }}" alt="Whimsical Mermaid Cake on Silver Stand">
             </div>
             <div class="whimsical-col-right">
-                <h2>Whimsical Creations<br>for Every Milestone</h2>
+                <h2>{{ $tenant->getSiteContent('whimsical_title', 'Whimsical Creations for Every Milestone') }}</h2>
                 <ul class="whimsical-bullet-list">
-                    <li><strong>Custom Wedding Cakes:</strong> Elegant, timeless, and tailored entirely to your love story. We work with you to design a showstopper that tastes even better than it looks.</li>
-                    <li><strong>Birthday & Party Cakes:</strong> From whimsical children's themes to sleek, modern adult designs. If you can dream it, we can bake it.</li>
-                    <li><strong>Anniversary Cakes:</strong> Recommence your vows with a beautiful, nostalgic dessert that honors your journey together.</li>
-                    <li><strong>Signature Sheet Cakes:</strong> Perfect for larger crowds, school events, or casual get-togethers. Infinitely customizable, incredibly moist, and crowd-pleasingly delicious.</li>
-                    <li><strong>Gourmet Chocolate-Covered Strawberries:</strong> Ripe, juicy berries hand-dipped in premium, velvety chocolate. The perfect add-on gift, party favor, or elegant treat.</li>
+                    @php
+                        $bullets = $tenant->getSiteContent('whimsical_bullets', []);
+                    @endphp
+                    @foreach($bullets as $bullet)
+                        <li>{{ $bullet }}</li>
+                    @endforeach
                 </ul>
                 <hr class="whimsical-hr">
             </div>

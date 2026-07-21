@@ -55,4 +55,25 @@ class PageLoadTest extends TestCase
         $this->assertArrayHasKey('modern_bakery', $themes);
         $this->assertArrayHasKey('playful_treats', $themes);
     }
+
+    public function test_admin_content_editor_updates_site_content()
+    {
+        $response = $this->postJson('/admin/content', [
+            'hero_headline' => 'Nashville Premium Custom Cakes',
+            'hero_subheading' => 'Artisanal Bakery & Desserts',
+            'about_title' => 'Our Artisan Story',
+            'about_bio' => 'Crafting luxury wedding & birthday cakes in Tennessee.',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $tenant = Tenant::first();
+        $this->assertEquals('Nashville Premium Custom Cakes', $tenant->getSiteContent('hero_headline'));
+        $this->assertEquals('Our Artisan Story', $tenant->getSiteContent('about_title'));
+
+        $homeResponse = $this->get('/');
+        $homeResponse->assertStatus(200);
+        $homeResponse->assertSee('Nashville Premium Custom Cakes');
+    }
 }

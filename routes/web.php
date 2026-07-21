@@ -18,5 +18,6 @@ Route::post('/admin/form-builder', [AdminController::class, 'saveFormSchema'])->
 Route::post('/admin/settings/booking', [AdminController::class, 'saveBookingSettings'])->name('admin.settings.booking.save');
 Route::post('/admin/settings/email', [AdminController::class, 'saveEmailRouting'])->name('admin.settings.email.save');
 Route::post('/admin/theme', [AdminController::class, 'saveTheme'])->name('admin.theme.save');
+Route::post('/admin/content', [AdminController::class, 'saveContent'])->name('admin.content.save');
 
 
