@@ -163,9 +163,18 @@
 
             <!-- TAB 2: Form Studio -->
             <div id="tab-form-builder" class="tab-content">
+                @php
+                    $serverFormSchema = $tenant->form_schema ?? \App\Models\Tenant::getDefaultFormSchema();
+                    $serverBookingSettings = $tenant->booking_settings ?? [
+                        'lead_time_enabled' => true,
+                        'lead_time_days' => 3,
+                        'recurring_closed_days' => [0, 1],
+                        'blocked_dates' => ['2026-07-04', '2026-07-25']
+                    ];
+                @endphp
                 <script>
-                    window._serverFormSchema = @json($tenant->form_schema ?? \App\Models\Tenant::getDefaultFormSchema());
-                    window._serverBookingSettings = @json($tenant->booking_settings ?? ['lead_time_enabled' => true, 'lead_time_days' => 3, 'recurring_closed_days' => [0, 1], 'blocked_dates' => ['2026-07-04', '2026-07-25']]);
+                    window._serverFormSchema = @json($serverFormSchema);
+                    window._serverBookingSettings = @json($serverBookingSettings);
                 </script>
                 <div class="section-header">
                     <h3>⚙️ Form Studio</h3>
