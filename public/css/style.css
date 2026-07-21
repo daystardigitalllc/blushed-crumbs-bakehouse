@@ -11,6 +11,43 @@
     --card-shadow: 0 8px 30px rgba(74, 33, 51, 0.08);
 }
 
+/* 🎨 Curated Bakery Theme Classes */
+body.theme-sweet_elegant {
+    --primary: #e67399;
+    --primary-hover: #d25a82;
+    --pink-bg: #fcebf1;
+    --dark-text: #4a2133;
+    background-color: #fcebf1;
+}
+
+body.theme-rustic_kitchen {
+    --primary: #c86d51;
+    --primary-hover: #a85238;
+    --pink-bg: #f9f5f0;
+    --dark-text: #2d241e;
+    background-color: #f9f5f0;
+}
+
+body.theme-rustic_kitchen h1, body.theme-rustic_kitchen h2, body.theme-rustic_kitchen h3 {
+    font-family: 'Georgia', serif !important;
+}
+
+body.theme-modern_bakery {
+    --primary: #1e293b;
+    --primary-hover: #0f172a;
+    --pink-bg: #f8fafc;
+    --dark-text: #0f172a;
+    background-color: #f8fafc;
+}
+
+body.theme-playful_treats {
+    --primary: #06b6d4;
+    --primary-hover: #0891b2;
+    --pink-bg: #ecfeff;
+    --dark-text: #164e63;
+    background-color: #ecfeff;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;

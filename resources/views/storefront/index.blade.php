@@ -15,7 +15,7 @@
     <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
-<body>
+<body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 
 <header class="site-header">
     <div class="header-container">
@@ -186,7 +186,7 @@
         <a href="{{ route('storefront.about') }}">About</a>
         <a href="{{ route('storefront.gallery') }}">Gallery</a>
     </div>
-    <p class="copyright-text">Copyright © 2026 Blushed Crumbs Bakehouse | Powered by Daystar Digital</p>
+    <p class="copyright-text">Copyright © 2026 {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }} | Powered by <a href="https://bakery.pro" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:none;">Bakery.Pro</a> — <em>Want your own bakery website?</em></p>
 </footer>
 
 <script src="{{ asset('js/app.js') }}"></script>

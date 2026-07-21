@@ -502,8 +502,31 @@
             <!-- TAB: Settings -->
             <div id="tab-settings" class="tab-content">
                 <div class="section-header">
-                    <h3>🔧 Site &amp; Order Settings</h3>
-                    <p class="subtitle">Configure booking rules, color palette, and typography for your storefront.</p>
+                    <h3>🎨 Bakery Theme & Storefront Options</h3>
+                    <p class="subtitle">Choose a professionally curated bakery theme and configure lead times for your site.</p>
+                </div>
+
+                <!-- CURATED BAKERY THEMES CARD -->
+                <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
+                    <h4 style="color:#5c1d37;">🌸 Select Your Bakery Theme</h4>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:18px;">Pick a standardized, low-maintenance design template. Customizes colors and layout automatically.</p>
+
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
+                        @php
+                            $themes = App\Models\Tenant::getAvailableThemes();
+                            $currentTheme = $tenant->theme_id ?? 'sweet_elegant';
+                        @endphp
+                        @foreach($themes as $t)
+                            <div class="bakery-theme-card" onclick="selectBakeryTheme('{{ $t['id'] }}', this)" style="border:{{ $currentTheme === $t['id'] ? '3px solid #e67399' : '2px solid #ddd' }}; background:white; padding:16px; border-radius:14px; cursor:pointer; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+                                <div style="height:80px; background:{{ $t['preview_bg'] }}; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; border:1px solid #eee;">
+                                    <span style="font-weight:800; color:{{ $t['preview_accent'] }}; font-size:1.1rem;">{{ $t['name'] }}</span>
+                                </div>
+                                <h5 style="font-size:1rem; font-weight:700; color:#5c1d37; margin-bottom:4px;">{{ $t['name'] }}</h5>
+                                <p style="font-size:0.8rem; color:#666; line-height:1.4;">{{ $t['subtitle'] }}</p>
+                                <span class="theme-badge" style="display:{{ $currentTheme === $t['id'] ? 'inline-block' : 'none' }}; margin-top:8px; font-size:0.75rem; background:#e67399; color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
 
                 <!-- BOOKING RULES CARD -->

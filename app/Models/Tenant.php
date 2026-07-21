@@ -17,6 +17,7 @@ class Tenant extends Model
         'email',
         'phone',
         'plan_tier',
+        'theme_id',
         'payment_settings',
         'form_schema',
         'booking_settings',
@@ -29,6 +30,40 @@ class Tenant extends Model
         'booking_settings' => 'array',
         'is_active' => 'boolean',
     ];
+
+    public static function getAvailableThemes()
+    {
+        return [
+            'sweet_elegant' => [
+                'id' => 'sweet_elegant',
+                'name' => '🌸 Sweet & Elegant',
+                'subtitle' => 'Romantic pinks, luxury vintage script, soft cloud dividers',
+                'preview_bg' => '#fcebf1',
+                'preview_accent' => '#e67399',
+            ],
+            'rustic_kitchen' => [
+                'id' => 'rustic_kitchen',
+                'name' => '🪵 Rustic Kitchen',
+                'subtitle' => 'Warm terracotta, linen beige, artisanal bakery feel',
+                'preview_bg' => '#f9f5f0',
+                'preview_accent' => '#c86d51',
+            ],
+            'modern_bakery' => [
+                'id' => 'modern_bakery',
+                'name' => '✨ Modern Bakery',
+                'subtitle' => 'Sleek dark/light minimalism, bold contemporary typography',
+                'preview_bg' => '#f8fafc',
+                'preview_accent' => '#1e293b',
+            ],
+            'playful_treats' => [
+                'id' => 'playful_treats',
+                'name' => '🧁 Playful Treats',
+                'subtitle' => 'Vibrant pastels, cheerful cyan & coral energy',
+                'preview_bg' => '#ecfeff',
+                'preview_accent' => '#06b6d4',
+            ],
+        ];
+    }
 
     public static function getDefaultFormSchema()
     {

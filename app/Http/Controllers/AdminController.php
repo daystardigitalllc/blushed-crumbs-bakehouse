@@ -202,5 +202,24 @@ class AdminController extends Controller
 
         return redirect()->route('admin.dashboard')->with('success', 'Gallery photo deleted successfully.');
     }
+
+    public function saveTheme(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->first() ?? Tenant::first();
+
+        $request->validate([
+            'theme_id' => 'required|string|in:sweet_elegant,rustic_kitchen,modern_bakery,playful_treats',
+        ]);
+
+        $tenant->update([
+            'theme_id' => $request->theme_id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bakery theme updated successfully!',
+            'theme_id' => $tenant->theme_id,
+        ]);
+    }
 }
 

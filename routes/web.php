@@ -17,5 +17,6 @@ Route::delete('/admin/gallery/{id}', [AdminController::class, 'destroyGallery'])
 Route::post('/admin/form-builder', [AdminController::class, 'saveFormSchema'])->name('admin.form.schema.save');
 Route::post('/admin/settings/booking', [AdminController::class, 'saveBookingSettings'])->name('admin.settings.booking.save');
 Route::post('/admin/settings/email', [AdminController::class, 'saveEmailRouting'])->name('admin.settings.email.save');
+Route::post('/admin/theme', [AdminController::class, 'saveTheme'])->name('admin.theme.save');
 
 
