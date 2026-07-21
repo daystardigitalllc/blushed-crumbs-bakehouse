@@ -123,10 +123,16 @@
 
             @if(!empty($order->inspiration_files) && is_array($order->inspiration_files) && count($order->inspiration_files) > 0)
             <div class="section-title">🖼️ Attached Inspiration Photos ({{ count($order->inspiration_files) }})</div>
-            <p style="font-size:0.9rem; color:#666; margin-bottom:8px;">Client uploaded {{ count($order->inspiration_files) }} photo(s). They are attached to this email and listed below:</p>
+            <p style="font-size:0.9rem; color:#666; margin-bottom:8px;">Client uploaded {{ count($order->inspiration_files) }} photo(s). They are attached directly to this email and accessible below:</p>
             <ul style="margin:0 0 16px 0; padding-left:20px; font-size:0.9rem; color:#333;">
                 @foreach($order->inspiration_files as $idx => $filePath)
-                    <li style="margin-bottom:4px;"><a href="{{ asset($filePath) }}" target="_blank" style="color:#e67399; font-weight:700;">Inspiration Image {{ $idx + 1 }}</a></li>
+                    @php
+                        $fileUrl = str_starts_with($filePath, 'http') ? $filePath : url($filePath);
+                    @endphp
+                    <li style="margin-bottom:4px;">
+                        📎 <a href="{{ $fileUrl }}" target="_blank" style="color:#e67399; font-weight:700;">Inspiration Image {{ $idx + 1 }}</a>
+                        <span style="font-size:0.8rem; color:#888;">({{ basename($filePath) }})</span>
+                    </li>
                 @endforeach
             </ul>
             @endif
