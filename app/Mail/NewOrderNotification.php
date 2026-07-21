@@ -28,7 +28,7 @@ class NewOrderNotification extends Mailable
     {
         $fromAddress = config('mail.from.address');
         if (empty($fromAddress) || $fromAddress === 'hello@example.com' || str_contains($fromAddress, 'localhost')) {
-            $fromAddress = 'orders@bakeshop.daystardigital.co';
+            $fromAddress = 'orders@daystardigital.co';
         }
 
         $fromName = !empty($this->tenant->name) ? $this->tenant->name : config('app.name', 'Bakehouse Platform');
