@@ -11,6 +11,8 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 
+use Illuminate\Mail\Mailables\Attachment;
+
 class NewOrderNotification extends Mailable
 {
     use Queueable, SerializesModels;
@@ -48,5 +50,19 @@ class NewOrderNotification extends Mailable
                 'tenant' => $this->tenant,
             ],
         );
+    }
+
+    public function attachments(): array
+    {
+        $attachments = [];
+        if (!empty($this->order->inspiration_files) && is_array($this->order->inspiration_files)) {
+            foreach ($this->order->inspiration_files as $filePath) {
+                $fullPath = public_path($filePath);
+                if (file_exists($fullPath)) {
+                    $attachments[] = Attachment::fromPath($fullPath);
+                }
+            }
+        }
+        return $attachments;
     }
 }

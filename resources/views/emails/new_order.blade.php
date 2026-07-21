@@ -121,6 +121,23 @@
             </p>
             @endif
 
+            @if(!empty($order->inspiration_files) && is_array($order->inspiration_files) && count($order->inspiration_files) > 0)
+            <div class="section-title">🖼️ Attached Inspiration Photos ({{ count($order->inspiration_files) }})</div>
+            <p style="font-size:0.9rem; color:#666; margin-bottom:8px;">Client uploaded {{ count($order->inspiration_files) }} photo(s). They are attached to this email and listed below:</p>
+            <ul style="margin:0 0 16px 0; padding-left:20px; font-size:0.9rem; color:#333;">
+                @foreach($order->inspiration_files as $idx => $filePath)
+                    <li style="margin-bottom:4px;"><a href="{{ asset($filePath) }}" target="_blank" style="color:#e67399; font-weight:700;">Inspiration Image {{ $idx + 1 }}</a></li>
+                @endforeach
+            </ul>
+            @endif
+
+            @if(!empty($order->social_follows))
+            <div class="section-title">📲 Social Media / Follow Preferences</div>
+            <p style="background:#fff7fa; padding:10px 14px; border-radius:10px; border:1px solid #f8c6d7; font-size:0.95rem; margin-top:4px;">
+                {{ is_array($order->social_follows) ? implode(', ', $order->social_follows) : $order->social_follows }}
+            </p>
+            @endif
+
             <div class="total-box">
                 <div>Estimated Total: <strong>${{ number_format($order->total_price, 2) }}</strong></div>
                 <div style="font-size:0.9rem; opacity:0.9; margin-top:4px;">50% Deposit Required: ${{ number_format($order->deposit_amount, 2) }}</div>

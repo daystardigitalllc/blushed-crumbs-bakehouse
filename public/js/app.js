@@ -241,32 +241,37 @@ function init12StepOrderForm() {
             const selectedTimeSlot = document.querySelector('input[name="order-time"]:checked')?.value || '9:30 AM';
             const deliveryAddressVal = document.getElementById('delivery-address')?.value || '';
 
-            const payload = {
-                client_name: clientName,
-                client_email: clientEmail,
-                client_phone: clientPhone,
-                due_date: state.selectedDate || '2026-07-28',
-                time_slot: selectedTimeSlot,
-                fulfillment_type: state.fulfillment || 'pickup',
-                delivery_address: deliveryAddressVal,
-                items: state.selectedProducts,
-                flavors: selectedFlavors,
-                frosting: selectedFrosting,
-                fillings: selectedFillings,
-                special_notes: notesVal,
-                allergies: allergiesVal,
-                social_follows: selectedSocials,
-                total_price: state.total || 0,
-            };
+            const formData = new FormData();
+            formData.append('client_name', clientName);
+            formData.append('client_email', clientEmail);
+            formData.append('client_phone', clientPhone);
+            formData.append('due_date', state.selectedDate || '');
+            formData.append('time_slot', selectedTimeSlot);
+            formData.append('fulfillment_type', state.fulfillment || 'pickup');
+            formData.append('delivery_address', deliveryAddressVal);
+            formData.append('special_notes', notesVal);
+            formData.append('allergies', allergiesVal);
+            formData.append('total_price', state.total || 0);
+
+            formData.append('items', JSON.stringify(state.selectedProducts || []));
+            formData.append('flavors', JSON.stringify(selectedFlavors || []));
+            formData.append('frosting', JSON.stringify(selectedFrosting || []));
+            formData.append('fillings', JSON.stringify(selectedFillings || []));
+            formData.append('social_follows', JSON.stringify(selectedSocials || []));
+
+            if (state.uploadedFiles && state.uploadedFiles.length > 0) {
+                state.uploadedFiles.forEach((file) => {
+                    formData.append('inspiration_files[]', file);
+                });
+            }
 
             fetch('/order', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify(payload)
+                body: formData
             })
             .then(res => res.json())
             .then(data => {

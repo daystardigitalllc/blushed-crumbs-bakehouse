@@ -137,38 +137,67 @@ class StorefrontController extends Controller
             'time_slot' => 'nullable|string',
             'fulfillment_type' => 'nullable|string',
             'delivery_address' => 'nullable|string',
-            'items' => 'nullable|array',
-            'flavors' => 'nullable|array',
-            'frosting' => 'nullable|array',
-            'fillings' => 'nullable|array',
             'special_notes' => 'nullable|string',
             'allergies' => 'nullable|string',
-            'social_follows' => 'nullable|array',
             'total_price' => 'nullable|numeric',
         ]);
 
+        // Parse array parameters if passed as JSON strings via FormData
+        $items = $request->input('items');
+        if (is_string($items)) { $items = json_decode($items, true); }
+        
+        $flavors = $request->input('flavors');
+        if (is_string($flavors)) { $flavors = json_decode($flavors, true); }
+
+        $frosting = $request->input('frosting');
+        if (is_string($frosting)) { $frosting = json_decode($frosting, true); }
+
+        $fillings = $request->input('fillings');
+        if (is_string($fillings)) { $fillings = json_decode($fillings, true); }
+
+        $socialFollows = $request->input('social_follows');
+        if (is_string($socialFollows)) { $socialFollows = json_decode($socialFollows, true); }
+
+        // Process file uploads
+        $inspirationFiles = [];
+        if ($request->hasFile('inspiration_files')) {
+            $destinationPath = public_path('uploads/inspiration');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
+            foreach ($request->file('inspiration_files') as $file) {
+                if ($file->isValid()) {
+                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move($destinationPath, $filename);
+                    $inspirationFiles[] = 'uploads/inspiration/' . $filename;
+                }
+            }
+        }
+
         $orderNumber = 'BC-' . rand(1000, 9999);
-        $totalPrice = (float) ($validated['total_price'] ?? 0.00);
+        $totalPrice = (float) ($request->input('total_price') ?? 0.00);
         $depositAmount = round($totalPrice * 0.5, 2);
-        $dueDate = !empty($validated['due_date']) ? $validated['due_date'] : now()->addDays(7)->format('Y-m-d');
+        $dueDate = $request->input('due_date') ?: now()->addDays(7)->format('Y-m-d');
 
         $order = Order::create([
             'tenant_id' => $tenant->id,
             'order_number' => $orderNumber,
-            'client_name' => $validated['client_name'],
-            'client_email' => $validated['client_email'],
-            'client_phone' => $validated['client_phone'],
+            'client_name' => $request->input('client_name'),
+            'client_email' => $request->input('client_email'),
+            'client_phone' => $request->input('client_phone'),
             'due_date' => $dueDate,
-            'time_slot' => $validated['time_slot'] ?? '8:30 AM',
-            'fulfillment_type' => $validated['fulfillment_type'] ?? 'pickup',
-            'delivery_address' => $validated['delivery_address'] ?? null,
-            'items' => $validated['items'] ?? [],
-            'flavors' => $validated['flavors'] ?? [],
-            'frosting' => $validated['frosting'] ?? [],
-            'fillings' => $validated['fillings'] ?? [],
-            'special_notes' => $validated['special_notes'] ?? null,
-            'allergies' => $validated['allergies'] ?? null,
-            'social_follows' => $validated['social_follows'] ?? [],
+            'time_slot' => $request->input('time_slot', '8:30 AM'),
+            'fulfillment_type' => $request->input('fulfillment_type', 'pickup'),
+            'delivery_address' => $request->input('delivery_address'),
+            'items' => $items ?? [],
+            'flavors' => $flavors ?? [],
+            'frosting' => $frosting ?? [],
+            'fillings' => $fillings ?? [],
+            'special_notes' => $request->input('special_notes'),
+            'allergies' => $request->input('allergies'),
+            'social_follows' => $socialFollows ?? [],
+            'inspiration_files' => $inspirationFiles,
             'total_price' => $totalPrice,
             'deposit_amount' => $depositAmount,
             'status' => 'new',
