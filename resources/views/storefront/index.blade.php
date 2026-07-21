@@ -139,6 +139,29 @@
         </div>
     </section>
 
+    <!-- How It Works Section -->
+    <section class="how-it-works-section" style="padding:70px 25px; text-align:center; background:var(--pink-bg);">
+        <h2 class="section-title-script" style="margin-bottom:15px;">How Custom Ordering Works</h2>
+        <p style="max-width:600px; margin:0 auto 40px auto; color:var(--dark-text); font-size:1.05rem;">Ordering your dream cake in 3 simple steps</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:25px; max-width:1100px; margin:0 auto;">
+            <div class="category-card-exact" style="padding:25px; background:white; border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,0.05);">
+                <span style="font-size:2.5rem; display:block; margin-bottom:10px;">1️⃣</span>
+                <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:8px; color:var(--dark-text);">Pick Your Date &amp; Flavors</h3>
+                <p style="font-size:0.9rem; color:#666;">Use our 12-step form to choose your size, cake flavor, frosting, and upload your inspiration images.</p>
+            </div>
+            <div class="category-card-exact" style="padding:25px; background:white; border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,0.05);">
+                <span style="font-size:2.5rem; display:block; margin-bottom:10px;">2️⃣</span>
+                <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:8px; color:var(--dark-text);">Approve Design &amp; Deposit</h3>
+                <p style="font-size:0.9rem; color:#666;">Receive your custom invoice &amp; quote via email. Place a 50% deposit to lock in your date on our calendar.</p>
+            </div>
+            <div class="category-card-exact" style="padding:25px; background:white; border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,0.05);">
+                <span style="font-size:2.5rem; display:block; margin-bottom:10px;">3️⃣</span>
+                <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:8px; color:var(--dark-text);">Fresh Pickup or Delivery</h3>
+                <p style="font-size:0.9rem; color:#666;">We bake your creation fresh right before your event. Pick up at our kitchen or get venue delivery!</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Customer Reviews Section -->
     <section id="reviews" class="reviews-section">
         <h2 class="section-title-script">What Our Customers Say</h2>
@@ -148,7 +171,7 @@
                 <h4>Kristen Ramirez</h4>
             </div>
             <div class="cloud-review-card">
-                <p>"I ordered a strawberry smash cake for my 1 year old, with strawberries on top and custom icing and she devoured it ✨ The cake was so moist & icing wasn’t too sweet! Pick up process was super easy."</p>
+                <p>"I ordered a strawberry smash cake for my 1 year old, with strawberries on top and custom icing and she devoured it ✨ The cake was so moist &amp; icing wasn’t too sweet! Pick up process was super easy."</p>
                 <h4>Lynne Escue</h4>
             </div>
             <div class="cloud-review-card">
@@ -158,6 +181,25 @@
             <div class="cloud-review-card">
                 <p>"She was super friendly and easy to work with! The cake looked awesome, everything I was hoping for! ❤️"</p>
                 <h4>Pamela Cortes</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ & Bakery Policies Section -->
+    <section class="faq-policies-section" style="padding:70px 25px; background:#ffffff; text-align:center;">
+        <h2 class="section-title-script" style="margin-bottom:15px;">Frequently Asked Questions</h2>
+        <div style="max-width:850px; margin:0 auto; text-align:left; display:flex; flex-direction:column; gap:18px;">
+            <div style="background:var(--pink-bg); padding:20px; border-radius:14px; border-left:4px solid var(--primary);">
+                <h4 style="font-size:1.1rem; font-weight:700; color:var(--dark-text); margin-bottom:6px;">📅 How far in advance should I order?</h4>
+                <p style="font-size:0.92rem; color:#555; line-height:1.6;">We require at least 3 days advance notice for custom orders. For weddings and large multi-tier events, we recommend booking 2-4 weeks in advance to reserve your date.</p>
+            </div>
+            <div style="background:var(--pink-bg); padding:20px; border-radius:14px; border-left:4px solid var(--primary);">
+                <h4 style="font-size:1.1rem; font-weight:700; color:var(--dark-text); margin-bottom:6px;">💳 What is the deposit requirement?</h4>
+                <p style="font-size:0.92rem; color:#555; line-height:1.6;">A 50% non-refundable deposit is required at booking to secure your date. Remaining balance is due prior to pickup or delivery.</p>
+            </div>
+            <div style="background:var(--pink-bg); padding:20px; border-radius:14px; border-left:4px solid var(--primary);">
+                <h4 style="font-size:1.1rem; font-weight:700; color:var(--dark-text); margin-bottom:6px;">⚠️ Allergy Information</h4>
+                <p style="font-size:0.92rem; color:#555; line-height:1.6;">We operate under Tennessee cottage food laws. Our kitchen processes wheat, eggs, dairy, and nuts. Please disclose all food allergies during checkout!</p>
             </div>
         </div>
     </section>
