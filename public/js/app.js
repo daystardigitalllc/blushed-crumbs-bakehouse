@@ -419,6 +419,68 @@ function initAdminPortal() {
         });
     });
 
+    // Email Routing Form Handler
+    const emailForm = document.getElementById('email-routing-form');
+    if (emailForm) {
+        emailForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('admin-routing-email');
+            const statusEl = document.getElementById('email-save-status');
+
+            if (emailInput) {
+                const routingEmail = emailInput.value.trim();
+                localStorage.setItem('admin_routing_email', routingEmail);
+                if (statusEl) {
+                    statusEl.style.display = 'block';
+                    statusEl.innerText = `✅ Order Notification Email saved as: ${routingEmail}! Future form entries will route here.`;
+                }
+            }
+        });
+    }
+
+    // Add Custom Field / Question to Order Form Handler
+    const fieldForm = document.getElementById('add-field-form');
+    if (fieldForm) {
+        fieldForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const targetStepId = document.getElementById('field-target-step').value;
+            const labelText = document.getElementById('field-label').value;
+            const fieldType = document.getElementById('field-type').value;
+            const optionsText = document.getElementById('field-options').value;
+
+            const targetStep = document.getElementById(targetStepId);
+            if (targetStep) {
+                const fieldContainer = document.createElement('div');
+                fieldContainer.className = 'custom-baker-field';
+                fieldContainer.style.cssText = 'margin:15px 0; text-align:left; background:#fff7fa; padding:15px; border-radius:12px; border:1px solid #f8c6d7;';
+                
+                let fieldHtml = `<label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:6px;">${labelText}</label>`;
+                
+                if (fieldType === 'textarea') {
+                    fieldHtml += `<textarea placeholder="Type answer here..." style="width:100%; height:80px; padding:10px; border-radius:8px; border:1px solid #ccc;"></textarea>`;
+                } else if (fieldType === 'select') {
+                    const opts = optionsText.split(',').map(o => o.trim());
+                    fieldHtml += `<select style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">${opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
+                } else if (fieldType === 'file') {
+                    fieldHtml += `<input type="file" style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc; background:#fff;">`;
+                } else {
+                    fieldHtml += `<input type="text" placeholder="Type answer here..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">`;
+                }
+
+                fieldContainer.innerHTML = fieldHtml;
+                const cartBar = targetStep.querySelector('.cart-bar') || targetStep.querySelector('.nav-buttons');
+                if (cartBar) {
+                    targetStep.insertBefore(fieldContainer, cartBar);
+                } else {
+                    targetStep.appendChild(fieldContainer);
+                }
+
+                alert(`Custom field "${labelText}" added live to ${targetStepId.toUpperCase()} in customer order form!`);
+                fieldForm.reset();
+            }
+        });
+    }
+
     // Add Product Form
     const prodForm = document.getElementById('add-product-form');
     if (prodForm) {

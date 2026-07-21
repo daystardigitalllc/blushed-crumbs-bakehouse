@@ -424,15 +424,55 @@
                 </div>
             </div>
 
-            <!-- TAB 2: Form & Product Builder -->
+            <!-- TAB 2: CMS Form Builder & Email Routing Studio -->
             <div id="tab-form-builder" class="tab-content">
                 <div class="section-header">
-                    <h3>🛠️ Custom Order Form & Product Builder</h3>
-                    <p class="subtitle">Add items, update prices, upload product images, and customize your customer order form!</p>
+                    <h3>⚙️ CMS Form Builder & Email Routing Studio</h3>
+                    <p class="subtitle">Customize order form fields, add custom questions, edit live pricing, and set your order notification email address!</p>
                 </div>
 
+                <!-- EMAIL ROUTING SETTINGS CARD -->
+                <div class="form-builder-card" style="border: 2px solid #e67399; background: #fff7fa;">
+                    <h4 style="color:#5c1d37; display:flex; align-items:center; gap:8px;">✉️ Order Email Routing & Notifications</h4>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">Set the email address where all completed order form entries and custom requests will be automatically sent:</p>
+                    <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                        <input type="email" id="admin-routing-email" value="orders@blushedcrumbsbakehouse.com" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:280px; padding:12px; border-radius:10px; border:1px solid #ccc; font-size:0.95rem;">
+                        <button type="submit" class="btn btn-primary" style="padding:12px 24px;">💾 Save Email Routing</button>
+                    </form>
+                    <div id="email-save-status" style="margin-top:10px; font-weight:700; color:#28a745; font-size:0.88rem; display:none;"></div>
+                </div>
+
+                <!-- ADD CUSTOM QUESTION / FIELD CARD -->
                 <div class="form-builder-card">
-                    <h4>Add New Product & Price to Order Form</h4>
+                    <h4>➕ Add Custom Question or Field to Order Form</h4>
+                    <form id="add-field-form" class="form-builder-grid">
+                        <select id="field-target-step" style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+                            <option value="step-6">Step 6: Special Requests</option>
+                            <option value="step-3">Step 3: Flavors</option>
+                            <option value="step-4">Step 4: Frosting</option>
+                            <option value="step-5">Step 5: Fillings</option>
+                            <option value="step-8">Step 8: Allergies</option>
+                            <option value="step-10">Step 10: Inspiration Files</option>
+                        </select>
+
+                        <input type="text" id="field-label" placeholder="Question Title (e.g. Color Theme / Event Name)" required style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+
+                        <select id="field-type" style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+                            <option value="text">Single Line Text Input</option>
+                            <option value="textarea">Multi-line Textarea</option>
+                            <option value="select">Multiple Choice Select</option>
+                            <option value="file">File / Photo Upload</option>
+                        </select>
+
+                        <input type="text" id="field-options" placeholder="Options (comma separated if select)" style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+
+                        <button type="submit" class="btn btn-primary">+ Add Question to Form</button>
+                    </form>
+                </div>
+
+                <!-- ADD NEW PRODUCT & LIVE PRICE CARD -->
+                <div class="form-builder-card">
+                    <h4>🎂 Add New Product & Price to Order Form</h4>
                     <form id="add-product-form" class="form-builder-grid">
                         <input type="text" id="new-prod-name" placeholder="Product Name (e.g. 6” Heart Cake)" required style="padding:10px; border-radius:8px; border:1px solid #ccc;">
                         <input type="number" id="new-prod-price" placeholder="Price ($)" step="0.01" required style="padding:10px; border-radius:8px; border:1px solid #ccc;">
@@ -443,22 +483,23 @@
                             <option value="Treats">Treats</option>
                             <option value="Party Packs">Party Packs</option>
                         </select>
-                        <button type="submit" class="btn btn-primary">+ Add Item to Form</button>
+                        <button type="submit" class="btn btn-primary">+ Add Product Item</button>
                     </form>
                 </div>
 
+                <!-- LIVE PRODUCTS CATALOG LIST -->
                 <div class="form-builder-card">
-                    <h4>Current Items & Live Prices</h4>
+                    <h4>Current Product Catalog & Live Prices</h4>
                     <div id="products-admin-grid">
-                        <div class="product-item-row" style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;">
-                            <span><strong>6” Cake</strong> (Single Tier)</span>
+                        <div class="product-item-row" style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee;">
+                            <span><strong>6” Cake</strong> ($65.00)</span>
                             <div>
                                 <input type="number" value="65.00" style="width:80px; padding:5px; border-radius:6px; border:1px solid #ccc;">
                                 <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
                             </div>
                         </div>
-                        <div class="product-item-row" style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;">
-                            <span><strong>Baddie On a Budget 🎀</strong> (Single Tier)</span>
+                        <div class="product-item-row" style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee;">
+                            <span><strong>Baddie On a Budget 🎀</strong> ($45.00)</span>
                             <div>
                                 <input type="number" value="45.00" style="width:80px; padding:5px; border-radius:6px; border:1px solid #ccc;">
                                 <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
