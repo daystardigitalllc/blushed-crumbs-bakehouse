@@ -643,14 +643,26 @@
                                             @php $hlList = data_get($siteContent, 'highlights', []); @endphp
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                                 @for($h = 0; $h < 4; $h++)
-                                                    <div style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
-                                                        <label style="font-weight:700; font-size:0.8rem; color:#6d28d9;">Highlight Badge {{ $h+1 }}</label>
-                                                        <div style="display:flex; gap:8px; margin-top:6px; align-items:center;">
-                                                            <input type="text" id="hl-icon-input-{{ $h }}" name="highlights[{{ $h }}][icon]" value="{{ $hlList[$h]['icon'] ?? '🎂' }}" style="width:45px; text-align:center; padding:6px; border-radius:6px; border:1px solid #ccc; font-size:1.1rem;">
-                                                            <button type="button" class="btn btn-sm btn-outline" onclick="openIconPicker(document.getElementById('hl-icon-input-{{ $h }}'))" style="padding:4px 8px; font-size:0.78rem; border-color:#8b5cf6; color:#6d28d9;">🎨 Select Icon</button>
-                                                            <input type="text" name="highlights[{{ $h }}][title]" value="{{ $hlList[$h]['title'] ?? '' }}" placeholder="Title..." style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.85rem;">
+                                                    <div style="background:#FAF8FF; padding:14px; border-radius:10px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:8px;">
+                                                        <label style="font-weight:700; font-size:0.85rem; color:#6d28d9;">Highlight Badge {{ $h+1 }}</label>
+                                                        
+                                                        <div>
+                                                            <label style="font-size:0.78rem; color:#666; display:block; margin-bottom:3px; font-weight:600;">Icon</label>
+                                                            <div style="display:flex; gap:8px; align-items:center;">
+                                                                <input type="text" id="hl-icon-input-{{ $h }}" name="highlights[{{ $h }}][icon]" value="{{ $hlList[$h]['icon'] ?? '🎂' }}" style="width:50px; text-align:center; padding:6px; border-radius:6px; border:1px solid #ccc; font-size:1.1rem;">
+                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openIconPicker(document.getElementById('hl-icon-input-{{ $h }}'))" style="padding:5px 10px; font-size:0.8rem; border-color:#8b5cf6; color:#6d28d9;">🎨 Select Icon</button>
+                                                            </div>
                                                         </div>
-                                                        <input type="text" name="highlights[{{ $h }}][desc]" value="{{ $hlList[$h]['desc'] ?? '' }}" placeholder="Description..." style="width:100%; margin-top:6px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.82rem;">
+
+                                                        <div>
+                                                            <label style="font-size:0.78rem; color:#666; display:block; margin-bottom:3px; font-weight:600;">Title</label>
+                                                            <input type="text" name="highlights[{{ $h }}][title]" value="{{ $hlList[$h]['title'] ?? '' }}" placeholder="Badge Title (e.g. Easy Catering)" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.88rem; background:white;">
+                                                        </div>
+
+                                                        <div>
+                                                            <label style="font-size:0.78rem; color:#666; display:block; margin-bottom:3px; font-weight:600;">Description</label>
+                                                            <input type="text" name="highlights[{{ $h }}][desc]" value="{{ $hlList[$h]['desc'] ?? '' }}" placeholder="Badge Subtext..." style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem; background:white;">
+                                                        </div>
                                                     </div>
                                                 @endfor
                                             </div>
