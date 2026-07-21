@@ -931,30 +931,31 @@ body {
 #cart-summary strong { font-size: 1.2rem; color: var(--primary); }
 
 .nav-buttons {
-    display: flex !important;
+    display: inline-flex !important;
     flex-direction: row !important;
-    gap: 12px !important;
-    justify-content: space-between !important;
+    gap: 10px !important;
     align-items: center !important;
-    width: 100% !important;
+    justify-content: flex-end !important;
 }
 
 .next-btn {
     background: var(--primary);
     color: white;
     border: none;
-    padding: 12px 28px;
+    padding: 10px 24px;
     border-radius: 25px;
     cursor: pointer;
     font-weight: 700;
     font-size: 0.95rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
     transition: all 0.2s;
-    flex: 1;
-    display: flex;
+    min-width: 120px;
+    height: 42px;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    flex: 0 0 auto;
 }
 
 .next-btn:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); }
@@ -963,17 +964,19 @@ body {
 .back-btn {
     background: white;
     border: 2px solid #e0e0e0;
-    padding: 12px 22px;
+    padding: 10px 20px;
     border-radius: 25px;
     cursor: pointer;
     font-weight: 700;
     color: var(--dark-text);
     transition: all 0.2s;
-    flex: 0 0 auto;
-    display: flex;
+    min-width: 90px;
+    height: 42px;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    flex: 0 0 auto;
 }
 
 .back-btn:hover { background: #f5f5f5; }
@@ -1006,21 +1009,17 @@ body {
     .nav-buttons {
         display: flex !important;
         flex-direction: row !important;
-        gap: 10px !important;
+        gap: 8px !important;
         width: 100% !important;
-        padding: 12px 14px !important;
+        justify-content: space-between !important;
     }
     .nav-buttons .back-btn,
-    .nav-buttons .next-btn,
-    .nav-buttons button {
+    .nav-buttons .next-btn {
         flex: 1 !important;
         min-width: 0 !important;
-        padding: 12px 8px !important;
-        font-size: 0.9rem !important;
-        text-align: center !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
+        padding: 10px 6px !important;
+        font-size: 0.88rem !important;
+        height: 42px !important;
     }
     #product-grid, #flavor-list, #frosting-list, #filling-list, #social-grid {
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
@@ -1028,25 +1027,48 @@ body {
     }
 }
 
-/* Interactive Calendar Grid */
+/* Interactive Calendar Grid & Themed Day Boxes */
 #interactive-calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 10px;
+    gap: 8px;
     max-width: 420px;
-    margin: 25px auto;
+    margin: 20px auto;
     text-align: center;
 }
 
 .cal-day {
-    padding: 14px 0;
-    background: #eaffea;
-    border: 2px solid #b2eec4;
-    border-radius: 12px;
+    padding: 12px 0;
+    background: #ffffff;
+    border: 1.5px solid rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 700;
-    color: #2e7d32;
-    transition: all 0.2s;
+    color: var(--dark-text);
+    transition: all 0.2s ease;
+}
+
+.cal-day:hover:not(.booked) {
+    border-color: var(--primary);
+    background: rgba(230, 115, 153, 0.1);
+    transform: translateY(-2px);
+}
+
+.cal-day.booked {
+    background: #f1ede9 !important;
+    border-color: #e5ded7 !important;
+    color: #a89f97 !important;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    opacity: 0.65;
+}
+
+.cal-day.selected {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+    transform: scale(1.05);
 }
 
 .cal-day.booked {

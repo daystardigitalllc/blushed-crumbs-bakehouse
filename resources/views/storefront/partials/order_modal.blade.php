@@ -99,10 +99,9 @@
                             <div id="calendar-wrapper">
                                 <div class="wpbs-main-wrapper wpbs-main-wrapper-calendar-1">
                                     <div class="wpbs-container wpbs-calendar-1">
-                                        <h2>Custom Order Booking</h2>
                                         <div class="wpbs-legend" style="display:flex; justify-content:center; gap:20px; margin: 15px 0;">
-                                            <div class="wpbs-legend-item" style="color: #28a745; font-weight: 600;">🟢 Available</div>
-                                            <div class="wpbs-legend-item" style="color: #dc3545; font-weight: 600;">🔴 Booked / Unavailable</div>
+                                            <div class="wpbs-legend-item" style="color: var(--dark-text); font-weight: 700;"><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--primary); margin-right:6px;"></span> Available</div>
+                                            <div class="wpbs-legend-item" style="color: #888; font-weight: 600;"><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#e2d4c7; margin-right:6px;"></span> Booked / Unavailable</div>
                                         </div>
                                         <div id="interactive-calendar-grid"></div>
                                     </div>
