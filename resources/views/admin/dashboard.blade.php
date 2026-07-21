@@ -206,23 +206,23 @@
                         </div>
                         <div>
                             <label>Field Type / Template</label>
-                            <select id="field-type" onchange="toggleOptionsRow(this.value)">
-                                <option value="products">🛒 Product Selection (Product Catalog)</option>
-                                <option value="calendar">📅 Interactive Date Picker / Booking Calendar</option>
-                                <option value="flavors">🍰 Flavor Selection Grid</option>
-                                <option value="frosting">🧁 Frosting Selection Grid</option>
-                                <option value="fillings">🍫 Fillings Selection Grid</option>
-                                <option value="textarea">📄 Multi-line Textarea / Notes</option>
-                                <option value="fulfillment">🚚 Fulfillment Options &amp; Time Slots</option>
-                                <option value="allergies">⚠️ Allergy Notice &amp; Notes</option>
-                                <option value="social_discount">🎁 Social Media Follow Discounts</option>
-                                <option value="file_upload">📎 Inspiration Photo / File Upload</option>
-                                <option value="terms">📜 Terms &amp; Conditions Agreement</option>
-                                <option value="contact_info">👤 Contact Info &amp; Order Submission</option>
+                            <select id="field-type" onchange="toggleOptionsRow(this.value)" style="width:100%; max-width:100%; box-sizing:border-box; text-overflow:ellipsis;">
+                                <option value="products">🛒 Product Catalog</option>
+                                <option value="calendar">📅 Booking Calendar</option>
+                                <option value="flavors">🍰 Flavors Grid</option>
+                                <option value="frosting">🧁 Frosting Grid</option>
+                                <option value="fillings">🍫 Fillings Grid</option>
+                                <option value="textarea">📄 Textarea / Notes</option>
+                                <option value="fulfillment">🚚 Fulfillment &amp; Time Slots</option>
+                                <option value="allergies">⚠️ Allergy Notice</option>
+                                <option value="social_discount">🎁 Social Discounts</option>
+                                <option value="file_upload">📎 Inspiration Photo Upload</option>
+                                <option value="terms">📜 Terms &amp; Conditions</option>
+                                <option value="contact_info">👤 Contact Info &amp; Submit</option>
                                 <option value="text">📝 Single-Line Text</option>
-                                <option value="select">☑️ Multiple Choice (Select)</option>
-                                <option value="chips">🏷️ Select Chips / Tokens</option>
-                                <option value="datepicker">📅 Date Picker (Standard)</option>
+                                <option value="select">☑️ Select Dropdown</option>
+                                <option value="chips">🏷️ Select Chips</option>
+                                <option value="datepicker">📅 Date Picker</option>
                                 <option value="toggle">🔘 Yes / No Toggle</option>
                             </select>
                         </div>

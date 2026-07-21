@@ -2140,10 +2140,18 @@ body {
     .form-builder-card input[type="text"],
     .form-builder-card input[type="email"],
     .form-builder-card input[type="number"],
-    .form-builder-card select {
+    .form-builder-card select,
+    #field-type {
         font-size: 16px !important; /* Prevents auto-zoom on iOS safari */
         height: 48px !important;
         border-radius: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        padding-right: 32px !important;
     }
 
     #save-form-schema-btn {
