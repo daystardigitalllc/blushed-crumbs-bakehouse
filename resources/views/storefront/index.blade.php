@@ -204,11 +204,11 @@
         <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Logo">
     </div>
     <div class="footer-nav">
-        <a href="{{ route('storefront.index') }}">Home</a>
-        <a href="{{ route('storefront.about') }}">About</a>
-        <a href="{{ route('storefront.gallery') }}">Gallery</a>
+        <a href="{{ route('storefront.index') }}" class="footer-link">Home</a>
+        <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
+        <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
     </div>
-    <p class="copyright-text">Copyright © 2026 {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }} | Powered by <a href="https://bakery.pro" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:none;">Bakery.Pro</a> — <em>Want your own bakery website?</em></p>
+    <p class="copyright-text">Copyright &copy; 2026 {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }} | Powered by <a href="https://bakery.pro" target="_blank" class="footer-link footer-brand-link">Bakery.Pro</a> &mdash; <em>Want your own bakery website?</em></p>
 </footer>
 
 <script src="{{ asset('js/app.js') }}"></script>

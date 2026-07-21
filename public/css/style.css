@@ -791,10 +791,12 @@ body {
 
 /* Site Footer */
 .site-footer {
-    background-color: #401829;
-    color: white;
+    background-color: var(--footer-bg, #401829);
+    color: var(--footer-text, #ffffff);
     padding: 40px 25px;
     text-align: center;
+    border-top: var(--footer-border-top, none);
+    transition: background-color 0.3s ease;
 }
 
 .footer-logo img { height: 90px; margin-bottom: 15px; }
@@ -806,11 +808,69 @@ body {
     margin-bottom: 20px;
 }
 
-.footer-nav a {
-    color: var(--pink-accent);
+.footer-nav a,
+.footer-link {
+    color: var(--footer-link-color, #ff8dae);
     text-decoration: none;
-    font-family: 'Great Vibes', cursive;
-    font-size: 2rem;
+    font-family: var(--footer-link-font, 'Great Vibes', cursive);
+    font-size: var(--footer-link-size, 2rem);
+    font-weight: var(--footer-link-weight, 400);
+    transition: opacity 0.2s ease;
+}
+
+.footer-nav a:hover,
+.footer-link:hover {
+    opacity: 0.75;
+}
+
+.copyright-text {
+    font-size: 0.85rem;
+    opacity: 0.75;
+    margin-top: 12px;
+}
+
+/* ─── Sweet & Elegant (default — deep plum) ─── */
+body.theme-sweet_elegant {
+    --footer-bg: #401829;
+    --footer-text: #ffffff;
+    --footer-border-top: none;
+    --footer-link-color: #ff8dae;
+    --footer-link-font: 'Great Vibes', cursive;
+    --footer-link-size: 2rem;
+    --footer-link-weight: 400;
+}
+
+/* ─── Rustic Kitchen (warm dark walnut) ─── */
+body.theme-rustic_kitchen {
+    --footer-bg: #4a3427;
+    --footer-text: #f9f5f0;
+    --footer-border-top: 4px solid #c86d51;
+    --footer-link-color: #c86d51;
+    --footer-link-font: 'Georgia', serif;
+    --footer-link-size: 1.2rem;
+    --footer-link-weight: 700;
+}
+
+/* ─── Modern Bakery (deep navy slate) ─── */
+body.theme-modern_bakery {
+    --footer-bg: #0f172a;
+    --footer-text: #e2e8f0;
+    --footer-border-top: 3px solid #334155;
+    --footer-link-color: #38bdf8;
+    --footer-link-font: 'Inter', sans-serif;
+    --footer-link-size: 1rem;
+    --footer-link-weight: 700;
+}
+
+/* ─── Playful Treats (deep cyan teal) ─── */
+body.theme-playful_treats {
+    --footer-bg: #164e63;
+    --footer-text: #ffffff;
+    --footer-border-top: 4px dashed #06b6d4;
+    --footer-link-color: #67e8f9;
+    --footer-link-font: 'Poppins', sans-serif;
+    --footer-link-size: 1.1rem;
+    --footer-link-weight: 700;
 }
 
 /* POPUP ORDER FORM MODAL STYLING */
