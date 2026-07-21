@@ -11,12 +11,18 @@
     --card-shadow: 0 8px 30px rgba(74, 33, 51, 0.08);
 }
 
-/* 🎨 Curated Bakery Theme Classes */
+/* 🎨 CURATED BAKERY THEME ENGINE (Fully Dynamic Theme System) */
+
+/* 1. 🌸 SWEET & ELEGANT THEME (Default Romantic Vintage Pink) */
 body.theme-sweet_elegant {
     --primary: #e67399;
     --primary-hover: #d25a82;
     --pink-bg: #fcebf1;
     --dark-text: #4a2133;
+    --theme-heading-font: 'Great Vibes', cursive;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #fcebf1;
+    --theme-accent-bg: #401829;
     background-color: #fcebf1;
 }
 
@@ -26,30 +32,59 @@ body.theme-rustic_kitchen {
     --primary-hover: #a85238;
     --pink-bg: #f9f5f0;
     --dark-text: #2d241e;
+    --theme-heading-font: 'Georgia', serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #f9f5f0;
+    --theme-accent-bg: #4a3427;
     font-family: 'Georgia', 'Times New Roman', serif;
     background-color: #f9f5f0;
 }
 body.theme-rustic_kitchen h1,
 body.theme-rustic_kitchen h2,
 body.theme-rustic_kitchen h3,
-body.theme-rustic_kitchen .section-title-script {
+body.theme-rustic_kitchen .subheading,
+body.theme-rustic_kitchen .section-title-script,
+body.theme-rustic_kitchen .whimsical-col-right h2 {
     font-family: 'Georgia', serif !important;
     color: #2d241e !important;
     letter-spacing: 0.5px;
 }
 body.theme-rustic_kitchen .hero-cloud-elementor-top,
-body.theme-rustic_kitchen .hero-cloud-elementor-bottom {
+body.theme-rustic_kitchen .hero-cloud-elementor-bottom,
+body.theme-rustic_kitchen .raining-cake {
     display: none !important;
+}
+body.theme-rustic_kitchen .site-header {
+    background-color: #f2e9e1 !important;
+    border-bottom: 2px solid #e2d4c7;
+}
+body.theme-rustic_kitchen .hero-section {
+    background-color: #f9f5f0 !important;
+}
+body.theme-rustic_kitchen .categories-section,
+body.theme-rustic_kitchen .reviews-section {
+    background: #f4ede6 !important;
+}
+body.theme-rustic_kitchen .highlights-bar {
+    background: #c86d51 !important;
+}
+body.theme-rustic_kitchen .whimsical-section {
+    background-color: #4a3427 !important;
+    color: #f9f5f0 !important;
+}
+body.theme-rustic_kitchen .whimsical-section h2 {
+    color: #f9f5f0 !important;
 }
 body.theme-rustic_kitchen .btn-primary,
 body.theme-rustic_kitchen .nav-order-btn {
-    background-color: #c86d51 !important;
+    background: #c86d51 !important;
     border-color: #a85238 !important;
     border-radius: 4px !important;
     box-shadow: 0 4px 10px rgba(200, 109, 81, 0.25) !important;
 }
 body.theme-rustic_kitchen .category-card-exact,
-body.theme-rustic_kitchen .cloud-review-card {
+body.theme-rustic_kitchen .cloud-review-card,
+body.theme-rustic_kitchen .category-image-frame {
     border-radius: 6px !important;
     border: 1px solid #e2d4c7 !important;
     background: #ffffff !important;
@@ -62,31 +97,60 @@ body.theme-modern_bakery {
     --primary-hover: #1e293b;
     --pink-bg: #f8fafc;
     --dark-text: #0f172a;
+    --theme-heading-font: 'Inter', sans-serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #f8fafc;
+    --theme-accent-bg: #0f172a;
     font-family: 'Inter', sans-serif;
     background-color: #f8fafc;
 }
 body.theme-modern_bakery h1,
 body.theme-modern_bakery h2,
 body.theme-modern_bakery h3,
-body.theme-modern_bakery .section-title-script {
+body.theme-modern_bakery .subheading,
+body.theme-modern_bakery .section-title-script,
+body.theme-modern_bakery .whimsical-col-right h2 {
     font-family: 'Inter', sans-serif !important;
     font-weight: 800 !important;
     color: #0f172a !important;
-    letter-spacing: -1px !important;
+    letter-spacing: -1.5px !important;
 }
 body.theme-modern_bakery .hero-cloud-elementor-top,
-body.theme-modern_bakery .hero-cloud-elementor-bottom {
+body.theme-modern_bakery .hero-cloud-elementor-bottom,
+body.theme-modern_bakery .raining-cake {
     display: none !important;
+}
+body.theme-modern_bakery .site-header {
+    background-color: #ffffff !important;
+    border-bottom: 2px solid #0f172a;
+}
+body.theme-modern_bakery .hero-section {
+    background-color: #ffffff !important;
+}
+body.theme-modern_bakery .categories-section,
+body.theme-modern_bakery .reviews-section {
+    background: #f1f5f9 !important;
+}
+body.theme-modern_bakery .highlights-bar {
+    background: #0f172a !important;
+}
+body.theme-modern_bakery .whimsical-section {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+}
+body.theme-modern_bakery .whimsical-section h2 {
+    color: #ffffff !important;
 }
 body.theme-modern_bakery .btn-primary,
 body.theme-modern_bakery .nav-order-btn {
-    background-color: #0f172a !important;
+    background: #0f172a !important;
     color: #ffffff !important;
     border-radius: 8px !important;
     box-shadow: 4px 4px 0px #000000 !important;
 }
 body.theme-modern_bakery .category-card-exact,
-body.theme-modern_bakery .cloud-review-card {
+body.theme-modern_bakery .cloud-review-card,
+body.theme-modern_bakery .category-image-frame {
     border-radius: 12px !important;
     border: 2px solid #0f172a !important;
     background: #ffffff !important;
@@ -99,26 +163,57 @@ body.theme-playful_treats {
     --primary-hover: #0891b2;
     --pink-bg: #ecfeff;
     --dark-text: #164e63;
+    --theme-heading-font: 'Poppins', sans-serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #ecfeff;
+    --theme-accent-bg: #0e7490;
     font-family: 'Poppins', sans-serif;
     background-color: #ecfeff;
 }
 body.theme-playful_treats h1,
 body.theme-playful_treats h2,
 body.theme-playful_treats h3,
-body.theme-playful_treats .section-title-script {
+body.theme-playful_treats .subheading,
+body.theme-playful_treats .section-title-script,
+body.theme-playful_treats .whimsical-col-right h2 {
     font-family: 'Poppins', sans-serif !important;
     font-weight: 800 !important;
     color: #0e7490 !important;
 }
+body.theme-playful_treats .hero-cloud-elementor-top,
+body.theme-playful_treats .hero-cloud-elementor-bottom {
+    display: block !important;
+}
+body.theme-playful_treats .site-header {
+    background-color: #cffaff !important;
+}
+body.theme-playful_treats .hero-section {
+    background-color: #ecfeff !important;
+}
+body.theme-playful_treats .categories-section,
+body.theme-playful_treats .reviews-section {
+    background: #e0f2fe !important;
+}
+body.theme-playful_treats .highlights-bar {
+    background: #06b6d4 !important;
+}
+body.theme-playful_treats .whimsical-section {
+    background-color: #164e63 !important;
+    color: #ffffff !important;
+}
+body.theme-playful_treats .whimsical-section h2 {
+    color: #ffffff !important;
+}
 body.theme-playful_treats .btn-primary,
 body.theme-playful_treats .nav-order-btn {
-    background-color: #f43f5e !important;
+    background: #f43f5e !important;
     color: #ffffff !important;
     border-radius: 30px !important;
     box-shadow: 0 8px 25px rgba(244, 63, 94, 0.35) !important;
 }
 body.theme-playful_treats .category-card-exact,
-body.theme-playful_treats .cloud-review-card {
+body.theme-playful_treats .cloud-review-card,
+body.theme-playful_treats .category-image-frame {
     border-radius: 24px !important;
     border: 3px solid #67e8f9 !important;
     background: #ffffff !important;
