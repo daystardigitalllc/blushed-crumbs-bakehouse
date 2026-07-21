@@ -310,15 +310,16 @@
 
                 <div class="form-builder-card">
                     <h4>Upload Photo From Device</h4>
-                    <form id="add-gallery-form" style="display:flex; flex-direction:column; gap:18px;">
+                    <form id="add-gallery-form" action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:18px;">
+                        @csrf
                         <div class="form-builder-grid">
                             <div>
                                 <label>Photo Title</label>
-                                <input type="text" id="gal-title" placeholder="e.g. Lavender Crown Vintage Cake" required>
+                                <input type="text" id="gal-title" name="title" placeholder="e.g. Lavender Crown Vintage Cake" required>
                             </div>
                             <div>
                                 <label>Gallery Category</label>
-                                <select id="gal-category">
+                                <select id="gal-category" name="category">
                                     <option value="Cakes">Custom Cakes</option>
                                     <option value="Cupcakes">Cupcakes & Shooters</option>
                                     <option value="Treats">Chocolate Treats</option>
@@ -332,10 +333,10 @@
                             <label>Select Image File From Your Device</label>
                             <div id="gal-device-dropzone" style="border:2px dashed #e67399; background:#fff7fa; padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
                                 <span style="font-size:2.5rem; color:#e67399; display:block; margin-bottom:8px;">📷</span>
-                                <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;">Click to select photo from device or drag image here</p>
-                                <span style="font-size:12px; color:#888;">Supports JPG, PNG, WEBP</span>
+                                <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photo from device or drag image here</p>
+                                <span style="font-size:12px; color:#888;">Supports JPG, PNG, WEBP, GIF (Up to 10MB)</span>
                             </div>
-                            <input type="file" id="gal-image-file" accept="image/*" style="display:none;">
+                            <input type="file" id="gal-image-file" name="image" accept="image/*" style="display:none;" required>
                         </div>
 
                         <!-- LIVE PREVIEW CONTAINER -->
@@ -344,7 +345,7 @@
                             <p style="font-weight:700; color:#28a745; margin-top:6px; font-size:0.9rem;">✅ Photo ready for publish</p>
                         </div>
 
-                        <button type="submit" class="btn btn-primary" style="padding:14px;">🚀 Publish Photo to Live Gallery</button>
+                        <button type="submit" id="gal-submit-btn" class="btn btn-primary" style="padding:14px;">🚀 Publish Photo to Live Gallery</button>
                     </form>
                 </div>
 
@@ -352,7 +353,7 @@
                     <h4>Current Published Gallery Photos</h4>
                     <div id="admin-gallery-list">
                         @foreach($gallery as $item)
-                            <div style="display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+                            <div class="admin-gallery-item-row" data-id="{{ $item->id }}" style="display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
                                 <div style="display:flex; align-items:center; gap:15px;">
                                     @php $src = $item->image_url ?? $item->image_path; @endphp
                                     <img src="{{ asset($src) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
@@ -360,9 +361,8 @@
                                         <strong style="color:#5c1d37;">{{ $item->title }}</strong><br>
                                         <span style="font-size:0.8rem; color:#e67399; font-weight:600;">{{ $item->category }}</span>
                                     </div>
-
                                 </div>
-                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Delete</button>
+                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
                             </div>
                         @endforeach
                     </div>

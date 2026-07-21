@@ -467,21 +467,60 @@ function initAdminPortal() {
     });
 
     // Device Gallery File Preview Handler
+    // Device Gallery File Preview & Drag-and-Drop Handler
     const galFileInput = document.getElementById('gal-image-file');
+    const galDropzone = document.getElementById('gal-device-dropzone');
     const galPreviewWrap = document.getElementById('gal-upload-preview');
     const galPreviewImg = document.getElementById('gal-preview-img');
+    const galDropText = document.getElementById('gal-dropzone-text');
 
     if (galFileInput && galPreviewImg) {
-        galFileInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
+        const updatePreview = (file) => {
+            if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     galPreviewImg.src = ev.target.result;
                     if (galPreviewWrap) galPreviewWrap.style.display = 'block';
+                    if (galDropText) galDropText.innerHTML = `✅ Selected: <strong>${file.name}</strong>`;
                 };
-                reader.readAsDataURL(e.target.files[0]);
+                reader.readAsDataURL(file);
+            }
+        };
+
+        galFileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                updatePreview(e.target.files[0]);
             }
         });
+
+        if (galDropzone) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                galDropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }, false);
+            });
+
+            galDropzone.addEventListener('dragover', () => {
+                galDropzone.style.borderColor = '#5c1d37';
+                galDropzone.style.background = '#fcebf1';
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                galDropzone.addEventListener(eventName, () => {
+                    galDropzone.style.borderColor = '#e67399';
+                    galDropzone.style.background = '#fff7fa';
+                });
+            });
+
+            galDropzone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                if (dt.files && dt.files[0]) {
+                    galFileInput.files = dt.files;
+                    updatePreview(dt.files[0]);
+                }
+            });
+        }
     }
 
     // Custom Payment Method Builder Handler
@@ -881,123 +920,139 @@ function initAdminPortal() {
         });
     }
 
-    // Add Gallery Image Form (Device Upload Supported!)
+    // Add Gallery Image Form (Device Upload Supported via AJAX!)
     const galleryForm = document.getElementById('add-gallery-form');
     if (galleryForm) {
         galleryForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const titleInput = document.getElementById('gal-title');
-            const catInput = document.getElementById('gal-category');
+            const submitBtn = document.getElementById('gal-submit-btn');
             const fileInput = document.getElementById('gal-image-file');
 
-            const title = titleInput ? titleInput.value : 'Custom Bakery Creation';
-            const category = catInput ? catInput.value : 'Cakes';
-
-            let imageSrc = '/images/IMG_8117.jpg';
-
-            if (galPreviewImg && galPreviewImg.src && galPreviewImg.src.startsWith('data:image')) {
-                imageSrc = galPreviewImg.src;
-            } else if (fileInput && fileInput.files && fileInput.files[0]) {
-                imageSrc = URL.createObjectURL(fileInput.files[0]);
+            if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+                alert('Please select an image file to upload!');
+                return;
             }
 
-            const photoItem = { title, category, imageSrc };
+            const formData = new FormData(galleryForm);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-            // Persist to localStorage
-            try {
-                let saved = localStorage.getItem('custom_gallery_photos');
-                let list = saved ? JSON.parse(saved) : [];
-                list.unshift(photoItem);
-                localStorage.setItem('custom_gallery_photos', JSON.stringify(list));
-            } catch(err) {}
-
-            const mainGalleryGrid = document.getElementById('public-gallery-grid');
-            if (mainGalleryGrid) {
-                const card = document.createElement('div');
-                card.className = 'gallery-card';
-                card.dataset.category = category;
-                card.onclick = () => openLightbox(imageSrc, title);
-                card.innerHTML = `
-                    <div class="gallery-card-img-wrap">
-                        <img src="${imageSrc}" alt="${title}">
-                    </div>
-                    <div class="gallery-card-info">
-                        <h4>${title}</h4>
-                        <span class="gallery-tag">${category}</span>
-                    </div>
-                `;
-                mainGalleryGrid.prepend(card);
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = '⏳ Uploading Photo...';
             }
 
-            const adminGalleryList = document.getElementById('admin-gallery-list');
-            if (adminGalleryList) {
-                const adminItem = document.createElement('div');
-                adminItem.style.cssText = 'display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);';
-                adminItem.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <img src="${imageSrc}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
-                        <div>
-                            <strong style="color:#5c1d37;">${title}</strong><br>
-                            <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${category}</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Delete</button>
-                `;
-                adminGalleryList.prepend(adminItem);
-            }
+            fetch('/admin/gallery', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.item) {
+                    const item = data.item;
 
-            alert(`Photo "${title}" published live from device to your /gallery page!`);
-            galleryForm.reset();
-            if (galPreviewWrap) galPreviewWrap.style.display = 'none';
+                    // Prepend to Admin Gallery List
+                    const adminGalleryList = document.getElementById('admin-gallery-list');
+                    if (adminGalleryList) {
+                        const adminItem = document.createElement('div');
+                        adminItem.className = 'admin-gallery-item-row';
+                        adminItem.dataset.id = item.id;
+                        adminItem.style.cssText = 'display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);';
+                        adminItem.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:15px;">
+                                <img src="${item.image_url}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
+                                <div>
+                                    <strong style="color:#5c1d37;">${item.title}</strong><br>
+                                    <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${item.category}</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem(${item.id}, this)">Delete</button>
+                        `;
+                        adminGalleryList.prepend(adminItem);
+                    }
+
+                    // Prepend to Public Storefront Gallery Grid
+                    const mainGalleryGrid = document.getElementById('public-gallery-grid');
+                    if (mainGalleryGrid) {
+                        // Remove empty placeholder message if present
+                        const emptyMsg = mainGalleryGrid.querySelector('div[style*="grid-column"]');
+                        if (emptyMsg) emptyMsg.remove();
+
+                        const card = document.createElement('div');
+                        card.className = 'gallery-card';
+                        card.dataset.category = item.category;
+                        card.dataset.id = item.id;
+                        card.onclick = () => openLightbox(item.image_url, item.title);
+                        card.innerHTML = `
+                            <div class="gallery-card-img-wrap">
+                                <img src="${item.image_url}" alt="${item.title}">
+                            </div>
+                            <div class="gallery-card-info">
+                                <h4>${item.title}</h4>
+                                <span class="gallery-tag">${item.category}</span>
+                            </div>
+                        `;
+                        mainGalleryGrid.prepend(card);
+                    }
+
+                    alert(`Success: "${item.title}" published live to your gallery!`);
+                    galleryForm.reset();
+                    if (galPreviewWrap) galPreviewWrap.style.display = 'none';
+                    if (galDropText) galDropText.innerText = 'Click to select photo from device or drag image here';
+                } else {
+                    alert('Upload Error: ' + (data.message || 'Could not upload image. Please try again.'));
+                }
+            })
+            .catch(err => {
+                console.error('Gallery Upload Error:', err);
+                alert('An error occurred while uploading. Please check the file format/size and try again.');
+            })
+            .finally(() => {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = '🚀 Publish Photo to Live Gallery';
+                }
+            });
         });
     }
 
-    // Load persisted custom gallery photos on page load
-    (function loadPersistedGalleryPhotos() {
-        try {
-            let saved = localStorage.getItem('custom_gallery_photos');
-            if (!saved) return;
-            let list = JSON.parse(saved);
+    // Global Delete Gallery Item Function
+    window.deleteGalleryItem = function(id, btnElement) {
+        if (!confirm('Are you sure you want to delete this gallery photo?')) return;
 
-            const mainGalleryGrid = document.getElementById('public-gallery-grid');
-            const adminGalleryList = document.getElementById('admin-gallery-list');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-            list.forEach(item => {
-                if (mainGalleryGrid) {
-                    const card = document.createElement('div');
-                    card.className = 'gallery-card';
-                    card.dataset.category = item.category;
-                    card.onclick = () => openLightbox(item.imageSrc, item.title);
-                    card.innerHTML = `
-                        <div class="gallery-card-img-wrap">
-                            <img src="${item.imageSrc}" alt="${item.title}">
-                        </div>
-                        <div class="gallery-card-info">
-                            <h4>${item.title}</h4>
-                            <span class="gallery-tag">${item.category}</span>
-                        </div>
-                    `;
-                    mainGalleryGrid.prepend(card);
-                }
+        fetch('/admin/gallery/' + id, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Remove from Admin Dashboard List
+                const row = btnElement ? btnElement.closest('.admin-gallery-item-row') : document.querySelector(`.admin-gallery-item-row[data-id="${id}"]`);
+                if (row) row.remove();
 
-                if (adminGalleryList) {
-                    const adminItem = document.createElement('div');
-                    adminItem.style.cssText = 'display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);';
-                    adminItem.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:15px;">
-                            <img src="${item.imageSrc}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
-                            <div>
-                                <strong style="color:#5c1d37;">${item.title}</strong><br>
-                                <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${item.category}</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Delete</button>
-                    `;
-                    adminGalleryList.prepend(adminItem);
-                }
-            });
-        } catch(e) {}
-    })();
+                // Remove from Public Gallery Grid
+                const card = document.querySelector(`#public-gallery-grid .gallery-card[data-id="${id}"]`);
+                if (card) card.remove();
+
+                alert('Gallery photo deleted successfully.');
+            } else {
+                alert('Error: ' + (data.message || 'Could not delete gallery item.'));
+            }
+        })
+        .catch(err => {
+            console.error('Delete Gallery Error:', err);
+            alert('An error occurred while deleting the gallery photo.');
+        });
+    };
 
     // Add Review Form
     const revForm = document.getElementById('add-review-form');

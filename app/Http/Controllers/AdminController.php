@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use App\Models\Tenant;
 use App\Models\Order;
 use App\Models\Invoice;
@@ -15,7 +17,20 @@ class AdminController extends Controller
 {
     public function dashboard(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
+        if (!$tenant) {
+            $tenant = Tenant::firstOrCreate(
+                ['slug' => 'blushedcrumbs'],
+                [
+                    'name' => 'Blushed Crumbs Bakehouse',
+                    'domain' => 'blushed-crumbs-bakehouse.test',
+                    'subdomain' => 'blushedcrumbs',
+                    'owner_name' => 'Baker',
+                    'email' => 'orders@blushedcrumbsbakehouse.com',
+                    'plan_tier' => 'pro',
+                ]
+            );
+        }
 
         // Key feature: Orders sorted by due_date ASC so the baker sees what is due first!
         $urgentOrders = Order::where('tenant_id', $tenant->id)
@@ -35,4 +50,87 @@ class AdminController extends Controller
             'products', 'reviews', 'gallery', 'supportTickets'
         ));
     }
+
+    public function storeGallery(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
+        if (!$tenant) {
+            $tenant = Tenant::firstOrCreate(
+                ['slug' => 'blushedcrumbs'],
+                [
+                    'name' => 'Blushed Crumbs Bakehouse',
+                    'domain' => 'blushed-crumbs-bakehouse.test',
+                    'subdomain' => 'blushedcrumbs',
+                    'owner_name' => 'Baker',
+                    'email' => 'orders@blushedcrumbsbakehouse.com',
+                    'plan_tier' => 'pro',
+                ]
+            );
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = time() . '_' . Str::slug($request->title) . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('gallery', $fileName, 'public');
+            $imageUrl = 'storage/' . $path;
+
+            $galleryItem = GalleryItem::create([
+                'tenant_id' => $tenant->id,
+                'title' => $request->title,
+                'category' => $request->category,
+                'image_url' => $imageUrl,
+            ]);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Photo published to live gallery!',
+                    'item' => [
+                        'id' => $galleryItem->id,
+                        'title' => $galleryItem->title,
+                        'category' => $galleryItem->category,
+                        'image_url' => asset($galleryItem->image_url),
+                        'raw_url' => $galleryItem->image_url,
+                    ],
+                ]);
+            }
+
+            return redirect()->route('admin.dashboard')->with('success', 'Photo published to live gallery!');
+        }
+
+        return response()->json(['success' => false, 'message' => 'No image file uploaded.'], 422);
+    }
+
+    public function destroyGallery(Request $request, $id)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
+        if (!$tenant) {
+            return response()->json(['success' => false, 'message' => 'Tenant not found.'], 404);
+        }
+
+        $item = GalleryItem::where('tenant_id', $tenant->id)->findOrFail($id);
+
+        if ($item->image_url && str_starts_with($item->image_url, 'storage/')) {
+            $relativePath = str_replace('storage/', '', $item->image_url);
+            Storage::disk('public')->delete($relativePath);
+        }
+
+        $item->delete();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Gallery photo deleted successfully.',
+            ]);
+        }
+
+        return redirect()->route('admin.dashboard')->with('success', 'Gallery photo deleted successfully.');
+    }
 }
+

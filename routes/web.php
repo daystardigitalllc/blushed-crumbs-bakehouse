@@ -11,3 +11,6 @@ Route::get('/gallery', [StorefrontController::class, 'gallery'])->name('storefro
 
 // Bakesy Mobile Admin Dashboard
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::post('/admin/gallery', [AdminController::class, 'storeGallery'])->name('admin.gallery.store');
+Route::delete('/admin/gallery/{id}', [AdminController::class, 'destroyGallery'])->name('admin.gallery.destroy');
+
