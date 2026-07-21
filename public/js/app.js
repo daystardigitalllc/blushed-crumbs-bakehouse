@@ -874,7 +874,7 @@ function initAdminPortal() {
     window.toggleOptionsRow = function(val) {
         const optRow = document.getElementById('field-options-row');
         if (optRow) {
-            const needsOptions = ['select', 'chips', 'flavors', 'frosting', 'fillings', 'social_discount'].includes(val);
+            const needsOptions = ['select', 'flavors', 'frosting', 'fillings', 'social_discount'].includes(val);
             optRow.style.display = needsOptions ? 'block' : 'none';
             if (needsOptions) {
                 const container = document.getElementById('option-rows-container');

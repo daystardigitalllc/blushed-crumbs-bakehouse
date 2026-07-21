@@ -213,7 +213,6 @@
                                 <option value="contact_info">👤 Contact Info &amp; Submit</option>
                                 <option value="text">📝 Single-Line Text</option>
                                 <option value="select">☑️ Select Dropdown</option>
-                                <option value="chips">🏷️ Select Chips</option>
                                 <option value="datepicker">📅 Date Picker</option>
                                 <option value="toggle">🔘 Yes / No Toggle</option>
                             </select>
