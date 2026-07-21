@@ -196,16 +196,8 @@
                 <div class="form-builder-card">
                     <h4>➕ Add Step or Field to Order Builder</h4>
                     <form id="add-field-form" class="form-builder-grid">
-                        <div>
-                            <label>Step Header / Title</label>
-                            <input type="text" id="field-label" placeholder="e.g. Choose Your Flavors, Select Crust Type…" required>
-                        </div>
-                        <div>
-                            <label>Step Subtext / Directions</label>
-                            <input type="text" id="field-description" placeholder="e.g. Select all options that apply to your order">
-                        </div>
-                        <div>
-                            <label>Field Type / Template</label>
+                        <div style="grid-column: 1 / -1;">
+                            <label style="font-weight:700; color:#5c1d37;">Field Type / Template</label>
                             <select id="field-type" onchange="toggleOptionsRow(this.value)" style="width:100%; max-width:100%; box-sizing:border-box; text-overflow:ellipsis;">
                                 <option value="products">🛒 Product Catalog</option>
                                 <option value="calendar">📅 Booking Calendar</option>
@@ -225,6 +217,14 @@
                                 <option value="datepicker">📅 Date Picker</option>
                                 <option value="toggle">🔘 Yes / No Toggle</option>
                             </select>
+                        </div>
+                        <div>
+                            <label>Step Header / Title</label>
+                            <input type="text" id="field-label" placeholder="e.g. Choose Your Flavors, Select Crust Type…" required>
+                        </div>
+                        <div>
+                            <label>Step Subtext / Directions</label>
+                            <input type="text" id="field-description" placeholder="e.g. Select all options that apply to your order">
                         </div>
                         <div id="field-options-row" style="grid-column: 1 / -1; margin-top: 10px;">
                             <label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:8px;">
