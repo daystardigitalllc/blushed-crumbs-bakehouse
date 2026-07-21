@@ -2113,3 +2113,248 @@ body {
     color: #a71d2a;
 }
 
+/* ============================================
+   MOBILE-FIRST RESPONSIVE OVERRIDES (ADMIN & STOREFRONT)
+   ============================================ */
+@media (max-width: 768px) {
+    /* 1. Admin Form Studio Mobile Enhancements */
+    .form-builder-card {
+        padding: 18px 14px !important;
+        border-radius: 16px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .form-builder-card > div[style*="display:flex"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    .form-builder-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .form-builder-grid input,
+    .form-builder-grid select,
+    .form-builder-card input[type="text"],
+    .form-builder-card input[type="email"],
+    .form-builder-card input[type="number"],
+    .form-builder-card select {
+        font-size: 16px !important; /* Prevents auto-zoom on iOS safari */
+        height: 48px !important;
+        border-radius: 12px !important;
+    }
+
+    #save-form-schema-btn {
+        width: 100% !important;
+        height: 48px !important;
+        font-size: 1rem !important;
+        border-radius: 24px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Mobile Responsive Card Layout for Steps Table */
+    .field-table-wrapper {
+        border: none !important;
+        background: transparent !important;
+        overflow-x: visible !important;
+    }
+
+    .field-table, .field-table thead, .field-table tbody, .field-table th, .field-table td, .field-table tr {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .field-table thead {
+        display: none !important;
+    }
+
+    .field-table tbody .field-row {
+        background: #ffffff !important;
+        border: 1.5px solid #f0e4ea !important;
+        border-radius: 16px !important;
+        margin-bottom: 14px !important;
+        padding: 16px !important;
+        box-shadow: 0 4px 14px rgba(92, 29, 55, 0.05) !important;
+        position: relative !important;
+    }
+
+    .field-table tbody td {
+        padding: 4px 0 !important;
+        border: none !important;
+        min-width: 0 !important;
+    }
+
+    .field-table tbody td.drag-handle {
+        display: inline-block !important;
+        margin-right: 6px !important;
+        font-size: 1.3rem !important;
+    }
+
+    .field-table tbody td:nth-child(2) { /* Step # */
+        display: inline-block !important;
+    }
+
+    .field-table tbody td:nth-child(3) { /* Title & Subtext */
+        margin-top: 6px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .field-table tbody td:nth-child(4) { /* Template tag */
+        margin-bottom: 8px !important;
+    }
+
+    .field-table tbody td:nth-child(6) { /* Action buttons */
+        margin-top: 12px !important;
+        padding-top: 12px !important;
+        border-top: 1px dashed #f0e4ea !important;
+    }
+
+    .field-table tbody td:nth-child(6) > div {
+        justify-content: flex-end !important;
+        gap: 10px !important;
+    }
+
+    .reorder-btn, .delete-field-btn {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.1rem !important;
+        border-radius: 10px !important;
+    }
+
+    /* 2. Storefront Order Modal Mobile Enhancements */
+    .order-modal-overlay {
+        padding: 0 !important;
+        align-items: flex-end !important;
+    }
+
+    .order-modal-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+        padding: 16px 14px 90px 14px !important;
+        box-shadow: none !important;
+    }
+
+    .modal-close-btn {
+        top: 14px !important;
+        right: 14px !important;
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.4rem !important;
+        z-index: 1000 !important;
+    }
+
+    #cake-order-builder {
+        padding: 0 !important;
+    }
+
+    .sticky-order-summary-bar {
+        padding: 10px 14px !important;
+        border-radius: 14px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .step h2 {
+        font-size: 1.55rem !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* Grid layout for items: 2 columns on mobile */
+    #product-grid, #flavor-list, #frosting-list, #filling-list, #social-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        margin: 16px 0 !important;
+    }
+
+    .product {
+        padding: 14px 10px !important;
+        font-size: 0.88rem !important;
+        border-radius: 14px !important;
+        min-height: 52px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    /* Sticky Bottom Action Navigation Bar */
+    .cart-bar {
+        position: sticky !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        margin-top: 24px !important;
+        padding: 14px 16px !important;
+        border-radius: 20px 20px 0 0 !important;
+        background: #ffffff !important;
+        box-shadow: 0 -8px 25px rgba(92, 29, 55, 0.12) !important;
+        border-top: 1.5px solid #f8c6d7 !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        z-index: 900 !important;
+    }
+
+    .nav-buttons {
+        width: 100% !important;
+        display: flex !important;
+        gap: 10px !important;
+    }
+
+    .next-btn, .back-btn, #submit-form-btn {
+        flex: 1 !important;
+        height: 48px !important;
+        font-size: 1rem !important;
+        border-radius: 24px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Mobile Calendar */
+    #interactive-calendar-grid {
+        gap: 6px !important;
+    }
+
+    .cal-day {
+        height: 44px !important;
+        font-size: 0.95rem !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Time slots */
+    .time-radio-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    .time-radio-card {
+        height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Terms box */
+    .terms-scroll-box {
+        height: 150px !important;
+    }
+
+    /* Inspiration dropzone */
+    .upload-dropzone {
+        padding: 24px 14px !important;
+    }
+}
+
+
