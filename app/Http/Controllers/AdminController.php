@@ -104,6 +104,23 @@ class AdminController extends Controller
         ]);
     }
 
+    public function saveEmailRouting(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
+        $validated = $request->validate([
+            'email' => 'required|email|max:255',
+        ]);
+
+        $tenant->email = $validated['email'];
+        $tenant->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order notification routing email saved live!',
+            'email' => $tenant->email,
+        ]);
+    }
+
     public function storeGallery(Request $request)
     {
         $tenant = Tenant::where('slug', 'blushedcrumbs')->first();

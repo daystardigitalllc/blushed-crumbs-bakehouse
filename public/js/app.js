@@ -643,14 +643,36 @@ function initAdminPortal() {
             e.preventDefault();
             const emailInput = document.getElementById('admin-routing-email');
             const statusEl = document.getElementById('email-save-status');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-            if (emailInput) {
+            if (emailInput && emailInput.value.trim()) {
                 const routingEmail = emailInput.value.trim();
-                localStorage.setItem('admin_routing_email', routingEmail);
-                if (statusEl) {
-                    statusEl.style.display = 'block';
-                    statusEl.innerText = `✅ Order Notification Email saved as: ${routingEmail}! Future form entries will route here.`;
-                }
+
+                fetch('/admin/settings/email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email: routingEmail })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        if (statusEl) {
+                            statusEl.style.display = 'block';
+                            statusEl.innerText = `✅ Order Notification Email saved live as: ${routingEmail}! All future form entries for your site will route here.`;
+                        }
+                        alert(`Success: Order notification routing email updated to ${routingEmail}!`);
+                    } else {
+                        alert('Error saving routing email: ' + (data.message || 'Validation failed.'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Save Email Error:', err);
+                    alert('An error occurred while saving order routing email.');
+                });
             }
         });
     }
