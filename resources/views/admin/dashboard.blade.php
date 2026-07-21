@@ -562,6 +562,45 @@
                     </div>
                 </div>
 
+                <!-- HOMEPAGE SECTION MANAGER & REORDER CARD -->
+                <div class="form-builder-card" style="border:2px solid #8b5cf6; background:#f5f3ff; margin-top:20px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+                        <div>
+                            <h4 style="color:#6d28d9; margin:0;">☰ Homepage Section Manager &amp; Reorder Engine</h4>
+                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Toggle sections ON/OFF or move them up/down to rearrange your bakery homepage.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:#7c3aed; border-color:#6d28d9;">💾 Save Section Order &amp; Visibility</button>
+                    </div>
+
+                    <div id="section-manager-msg" style="display:none; margin-bottom:14px; background:#ddd6fe; color:#4c1d95; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c4b5fd;"></div>
+
+                    <form id="section-manager-form">
+                        @csrf
+                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:10px;">
+                            @php
+                                $orderedSections = $tenant->getOrderedSections();
+                            @endphp
+                            @foreach($orderedSections as $secId => $sec)
+                                <div class="section-manager-row" data-id="{{ $secId }}" style="background:white; padding:12px 16px; border-radius:10px; border:1px solid #ddd6fe; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        <span class="drag-handle" style="cursor:grab; font-weight:800; color:#8b5cf6; font-size:1.2rem;">☰</span>
+                                        <input type="hidden" class="section-order-input" name="sections[{{ $secId }}][order]" value="{{ $sec['order'] ?? 1 }}">
+                                        <strong style="color:#4c1d95; font-size:0.95rem;">{{ $sec['name'] ?? $secId }}</strong>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:4px 10px; font-size:0.8rem;">⬆️ Up</button>
+                                        <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:4px 10px; font-size:0.8rem;">⬇️ Down</button>
+                                        <label class="toggle-switch" style="transform:scale(0.85);">
+                                            <input type="checkbox" name="sections[{{ $secId }}][enabled]" value="1" {{ !empty($sec['enabled']) ? 'checked' : '' }}>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </form>
+                </div>
+
                 <!-- SITE CONTENT EDITOR CARD -->
                 <div class="form-builder-card" style="border:2px solid #06b6d4; background:#f0fdfa; margin-top:20px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">

@@ -19,5 +19,6 @@ Route::post('/admin/settings/booking', [AdminController::class, 'saveBookingSett
 Route::post('/admin/settings/email', [AdminController::class, 'saveEmailRouting'])->name('admin.settings.email.save');
 Route::post('/admin/theme', [AdminController::class, 'saveTheme'])->name('admin.theme.save');
 Route::post('/admin/content', [AdminController::class, 'saveContent'])->name('admin.content.save');
+Route::post('/admin/sections', [AdminController::class, 'saveSectionSettings'])->name('admin.sections.save');
 
 

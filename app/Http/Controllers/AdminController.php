@@ -279,5 +279,34 @@ class AdminController extends Controller
             'site_content' => $tenant->site_content,
         ]);
     }
+
+    public function saveSectionSettings(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->first() ?? Tenant::first();
+
+        $sectionsData = $request->input('sections', []);
+        $defaults = Tenant::getDefaultSectionSettings();
+
+        $updatedSections = [];
+        foreach ($defaults as $secId => $defaultSec) {
+            $incoming = $sectionsData[$secId] ?? [];
+            $updatedSections[$secId] = [
+                'id' => $secId,
+                'name' => $defaultSec['name'],
+                'enabled' => filter_var($incoming['enabled'] ?? true, FILTER_VALIDATE_BOOLEAN),
+                'order' => isset($incoming['order']) ? (int) $incoming['order'] : ($defaultSec['order'] ?? 1),
+            ];
+        }
+
+        $tenant->update([
+            'section_settings' => $updatedSections,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Homepage sections & order saved successfully!',
+            'section_settings' => $tenant->getOrderedSections(),
+        ]);
+    }
 }
 

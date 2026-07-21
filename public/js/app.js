@@ -92,6 +92,65 @@ window.saveSiteContentForm = function() {
     .catch(err => {
         window.showToast('Error saving content: ' + err.message, 'error');
     });
+// Global Section Manager Reorder & Visibility Handler
+window.moveSectionUp = function(btn) {
+    const row = btn.closest('.section-manager-row');
+    if (row && row.previousElementSibling) {
+        row.parentNode.insertBefore(row, row.previousElementSibling);
+        updateSectionOrderInputs();
+    }
+};
+
+window.moveSectionDown = function(btn) {
+    const row = btn.closest('.section-manager-row');
+    if (row && row.nextElementSibling) {
+        row.parentNode.insertBefore(row.nextElementSibling, row);
+        updateSectionOrderInputs();
+    }
+};
+
+function updateSectionOrderInputs() {
+    const rows = document.querySelectorAll('#section-manager-list .section-manager-row');
+    rows.forEach((row, idx) => {
+        const orderInput = row.querySelector('.section-order-input');
+        if (orderInput) {
+            orderInput.value = idx + 1;
+        }
+    });
+}
+
+window.saveSectionManagerForm = function() {
+    updateSectionOrderInputs();
+    const form = document.getElementById('section-manager-form');
+    if (!form) return;
+
+    const formData = new FormData(form);
+    const msgEl = document.getElementById('section-manager-msg');
+
+    fetch('/admin/sections', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            if (msgEl) {
+                msgEl.style.display = 'block';
+                msgEl.innerHTML = `✅ ${data.message} <a href="/" target="_blank" style="color:#4c1d95; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Site ↗</a>`;
+                setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
+            }
+            window.showToast('Section order & visibility saved successfully!', 'success');
+        } else {
+            window.showToast(data.message || 'Failed to save section settings.', 'error');
+        }
+    })
+    .catch(err => {
+        window.showToast('Error saving sections: ' + err.message, 'error');
+    });
 };
 
 // Global Mobile Sidebar Drawer Toggle

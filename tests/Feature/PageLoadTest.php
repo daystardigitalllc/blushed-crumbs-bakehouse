@@ -76,4 +76,26 @@ class PageLoadTest extends TestCase
         $homeResponse->assertStatus(200);
         $homeResponse->assertSee('Nashville Premium Custom Cakes');
     }
+
+    public function test_admin_section_manager_toggles_and_reorders_sections()
+    {
+        $response = $this->postJson('/admin/sections', [
+            'sections' => [
+                'hero' => ['enabled' => true, 'order' => 2],
+                'promo_video' => ['enabled' => false, 'order' => 1],
+                'how_it_works' => ['enabled' => true, 'order' => 3],
+            ]
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $tenant = Tenant::first();
+        $ordered = $tenant->getOrderedSections();
+        $this->assertFalse($ordered['promo_video']['enabled']);
+
+        $homeResponse = $this->get('/');
+        $homeResponse->assertStatus(200);
+        $homeResponse->assertDontSee('$10 Off Your First Order!');
+    }
 }
