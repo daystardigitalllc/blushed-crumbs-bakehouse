@@ -718,8 +718,8 @@ function initAdminPortal() {
 
         row.innerHTML = `
             <div style="flex:2; display:flex; flex-direction:column;">
-                <span style="font-size:0.75rem; font-weight:700; color:#5c1d37; margin-bottom:2px;">Option Name / Flavor</span>
-                <input type="text" class="admin-opt-name" value="${(name || '').replace(/"/g, '&quot;')}" placeholder="e.g. Tres Leches (LUX)" style="padding:10px 12px; border-radius:10px; border:1px solid #ddd; font-size:0.92rem;">
+                <span style="font-size:0.75rem; font-weight:700; color:#5c1d37; margin-bottom:2px;">Option Name</span>
+                <input type="text" class="admin-opt-name" value="${(name || '').replace(/"/g, '&quot;')}" placeholder="e.g. Chocolate" style="padding:10px 12px; border-radius:10px; border:1px solid #ddd; font-size:0.92rem;">
             </div>
             <div style="flex:1; display:flex; flex-direction:column;">
                 <span style="font-size:0.75rem; font-weight:700; color:#e67399; margin-bottom:2px;">Extra Charge ($)</span>
@@ -798,7 +798,7 @@ function initAdminPortal() {
     window.toggleOptionsRow = function(val) {
         const optRow = document.getElementById('field-options-row');
         if (optRow) {
-            const needsOptions = ['select', 'chips', 'flavors', 'frosting', 'fillings', 'social_discount', 'fulfillment'].includes(val);
+            const needsOptions = ['select', 'chips', 'flavors', 'frosting', 'fillings', 'social_discount'].includes(val);
             optRow.style.display = needsOptions ? 'block' : 'none';
             if (needsOptions) {
                 const container = document.getElementById('option-rows-container');
