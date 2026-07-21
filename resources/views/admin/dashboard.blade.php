@@ -330,7 +330,7 @@
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <span style="font-size:0.85rem; color:#999;">$</span>
                                     <input type="number" value="{{ number_format($prod->price, 2) }}" style="width:80px;">
-                                    <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="showToast('Price updated successfully!')">Save</button>
                                     <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.closest('.product-item-row').remove()">✕</button>
                                 </div>
                             </div>

@@ -1,3 +1,65 @@
+// Non-Intrusive Bottom Toast Notification System
+window.showToast = function(message, type = 'success', duration = 3500) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:999999; display:flex; flex-direction:column; gap:10px; pointer-events:none; font-family:system-ui, -apple-system, sans-serif;';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    const isError = type === 'error';
+    const isInfo = type === 'info';
+    
+    toast.style.cssText = `
+        pointer-events:auto;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        background:${isError ? '#2b0f1a' : (isInfo ? '#1a2736' : '#1e2d24')};
+        color:#ffffff;
+        border-left:5px solid ${isError ? '#ff4d4d' : (isInfo ? '#3399ff' : '#28a745')};
+        padding:14px 20px;
+        border-radius:12px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.25);
+        font-size:0.92rem;
+        font-weight:600;
+        min-width:280px;
+        max-width:450px;
+        opacity:0;
+        transform:translateY(20px) scale(0.95);
+        transition:all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    `;
+
+    const icon = isError ? '⚠️' : (isInfo ? 'ℹ️' : '✅');
+    toast.innerHTML = `
+        <span style="font-size:1.2rem;">${icon}</span>
+        <span style="flex:1; line-height:1.4;">${message}</span>
+        <button onclick="this.parentElement.remove()" style="background:none; border:none; color:rgba(255,255,255,0.6); cursor:pointer; font-size:1.1rem; padding:0 4px; line-height:1;" title="Dismiss">✕</button>
+    `;
+
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0) scale(1)';
+    });
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px) scale(0.95)';
+        setTimeout(() => toast.remove(), 400);
+    }, duration);
+};
+
+// Global non-blocking alert override
+window.alert = function(msg) {
+    if (!msg) return;
+    const isError = /error|failed|please|must|cannot|select|invalid/i.test(msg);
+    window.showToast(msg, isError ? 'error' : 'success');
+};
+
 // Global Mobile Sidebar Drawer Toggle
 window.toggleAdminMobileSidebar = function toggleAdminMobileSidebar() {
     const sidebar = document.getElementById('admin-sidebar-drawer');
