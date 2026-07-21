@@ -562,49 +562,6 @@
                     </div>
                 </div>
 
-                <!-- COLOR SCHEME CARD -->
-                <div class="form-builder-card">
-                    <h4>🎨 Color Scheme</h4>
-                    <p style="font-size:0.9rem; color:#666; margin-bottom:18px;">Changes apply instantly to the storefront preview. All values default to your current branding.</p>
-
-                    <div class="settings-color-grid">
-                        <div class="color-setting-row">
-                            <label>Primary Color</label>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <input type="color" id="cs-primary" value="#e67399" oninput="applyColorScheme()" class="color-swatch-input">
-                                <input type="text" id="cs-primary-hex" value="#e67399" oninput="syncColorFromText('cs-primary','cs-primary-hex')" style="width:100px; font-family:monospace;">
-                            </div>
-                        </div>
-                        <div class="color-setting-row">
-                            <label>Secondary / Dark</label>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <input type="color" id="cs-secondary" value="#5c1d37" oninput="applyColorScheme()" class="color-swatch-input">
-                                <input type="text" id="cs-secondary-hex" value="#5c1d37" oninput="syncColorFromText('cs-secondary','cs-secondary-hex')" style="width:100px; font-family:monospace;">
-                            </div>
-                        </div>
-                        <div class="color-setting-row">
-                            <label>Accent / Background</label>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <input type="color" id="cs-accent" value="#fcebf1" oninput="applyColorScheme()" class="color-swatch-input">
-                                <input type="text" id="cs-accent-hex" value="#fcebf1" oninput="syncColorFromText('cs-accent','cs-accent-hex')" style="width:100px; font-family:monospace;">
-                            </div>
-                        </div>
-                        <div class="color-setting-row">
-                            <label>Body Text Color</label>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <input type="color" id="cs-text" value="#4a2133" oninput="applyColorScheme()" class="color-swatch-input">
-                                <input type="text" id="cs-text-hex" value="#4a2133" oninput="syncColorFromText('cs-text','cs-text-hex')" style="width:100px; font-family:monospace;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
-                        <button class="btn btn-primary" onclick="saveColorScheme()">💾 Save Color Scheme</button>
-                        <button class="btn btn-outline" onclick="resetColorScheme()">↺ Reset to Defaults</button>
-                        <span id="color-save-msg" style="font-size:0.85rem; color:#28a745; display:none; align-self:center;">✅ Saved!</span>
-                    </div>
-                </div>
-
                 <!-- SITE CONTENT EDITOR CARD -->
                 <div class="form-builder-card" style="border:2px solid #06b6d4; background:#f0fdfa; margin-top:20px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
