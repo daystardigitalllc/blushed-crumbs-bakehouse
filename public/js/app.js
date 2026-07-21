@@ -665,7 +665,7 @@ function initAdminPortal() {
                     ${f.subtext ? `<br><span style="font-size:0.8rem; color:#888;">${f.subtext}</span>` : ''}
                 </td>
                 <td><span style="background:#fff0f5; color:#5c1d37; font-weight:700; padding:4px 10px; border-radius:12px; border:1px solid #f8c6d7; font-size:0.8rem;">${typeLabels[f.type] || f.type}</span></td>
-                <td style="color:#666; font-size:0.85rem; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                <td style="color:#666; font-size:0.85rem; max-width:260px; word-wrap:break-word;">
                     ${f.options ? f.options : (f.description ? f.description : '—')}
                 </td>
                 <td>

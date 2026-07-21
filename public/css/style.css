@@ -1895,7 +1895,7 @@ body {
 }
 
 @media (max-width: 767px) {
-    .field-table { min-width: 500px; }
+    .field-table { min-width: 0; width: 100%; }
 }
 
 /* ============================================
@@ -2160,10 +2160,21 @@ body {
     .field-table-wrapper {
         border: none !important;
         background: transparent !important;
-        overflow-x: visible !important;
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    .field-table, .field-table thead, .field-table tbody, .field-table th, .field-table td, .field-table tr {
+    .field-table {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block !important;
+        box-sizing: border-box !important;
+    }
+
+    .field-table tbody {
         display: block !important;
         width: 100% !important;
         box-sizing: border-box !important;
@@ -2174,47 +2185,72 @@ body {
     }
 
     .field-table tbody .field-row {
+        display: block !important;
         background: #ffffff !important;
         border: 1.5px solid #f0e4ea !important;
         border-radius: 16px !important;
         margin-bottom: 14px !important;
-        padding: 16px !important;
+        padding: 14px !important;
         box-shadow: 0 4px 14px rgba(92, 29, 55, 0.05) !important;
         position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+        overflow: hidden !important;
     }
 
     .field-table tbody td {
-        padding: 4px 0 !important;
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 3px 0 !important;
         border: none !important;
         min-width: 0 !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
     }
 
     .field-table tbody td.drag-handle {
         display: inline-block !important;
+        width: auto !important;
         margin-right: 6px !important;
         font-size: 1.3rem !important;
     }
 
     .field-table tbody td:nth-child(2) { /* Step # */
         display: inline-block !important;
+        width: auto !important;
     }
 
     .field-table tbody td:nth-child(3) { /* Title & Subtext */
         margin-top: 6px !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 6px !important;
     }
 
     .field-table tbody td:nth-child(4) { /* Template tag */
+        margin-bottom: 6px !important;
+    }
+
+    .field-table tbody td:nth-child(5) { /* Options text */
+        font-size: 0.82rem !important;
+        color: #777 !important;
         margin-bottom: 8px !important;
+        word-break: break-word !important;
     }
 
     .field-table tbody td:nth-child(6) { /* Action buttons */
-        margin-top: 12px !important;
-        padding-top: 12px !important;
+        margin-top: 10px !important;
+        padding-top: 10px !important;
         border-top: 1px dashed #f0e4ea !important;
     }
 
     .field-table tbody td:nth-child(6) > div {
+        display: flex !important;
         justify-content: flex-end !important;
         gap: 10px !important;
     }
