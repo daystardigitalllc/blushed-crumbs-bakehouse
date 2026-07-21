@@ -27,8 +27,8 @@ class NewOrderNotification extends Mailable
     public function envelope(): Envelope
     {
         $fromAddress = config('mail.from.address');
-        if (empty($fromAddress) || $fromAddress === 'hello@example.com') {
-            $fromAddress = 'orders@' . (parse_url(config('app.url'), PHP_URL_HOST) ?: 'blushedcrumbsbakehouse.com');
+        if (empty($fromAddress) || $fromAddress === 'hello@example.com' || str_contains($fromAddress, 'localhost')) {
+            $fromAddress = 'orders@blushedcrumbsbakehouse.com';
         }
 
         $fromName = !empty($this->tenant->name) ? $this->tenant->name : config('app.name', 'Bakehouse Platform');
