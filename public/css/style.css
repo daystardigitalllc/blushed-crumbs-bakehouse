@@ -1382,14 +1382,18 @@ body {
 /* HIGH-END MODERN ADMIN SIDEBAR & WORKSPACE GLOWUP */
 #admin-portal-view {
     background-color: #fcf7fa !important;
-    min-height: 100vh;
-    display: block !important;
+    height: 100vh;
+    display: flex !important;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .admin-layout-container {
     display: flex;
-    min-height: 100vh;
+    flex: 1;
+    height: 0; /* Crucial: lets flex children control their own height */
     width: 100%;
+    overflow: hidden;
 }
 
 .admin-sidebar {
@@ -1401,7 +1405,10 @@ body {
     flex-direction: column !important;
     flex-shrink: 0 !important;
     box-shadow: 6px 0 30px rgba(43, 13, 27, 0.15) !important;
-    position: relative;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
     z-index: 100;
 }
 
@@ -1483,6 +1490,7 @@ body {
     padding: 45px 50px !important;
     background-color: #fcf7fa !important;
     overflow-y: auto;
+    height: 100%;
 }
 
 /* MODERN FORM BUILDER CARDS & PANELS */
@@ -1609,12 +1617,15 @@ body {
 .admin-mobile-header {
     display: none;
     background: #2b0d1b;
-    padding: 16px 20px;
+    height: 60px;
+    padding: 0 20px;
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 900;
 }
 
@@ -1684,8 +1695,18 @@ body {
         display: flex !important;
     }
 
-    .admin-layout-container {
+    #admin-portal-view {
+        height: auto !important;
+        overflow: visible !important;
         flex-direction: column !important;
+    }
+
+    .admin-layout-container {
+        /* On mobile, sidebar is fixed overlay — main content fills full width */
+        flex-direction: row !important;
+        height: calc(100vh - 60px) !important;
+        margin-top: 60px;
+        overflow: hidden;
     }
 
     .admin-sidebar {
@@ -1719,6 +1740,9 @@ body {
 
     .admin-main-content {
         padding: 25px 16px !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow-y: auto !important;
     }
 
     .form-builder-grid {
@@ -1726,7 +1750,366 @@ body {
     }
 }
 
+/* ============================================
+   FORM STUDIO — FIELDS TABLE
+   ============================================ */
 
+.field-table-wrapper {
+    overflow-x: auto;
+    border-radius: 14px;
+    border: 1px solid #f0e4ea;
+}
 
+.field-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    min-width: 600px;
+}
 
+.field-table thead {
+    background: linear-gradient(135deg, #3a1a2a, #5c1d37);
+    color: #fff;
+}
+
+.field-table thead th {
+    padding: 13px 16px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.field-table tbody .field-row {
+    border-bottom: 1px solid #f8eef3;
+    transition: background 0.15s;
+}
+
+.field-table tbody .field-row:hover {
+    background: #fff7fa;
+}
+
+.field-table tbody td {
+    padding: 13px 16px;
+    vertical-align: middle;
+}
+
+.drag-handle {
+    color: #ccc;
+    font-size: 1.2rem;
+    cursor: grab;
+    text-align: center;
+    user-select: none;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.step-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #f9e0eb, #fce8f3);
+    color: #7a2b4a;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid #f0c5d8;
+    white-space: nowrap;
+}
+
+.reorder-btn {
+    background: #f5eef8;
+    border: 1px solid #e0c5d1;
+    color: #5c1d37;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.reorder-btn:hover:not(:disabled) {
+    background: #e67399;
+    border-color: #e67399;
+    color: #fff;
+}
+
+.reorder-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.delete-field-btn {
+    background: #fff0f3;
+    border: 1px solid #fcc6d4;
+    color: #d9534f;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.delete-field-btn:hover {
+    background: #d9534f;
+    color: #fff;
+    border-color: #d9534f;
+}
+
+/* Custom baker field injected in the storefront order form */
+.custom-baker-field {
+    margin: 18px 0;
+    text-align: left;
+    background: #fff7fa;
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid #f8c6d7;
+}
+
+.custom-baker-field label {
+    font-weight: 700;
+    color: #5c1d37;
+    display: block;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+/* Hide options/description rows by default - JS toggles them */
+#field-options-row,
+#field-description-row {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .field-table { min-width: 500px; }
+}
+
+/* ============================================
+   SETTINGS TAB — TOGGLE, COLORS, TYPOGRAPHY
+   ============================================ */
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+    flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #ddd;
+    border-radius: 28px;
+    transition: 0.3s;
+}
+.toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 20px; width: 20px;
+    left: 4px; bottom: 4px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.toggle-switch input:checked + .toggle-slider { background: #e67399; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(24px); }
+
+/* Settings toggle row */
+.settings-toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #fff7fa;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid #f0e4ea;
+}
+
+/* Color grid */
+.settings-color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.color-setting-row {
+    background: #fff;
+    border: 1px solid #f0e4ea;
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+.color-setting-row label {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: #5c1d37;
+    display: block;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.color-swatch-input {
+    width: 42px;
+    height: 42px;
+    border: 2px solid #f0e4ea;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 2px;
+    background: none;
+}
+
+/* Typography rows */
+.typography-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid #f8eef3;
+}
+.typography-row:last-child { border-bottom: none; }
+
+.typo-tag-label {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #e67399;
+    background: linear-gradient(135deg, #fff0f5, #ffe0ec);
+    border: 1.5px solid #f8c6d7;
+    border-radius: 10px;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: Georgia, serif;
+}
+
+.typo-controls {
+    flex: 1;
+}
+.typo-controls label {
+    font-weight: 700;
+    color: #5c1d37;
+    font-size: 0.88rem;
+}
+
+@media (max-width: 767px) {
+    .settings-color-grid { grid-template-columns: 1fr 1fr; }
+    .typography-row { flex-direction: column; }
+}
+
+/* ============================================
+   ADMIN CALENDAR & AVAILABILITY MANAGER STYLES
+   ============================================ */
+.admin-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.admin-cal-header-day {
+    font-weight: 800;
+    font-size: 0.8rem;
+    color: #5c1d37;
+    text-transform: uppercase;
+    padding: 8px 0;
+    text-align: center;
+    background: #fff0f5;
+    border-radius: 8px;
+    border: 1px solid #f8c6d7;
+}
+
+.admin-cal-day {
+    background: #ffffff;
+    border: 1px solid #f0e4ea;
+    border-radius: 12px;
+    padding: 14px 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #4a2133;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+.admin-cal-day:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(92, 29, 55, 0.1);
+}
+
+.admin-cal-day.available {
+    background: #f0fff4;
+    border-color: #c6f6d5;
+    color: #22543d;
+}
+
+.admin-cal-day.blocked {
+    background: #fff5f5;
+    border-color: #feb2b2;
+    color: #9b2c2c;
+    text-decoration: line-through;
+    font-weight: 800;
+}
+
+.admin-cal-day.weekly-closed {
+    background: #f3e8ff;
+    border-color: #d8b4fe;
+    color: #581c87;
+    opacity: 0.9;
+}
+
+.admin-cal-day.empty-slot {
+    background: transparent;
+    border: none;
+    cursor: default;
+}
+.admin-cal-day.empty-slot:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.blocked-date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff0f3;
+    border: 1px solid #f8c6d7;
+    color: #9b2c2c;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+.blocked-date-badge button {
+    background: none;
+    border: none;
+    color: #d9534f;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 0.95rem;
+    line-height: 1;
+    padding: 0 2px;
+}
+.blocked-date-badge button:hover {
+    color: #a71d2a;
+}
 

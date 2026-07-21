@@ -40,6 +40,9 @@
                 <button class="admin-nav-item" data-tab="tab-form-builder">
                     <span>⚙️</span> Form Studio
                 </button>
+                <button class="admin-nav-item" data-tab="tab-products">
+                    <span>🎂</span> Products
+                </button>
                 <button class="admin-nav-item" data-tab="tab-gallery-manager">
                     <span>📷</span> Device Gallery
                 </button>
@@ -51,6 +54,12 @@
                 </button>
                 <button class="admin-nav-item" data-tab="tab-support">
                     <span>💬</span> Baker Support
+                </button>
+                <button class="admin-nav-item" data-tab="tab-calendar">
+                    <span>📆</span> Availability & Blackouts
+                </button>
+                <button class="admin-nav-item" data-tab="tab-settings">
+                    <span>🔧</span> Settings
                 </button>
             </nav>
 
@@ -152,69 +161,104 @@
                 </div>
             </div>
 
-            <!-- TAB 2: CMS Form Builder & Email Routing Studio -->
+            <!-- TAB 2: Form Studio -->
             <div id="tab-form-builder" class="tab-content">
                 <div class="section-header">
-                    <h3>⚙️ CMS Form Builder & Email Routing Studio</h3>
-                    <p class="subtitle">Customize order form fields, add custom questions, edit live pricing, and set your order notification email address!</p>
+                    <h3>⚙️ Form Studio</h3>
+                    <p class="subtitle">Add custom questions to your order form. Changes appear live on the storefront the moment you add them.</p>
                 </div>
 
                 <!-- EMAIL ROUTING SETTINGS CARD -->
                 <div class="form-builder-card" style="border: 2px solid #e67399; background: #fff7fa;">
-                    <h4 style="color:#5c1d37; display:flex; align-items:center; gap:8px;">✉️ Order Email Routing & Notifications</h4>
-                    <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">Set the email address where all completed order form entries and custom requests will be automatically sent:</p>
+                    <h4 style="color:#5c1d37;">✉️ Order Email Routing</h4>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">All completed order form entries will be sent to this address:</p>
                     <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                        <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? 'orders@blushedcrumbsbakehouse.com' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:280px;">
-                        <button type="submit" class="btn btn-primary" style="padding:12px 24px;">💾 Save Email Routing</button>
+                        <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? 'orders@blushedcrumbsbakehouse.com' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:220px;">
+                        <button type="submit" class="btn btn-primary">💾 Save</button>
                     </form>
                     <div id="email-save-status" style="margin-top:10px; font-weight:700; color:#28a745; font-size:0.88rem; display:none;"></div>
                 </div>
 
-                <!-- ADD CUSTOM QUESTION / FIELD CARD -->
+                <!-- ADD FIELD CARD -->
                 <div class="form-builder-card">
-                    <h4>➕ Add Custom Question or Field to Order Form</h4>
+                    <h4>➕ Add Field to Order Form</h4>
                     <form id="add-field-form" class="form-builder-grid">
                         <div>
-                            <label>Target Step</label>
-                            <select id="field-target-step">
-                                <option value="step-6">Step 6: Special Requests</option>
-                                <option value="step-3">Step 3: Flavors</option>
-                                <option value="step-4">Step 4: Frosting</option>
-                                <option value="step-5">Step 5: Fillings</option>
-                                <option value="step-8">Step 8: Allergies</option>
-                                <option value="step-10">Step 10: Inspiration Files</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Question Title</label>
-                            <input type="text" id="field-label" placeholder="e.g. Color Theme / Event Name" required>
+                            <label>Question / Label</label>
+                            <input type="text" id="field-label" placeholder="e.g. Color Theme, Event Name…" required>
                         </div>
                         <div>
                             <label>Field Type</label>
-                            <select id="field-type">
-                                <option value="text">Single Line Text Input</option>
-                                <option value="textarea">Multi-line Textarea</option>
-                                <option value="select">Multiple Choice Select</option>
-                                <option value="file">File / Photo Upload</option>
+                            <select id="field-type" onchange="toggleOptionsRow(this.value)">
+                                <option value="products">🛒 Product Selection (from Catalog)</option>
+                                <option value="text">📝 Single-Line Text</option>
+                                <option value="textarea">📄 Multi-line Textarea</option>
+                                <option value="select">☑️ Multiple Choice (Select)</option>
+                                <option value="chips">🏷️ Select Field</option>
+                                <option value="file">📎 File / Photo Upload</option>
+                                <option value="datepicker">📅 Date Picker</option>
+                                <option value="toggle">🔘 Yes / No Toggle</option>
                             </select>
                         </div>
-                        <div>
-                            <label>Options (if Select)</label>
-                            <input type="text" id="field-options" placeholder="Gold, Rose Gold, Baby Pink">
+                        <div id="field-options-row">
+                            <label>Options <span style="font-weight:400; color:#999;">(comma-separated)</span></label>
+                            <input type="text" id="field-options" placeholder="Gold, Rose Gold, White, Black">
+                        </div>
+                        <div id="field-description-row">
+                            <label>Directions / Description <span style="font-weight:400; color:#999;">(optional)</span></label>
+                            <input type="text" id="field-description" placeholder="e.g. Please be as specific as possible">
                         </div>
                         <div style="grid-column: 1 / -1;">
-                            <button type="submit" class="btn btn-primary">+ Add Question to Order Form</button>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Field to Live Order Form</button>
                         </div>
                     </form>
                 </div>
 
-                <!-- ADD NEW PRODUCT & LIVE PRICE CARD -->
+                <!-- LIVE FIELDS TABLE WITH REORDER -->
                 <div class="form-builder-card">
-                    <h4>🎂 Add New Product & Price to Order Form</h4>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                        <h4 style="margin-bottom:0;">📋 Current Custom Fields</h4>
+                        <span style="font-size:0.85rem; color:#999; font-weight:500;">Drag rows or use ↑↓ to reorder · Changes apply live</span>
+                    </div>
+
+                    <div class="field-table-wrapper">
+                        <table class="field-table" id="custom-fields-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:36px;"></th>
+                                    <th>#</th>
+                                    <th>Question</th>
+                                    <th>Field Type</th>
+                                    <th>Options / Details</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="custom-fields-tbody">
+                                <tr class="empty-row" id="fields-empty-row">
+                                    <td colspan="6" style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem;">
+                                        No custom fields added yet. Use the form above to add your first question!
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB: Products -->
+            <div id="tab-products" class="tab-content">
+                <div class="section-header">
+                    <h3>🎂 Product Catalog &amp; Pricing</h3>
+                    <p class="subtitle">Add, remove, and update prices for your order form products. Changes reflect immediately on the storefront.</p>
+                </div>
+
+                <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
+                    <h4>➕ Add New Product</h4>
                     <form id="add-product-form" class="form-builder-grid">
                         <div>
                             <label>Product Name</label>
-                            <input type="text" id="new-prod-name" placeholder="e.g. 6” Heart Cake" required>
+                            <input type="text" id="new-prod-name" placeholder="e.g. 6″ Heart Cake" required>
                         </div>
                         <div>
                             <label>Price ($)</label>
@@ -231,21 +275,25 @@
                             </select>
                         </div>
                         <div style="grid-column: 1 / -1;">
-                            <button type="submit" class="btn btn-primary">+ Add Product Item</button>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Product to Catalog</button>
                         </div>
                     </form>
                 </div>
 
-                <!-- LIVE PRODUCTS CATALOG LIST -->
                 <div class="form-builder-card">
-                    <h4>Current Product Catalog & Live Prices</h4>
+                    <h4>📋 Current Product Catalog</h4>
                     <div id="products-admin-grid">
                         @foreach($products as $prod)
-                            <div class="product-item-row" style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee;">
-                                <span><strong>{{ $prod->name }}</strong> (${{ number_format($prod->price, 2) }})</span>
+                            <div class="product-item-row" style="display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid #f0e4ea;">
                                 <div>
+                                    <strong style="color:#5c1d37;">{{ $prod->name }}</strong>
+                                    <span style="background:#f9e0eb; color:#7a2b4a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-left:8px;">{{ $prod->category }}</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:0.85rem; color:#999;">$</span>
                                     <input type="number" value="{{ number_format($prod->price, 2) }}" style="width:80px;">
-                                    <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save</button>
+                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.closest('.product-item-row').remove()">✕</button>
                                 </div>
                             </div>
                         @endforeach
@@ -253,7 +301,7 @@
                 </div>
             </div>
 
-            <!-- TAB 3: Device Gallery Photo Uploader -->
+
             <div id="tab-gallery-manager" class="tab-content">
                 <div class="section-header">
                     <h3>📷 Device Gallery Uploader</h3>
@@ -411,7 +459,217 @@
                     </form>
                 </div>
             </div>
+
+            <!-- TAB: Settings -->
+            <div id="tab-settings" class="tab-content">
+                <div class="section-header">
+                    <h3>🔧 Site &amp; Order Settings</h3>
+                    <p class="subtitle">Configure booking rules, color palette, and typography for your storefront.</p>
+                </div>
+
+                <!-- BOOKING RULES CARD -->
+                <div class="form-builder-card">
+                    <h4>📅 Order Lead Time</h4>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:18px;">Prevent customers from selecting a completion date that is too soon to fulfill.</p>
+
+                    <div class="settings-toggle-row" id="lead-time-toggle-row">
+                        <div>
+                            <strong>Block orders within 3 days of today</strong>
+                            <p style="font-size:0.82rem; color:#888; margin-top:2px;">Customers cannot pick a date within 3 days of placing their order.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="lead-time-enabled" checked onchange="toggleLeadTimeInput(this)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="custom-lead-days-wrapper" style="display:none; margin-top:16px;">
+                        <label>Days to auto-block from today</label>
+                        <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+                            <input type="number" id="custom-lead-days" min="0" max="60" value="3" style="width:100px;">
+                            <button class="btn btn-primary" onclick="saveLeadTime()">Save Setting</button>
+                            <span id="lead-time-save-msg" style="font-size:0.85rem; color:#28a745; display:none;">✅ Saved!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLOR SCHEME CARD -->
+                <div class="form-builder-card">
+                    <h4>🎨 Color Scheme</h4>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:18px;">Changes apply instantly to the storefront preview. All values default to your current branding.</p>
+
+                    <div class="settings-color-grid">
+                        <div class="color-setting-row">
+                            <label>Primary Color</label>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <input type="color" id="cs-primary" value="#e67399" oninput="applyColorScheme()" class="color-swatch-input">
+                                <input type="text" id="cs-primary-hex" value="#e67399" oninput="syncColorFromText('cs-primary','cs-primary-hex')" style="width:100px; font-family:monospace;">
+                            </div>
+                        </div>
+                        <div class="color-setting-row">
+                            <label>Secondary / Dark</label>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <input type="color" id="cs-secondary" value="#5c1d37" oninput="applyColorScheme()" class="color-swatch-input">
+                                <input type="text" id="cs-secondary-hex" value="#5c1d37" oninput="syncColorFromText('cs-secondary','cs-secondary-hex')" style="width:100px; font-family:monospace;">
+                            </div>
+                        </div>
+                        <div class="color-setting-row">
+                            <label>Accent / Background</label>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <input type="color" id="cs-accent" value="#fcebf1" oninput="applyColorScheme()" class="color-swatch-input">
+                                <input type="text" id="cs-accent-hex" value="#fcebf1" oninput="syncColorFromText('cs-accent','cs-accent-hex')" style="width:100px; font-family:monospace;">
+                            </div>
+                        </div>
+                        <div class="color-setting-row">
+                            <label>Body Text Color</label>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <input type="color" id="cs-text" value="#4a2133" oninput="applyColorScheme()" class="color-swatch-input">
+                                <input type="text" id="cs-text-hex" value="#4a2133" oninput="syncColorFromText('cs-text','cs-text-hex')" style="width:100px; font-family:monospace;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="saveColorScheme()">💾 Save Color Scheme</button>
+                        <button class="btn btn-outline" onclick="resetColorScheme()">↺ Reset to Defaults</button>
+                        <span id="color-save-msg" style="font-size:0.85rem; color:#28a745; display:none; align-self:center;">✅ Saved!</span>
+                    </div>
+                </div>
+
+                <!-- TYPOGRAPHY CARD -->
+                <div class="form-builder-card">
+                    <h4>🔤 Typography</h4>
+                    <p style="font-size:0.9rem; color:#666; margin-bottom:20px;">Set font family, size, and color for each heading level and body text. Changes apply live.</p>
+
+                    <div id="typography-settings">
+                        @foreach([['h1','H1 — Main Title','3.2rem','#5c1d37'],['h2','H2 — Section Title','2rem','#5c1d37'],['h3','H3 — Card Title','1.35rem','#4a2133'],['p','Paragraph &amp; Spans','1rem','#666666']] as [$tag, $name, $defSize, $defColor])
+                        <div class="typography-row">
+                            <div class="typo-tag-label">{{ $tag }}</div>
+                            <div class="typo-controls">
+                                <div>
+                                    <label>{{ $name }}</label>
+                                </div>
+                                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:8px;">
+                                    <select class="typo-font" data-tag="{{ $tag }}" onchange="applyTypography()" style="min-width:160px;">
+                                        <option value="'Poppins', sans-serif" selected>Poppins (default)</option>
+                                        <option value="'Inter', sans-serif">Inter</option>
+                                        <option value="'Great Vibes', cursive">Great Vibes (script)</option>
+                                        <option value="'Playfair Display', serif">Playfair Display</option>
+                                        <option value="'Lato', sans-serif">Lato</option>
+                                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                                        <option value="'Raleway', sans-serif">Raleway</option>
+                                        <option value="Georgia, serif">Georgia (serif)</option>
+                                    </select>
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <input type="number" class="typo-size" data-tag="{{ $tag }}" value="{{ $defSize }}" placeholder="1rem" style="width:80px;" oninput="applyTypography()">
+                                        <select class="typo-unit" data-tag="{{ $tag }}" onchange="applyTypography()" style="width:70px;">
+                                            <option value="rem" selected>rem</option>
+                                            <option value="px">px</option>
+                                            <option value="em">em</option>
+                                        </select>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <input type="color" class="typo-color" data-tag="{{ $tag }}" value="{{ $defColor }}" oninput="applyTypography()" class="color-swatch-input">
+                                        <input type="text" class="typo-color-hex" data-tag="{{ $tag }}" value="{{ $defColor }}" style="width:90px; font-family:monospace;" oninput="syncTypoColor(this)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    <div style="margin-top:20px; display:flex; gap:12px; flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="saveTypography()">💾 Save Typography</button>
+                        <button class="btn btn-outline" onclick="resetTypography()">↺ Reset to Defaults</button>
+                        <span id="typo-save-msg" style="font-size:0.85rem; color:#28a745; display:none; align-self:center;">✅ Saved!</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Calendar & Availability Manager -->
+            <div id="tab-calendar" class="tab-content">
+                <div class="section-header">
+                    <h3>📆 Calendar &amp; Availability Manager</h3>
+                    <p class="subtitle">Set recurring weekly closed days, block off specific dates for holidays or vacations, and manage order availability live!</p>
+                </div>
+
+                <!-- CARD 1: RECURRING WEEKLY CLOSED DAYS -->
+                <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
+                    <h4 style="color:#5c1d37;">🔄 Weekly Recurring Closed Days</h4>
+                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Select days of the week when your bakery is regularly closed (e.g. Saturdays &amp; Sundays). These will automatically be blocked on the order form calendar.</p>
+                    
+                    <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+                        @foreach([
+                            ['0', 'Sunday'],
+                            ['1', 'Monday'],
+                            ['2', 'Tuesday'],
+                            ['3', 'Wednesday'],
+                            ['4', 'Thursday'],
+                            ['5', 'Friday'],
+                            ['6', 'Saturday']
+                        ] as [$dayVal, $dayName])
+                        <label style="display:flex; align-items:center; gap:8px; background:white; padding:10px 16px; border-radius:12px; border:1px solid #f0e4ea; font-weight:600; cursor:pointer; user-select:none;">
+                            <input type="checkbox" class="recurring-closed-checkbox" value="{{ $dayVal }}">
+                            <span>{{ $dayName }}</span>
+                        </label>
+                        @endforeach
+                    </div>
+
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <button class="btn btn-primary" onclick="saveRecurringClosedDays()">💾 Save Recurring Schedule</button>
+                        <span id="recurring-save-msg" style="font-size:0.85rem; color:#28a745; display:none;">✅ Saved!</span>
+                    </div>
+                </div>
+
+                <!-- CARD 2: INTERACTIVE CALENDAR DATE BLACKOUT MANAGER -->
+                <div class="form-builder-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:20px;">
+                        <div>
+                            <h4 style="margin-bottom:4px;">🚫 Interactive Date Blackout Calendar</h4>
+                            <p style="font-size:0.85rem; color:#888; margin:0;">Click any date below to toggle it blocked 🔴 or available 🟢</p>
+                        </div>
+                        <!-- Month Navigation -->
+                        <div style="display:flex; align-items:center; gap:10px; background:#fff0f5; padding:6px 14px; border-radius:14px; border:1px solid #f8c6d7;">
+                            <button class="btn btn-sm btn-outline" style="padding:4px 10px;" onclick="changeAdminCalMonth(-1)">◀ Prev</button>
+                            <span id="admin-cal-month-year" style="font-weight:800; color:#5c1d37; min-width:130px; text-align:center;">July 2026</span>
+                            <button class="btn btn-sm btn-outline" style="padding:4px 10px;" onclick="changeAdminCalMonth(1)">Next ▶</button>
+                        </div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div style="display:flex; gap:16px; flex-wrap:wrap; font-size:0.82rem; margin-bottom:18px; padding:10px 14px; background:#fafafa; border-radius:10px; border:1px solid #eee;">
+                        <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:50%; background:#28a745; display:inline-block;"></span> Available</span>
+                        <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:50%; background:#d9534f; display:inline-block;"></span> Custom Blocked Date</span>
+                        <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:50%; background:#6f42c1; display:inline-block;"></span> Weekly Closed Day</span>
+                    </div>
+
+                    <!-- Interactive Admin Calendar Grid -->
+                    <div id="admin-calendar-grid" class="admin-cal-grid">
+                        <!-- Rendered by JS -->
+                    </div>
+
+                    <!-- Manual Date Picker Quick Add -->
+                    <div style="margin-top:24px; padding-top:20px; border-top:1px solid #f0e4ea; display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+                        <div>
+                            <label style="font-size:0.85rem; font-weight:700; color:#5c1d37; display:block; margin-bottom:6px;">Block Specific Date Manually</label>
+                            <input type="date" id="manual-block-date" style="padding:10px 14px; border-radius:10px; border:1px solid #f0e4ea;">
+                        </div>
+                        <button class="btn btn-primary" onclick="addManualBlockedDate()">🚫 Block Date</button>
+                    </div>
+                </div>
+
+                <!-- CARD 3: LIST OF CURRENTLY BLOCKED DATES -->
+                <div class="form-builder-card">
+                    <h4>📋 Currently Blocked Custom Dates</h4>
+                    <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">These specific dates are currently blacked out for client orders:</p>
+                    <div id="admin-blocked-dates-list" style="display:flex; flex-wrap:wrap; gap:10px;">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </div>
+
         </main>
+
     </div>
 </div>
 @endsection

@@ -349,19 +349,37 @@ function renderInteractiveCalendar() {
 
     calGrid.innerHTML = '';
     const daysInMonth = 31;
-    const bookedDays = [4, 5, 12, 15, 17, 18, 21, 22, 23, 24, 25, 26];
+    const year = 2026;
+    const month = 6; // 0-indexed: 6 = July
+
+    // Load blocked dates and recurring closed days from localStorage
+    const savedBlocked = localStorage.getItem('admin_blocked_dates');
+    const customBlocked = savedBlocked ? JSON.parse(savedBlocked) : [];
+
+    const savedRecurring = localStorage.getItem('admin_recurring_closed');
+    // Default closed: Sunday (0) and Monday (1)
+    const recurringClosed = savedRecurring ? JSON.parse(savedRecurring) : [0, 1];
 
     for (let day = 1; day <= daysInMonth; day++) {
-        const isBooked = bookedDays.includes(day);
+        const dateObj = new Date(year, month, day);
+        const dayOfWeek = dateObj.getDay();
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+        const isCustomBlocked = customBlocked.includes(dateStr);
+        const isRecurringClosed = recurringClosed.includes(dayOfWeek);
+        const isBooked = isCustomBlocked || isRecurringClosed;
+
         const dayEl = document.createElement('div');
         dayEl.className = `cal-day ${isBooked ? 'booked' : ''}`;
+        if (isRecurringClosed && !isCustomBlocked) dayEl.title = 'Closed (Weekly)';
+        if (isCustomBlocked) dayEl.title = 'Blocked Date';
         dayEl.innerText = day;
 
         if (!isBooked) {
             dayEl.addEventListener('click', () => {
                 document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
                 dayEl.classList.add('selected');
-                state.selectedDate = `2026-07-${day < 10 ? '0' + day : day}`;
+                state.selectedDate = dateStr;
                 document.getElementById('selected-date').innerText = state.selectedDate;
                 const step2Next = document.getElementById('to-step-3');
                 if (step2Next) step2Next.disabled = false;
@@ -371,6 +389,7 @@ function renderInteractiveCalendar() {
         calGrid.appendChild(dayEl);
     }
 }
+
 
 // Dedicated Gallery Filtering & Lightbox
 function initGalleryFiltering() {
@@ -430,6 +449,10 @@ function initAdminPortal() {
             btn.classList.add('active');
             const targetTab = document.getElementById(btn.dataset.tab);
             if (targetTab) targetTab.classList.add('active');
+
+            if (btn.dataset.tab === 'tab-calendar' && window.initAdminCalendarUI) {
+                window.initAdminCalendarUI();
+            }
 
             // Auto-close mobile drawer when a tab is selected
             const sidebar = document.getElementById('admin-sidebar-drawer');
@@ -509,48 +532,314 @@ function initAdminPortal() {
         });
     }
 
+    // Show/hide Options and Description rows based on field type
+    window.toggleOptionsRow = function(val) {
+        const optRow = document.getElementById('field-options-row');
+        const descRow = document.getElementById('field-description-row');
+        if (optRow)  optRow.style.display  = (val === 'select' || val === 'chips') ? 'block' : 'none';
+        if (descRow) descRow.style.display = (val === 'text' || val === 'textarea' || val === 'toggle') ? 'block' : 'none';
+    };
+    // Init on load
+    setTimeout(() => toggleOptionsRow(document.getElementById('field-type')?.value || 'products'), 100);
+
+    // Custom Field Registry
+    window._customFields = window._customFields || [];
+
+    // Render the fields table
+    function renderFieldsTable() {
+        const tbody = document.getElementById('custom-fields-tbody');
+        if (!tbody) return;
+
+        if (window._customFields.length === 0) {
+            tbody.innerHTML = `<tr class="empty-row" id="fields-empty-row">
+                <td colspan="6" style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem;">
+                    No custom fields added yet. Use the form above to add your first question!
+                </td>
+            </tr>`;
+            return;
+        }
+
+        const typeLabels = {
+            'text': '📝 Text', 'textarea': '📄 Textarea', 'select': '☑️ Select',
+            'chips': '🏷️ Chips', 'file': '📎 File Upload', 'datepicker': '📅 Date Picker',
+            'toggle': '🔘 Yes/No', 'rating': '⭐ Rating'
+        };
+
+        tbody.innerHTML = window._customFields.map((f, i) => `
+            <tr class="field-row" draggable="true" data-idx="${i}">
+                <td class="drag-handle">⠿</td>
+                <td style="color:#999; font-weight:700; font-size:0.88rem;">${i + 1}</td>
+                <td style="font-weight:600; color:#5c1d37;">${f.label}</td>
+                <td>${typeLabels[f.type] || f.type}</td>
+                <td style="color:#888; font-size:0.88rem;">${f.options ? f.options : (f.description ? f.description : '—')}</td>
+                <td>
+                    <div style="display:flex; gap:6px; align-items:center;">
+                        <button class="reorder-btn" onclick="moveField(${i}, -1)" title="Move Up" ${i === 0 ? 'disabled' : ''}>↑</button>
+                        <button class="reorder-btn" onclick="moveField(${i}, 1)" title="Move Down" ${i === window._customFields.length - 1 ? 'disabled' : ''}>↓</button>
+                        <button class="delete-field-btn" onclick="deleteField(${i})" title="Remove Field">✕</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+        // Drag-and-drop reorder
+        const rows = tbody.querySelectorAll('.field-row');
+        let dragSrc = null;
+        rows.forEach(row => {
+            row.addEventListener('dragstart', () => { dragSrc = row; row.style.opacity = '0.5'; });
+            row.addEventListener('dragend', () => { row.style.opacity = '1'; });
+            row.addEventListener('dragover', e => { e.preventDefault(); });
+            row.addEventListener('drop', e => {
+                e.preventDefault();
+                if (dragSrc === row) return;
+                const from = parseInt(dragSrc.dataset.idx);
+                const to = parseInt(row.dataset.idx);
+                const moved = window._customFields.splice(from, 1)[0];
+                window._customFields.splice(to, 0, moved);
+                renderFieldsTable();
+                rebuildLiveForm();
+            });
+        });
+    }
+
+    window.moveField = function(idx, dir) {
+        const arr = window._customFields;
+        const newIdx = idx + dir;
+        if (newIdx < 0 || newIdx >= arr.length) return;
+        [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+        renderFieldsTable();
+        rebuildLiveForm();
+    };
+
+    window.deleteField = function(idx) {
+        window._customFields.splice(idx, 1);
+        renderFieldsTable();
+        rebuildLiveForm();
+    };
+
+    // Build a field's HTML based on type template
+    function buildFieldHTML(f) {
+        const opts = (f.options || '').split(',').map(o => o.trim()).filter(Boolean);
+
+        // Helper: description paragraph shown under label
+        const descHtml = f.description ? `<p style="font-size:0.88rem; color:#888; margin:-4px 0 12px 0;">${f.description}</p>` : '';
+
+        switch (f.type) {
+            case 'products': {
+                // Grab products from DOM or registry
+                const domProducts = Array.from(document.querySelectorAll('#product-grid .product'))
+                    .map(el => ({
+                        name: el.querySelector('strong')?.textContent || el.textContent.trim().split('\n')[0].trim(),
+                        price: el.dataset.price || ''
+                    }));
+                const catalog = (window._adminProductCatalog && window._adminProductCatalog.length)
+                    ? window._adminProductCatalog
+                    : domProducts;
+
+                const tileHtml = catalog.map(p => `
+                    <div class="product" data-name="${p.name}" data-price="${p.price}"
+                        style="cursor:pointer; padding:14px 10px; border-radius:14px; border:1.5px solid #f8c6d7; background:#fff; text-align:center; font-size:0.88rem; transition: all 0.18s;"
+                        onclick="toggleProductTile(this)">
+                        <strong style="display:block; margin-bottom:4px; font-size:0.92rem;">${p.name}</strong>
+                        <span style="color:#e67399; font-weight:700;">$${p.price}</span>
+                    </div>
+                `).join('');
+
+                return `<div class="custom-baker-field">
+                    <label>${f.label}</label>
+                    <div id="custom-product-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:12px; margin-top:10px;">
+                        ${tileHtml}
+                    </div>
+                </div>`;
+            }
+
+            case 'textarea':
+                return `<div class="custom-baker-field">
+                    <label>${f.label}</label>
+                    ${descHtml}
+                    <textarea placeholder="Type your answer here..." style="width:100%; height:110px; padding:12px; border-radius:10px; border:1px solid #ccc; font-family:inherit; resize:vertical;"></textarea>
+                </div>`;
+
+            case 'select':
+                return `<div class="custom-baker-field">
+                    <label>${f.label}</label>
+                    <select style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc; font-family:inherit;">
+                        <option value="" disabled selected>Select an option…</option>
+                        ${opts.map(o => `<option value="${o}">${o}</option>`).join('')}
+                    </select>
+                </div>`;
+
+            case 'chips':
+                return `<div class="custom-baker-field">
+                    <label>${f.label}</label>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:8px;">
+                        ${opts.map(o => `<div class="product" style="cursor:pointer; padding:10px 18px; border-radius:50px; border:2px solid #f8c6d7; font-size:0.9rem; font-weight:600; background:#fff;" onclick="this.classList.toggle('selected')">${o}</div>`).join('')}
+                    </div>
+                </div>`;
+
+            case 'file':
+                return `<div class="custom-baker-field">
+                    <label>${f.label}</label>
+                    <div class="upload-dropzone" style="border:2px dashed #e67399; background:#fff7fa; padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="this.querySelector('input[type=file]').click()">
+                        <span style="font-size:2.5rem; color:#e67399; display:block; margin-bottom:8px;">✦</span>
+                        <p style="font-size:1rem; font-weight:600; color:#5c1d37; margin-bottom:4px;">Drag &amp; drop files here or <strong>click to browse</strong></p>
+                        <span style="font-size:12px; color:#888;">Supports PNG, JPG, JPEG, PDF</span>
+                        <input type="file" multiple accept="image/*" style="display:none;">
+                    </div>
+                </div>`;
+
+            case 'datepicker':
+                return `<div class="custom-baker-field">
+                    <label>${f.label}</label>
+                    <div style="background:#fff; border:1px solid #e0c5d1; border-radius:14px; padding:16px;">
+                        <input type="date" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc; font-family:inherit; font-size:0.95rem;">
+                    </div>
+                </div>`;
+
+            case 'toggle':
+                return `<div class="custom-baker-field">
+                    <label>${f.label}</label>
+                    ${descHtml}
+                    <div style="display:flex; gap:14px; margin-top:8px; justify-content:center;">
+                        <div class="product" style="cursor:pointer; padding:12px 32px; border-radius:50px; font-weight:700;" onclick="this.classList.add('selected'); this.nextElementSibling.classList.remove('selected')">Yes</div>
+                        <div class="product" style="cursor:pointer; padding:12px 32px; border-radius:50px; font-weight:700;" onclick="this.classList.add('selected'); this.previousElementSibling.classList.remove('selected')">No</div>
+                    </div>
+                </div>`;
+
+            default: // text
+                return `<div class="custom-baker-field">
+                    <label>${f.label}</label>
+                    ${descHtml}
+                    <input type="text" placeholder="Type your answer here..." style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc; font-family:inherit;">
+                </div>`;
+        }
+    }
+
+    // Star rating hover helpers (exposed globally)
+    window.hoverStars = function(el) {
+        const val = parseInt(el.dataset.val);
+        el.parentElement.querySelectorAll('.star').forEach((s, i) => {
+            s.style.color = i < val ? '#e67399' : '#ddd';
+        });
+    };
+    window.unhoverStars = function(el) {
+        const selected = el.parentElement.querySelector('.star.active');
+        const val = selected ? parseInt(selected.dataset.val) : 0;
+        el.parentElement.querySelectorAll('.star').forEach((s, i) => {
+            s.style.color = i < val ? '#e67399' : '#ddd';
+        });
+    };
+    window.selectStars = function(el) {
+        const val = parseInt(el.dataset.val);
+        el.parentElement.querySelectorAll('.star').forEach((s, i) => {
+            s.classList.toggle('active', i < val);
+            s.style.color = i < val ? '#e67399' : '#ddd';
+        });
+    };
+
+    // Product tile toggle helper (used by Product Selection field)
+    window.toggleProductTile = function(el) {
+        el.classList.toggle('selected');
+    };
+
+    // Rebuild all custom fields in the live form
+    function rebuildLiveForm() {
+        // Remove the custom step section entirely, then recreate it
+        const existing = document.getElementById('step-custom-fields');
+        if (existing) existing.remove();
+
+        if (window._customFields.length === 0) return;
+
+        // Create a dedicated custom step that sits before the contact step (step-12)
+        const customStep = document.createElement('section');
+        customStep.className = 'step';
+        customStep.id = 'step-custom-fields';
+        customStep.innerHTML = `
+            <h2>A Few More Details</h2>
+            <p style="text-align:center; margin-bottom:20px; font-size:0.9rem; color:#888;">Help us make your order perfect!</p>
+            <div id="custom-fields-container"></div>
+            <div class="nav-buttons cart-bar">
+                <button class="back-btn" id="back-custom">Back</button>
+                <button class="next-btn" id="next-custom">Continue</button>
+            </div>
+        `;
+
+        // Inject each field into the container
+        const container = customStep.querySelector('#custom-fields-container');
+        window._customFields.forEach(f => {
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = buildFieldHTML(f);
+            container.appendChild(wrapper.firstElementChild);
+        });
+
+        // Insert before step-12 (Contact Info)
+        const step12 = document.getElementById('step-12');
+        const formContainer = document.getElementById('form-container-toggle');
+        if (step12 && formContainer) {
+            formContainer.insertBefore(customStep, step12);
+        } else if (formContainer) {
+            formContainer.appendChild(customStep);
+        }
+
+        // Wire up the back/next buttons for this step dynamically
+        const backBtn = customStep.querySelector('#back-custom');
+        const nextBtn = customStep.querySelector('#next-custom');
+        const prevStep = document.getElementById('step-11');
+        if (backBtn && prevStep) {
+            backBtn.addEventListener('click', () => {
+                customStep.classList.remove('active');
+                prevStep.classList.add('active');
+            });
+        }
+        if (nextBtn && step12) {
+            nextBtn.addEventListener('click', () => {
+                customStep.classList.remove('active');
+                step12.classList.add('active');
+            });
+        }
+        // Also patch step-11's continue button to go to custom step instead of step-12
+        const step11Next = document.getElementById('to-step-12');
+        if (step11Next) {
+            step11Next.onclick = (e) => {
+                e.preventDefault();
+                const s11 = document.getElementById('step-11');
+                if (s11) s11.classList.remove('active');
+                customStep.classList.add('active');
+            };
+        }
+    }
+
     // Add Custom Field / Question to Order Form Handler
     const fieldForm = document.getElementById('add-field-form');
     if (fieldForm) {
         fieldForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const targetStepId = document.getElementById('field-target-step').value;
-            const labelText = document.getElementById('field-label').value;
+            const labelText = document.getElementById('field-label').value.trim();
             const fieldType = document.getElementById('field-type').value;
-            const optionsText = document.getElementById('field-options').value;
+            const optionsText = (document.getElementById('field-options')?.value || '').trim();
+            const descriptionText = (document.getElementById('field-description')?.value || '').trim();
 
-            const targetStep = document.getElementById(targetStepId);
-            if (targetStep) {
-                const fieldContainer = document.createElement('div');
-                fieldContainer.className = 'custom-baker-field';
-                fieldContainer.style.cssText = 'margin:15px 0; text-align:left; background:#fff7fa; padding:15px; border-radius:12px; border:1px solid #f8c6d7;';
-                
-                let fieldHtml = `<label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:6px;">${labelText}</label>`;
-                
-                if (fieldType === 'textarea') {
-                    fieldHtml += `<textarea placeholder="Type answer here..." style="width:100%; height:80px; padding:10px; border-radius:8px; border:1px solid #ccc;"></textarea>`;
-                } else if (fieldType === 'select') {
-                    const opts = optionsText.split(',').map(o => o.trim());
-                    fieldHtml += `<select style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">${opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
-                } else if (fieldType === 'file') {
-                    fieldHtml += `<input type="file" style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc; background:#fff;">`;
-                } else {
-                    fieldHtml += `<input type="text" placeholder="Type answer here..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">`;
-                }
+            if (!labelText) return;
 
-                fieldContainer.innerHTML = fieldHtml;
-                const cartBar = targetStep.querySelector('.cart-bar') || targetStep.querySelector('.nav-buttons');
-                if (cartBar) {
-                    targetStep.insertBefore(fieldContainer, cartBar);
-                } else {
-                    targetStep.appendChild(fieldContainer);
-                }
+            const fieldEntry = {
+                id: 'field_' + Date.now(),
+                label: labelText,
+                type: fieldType,
+                options: optionsText,
+                description: descriptionText
+            };
 
-                alert(`Custom field "${labelText}" added live to ${targetStepId.toUpperCase()} in customer order form!`);
-                fieldForm.reset();
-            }
+            window._customFields.push(fieldEntry);
+            renderFieldsTable();
+            rebuildLiveForm();
+
+            fieldForm.reset();
+            toggleOptionsRow('products');
         });
     }
+
+    // Init table on load
+    renderFieldsTable();
 
     // Add Product Form
     const prodForm = document.getElementById('add-product-form');
@@ -684,6 +973,227 @@ window.closeInvoiceModal = function() {
     document.getElementById('invoice-modal').style.display = 'none';
 };
 
+/* ============================================
+   SETTINGS TAB — LEAD TIME, COLORS, TYPOGRAPHY
+   ============================================ */
+
+// ── Lead Time ──────────────────────────────
+window.toggleLeadTimeInput = function(checkbox) {
+    const wrapper = document.getElementById('custom-lead-days-wrapper');
+    if (!wrapper) return;
+    // When UNCHECKED (disabled), show the custom days input
+    wrapper.style.display = checkbox.checked ? 'none' : 'block';
+    if (checkbox.checked) {
+        localStorage.setItem('lead_time_days', '3');
+        localStorage.setItem('lead_time_enabled', '1');
+    } else {
+        localStorage.setItem('lead_time_enabled', '0');
+    }
+};
+
+window.saveLeadTime = function() {
+    const days = document.getElementById('custom-lead-days')?.value || '3';
+    localStorage.setItem('lead_time_days', days);
+    const msg = document.getElementById('lead-time-save-msg');
+    if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
+};
+
+// ── Color Scheme ───────────────────────────
+const COLOR_DEFAULTS = {
+    primary:   '#e67399',
+    secondary: '#5c1d37',
+    accent:    '#fcebf1',
+    text:      '#4a2133'
+};
+
+window.applyColorScheme = function() {
+    const root = document.documentElement;
+    const p = document.getElementById('cs-primary')?.value   || COLOR_DEFAULTS.primary;
+    const s = document.getElementById('cs-secondary')?.value || COLOR_DEFAULTS.secondary;
+    const a = document.getElementById('cs-accent')?.value    || COLOR_DEFAULTS.accent;
+    const t = document.getElementById('cs-text')?.value      || COLOR_DEFAULTS.text;
+
+    root.style.setProperty('--primary',    p);
+    root.style.setProperty('--primary-hover', shadeColor(p, -15));
+    root.style.setProperty('--pink-bg',    a);
+    root.style.setProperty('--dark-text',  t);
+    root.style.setProperty('--burgundy-bg', s);
+
+    // Sync hex text inputs
+    syncHex('cs-primary',   p);
+    syncHex('cs-secondary', s);
+    syncHex('cs-accent',    a);
+    syncHex('cs-text',      t);
+};
+
+window.syncColorFromText = function(colorId, hexId) {
+    const hexInput = document.getElementById(hexId);
+    const colorInput = document.getElementById(colorId);
+    if (!hexInput || !colorInput) return;
+    const val = hexInput.value.trim();
+    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        colorInput.value = val;
+        applyColorScheme();
+    }
+};
+
+function syncHex(colorId, value) {
+    const hexInput = document.getElementById(colorId + '-hex');
+    if (hexInput && hexInput !== document.activeElement) hexInput.value = value;
+}
+
+function shadeColor(hex, percent) {
+    let R = parseInt(hex.slice(1,3), 16);
+    let G = parseInt(hex.slice(3,5), 16);
+    let B = parseInt(hex.slice(5,7), 16);
+    R = Math.max(0, Math.min(255, R + percent));
+    G = Math.max(0, Math.min(255, G + percent));
+    B = Math.max(0, Math.min(255, B + percent));
+    return `#${R.toString(16).padStart(2,'0')}${G.toString(16).padStart(2,'0')}${B.toString(16).padStart(2,'0')}`;
+}
+
+window.saveColorScheme = function() {
+    const scheme = {
+        primary:   document.getElementById('cs-primary')?.value,
+        secondary: document.getElementById('cs-secondary')?.value,
+        accent:    document.getElementById('cs-accent')?.value,
+        text:      document.getElementById('cs-text')?.value
+    };
+    localStorage.setItem('site_color_scheme', JSON.stringify(scheme));
+    const msg = document.getElementById('color-save-msg');
+    if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
+};
+
+window.resetColorScheme = function() {
+    const d = COLOR_DEFAULTS;
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+    setVal('cs-primary',    d.primary);
+    setVal('cs-secondary',  d.secondary);
+    setVal('cs-accent',     d.accent);
+    setVal('cs-text',       d.text);
+    applyColorScheme();
+    localStorage.removeItem('site_color_scheme');
+};
+
+// Load saved colors on page load
+(function loadSavedColors() {
+    const saved = localStorage.getItem('site_color_scheme');
+    if (!saved) return;
+    try {
+        const s = JSON.parse(saved);
+        const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+        if (s.primary)   setVal('cs-primary',   s.primary);
+        if (s.secondary) setVal('cs-secondary',  s.secondary);
+        if (s.accent)    setVal('cs-accent',     s.accent);
+        if (s.text)      setVal('cs-text',       s.text);
+        setTimeout(applyColorScheme, 100);
+    } catch(e) {}
+})();
+
+// ── Typography ─────────────────────────────
+const TYPO_DEFAULTS = {
+    h1: { size: '3.2', unit: 'rem', color: '#5c1d37', font: "'Poppins', sans-serif" },
+    h2: { size: '2',   unit: 'rem', color: '#5c1d37', font: "'Poppins', sans-serif" },
+    h3: { size: '1.35',unit: 'rem', color: '#4a2133', font: "'Poppins', sans-serif" },
+    p:  { size: '1',   unit: 'rem', color: '#666666', font: "'Poppins', sans-serif" }
+};
+
+window.applyTypography = function() {
+    const styleId = 'typo-dynamic-style';
+    let styleEl = document.getElementById(styleId);
+    if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = styleId;
+        document.head.appendChild(styleEl);
+    }
+
+    let css = '';
+    ['h1','h2','h3','p'].forEach(tag => {
+        const fontEl  = document.querySelector(`.typo-font[data-tag="${tag}"]`);
+        const sizeEl  = document.querySelector(`.typo-size[data-tag="${tag}"]`);
+        const unitEl  = document.querySelector(`.typo-unit[data-tag="${tag}"]`);
+        const colorEl = document.querySelector(`.typo-color[data-tag="${tag}"]`);
+
+        if (!fontEl) return;
+        const font  = fontEl.value;
+        const size  = (sizeEl?.value || TYPO_DEFAULTS[tag].size) + (unitEl?.value || TYPO_DEFAULTS[tag].unit);
+        const color = colorEl?.value || TYPO_DEFAULTS[tag].color;
+
+        // Sync hex text box
+        const hexEl = document.querySelector(`.typo-color-hex[data-tag="${tag}"]`);
+        if (hexEl && hexEl !== document.activeElement) hexEl.value = color;
+
+        if (tag === 'p') {
+            css += `body, p, span, li, td { font-family: ${font}; font-size: ${size}; color: ${color}; }\n`;
+        } else {
+            css += `${tag} { font-family: ${font}; font-size: ${size}; color: ${color}; }\n`;
+        }
+    });
+
+    styleEl.textContent = css;
+};
+
+window.syncTypoColor = function(hexInput) {
+    const tag = hexInput.dataset.tag;
+    const val = hexInput.value.trim();
+    if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        const colorPicker = document.querySelector(`.typo-color[data-tag="${tag}"]`);
+        if (colorPicker) colorPicker.value = val;
+        applyTypography();
+    }
+};
+
+window.saveTypography = function() {
+    const data = {};
+    ['h1','h2','h3','p'].forEach(tag => {
+        data[tag] = {
+            font:  document.querySelector(`.typo-font[data-tag="${tag}"]`)?.value,
+            size:  document.querySelector(`.typo-size[data-tag="${tag}"]`)?.value,
+            unit:  document.querySelector(`.typo-unit[data-tag="${tag}"]`)?.value,
+            color: document.querySelector(`.typo-color[data-tag="${tag}"]`)?.value,
+        };
+    });
+    localStorage.setItem('site_typography', JSON.stringify(data));
+    const msg = document.getElementById('typo-save-msg');
+    if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
+};
+
+window.resetTypography = function() {
+    ['h1','h2','h3','p'].forEach(tag => {
+        const d = TYPO_DEFAULTS[tag];
+        const fontEl  = document.querySelector(`.typo-font[data-tag="${tag}"]`);
+        const sizeEl  = document.querySelector(`.typo-size[data-tag="${tag}"]`);
+        const unitEl  = document.querySelector(`.typo-unit[data-tag="${tag}"]`);
+        const colorEl = document.querySelector(`.typo-color[data-tag="${tag}"]`);
+        if (fontEl)  fontEl.value  = d.font;
+        if (sizeEl)  sizeEl.value  = d.size;
+        if (unitEl)  unitEl.value  = d.unit;
+        if (colorEl) colorEl.value = d.color;
+    });
+    applyTypography();
+    localStorage.removeItem('site_typography');
+};
+
+// Load saved typography on page load
+(function loadSavedTypography() {
+    const saved = localStorage.getItem('site_typography');
+    if (!saved) return;
+    try {
+        const data = JSON.parse(saved);
+        ['h1','h2','h3','p'].forEach(tag => {
+            if (!data[tag]) return;
+            const d = data[tag];
+            const setQ = (sel, val) => { const el = document.querySelector(sel); if (el && val) el.value = val; };
+            setQ(`.typo-font[data-tag="${tag}"]`,  d.font);
+            setQ(`.typo-size[data-tag="${tag}"]`,  d.size);
+            setQ(`.typo-unit[data-tag="${tag}"]`,  d.unit);
+            setQ(`.typo-color[data-tag="${tag}"]`, d.color);
+        });
+        setTimeout(applyTypography, 150);
+    } catch(e) {}
+})();
+
+
 window.copyClientPayLink = function(orderNum) {
     alert(`Invoice payment link for Order #${orderNum} copied!`);
 };
@@ -715,3 +1225,200 @@ function appendOrderToAdminQueue(order) {
     `;
     queue.prepend(card);
 }
+
+/* ============================================
+   ADMIN CALENDAR & AVAILABILITY MANAGER LOGIC
+   ============================================ */
+
+window.adminCalState = {
+    currentYear: 2026,
+    currentMonth: 6, // July (0-indexed)
+    blockedDates: new Set(['2026-07-04', '2026-07-25']), // Default demo blocked dates
+    recurringClosedDays: [0, 1] // Default: Sun (0) & Mon (1)
+};
+
+// Initialize Admin Calendar from localStorage
+(function loadAdminCalendarSettings() {
+    try {
+        const savedBlocked = localStorage.getItem('admin_blocked_dates');
+        if (savedBlocked) {
+            window.adminCalState.blockedDates = new Set(JSON.parse(savedBlocked));
+        }
+
+        const savedRecurring = localStorage.getItem('admin_recurring_closed');
+        if (savedRecurring) {
+            window.adminCalState.recurringClosedDays = JSON.parse(savedRecurring);
+        }
+    } catch(e) {}
+})();
+
+window.initAdminCalendarUI = function() {
+    const grid = document.getElementById('admin-calendar-grid');
+    if (!grid) return;
+
+    // Check checkboxes matching recurringClosedDays
+    document.querySelectorAll('.recurring-closed-checkbox').forEach(cb => {
+        cb.checked = window.adminCalState.recurringClosedDays.includes(parseInt(cb.value));
+    });
+
+    renderAdminCalendarGrid();
+    renderBlockedDatesList();
+};
+
+window.changeAdminCalMonth = function(delta) {
+    window.adminCalState.currentMonth += delta;
+    if (window.adminCalState.currentMonth > 11) {
+        window.adminCalState.currentMonth = 0;
+        window.adminCalState.currentYear++;
+    } else if (window.adminCalState.currentMonth < 0) {
+        window.adminCalState.currentMonth = 11;
+        window.adminCalState.currentYear--;
+    }
+    renderAdminCalendarGrid();
+};
+
+function renderAdminCalendarGrid() {
+    const grid = document.getElementById('admin-calendar-grid');
+    const label = document.getElementById('admin-cal-month-year');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    const year = window.adminCalState.currentYear;
+    const month = window.adminCalState.currentMonth;
+
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    if (label) label.innerText = `${monthNames[month]} ${year}`;
+
+    // Header Day Names
+    const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayHeaders.forEach(dh => {
+        const hEl = document.createElement('div');
+        hEl.className = 'admin-cal-header-day';
+        hEl.innerText = dh;
+        grid.appendChild(hEl);
+    });
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // Empty slot padding
+    for (let i = 0; i < firstDayIndex; i++) {
+        const emptyEl = document.createElement('div');
+        emptyEl.className = 'admin-cal-day empty-slot';
+        grid.appendChild(emptyEl);
+    }
+
+    // Day Cells
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateObj = new Date(year, month, day);
+        const dayOfWeek = dateObj.getDay();
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+        const isBlocked = window.adminCalState.blockedDates.has(dateStr);
+        const isWeeklyClosed = window.adminCalState.recurringClosedDays.includes(dayOfWeek);
+
+        const dayEl = document.createElement('div');
+        let statusClass = 'available';
+        if (isBlocked) {
+            statusClass = 'blocked';
+        } else if (isWeeklyClosed) {
+            statusClass = 'weekly-closed';
+        }
+
+        dayEl.className = `admin-cal-day ${statusClass}`;
+        dayEl.innerText = day;
+        dayEl.title = isBlocked ? `Blocked (${dateStr}) - Click to Unblock` : (isWeeklyClosed ? `Closed (${dayHeaders[dayOfWeek]}) - Click to Override Block` : `Available - Click to Block`);
+
+        dayEl.onclick = function() {
+            if (isBlocked) {
+                window.adminCalState.blockedDates.delete(dateStr);
+            } else {
+                window.adminCalState.blockedDates.add(dateStr);
+            }
+            saveAdminCalendarState();
+            renderAdminCalendarGrid();
+            renderBlockedDatesList();
+            renderInteractiveCalendar(); // Update storefront modal calendar too!
+        };
+
+        grid.appendChild(dayEl);
+    }
+}
+
+function renderBlockedDatesList() {
+    const list = document.getElementById('admin-blocked-dates-list');
+    if (!list) return;
+
+    list.innerHTML = '';
+    const sorted = Array.from(window.adminCalState.blockedDates).sort();
+
+    if (sorted.length === 0) {
+        list.innerHTML = '<span style="color:#aaa; font-size:0.9rem;">No custom blocked dates added yet. Click any calendar date above or use the manual input!</span>';
+        return;
+    }
+
+    sorted.forEach(dateStr => {
+        const badge = document.createElement('div');
+        badge.className = 'blocked-date-badge';
+        badge.innerHTML = `
+            <span>🚫 ${dateStr}</span>
+            <button title="Unblock Date" onclick="removeBlockedDate('${dateStr}')">✕</button>
+        `;
+        list.appendChild(badge);
+    });
+}
+
+window.removeBlockedDate = function(dateStr) {
+    window.adminCalState.blockedDates.delete(dateStr);
+    saveAdminCalendarState();
+    renderAdminCalendarGrid();
+    renderBlockedDatesList();
+    renderInteractiveCalendar();
+};
+
+window.addManualBlockedDate = function() {
+    const input = document.getElementById('manual-block-date');
+    if (!input || !input.value) {
+        alert('Please pick a date first!');
+        return;
+    }
+    const val = input.value;
+    window.adminCalState.blockedDates.add(val);
+    saveAdminCalendarState();
+    renderAdminCalendarGrid();
+    renderBlockedDatesList();
+    renderInteractiveCalendar();
+    input.value = '';
+};
+
+window.saveRecurringClosedDays = function() {
+    const selected = [];
+    document.querySelectorAll('.recurring-closed-checkbox:checked').forEach(cb => {
+        selected.push(parseInt(cb.value));
+    });
+    window.adminCalState.recurringClosedDays = selected;
+    localStorage.setItem('admin_recurring_closed', JSON.stringify(selected));
+
+    const msg = document.getElementById('recurring-save-msg');
+    if (msg) {
+        msg.style.display = 'inline';
+        setTimeout(() => msg.style.display = 'none', 2500);
+    }
+
+    renderAdminCalendarGrid();
+    renderInteractiveCalendar();
+};
+
+function saveAdminCalendarState() {
+    const arr = Array.from(window.adminCalState.blockedDates);
+    localStorage.setItem('admin_blocked_dates', JSON.stringify(arr));
+}
+
+// Auto init when tab is shown
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        window.initAdminCalendarUI();
+    }, 200);
+});
+
