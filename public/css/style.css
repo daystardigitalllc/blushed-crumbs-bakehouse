@@ -1377,127 +1377,167 @@ body {
     .ingredients-grid-6 { grid-template-columns: 1fr; gap: 30px; }
     .about-hero-title { font-size: 2.8rem; }
     .meet-founder-content h2, .ingredients-title, .mission-content h2 { font-size: 2.4rem; }
-/* MODERN ADMIN SIDEBAR LAYOUT & FORM DESIGN SYSTEM */
+}
+
+/* HIGH-END MODERN ADMIN SIDEBAR & WORKSPACE GLOWUP */
 #admin-portal-view {
-    background-color: #f8f4f7;
+    background-color: #fcf7fa !important;
     min-height: 100vh;
+    display: block !important;
 }
 
 .admin-layout-container {
     display: flex;
     min-height: 100vh;
+    width: 100%;
 }
 
 .admin-sidebar {
-    width: 270px;
-    background: #401829;
-    color: white;
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    box-shadow: 4px 0 25px rgba(0,0,0,0.08);
+    width: 280px !important;
+    background: #2b0d1b !important;
+    color: white !important;
+    padding: 35px 22px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-shrink: 0 !important;
+    box-shadow: 6px 0 30px rgba(43, 13, 27, 0.15) !important;
+    position: relative;
+    z-index: 100;
 }
 
 .admin-sidebar-brand {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 35px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.12);
+    gap: 14px;
+    margin-bottom: 40px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .admin-sidebar-brand h3 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.3px;
     line-height: 1.2;
 }
 
 .admin-sidebar-brand .badge-pro {
     display: inline-block;
-    background: #e67399;
+    background: linear-gradient(135deg, #e67399, #c94b75);
     color: white;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 10px;
+    padding: 3px 10px;
+    border-radius: 12px;
     margin-top: 4px;
+    box-shadow: 0 4px 12px rgba(230, 115, 153, 0.3);
 }
 
 .admin-sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     flex: 1;
 }
 
 .admin-nav-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    color: rgba(255,255,255,0.75);
-    font-weight: 600;
-    font-size: 0.95rem;
-    background: transparent;
-    border: none;
+    gap: 14px;
+    padding: 14px 18px !important;
+    border-radius: 14px !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    background: transparent !important;
+    border: none !important;
     cursor: pointer;
     text-align: left;
-    transition: all 0.25s ease;
+    transition: all 0.25s ease !important;
     width: 100%;
 }
 
-.admin-nav-item:hover, .admin-nav-item.active {
-    background: rgba(255,255,255,0.12);
-    color: white;
+.admin-nav-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    transform: translateX(3px);
 }
 
 .admin-nav-item.active {
-    background: #e67399;
-    box-shadow: 0 4px 15px rgba(230, 115, 153, 0.4);
+    background: linear-gradient(135deg, #e67399, #c94b75) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 8px 22px rgba(230, 115, 153, 0.45) !important;
 }
 
 .admin-sidebar-footer {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.12);
+    margin-top: auto;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .admin-main-content {
-    flex: 1;
-    padding: 40px;
+    flex: 1 !important;
+    padding: 45px 50px !important;
+    background-color: #fcf7fa !important;
     overflow-y: auto;
 }
 
-/* MODERN FORM INPUT DESIGN SYSTEM */
+/* MODERN FORM BUILDER CARDS & PANELS */
+.form-builder-card, .order-card, .add-review-box, .payment-methods-card {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 30px !important;
+    box-shadow: 0 10px 30px rgba(92, 29, 55, 0.05) !important;
+    border: 1px solid #f2e3ea !important;
+    margin-bottom: 28px !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.form-builder-card:hover {
+    box-shadow: 0 14px 40px rgba(92, 29, 55, 0.08) !important;
+}
+
+.form-builder-card h4 {
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #5c1d37;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* MODERN INPUT FIELD DESIGN SYSTEM */
 .admin-main-content input[type="text"],
 .admin-main-content input[type="number"],
 .admin-main-content input[type="email"],
 .admin-main-content input[type="tel"],
+.admin-main-content input[type="url"],
 .admin-main-content select,
 .admin-main-content textarea {
-    width: 100%;
-    padding: 12px 18px;
-    border-radius: 12px;
-    border: 1px solid #e0c5d1;
-    background-color: #fff;
-    color: #401829;
-    font-size: 0.95rem;
+    width: 100% !important;
+    padding: 14px 18px !important;
+    border-radius: 14px !important;
+    border: 1.5px solid #ebd4e0 !important;
+    background-color: #ffffff !important;
+    color: #401829 !important;
+    font-size: 0.95rem !important;
+    font-weight: 500 !important;
     font-family: inherit;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-    outline: none;
+    transition: all 0.25s ease !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02) !important;
+    outline: none !important;
 }
 
 .admin-main-content input:focus,
 .admin-main-content select:focus,
 .admin-main-content textarea:focus {
-    border-color: #e67399;
-    box-shadow: 0 0 0 4px rgba(230, 115, 153, 0.15);
-    background-color: #ffffff;
+    border-color: #e67399 !important;
+    box-shadow: 0 0 0 4px rgba(230, 115, 153, 0.2) !important;
+    background-color: #ffffff !important;
 }
 
 .admin-main-content label {
@@ -1505,17 +1545,75 @@ body {
     font-weight: 700;
     font-size: 0.88rem;
     color: #5c1d37;
-    margin-bottom: 6px;
+    margin-bottom: 7px;
+    letter-spacing: 0.2px;
 }
 
-/* Mobile Sidebar Drawer */
-@media (max-width: 900px) {
-    .admin-layout-container { flex-direction: column; }
-    .admin-sidebar { width: 100%; padding: 20px; }
-    .admin-sidebar-nav { flex-direction: row; overflow-x: auto; padding-bottom: 10px; }
-    .admin-nav-item { flex: 0 0 auto; white-space: nowrap; }
-    .admin-main-content { padding: 20px 15px; }
+/* MODERN BUTTON STYLING SYSTEM */
+.btn-primary {
+    background: linear-gradient(135deg, #e67399, #c94b75) !important;
+    color: #ffffff !important;
+    border-radius: 14px !important;
+    padding: 13px 28px !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    border: none !important;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(230, 115, 153, 0.35) !important;
+    transition: all 0.25s ease !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
+
+.btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(230, 115, 153, 0.45) !important;
+    background: linear-gradient(135deg, #ed82a6, #d45781) !important;
+}
+
+.btn-secondary {
+    background: #5c1d37 !important;
+    color: #ffffff !important;
+    border-radius: 14px !important;
+    padding: 11px 22px !important;
+    font-weight: 700 !important;
+    border: none !important;
+    cursor: pointer;
+    transition: all 0.25s ease !important;
+}
+
+.btn-secondary:hover {
+    background: #401829 !important;
+    transform: translateY(-2px) !important;
+}
+
+.btn-outline {
+    background: transparent !important;
+    border: 2px solid #e67399 !important;
+    color: #e67399 !important;
+    border-radius: 14px !important;
+    padding: 11px 22px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    transition: all 0.25s ease !important;
+}
+
+.btn-outline:hover {
+    background: #fdeef4 !important;
+    transform: translateY(-2px) !important;
+}
+
+/* RESPONSIVE MOBILE SIDEBAR DRAWER */
+@media (max-width: 900px) {
+    .admin-layout-container { flex-direction: column !important; }
+    .admin-sidebar { width: 100% !important; min-height: auto !important; padding: 20px !important; }
+    .admin-sidebar-nav { flex-direction: row !important; overflow-x: auto !important; padding-bottom: 10px !important; }
+    .admin-nav-item { flex: 0 0 auto !important; width: auto !important; white-space: nowrap !important; }
+    .admin-main-content { padding: 25px 15px !important; }
+}
+
 
 
 
