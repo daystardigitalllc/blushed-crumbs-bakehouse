@@ -626,9 +626,6 @@ function initAdminPortal() {
             if (galPreviewWrap) galPreviewWrap.style.display = 'none';
         });
     }
-}
-;
-    }
 
     // Add Review Form
     const revForm = document.getElementById('add-review-form');
