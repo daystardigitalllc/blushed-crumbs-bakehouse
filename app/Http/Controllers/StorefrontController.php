@@ -34,6 +34,20 @@ class StorefrontController extends Controller
             );
         }
 
+        if (empty($tenant->form_schema)) {
+            $tenant->form_schema = Tenant::getDefaultFormSchema();
+            $tenant->save();
+        }
+        if (empty($tenant->booking_settings)) {
+            $tenant->booking_settings = [
+                'lead_time_enabled' => true,
+                'lead_time_days' => 3,
+                'recurring_closed_days' => [0, 1],
+                'blocked_dates' => ['2026-07-04', '2026-07-25']
+            ];
+            $tenant->save();
+        }
+
         // 2. If visiting the main SaaS domain (e.g. bakebox.daystardigital.co), render SaaS Landing Page
         if ($host === 'bakebox.daystardigital.co' && !$request->has('tenant')) {
             return view('saas.landing', [

@@ -13,4 +13,7 @@ Route::get('/gallery', [StorefrontController::class, 'gallery'])->name('storefro
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::post('/admin/gallery', [AdminController::class, 'storeGallery'])->name('admin.gallery.store');
 Route::delete('/admin/gallery/{id}', [AdminController::class, 'destroyGallery'])->name('admin.gallery.destroy');
+Route::post('/admin/form-builder', [AdminController::class, 'saveFormSchema'])->name('admin.form.schema.save');
+Route::post('/admin/settings/booking', [AdminController::class, 'saveBookingSettings'])->name('admin.settings.booking.save');
+
 

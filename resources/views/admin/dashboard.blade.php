@@ -163,9 +163,13 @@
 
             <!-- TAB 2: Form Studio -->
             <div id="tab-form-builder" class="tab-content">
+                <script>
+                    window._serverFormSchema = @json($tenant->form_schema ?? \App\Models\Tenant::getDefaultFormSchema());
+                    window._serverBookingSettings = @json($tenant->booking_settings ?? ['lead_time_enabled' => true, 'lead_time_days' => 3, 'recurring_closed_days' => [0, 1], 'blocked_dates' => ['2026-07-04', '2026-07-25']]);
+                </script>
                 <div class="section-header">
                     <h3>⚙️ Form Studio</h3>
-                    <p class="subtitle">Add custom questions to your order form. Changes appear live on the storefront the moment you add them.</p>
+                    <p class="subtitle">Customize step headers, directions, and form fields for your bakery (cakes, cookies, sourdough, etc.). Step 1 is anchored to your Product Catalog.</p>
                 </div>
 
                 <!-- EMAIL ROUTING SETTINGS CARD -->
@@ -179,46 +183,58 @@
                     <div id="email-save-status" style="margin-top:10px; font-weight:700; color:#28a745; font-size:0.88rem; display:none;"></div>
                 </div>
 
-                <!-- ADD FIELD CARD -->
+                <!-- ADD STEP / FIELD CARD -->
                 <div class="form-builder-card">
-                    <h4>➕ Add Field to Order Form</h4>
+                    <h4>➕ Add Step or Field to Order Builder</h4>
                     <form id="add-field-form" class="form-builder-grid">
                         <div>
-                            <label>Question / Label</label>
-                            <input type="text" id="field-label" placeholder="e.g. Color Theme, Event Name…" required>
+                            <label>Step Header / Title</label>
+                            <input type="text" id="field-label" placeholder="e.g. Choose Your Flavors, Select Crust Type…" required>
                         </div>
                         <div>
-                            <label>Field Type</label>
+                            <label>Step Subtext / Directions</label>
+                            <input type="text" id="field-description" placeholder="e.g. Select all options that apply to your order">
+                        </div>
+                        <div>
+                            <label>Field Type / Template</label>
                             <select id="field-type" onchange="toggleOptionsRow(this.value)">
-                                <option value="products">🛒 Product Selection (from Catalog)</option>
+                                <option value="products">🛒 Product Selection (Product Catalog)</option>
+                                <option value="calendar">📅 Interactive Date Picker / Booking Calendar</option>
+                                <option value="flavors">🍰 Flavor Selection Grid</option>
+                                <option value="frosting">🧁 Frosting Selection Grid</option>
+                                <option value="fillings">🍫 Fillings Selection Grid</option>
+                                <option value="textarea">📄 Multi-line Textarea / Notes</option>
+                                <option value="fulfillment">🚚 Fulfillment Options &amp; Time Slots</option>
+                                <option value="allergies">⚠️ Allergy Notice &amp; Notes</option>
+                                <option value="social_discount">🎁 Social Media Follow Discounts</option>
+                                <option value="file_upload">📎 Inspiration Photo / File Upload</option>
+                                <option value="terms">📜 Terms &amp; Conditions Agreement</option>
+                                <option value="contact_info">👤 Contact Info &amp; Order Submission</option>
                                 <option value="text">📝 Single-Line Text</option>
-                                <option value="textarea">📄 Multi-line Textarea</option>
                                 <option value="select">☑️ Multiple Choice (Select)</option>
-                                <option value="chips">🏷️ Select Field</option>
-                                <option value="file">📎 File / Photo Upload</option>
-                                <option value="datepicker">📅 Date Picker</option>
+                                <option value="chips">🏷️ Select Chips / Tokens</option>
+                                <option value="datepicker">📅 Date Picker (Standard)</option>
                                 <option value="toggle">🔘 Yes / No Toggle</option>
                             </select>
                         </div>
                         <div id="field-options-row">
-                            <label>Options <span style="font-weight:400; color:#999;">(comma-separated)</span></label>
-                            <input type="text" id="field-options" placeholder="Gold, Rose Gold, White, Black">
+                            <label>Options <span style="font-weight:400; color:#999;">(comma-separated list of items/flavors)</span></label>
+                            <input type="text" id="field-options" placeholder="Strawberry Bliss, Vanilla Bean, Chocolate Dream">
                         </div>
-                        <div id="field-description-row">
-                            <label>Directions / Description <span style="font-weight:400; color:#999;">(optional)</span></label>
-                            <input type="text" id="field-description" placeholder="e.g. Please be as specific as possible">
-                        </div>
-                        <div style="grid-column: 1 / -1;">
-                            <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Field to Live Order Form</button>
+                        <div style="grid-column: 1 / -1; margin-top:10px;">
+                            <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Step to Order Form</button>
                         </div>
                     </form>
                 </div>
 
-                <!-- LIVE FIELDS TABLE WITH REORDER -->
+                <!-- LIVE FIELDS TABLE WITH REORDER & SAVE -->
                 <div class="form-builder-card">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
-                        <h4 style="margin-bottom:0;">📋 Current Custom Fields</h4>
-                        <span style="font-size:0.85rem; color:#999; font-weight:500;">Drag rows or use ↑↓ to reorder · Changes apply live</span>
+                        <div>
+                            <h4 style="margin-bottom:4px;">📋 Configured Form Steps &amp; Fields</h4>
+                            <span style="font-size:0.85rem; color:#888; font-weight:500;">Step 1 is anchored to Product Catalog. Use ↑↓ or drag rows to reorder steps.</span>
+                        </div>
+                        <button id="save-form-schema-btn" class="btn btn-primary" onclick="saveFormSchemaToServer()">💾 Save Order Form Layout Live</button>
                     </div>
 
                     <div class="field-table-wrapper">
@@ -226,17 +242,17 @@
                             <thead>
                                 <tr>
                                     <th style="width:36px;"></th>
-                                    <th>#</th>
-                                    <th>Question</th>
-                                    <th>Field Type</th>
-                                    <th>Options / Details</th>
+                                    <th>Step #</th>
+                                    <th>Step Header / Title</th>
+                                    <th>Template / Type</th>
+                                    <th>Subtext / Options</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="custom-fields-tbody">
                                 <tr class="empty-row" id="fields-empty-row">
                                     <td colspan="6" style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem;">
-                                        No custom fields added yet. Use the form above to add your first question!
+                                        Loading configured form steps…
                                     </td>
                                 </tr>
                             </tbody>

@@ -352,13 +352,21 @@ function renderInteractiveCalendar() {
     const year = 2026;
     const month = 6; // 0-indexed: 6 = July
 
-    // Load blocked dates and recurring closed days from localStorage
-    const savedBlocked = localStorage.getItem('admin_blocked_dates');
-    const customBlocked = savedBlocked ? JSON.parse(savedBlocked) : [];
+    const bSettings = window._serverBookingSettings || {};
+    const leadTimeEnabled = bSettings.lead_time_enabled ?? (localStorage.getItem('lead_time_enabled') !== '0');
+    const leadTimeDays = parseInt(bSettings.lead_time_days ?? (localStorage.getItem('lead_time_days') || 3));
 
-    const savedRecurring = localStorage.getItem('admin_recurring_closed');
-    // Default closed: Sunday (0) and Monday (1)
-    const recurringClosed = savedRecurring ? JSON.parse(savedRecurring) : [0, 1];
+    const customBlocked = window.adminCalState?.blockedDates
+        ? Array.from(window.adminCalState.blockedDates)
+        : (bSettings.blocked_dates || ['2026-07-04', '2026-07-25']);
+
+    const recurringClosed = window.adminCalState?.recurringClosedDays || bSettings.recurring_closed_days || [0, 1];
+
+    const today = new Date();
+    const leadCutoff = new Date();
+    if (leadTimeEnabled) {
+        leadCutoff.setDate(today.getDate() + leadTimeDays);
+    }
 
     for (let day = 1; day <= daysInMonth; day++) {
         const dateObj = new Date(year, month, day);
@@ -367,12 +375,20 @@ function renderInteractiveCalendar() {
 
         const isCustomBlocked = customBlocked.includes(dateStr);
         const isRecurringClosed = recurringClosed.includes(dayOfWeek);
-        const isBooked = isCustomBlocked || isRecurringClosed;
+        
+        let isLeadTimeBlocked = false;
+        if (leadTimeEnabled && dateObj < leadCutoff && dateObj >= new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+            isLeadTimeBlocked = true;
+        }
+
+        const isBooked = isCustomBlocked || isRecurringClosed || isLeadTimeBlocked;
 
         const dayEl = document.createElement('div');
         dayEl.className = `cal-day ${isBooked ? 'booked' : ''}`;
-        if (isRecurringClosed && !isCustomBlocked) dayEl.title = 'Closed (Weekly)';
-        if (isCustomBlocked) dayEl.title = 'Blocked Date';
+        if (isLeadTimeBlocked) dayEl.title = `Unavailable (${leadTimeDays}-day lead time required)`;
+        else if (isRecurringClosed && !isCustomBlocked) dayEl.title = 'Closed (Weekly)';
+        else if (isCustomBlocked) dayEl.title = 'Blocked Date';
+        
         dayEl.innerText = day;
 
         if (!isBooked) {
@@ -380,9 +396,14 @@ function renderInteractiveCalendar() {
                 document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
                 dayEl.classList.add('selected');
                 state.selectedDate = dateStr;
-                document.getElementById('selected-date').innerText = state.selectedDate;
-                const step2Next = document.getElementById('to-step-3');
-                if (step2Next) step2Next.disabled = false;
+                const selDateEl = document.getElementById('selected-date');
+                if (selDateEl) selDateEl.innerText = state.selectedDate;
+                
+                const stepSec = dayEl.closest('.step');
+                if (stepSec) {
+                    const nextBtn = stepSec.querySelector('.next-btn');
+                    if (nextBtn) nextBtn.disabled = false;
+                }
             });
         }
 
@@ -571,20 +592,37 @@ function initAdminPortal() {
         });
     }
 
-    // Show/hide Options and Description rows based on field type
+    // Form Studio Schema & Field Builder Handler
     window.toggleOptionsRow = function(val) {
         const optRow = document.getElementById('field-options-row');
-        const descRow = document.getElementById('field-description-row');
-        if (optRow)  optRow.style.display  = (val === 'select' || val === 'chips') ? 'block' : 'none';
-        if (descRow) descRow.style.display = (val === 'text' || val === 'textarea' || val === 'toggle') ? 'block' : 'none';
+        if (optRow) {
+            const needsOptions = ['select', 'chips', 'flavors', 'frosting', 'fillings', 'social_discount', 'fulfillment'].includes(val);
+            optRow.style.display = needsOptions ? 'block' : 'none';
+        }
     };
-    // Init on load
     setTimeout(() => toggleOptionsRow(document.getElementById('field-type')?.value || 'products'), 100);
 
-    // Custom Field Registry
-    window._customFields = window._customFields || [];
+    // Initialize Schema from Server Data
+    if (window._serverFormSchema && Array.isArray(window._serverFormSchema) && window._serverFormSchema.length > 0) {
+        window._customFields = window._serverFormSchema;
+    } else {
+        window._customFields = [
+            { id: 'step_1', type: 'products', title: 'Build Your Order', subtext: 'Select items from our product catalog below', options: '', description: '' },
+            { id: 'step_2', type: 'calendar', title: 'Select Your Date', subtext: 'Custom Order Booking', options: '', description: '' },
+            { id: 'step_3', type: 'flavors', title: 'Choose Your Flavors', subtext: 'Select all that apply (Luxury flavors +$10)', options: 'Strawberry Bliss, Vanilla Bean, Chocolate Dream, Creamy Hazelnut, Confetti Explosion, Red Velvet, Swirly Marble, Lemon Drop, Golden Carrot, Raspberry Swirl', description: '' },
+            { id: 'step_4', type: 'frosting', title: 'Select Frosting', subtext: 'Select your preferred frosting type', options: 'Vanilla buttercream, Cream Cheese, Strawberry buttercream, Oreo buttercream, Chocolate buttercream, Confetti buttercream, Whip Cream', description: '' },
+            { id: 'step_5', type: 'fillings', title: 'Choice of Fillings?', subtext: 'Select all that apply', options: 'Fudge, Cookies and cream, Strawberries and cream, Peanut Butter, Nutella, Edible cookie dough, Lemon curd, Plain buttercream/frosting', description: '' },
+            { id: 'step_6', type: 'textarea', title: 'Special Requests', subtext: 'Is there anything specific you want me to add or know about your order?', options: '', description: 'Type your notes here...' },
+            { id: 'step_7', type: 'fulfillment', title: 'Fulfillment Options', subtext: 'Select pickup or delivery and your preferred time frame', options: '8:30 AM, 9:00 AM, 9:30 AM, 10:00 AM, 10:30 AM', description: '' },
+            { id: 'step_8', type: 'allergies', title: 'Any Allergies?', subtext: 'By answering this question you understand any allergies not listed I will not be at fault for.', options: '', description: 'List any allergies here...' },
+            { id: 'step_9', type: 'social_discount', title: 'Social Media Follows', subtext: '$5 off for social media you follow or join!', options: 'Instagram: (@Blushed_Crumbs), Facebook group: (Blushed Crumbs), TikTok: (@Blushed_Crumbs), Facebook page: (Blushed Crumbs)', description: '' },
+            { id: 'step_10', type: 'file_upload', title: 'Inspiration Files', subtext: 'Have any pictures or designs you\'d like us to use for inspiration?', options: '', description: 'Supports PNG, JPG, JPEG' },
+            { id: 'step_11', type: 'terms', title: 'Terms & Conditions', subtext: 'PLEASE READ BEFORE ACCEPTING ‼️‼️‼️', options: '', description: '' },
+            { id: 'step_12', type: 'contact_info', title: 'Contact Information', subtext: 'Enter your details to finalize your order request', options: '', description: '' }
+        ];
+    }
 
-    // Render the fields table
+    // Render Form Studio Fields Table
     function renderFieldsTable() {
         const tbody = document.getElementById('custom-fields-tbody');
         if (!tbody) return;
@@ -592,30 +630,49 @@ function initAdminPortal() {
         if (window._customFields.length === 0) {
             tbody.innerHTML = `<tr class="empty-row" id="fields-empty-row">
                 <td colspan="6" style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem;">
-                    No custom fields added yet. Use the form above to add your first question!
+                    No steps added yet. Use the form above to add your first step!
                 </td>
             </tr>`;
             return;
         }
 
         const typeLabels = {
-            'text': '📝 Text', 'textarea': '📄 Textarea', 'select': '☑️ Select',
-            'chips': '🏷️ Chips', 'file': '📎 File Upload', 'datepicker': '📅 Date Picker',
-            'toggle': '🔘 Yes/No', 'rating': '⭐ Rating'
+            'products': '🛒 Product Catalog',
+            'calendar': '📅 Booking Calendar',
+            'flavors': '🍰 Flavors Grid',
+            'frosting': '🧁 Frosting Grid',
+            'fillings': '🍫 Fillings Grid',
+            'fulfillment': '🚚 Fulfillment & Time Slots',
+            'allergies': '⚠️ Allergy Notice',
+            'social_discount': '🎁 Social Discounts',
+            'file_upload': '📎 Inspiration File Upload',
+            'terms': '📜 Terms Agreement',
+            'contact_info': '👤 Contact Info & Submit',
+            'text': '📝 Single-Line Text',
+            'textarea': '📄 Multi-line Textarea',
+            'select': '☑️ Select Dropdown',
+            'chips': '🏷️ Select Chips',
+            'datepicker': '📅 Standard Date Picker',
+            'toggle': '🔘 Yes/No Toggle'
         };
 
         tbody.innerHTML = window._customFields.map((f, i) => `
             <tr class="field-row" draggable="true" data-idx="${i}">
                 <td class="drag-handle">⠿</td>
-                <td style="color:#999; font-weight:700; font-size:0.88rem;">${i + 1}</td>
-                <td style="font-weight:600; color:#5c1d37;">${f.label}</td>
-                <td>${typeLabels[f.type] || f.type}</td>
-                <td style="color:#888; font-size:0.88rem;">${f.options ? f.options : (f.description ? f.description : '—')}</td>
+                <td style="color:#e67399; font-weight:800; font-size:0.95rem;">Step ${i + 1}</td>
+                <td>
+                    <strong style="color:#5c1d37; font-size:0.95rem;">${f.title || f.label || 'Step ' + (i+1)}</strong>
+                    ${f.subtext ? `<br><span style="font-size:0.8rem; color:#888;">${f.subtext}</span>` : ''}
+                </td>
+                <td><span style="background:#fff0f5; color:#5c1d37; font-weight:700; padding:4px 10px; border-radius:12px; border:1px solid #f8c6d7; font-size:0.8rem;">${typeLabels[f.type] || f.type}</span></td>
+                <td style="color:#666; font-size:0.85rem; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    ${f.options ? f.options : (f.description ? f.description : '—')}
+                </td>
                 <td>
                     <div style="display:flex; gap:6px; align-items:center;">
                         <button class="reorder-btn" onclick="moveField(${i}, -1)" title="Move Up" ${i === 0 ? 'disabled' : ''}>↑</button>
                         <button class="reorder-btn" onclick="moveField(${i}, 1)" title="Move Down" ${i === window._customFields.length - 1 ? 'disabled' : ''}>↓</button>
-                        <button class="delete-field-btn" onclick="deleteField(${i})" title="Remove Field">✕</button>
+                        <button class="delete-field-btn" onclick="deleteField(${i})" title="Remove Step">✕</button>
                     </div>
                 </td>
             </tr>
@@ -636,7 +693,6 @@ function initAdminPortal() {
                 const moved = window._customFields.splice(from, 1)[0];
                 window._customFields.splice(to, 0, moved);
                 renderFieldsTable();
-                rebuildLiveForm();
             });
         });
     }
@@ -647,14 +703,88 @@ function initAdminPortal() {
         if (newIdx < 0 || newIdx >= arr.length) return;
         [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
         renderFieldsTable();
-        rebuildLiveForm();
     };
 
     window.deleteField = function(idx) {
+        if (window._customFields.length <= 1) {
+            alert('Your order form must have at least 1 step!');
+            return;
+        }
         window._customFields.splice(idx, 1);
         renderFieldsTable();
-        rebuildLiveForm();
     };
+
+    // Save Form Schema to Server Endpoint
+    window.saveFormSchemaToServer = function() {
+        const saveBtn = document.getElementById('save-form-schema-btn');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.innerText = '⏳ Saving Form Steps...';
+        }
+
+        fetch('/admin/form-builder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ schema: window._customFields })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Success: Order form steps & layout saved live to your storefront!');
+            } else {
+                alert('Error saving form layout: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(err => {
+            console.error('Save Schema Error:', err);
+            alert('An error occurred while saving form layout.');
+        })
+        .finally(() => {
+            if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.innerText = '💾 Save Order Form Layout Live';
+            }
+        });
+    };
+
+    // Add Step Form Handler
+    const fieldForm = document.getElementById('add-field-form');
+    if (fieldForm) {
+        fieldForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const labelText = document.getElementById('field-label').value.trim();
+            const fieldType = document.getElementById('field-type').value;
+            const optionsText = (document.getElementById('field-options')?.value || '').trim();
+            const descriptionText = (document.getElementById('field-description')?.value || '').trim();
+
+            if (!labelText) return;
+
+            const fieldEntry = {
+                id: 'step_' + Date.now(),
+                title: labelText,
+                subtext: descriptionText,
+                type: fieldType,
+                options: optionsText,
+                description: ''
+            };
+
+            window._customFields.push(fieldEntry);
+            renderFieldsTable();
+
+            fieldForm.reset();
+            toggleOptionsRow('products');
+            alert(`Step "${labelText}" added! Click "Save Order Form Layout Live" to update your storefront.`);
+        });
+    }
+
+    // Init table on load
+    renderFieldsTable();
 
     // Build a field's HTML based on type template
     function buildFieldHTML(f) {
@@ -1107,10 +1237,41 @@ window.toggleLeadTimeInput = function(checkbox) {
 };
 
 window.saveLeadTime = function() {
-    const days = document.getElementById('custom-lead-days')?.value || '3';
+    const enabledInput = document.getElementById('lead-time-enabled');
+    const daysInput = document.getElementById('custom-lead-days');
+    const enabled = enabledInput ? enabledInput.checked : true;
+    const days = daysInput ? parseInt(daysInput.value) : 3;
+
+    window._serverBookingSettings = window._serverBookingSettings || {};
+    window._serverBookingSettings.lead_time_enabled = enabled;
+    window._serverBookingSettings.lead_time_days = days;
+
     localStorage.setItem('lead_time_days', days);
-    const msg = document.getElementById('lead-time-save-msg');
-    if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
+    localStorage.setItem('lead_time_enabled', enabled ? '1' : '0');
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+    fetch('/admin/settings/booking', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            lead_time_enabled: enabled,
+            lead_time_days: days,
+            recurring_closed_days: window.adminCalState ? window.adminCalState.recurringClosedDays : [0, 1],
+            blocked_dates: window.adminCalState ? Array.from(window.adminCalState.blockedDates) : []
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const msg = document.getElementById('lead-time-save-msg');
+        if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
+        renderInteractiveCalendar();
+    })
+    .catch(err => console.error('Save Lead Time Error:', err));
 };
 
 // ── Color Scheme ───────────────────────────

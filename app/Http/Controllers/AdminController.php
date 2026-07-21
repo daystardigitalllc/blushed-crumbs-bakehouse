@@ -32,6 +32,21 @@ class AdminController extends Controller
             );
         }
 
+        // Fallback default form schema & booking settings if empty
+        if (empty($tenant->form_schema)) {
+            $tenant->form_schema = Tenant::getDefaultFormSchema();
+            $tenant->save();
+        }
+        if (empty($tenant->booking_settings)) {
+            $tenant->booking_settings = [
+                'lead_time_enabled' => true,
+                'lead_time_days' => 3,
+                'recurring_closed_days' => [0, 1],
+                'blocked_dates' => ['2026-07-04', '2026-07-25']
+            ];
+            $tenant->save();
+        }
+
         // Key feature: Orders sorted by due_date ASC so the baker sees what is due first!
         $urgentOrders = Order::where('tenant_id', $tenant->id)
             ->whereIn('status', ['new', 'invoiced', 'in_progress', 'ready'])
@@ -49,6 +64,44 @@ class AdminController extends Controller
             'tenant', 'urgentOrders', 'allOrders', 'invoices', 
             'products', 'reviews', 'gallery', 'supportTickets'
         ));
+    }
+
+    public function saveFormSchema(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
+        $request->validate([
+            'schema' => 'required|array',
+        ]);
+
+        $tenant->form_schema = $request->schema;
+        $tenant->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Form steps and layout saved live!',
+            'schema' => $tenant->form_schema,
+        ]);
+    }
+
+    public function saveBookingSettings(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
+        
+        $settings = [
+            'lead_time_enabled' => $request->boolean('lead_time_enabled'),
+            'lead_time_days' => (int) $request->input('lead_time_days', 3),
+            'recurring_closed_days' => $request->input('recurring_closed_days', []),
+            'blocked_dates' => $request->input('blocked_dates', []),
+        ];
+
+        $tenant->booking_settings = $settings;
+        $tenant->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking availability settings saved!',
+            'settings' => $tenant->booking_settings,
+        ]);
     }
 
     public function storeGallery(Request $request)
