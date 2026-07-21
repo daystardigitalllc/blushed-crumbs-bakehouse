@@ -91,6 +91,36 @@ body.theme-rustic_kitchen .category-image-frame {
     box-shadow: 0 4px 15px rgba(45, 36, 30, 0.05) !important;
 }
 
+/* Order Form Modal Theme Rules - Rustic Kitchen */
+body.theme-rustic_kitchen .order-modal-card {
+    border-radius: 8px !important;
+    border: 2px solid #c86d51 !important;
+    background: #f9f5f0 !important;
+}
+body.theme-rustic_kitchen .sticky-order-summary-bar {
+    background: #f4ede6 !important;
+    border: 2px solid #e2d4c7 !important;
+}
+body.theme-rustic_kitchen .product,
+body.theme-rustic_kitchen .option-chip {
+    border-radius: 4px !important;
+    border: 1px solid #c86d51 !important;
+    background: #ffffff !important;
+    color: #2d241e !important;
+}
+body.theme-rustic_kitchen .product.selected,
+body.theme-rustic_kitchen .option-chip.selected {
+    background: #c86d51 !important;
+    color: #ffffff !important;
+    border-color: #a85238 !important;
+    box-shadow: 0 4px 12px rgba(200, 109, 81, 0.3) !important;
+}
+body.theme-rustic_kitchen .next-btn {
+    background: #c86d51 !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 10px rgba(200, 109, 81, 0.3) !important;
+}
+
 /* 3. ✨ MODERN BAKERY THEME (Sleek Slate Minimalism) */
 body.theme-modern_bakery {
     --primary: #0f172a;
@@ -157,6 +187,38 @@ body.theme-modern_bakery .category-image-frame {
     box-shadow: 6px 6px 0px #0f172a !important;
 }
 
+/* Order Form Modal Theme Rules - Modern Bakery */
+body.theme-modern_bakery .order-modal-card {
+    border-radius: 14px !important;
+    border: 3px solid #0f172a !important;
+    box-shadow: 10px 10px 0px #0f172a !important;
+    background: #ffffff !important;
+}
+body.theme-modern_bakery .sticky-order-summary-bar {
+    background: #f1f5f9 !important;
+    border: 2px solid #0f172a !important;
+}
+body.theme-modern_bakery .product,
+body.theme-modern_bakery .option-chip {
+    border-radius: 8px !important;
+    border: 2px solid #0f172a !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+}
+body.theme-modern_bakery .product.selected,
+body.theme-modern_bakery .option-chip.selected {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    border-color: #000000 !important;
+    box-shadow: 4px 4px 0px #000000 !important;
+}
+body.theme-modern_bakery .next-btn {
+    background: #0f172a !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    box-shadow: 4px 4px 0px #000000 !important;
+}
+
 /* 4. 🧁 PLAYFUL TREATS THEME (Vibrant Cyan & Coral Pastel Energy) */
 body.theme-playful_treats {
     --primary: #06b6d4;
@@ -218,6 +280,38 @@ body.theme-playful_treats .category-image-frame {
     border: 3px solid #67e8f9 !important;
     background: #ffffff !important;
     box-shadow: 0 12px 30px rgba(6, 182, 212, 0.15) !important;
+}
+
+/* Order Form Modal Theme Rules - Playful Treats */
+body.theme-playful_treats .order-modal-card {
+    border-radius: 28px !important;
+    border: 3px solid #67e8f9 !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(6, 182, 212, 0.2) !important;
+}
+body.theme-playful_treats .sticky-order-summary-bar {
+    background: #cffaff !important;
+    border: 2px solid #67e8f9 !important;
+}
+body.theme-playful_treats .product,
+body.theme-playful_treats .option-chip {
+    border-radius: 20px !important;
+    border: 2px solid #67e8f9 !important;
+    background: #ffffff !important;
+    color: #164e63 !important;
+}
+body.theme-playful_treats .product.selected,
+body.theme-playful_treats .option-chip.selected {
+    background: #f43f5e !important;
+    color: #ffffff !important;
+    border-color: #0e7490 !important;
+    box-shadow: 0 8px 20px rgba(244, 63, 94, 0.4) !important;
+}
+body.theme-playful_treats .next-btn {
+    background: #f43f5e !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 25px rgba(244, 63, 94, 0.35) !important;
 }
 
 * {
