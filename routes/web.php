@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 Route::get('/', [StorefrontController::class, 'index'])->name('storefront.index');
 Route::get('/about', [StorefrontController::class, 'about'])->name('storefront.about');
 Route::get('/gallery', [StorefrontController::class, 'gallery'])->name('storefront.gallery');
+Route::post('/order', [StorefrontController::class, 'submitOrder'])->name('storefront.order.submit');
 
 // Bakesy Mobile Admin Dashboard
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');

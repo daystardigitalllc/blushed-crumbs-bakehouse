@@ -211,34 +211,97 @@ function init12StepOrderForm() {
         });
     }
 
-    // Step 12: Order Submission
+    // Step 12: Order Submission with Server AJAX & SMTP Email
     const orderForm = document.getElementById('order-form');
     if (orderForm) {
         orderForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const clientName = document.getElementById('contact-name').value;
-            const clientEmail = document.getElementById('contact-email').value;
-            const clientPhone = document.getElementById('contact-phone').value;
+            const clientName = document.getElementById('contact-name').value.trim();
+            const clientEmail = document.getElementById('contact-email').value.trim();
+            const clientPhone = document.getElementById('contact-phone').value.trim();
+            const submitBtn = document.getElementById('submit-form-btn');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-            document.getElementById('form-container-toggle').style.display = 'none';
-            document.getElementById('thank-you-container').style.display = 'block';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = '⏳ Submitting & Sending Email...';
+            }
 
-            const newOrderNumber = 'BC-' + Math.floor(1000 + Math.random() * 9000);
-            const orderObj = {
-                order_number: newOrderNumber,
+            // Collect notes and allergies
+            const notesVal = document.getElementById('order-notes')?.value || '';
+            const allergiesVal = document.getElementById('order-allergies')?.value || '';
+
+            // Selected Flavors, Frosting, Fillings
+            const selectedFlavors = Array.from(document.querySelectorAll('#flavor-list .product.selected')).map(el => el.innerText.trim());
+            const selectedFrosting = Array.from(document.querySelectorAll('#frosting-list .product.selected')).map(el => el.innerText.trim());
+            const selectedFillings = Array.from(document.querySelectorAll('#filling-list .product.selected')).map(el => el.innerText.trim());
+            const selectedSocials = Array.from(document.querySelectorAll('#social-grid .product.selected')).map(el => el.innerText.trim());
+
+            // Selected Time slot radio
+            const selectedTimeSlot = document.querySelector('input[name="order-time"]:checked')?.value || '9:30 AM';
+            const deliveryAddressVal = document.getElementById('delivery-address')?.value || '';
+
+            const payload = {
                 client_name: clientName,
                 client_email: clientEmail,
                 client_phone: clientPhone,
                 due_date: state.selectedDate || '2026-07-28',
-                time_slot: '9:30 AM',
-                fulfillment_type: state.fulfillment,
+                time_slot: selectedTimeSlot,
+                fulfillment_type: state.fulfillment || 'pickup',
+                delivery_address: deliveryAddressVal,
                 items: state.selectedProducts,
-                total_price: state.total,
-                deposit_amount: state.deposit,
-                status: 'new'
+                flavors: selectedFlavors,
+                frosting: selectedFrosting,
+                fillings: selectedFillings,
+                special_notes: notesVal,
+                allergies: allergiesVal,
+                social_follows: selectedSocials,
+                total_price: state.total || 0,
             };
 
-            appendOrderToAdminQueue(orderObj);
+            fetch('/order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('form-container-toggle').style.display = 'none';
+                    document.getElementById('thank-you-container').style.display = 'block';
+
+                    const newOrderObj = data.order || {
+                        order_number: data.order_number,
+                        client_name: clientName,
+                        client_email: clientEmail,
+                        client_phone: clientPhone,
+                        due_date: state.selectedDate || '2026-07-28',
+                        time_slot: selectedTimeSlot,
+                        fulfillment_type: state.fulfillment,
+                        items: state.selectedProducts,
+                        total_price: state.total,
+                        deposit_amount: state.deposit,
+                        status: 'new'
+                    };
+                    appendOrderToAdminQueue(newOrderObj);
+                } else {
+                    alert('Error submitting order: ' + (data.message || 'Validation failed.'));
+                }
+            })
+            .catch(err => {
+                console.error('Order Submit Error:', err);
+                alert('An error occurred while submitting your order.');
+            })
+            .finally(() => {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit Order';
+                }
+            });
         });
     }
 }

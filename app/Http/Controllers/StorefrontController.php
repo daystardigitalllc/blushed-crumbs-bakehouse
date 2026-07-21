@@ -7,6 +7,10 @@ use App\Models\Tenant;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\GalleryItem;
+use App\Models\Order;
+use App\Mail\NewOrderNotification;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class StorefrontController extends Controller
 {
@@ -105,5 +109,69 @@ class StorefrontController extends Controller
 
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
         return view('storefront.gallery', compact('tenant', 'gallery'));
+    }
+
+    public function submitOrder(Request $request)
+    {
+        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
+
+        $validated = $request->validate([
+            'client_name' => 'required|string|max:255',
+            'client_email' => 'required|email|max:255',
+            'client_phone' => 'required|string|max:50',
+            'due_date' => 'required|string',
+            'time_slot' => 'nullable|string',
+            'fulfillment_type' => 'nullable|string',
+            'delivery_address' => 'nullable|string',
+            'items' => 'nullable|array',
+            'flavors' => 'nullable|array',
+            'frosting' => 'nullable|array',
+            'fillings' => 'nullable|array',
+            'special_notes' => 'nullable|string',
+            'allergies' => 'nullable|string',
+            'social_follows' => 'nullable|array',
+            'total_price' => 'required|numeric',
+        ]);
+
+        $orderNumber = 'BC-' . rand(1000, 9999);
+        $totalPrice = (float) $validated['total_price'];
+        $depositAmount = round($totalPrice * 0.5, 2);
+
+        $order = Order::create([
+            'tenant_id' => $tenant->id,
+            'order_number' => $orderNumber,
+            'client_name' => $validated['client_name'],
+            'client_email' => $validated['client_email'],
+            'client_phone' => $validated['client_phone'],
+            'due_date' => $validated['due_date'],
+            'time_slot' => $validated['time_slot'] ?? '8:30 AM',
+            'fulfillment_type' => $validated['fulfillment_type'] ?? 'pickup',
+            'delivery_address' => $validated['delivery_address'] ?? null,
+            'items' => $validated['items'] ?? [],
+            'flavors' => $validated['flavors'] ?? [],
+            'frosting' => $validated['frosting'] ?? [],
+            'fillings' => $validated['fillings'] ?? [],
+            'special_notes' => $validated['special_notes'] ?? null,
+            'allergies' => $validated['allergies'] ?? null,
+            'social_follows' => $validated['social_follows'] ?? [],
+            'total_price' => $totalPrice,
+            'deposit_amount' => $depositAmount,
+            'status' => 'new',
+        ]);
+
+        // Send Email Notification via SMTP to baker
+        $routingEmail = $tenant->email ?? 'orders@blushedcrumbsbakehouse.com';
+        try {
+            Mail::to($routingEmail)->send(new NewOrderNotification($order, $tenant));
+        } catch (\Exception $e) {
+            Log::error('SMTP Email Error: ' . $e->getMessage());
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order submitted successfully!',
+            'order_number' => $order->order_number,
+            'order' => $order,
+        ]);
     }
 }
