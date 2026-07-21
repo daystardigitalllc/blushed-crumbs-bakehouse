@@ -508,8 +508,15 @@
 
                 <!-- CURATED BAKERY THEMES CARD -->
                 <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
-                    <h4 style="color:#5c1d37;">🌸 Select Your Bakery Theme</h4>
-                    <p style="font-size:0.9rem; color:#666; margin-bottom:18px;">Pick a standardized, low-maintenance design template. Customizes colors and layout automatically.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                        <div>
+                            <h4 style="color:#5c1d37; margin:0;">🌸 Select Your Bakery Theme</h4>
+                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Pick a standardized, low-maintenance design template. Customizes colors and layout automatically.</p>
+                        </div>
+                        <a href="{{ route('storefront.index') }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:#e67399; color:#e67399;">👁️ View Live Storefront ↗</a>
+                    </div>
+
+                    <div id="theme-status-msg" style="display:none; margin-bottom:14px; background:#d4edda; color:#155724; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c3e6cb;"></div>
 
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
                         @php

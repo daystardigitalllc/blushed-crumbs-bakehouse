@@ -1947,44 +1947,49 @@ function saveAdminCalendarState() {
     localStorage.setItem('admin_blocked_dates', JSON.stringify(arr));
 }
 
-// Auto init when tab is shown
+// Global Bakery Theme Switcher
+window.selectBakeryTheme = function(themeId, cardEl) {
+    document.querySelectorAll('.bakery-theme-card').forEach(c => {
+        c.style.borderColor = '#ddd';
+        const badge = c.querySelector('.theme-badge');
+        if (badge) badge.style.display = 'none';
+    });
+
+    if (cardEl) {
+        cardEl.style.borderColor = '#e67399';
+        const badge = cardEl.querySelector('.theme-badge');
+        if (badge) badge.style.display = 'inline-block';
+    }
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    fetch('/admin/theme', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken || '',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ theme_id: themeId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.body.className = `theme-${themeId}`;
+            const msgEl = document.getElementById('theme-status-msg');
+            if (msgEl) {
+                msgEl.style.display = 'inline-block';
+                msgEl.innerHTML = `✅ Theme updated to <strong>${themeId.replace('_', ' ').toUpperCase()}</strong>! <a href="/" target="_blank" style="color:#e67399; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Storefront ↗</a>`;
+            }
+        }
+    })
+    .catch(err => {
+        console.error('Theme update error:', err);
+    });
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         window.initAdminCalendarUI();
     }, 200);
-    window.selectBakeryTheme = function(themeId, cardEl) {
-        document.querySelectorAll('.bakery-theme-card').forEach(c => {
-            c.style.borderColor = '#ddd';
-            const badge = c.querySelector('.theme-badge');
-            if (badge) badge.style.display = 'none';
-        });
-
-        if (cardEl) {
-            cardEl.style.borderColor = '#e67399';
-            const badge = cardEl.querySelector('.theme-badge');
-            if (badge) badge.style.display = 'inline-block';
-        }
-
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        fetch('/admin/theme', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken || '',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ theme_id: themeId })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                document.body.className = `theme-${themeId}`;
-                alert('✅ Bakery theme updated successfully!');
-            }
-        })
-        .catch(err => {
-            console.error('Theme update error:', err);
-        });
-    };
 });
 

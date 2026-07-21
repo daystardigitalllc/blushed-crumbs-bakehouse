@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
-<body>
+<body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 
 <header class="site-header">
     <div class="header-container">
