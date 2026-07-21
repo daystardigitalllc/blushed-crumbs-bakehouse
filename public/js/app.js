@@ -978,37 +978,6 @@ function initAdminPortal() {
         }
     }
 
-    // Add Custom Field / Question to Order Form Handler
-    const fieldForm = document.getElementById('add-field-form');
-    if (fieldForm) {
-        fieldForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const labelText = document.getElementById('field-label').value.trim();
-            const fieldType = document.getElementById('field-type').value;
-            const optionsText = (document.getElementById('field-options')?.value || '').trim();
-            const descriptionText = (document.getElementById('field-description')?.value || '').trim();
-
-            if (!labelText) return;
-
-            const fieldEntry = {
-                id: 'field_' + Date.now(),
-                label: labelText,
-                type: fieldType,
-                options: optionsText,
-                description: descriptionText
-            };
-
-            window._customFields.push(fieldEntry);
-            renderFieldsTable();
-            rebuildLiveForm();
-
-            fieldForm.reset();
-            toggleOptionsRow('products');
-        });
-    }
-
-    // Init table on load
-    renderFieldsTable();
 
     // Add Product Form
     const prodForm = document.getElementById('add-product-form');
