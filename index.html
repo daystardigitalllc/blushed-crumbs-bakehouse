@@ -805,20 +805,22 @@
                 <!-- STEP 10: INSPIRATION FILES UPLOAD -->
                 <section class="step" id="step-10">
                     <h2>Inspiration Files</h2>
-                    <p style="text-align:center; margin-bottom: 25px;">Have any pictures or designs you'd like us to use for inspiration?</p>
+                    <p style="text-align:center; margin-bottom: 20px;">Have any pictures or designs you'd like us to use for inspiration?</p>
                     
-                    <div id="upload-container" class="upload-dropzone" style="border:2px dashed #e67399; background:#fff7fa; padding:35px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('inspiration-upload').click()">
+                    <input type="file" id="inspiration-upload" multiple accept="image/*" style="display: none;">
+
+                    <div id="upload-container" class="upload-dropzone" style="border:2px dashed #e67399; background:#fff7fa; padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('inspiration-upload').click();">
                         <div class="upload-prompt">
-                            <span class="upload-icon" style="font-size:2.5rem; color:#e67399; display:block; margin-bottom:10px;">✦</span>
-                            <p style="font-size:1.05rem;">Drag & drop your images here or <strong>browse</strong></p>
-                            <span style="font-size: 12px; color: #aaa;">Supports PNG, JPG, JPEG</span>
+                            <span class="upload-icon" style="font-size:2.5rem; color:#e67399; display:block; margin-bottom:8px;">✦</span>
+                            <p style="font-size:1.05rem; font-weight:600; color:#5c1d37; margin-bottom:4px;">Drag & drop your images here or <strong>click to browse</strong></p>
+                            <span style="font-size: 12px; color: #888;">Supports PNG, JPG, JPEG</span>
                         </div>
-                        <input type="file" id="inspiration-upload" multiple accept="image/*" style="display: none;">
                     </div>
 
-                    <div id="preview-gallery" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px;"></div>
+                    <div id="upload-count-status" style="margin-top:15px; font-weight:700; color:#e67399; text-align:center; display:none;"></div>
+                    <div id="preview-gallery" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:15px; justify-content:center;"></div>
 
-                    <div class="nav-buttons cart-bar">
+                    <div class="nav-buttons cart-bar" style="margin-top:25px;">
                         <button class="back-btn" id="back-step-9">Back</button>
                         <button class="next-btn" id="to-step-11">Continue</button>
                     </div>

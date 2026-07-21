@@ -238,23 +238,41 @@ function init12StepOrderForm() {
 }
 
 function handleFileUploads(files, previewGallery) {
+    const statusEl = document.getElementById('upload-count-status');
     Array.from(files).forEach(file => {
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const imgWrap = document.createElement('div');
-                imgWrap.style.cssText = 'position:relative; width:80px; height:80px; border-radius:10px; overflow:hidden; border:2px solid var(--primary);';
+                imgWrap.style.cssText = 'position:relative; width:100px; height:100px; border-radius:12px; overflow:hidden; border:2px solid #e67399; box-shadow:0 4px 12px rgba(0,0,0,0.1); background:white;';
                 imgWrap.innerHTML = `
                     <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">
-                    <span style="position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.6); color:white; border-radius:50%; width:18px; height:18px; text-align:center; font-size:12px; cursor:pointer;" onclick="this.parentElement.remove()">✕</span>
+                    <span style="position:absolute; bottom:4px; left:4px; background:rgba(40,167,69,0.9); color:white; font-size:10px; font-weight:700; padding:2px 6px; border-radius:8px;">✅ Uploaded</span>
+                    <span style="position:absolute; top:4px; right:4px; background:rgba(92,29,55,0.85); color:white; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; cursor:pointer;" onclick="this.parentElement.remove(); updateUploadCountStatus();">✕</span>
                 `;
                 previewGallery.appendChild(imgWrap);
                 state.uploadedFiles.push(file);
+                updateUploadCountStatus();
             };
             reader.readAsDataURL(file);
         }
     });
 }
+
+function updateUploadCountStatus() {
+    const statusEl = document.getElementById('upload-count-status');
+    const previewGallery = document.getElementById('preview-gallery');
+    if (statusEl && previewGallery) {
+        const count = previewGallery.children.length;
+        if (count > 0) {
+            statusEl.style.display = 'block';
+            statusEl.innerText = `✅ ${count} Inspiration photo(s) uploaded successfully!`;
+        } else {
+            statusEl.style.display = 'none';
+        }
+    }
+}
+
 
 function goToStep(stepNum) {
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
