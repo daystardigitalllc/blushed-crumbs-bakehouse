@@ -75,7 +75,8 @@ const state = {
     discounts: 0,
     subtotal: 0,
     total: 0,
-    deposit: 0
+    deposit: 0,
+    uploadedFiles: []
 };
 
 // Modal Order Form Triggers
@@ -98,16 +99,17 @@ window.closeOrderModal = function() {
     if (modal) modal.style.display = 'none';
 };
 
-// 12-Step Form Navigation Logic
+// Complete 12-Step Form Navigation Logic
 function init12StepOrderForm() {
+    // Step 1: Product Selection
     const productGrid = document.getElementById('product-grid');
     if (productGrid) {
         productGrid.addEventListener('click', (e) => {
             const card = e.target.closest('.product');
             if (!card) return;
 
-            const name = card.dataset.name;
-            const price = parseFloat(card.dataset.price);
+            const name = card.dataset.name || card.innerText.split('\n')[0];
+            const price = parseFloat(card.dataset.price || 0);
 
             card.classList.toggle('selected');
             
@@ -121,6 +123,7 @@ function init12StepOrderForm() {
         });
     }
 
+    // Step Next / Back Button Binding
     document.querySelectorAll('.next-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const nextStepId = btn.id.replace('to-step-', '');
@@ -139,6 +142,7 @@ function init12StepOrderForm() {
     setupMultiSelectGrid('frosting-list', state.selectedFrosting);
     setupMultiSelectGrid('filling-list', state.selectedFillings);
 
+    // Step 7: Fulfillment Option Toggle
     const fulfillmentGrid = document.getElementById('fulfillment-grid');
     if (fulfillmentGrid) {
         fulfillmentGrid.addEventListener('click', (e) => {
@@ -153,6 +157,7 @@ function init12StepOrderForm() {
         });
     }
 
+    // Step 9: Social Media Discounts
     const socialGrid = document.getElementById('social-grid');
     if (socialGrid) {
         socialGrid.addEventListener('click', (e) => {
@@ -163,6 +168,35 @@ function init12StepOrderForm() {
         });
     }
 
+    // Step 10: Drag & Drop + File Upload for Inspiration Photos
+    const fileInput = document.getElementById('inspiration-upload');
+    const dropzone = document.getElementById('upload-container');
+    const previewGallery = document.getElementById('preview-gallery');
+
+    if (fileInput && previewGallery) {
+        fileInput.addEventListener('change', (e) => {
+            handleFileUploads(e.target.files, previewGallery);
+        });
+    }
+
+    if (dropzone) {
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files && previewGallery) {
+                handleFileUploads(files, previewGallery);
+            }
+        });
+    }
+
+    // Step 11: Terms Checkbox Enablement
     const termsCheck = document.getElementById('terms-agree-checkbox');
     const step11Next = document.getElementById('to-step-12');
     if (termsCheck && step11Next) {
@@ -171,6 +205,7 @@ function init12StepOrderForm() {
         });
     }
 
+    // Step 12: Order Submission
     const orderForm = document.getElementById('order-form');
     if (orderForm) {
         orderForm.addEventListener('submit', (e) => {
@@ -188,7 +223,7 @@ function init12StepOrderForm() {
                 client_name: clientName,
                 client_email: clientEmail,
                 client_phone: clientPhone,
-                due_date: state.selectedDate || '2026-07-25',
+                due_date: state.selectedDate || '2026-07-28',
                 time_slot: '9:30 AM',
                 fulfillment_type: state.fulfillment,
                 items: state.selectedProducts,
@@ -200,6 +235,25 @@ function init12StepOrderForm() {
             appendOrderToAdminQueue(orderObj);
         });
     }
+}
+
+function handleFileUploads(files, previewGallery) {
+    Array.from(files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imgWrap = document.createElement('div');
+                imgWrap.style.cssText = 'position:relative; width:80px; height:80px; border-radius:10px; overflow:hidden; border:2px solid var(--primary);';
+                imgWrap.innerHTML = `
+                    <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">
+                    <span style="position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.6); color:white; border-radius:50%; width:18px; height:18px; text-align:center; font-size:12px; cursor:pointer;" onclick="this.parentElement.remove()">✕</span>
+                `;
+                previewGallery.appendChild(imgWrap);
+                state.uploadedFiles.push(file);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 }
 
 function goToStep(stepNum) {
@@ -278,7 +332,8 @@ function renderInteractiveCalendar() {
                 dayEl.classList.add('selected');
                 state.selectedDate = `2026-07-${day < 10 ? '0' + day : day}`;
                 document.getElementById('selected-date').innerText = state.selectedDate;
-                document.getElementById('to-step-3').disabled = false;
+                const step2Next = document.getElementById('to-step-3');
+                if (step2Next) step2Next.disabled = false;
             });
         }
 
@@ -379,7 +434,7 @@ function initAdminPortal() {
         });
     }
 
-    // Add Gallery Image Form (Upload photos directly to /gallery page!)
+    // Add Gallery Image Form
     const galleryForm = document.getElementById('add-gallery-form');
     if (galleryForm) {
         galleryForm.addEventListener('submit', (e) => {
@@ -391,16 +446,14 @@ function initAdminPortal() {
 
             let imageSrc = imgInput ? imgInput.value.trim() : '';
 
-            // If file uploaded, create object URL
             if (fileInput && fileInput.files && fileInput.files[0]) {
                 imageSrc = URL.createObjectURL(fileInput.files[0]);
             }
 
             if (!imageSrc) {
-                imageSrc = 'public/images/IMG_8117.jpg'; // fallback
+                imageSrc = 'public/images/IMG_8117.jpg';
             }
 
-            // Prepend to live /gallery page masonry grid!
             const mainGalleryGrid = document.getElementById('public-gallery-grid');
             if (mainGalleryGrid) {
                 const card = document.createElement('div');
@@ -419,7 +472,6 @@ function initAdminPortal() {
                 mainGalleryGrid.prepend(card);
             }
 
-            // Prepend to Admin Gallery List
             const adminGalleryList = document.getElementById('admin-gallery-list');
             if (adminGalleryList) {
                 const adminItem = document.createElement('div');
