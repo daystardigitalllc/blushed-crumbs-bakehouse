@@ -1,4 +1,10 @@
-// Blushed Crumbs Bakehouse & BakeBox SaaS Interactive Engine
+// Global Mobile Sidebar Drawer Toggle
+window.toggleAdminMobileSidebar = function toggleAdminMobileSidebar() {
+    const sidebar = document.getElementById('admin-sidebar-drawer');
+    const overlay = document.getElementById('admin-sidebar-overlay');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('active');
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     init12StepOrderForm();
@@ -405,16 +411,15 @@ window.closeLightbox = function() {
     if (modal) modal.style.display = 'none';
 };
 
-// Mobile Sidebar Drawer Toggle
-window.toggleAdminMobileSidebar = function() {
-    const sidebar = document.getElementById('admin-sidebar-drawer');
-    const overlay = document.getElementById('admin-sidebar-overlay');
-    if (sidebar) sidebar.classList.toggle('open');
-    if (overlay) overlay.classList.toggle('active');
-};
-
 // Baker Admin Portal Controller & Sidebar Switcher
 function initAdminPortal() {
+    const mobileBtn = document.getElementById('mobile-hamburger-trigger');
+    if (mobileBtn) {
+        mobileBtn.onclick = function(e) {
+            e.preventDefault();
+            window.toggleAdminMobileSidebar();
+        };
+    }
     // Sidebar & Tab Buttons Switcher
     const adminNavBtns = document.querySelectorAll('.admin-sidebar-nav .admin-nav-item, .admin-tabs .tab-btn');
     adminNavBtns.forEach(btn => {
