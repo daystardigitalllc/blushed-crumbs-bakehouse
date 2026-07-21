@@ -110,6 +110,40 @@ window.toggleSectionAccordion = function(headerEl) {
     }
 };
 
+window.addAccordionReviewItem = function() {
+    const list = document.getElementById('accordion-reviews-list');
+    if (!list) return;
+    const idx = list.querySelectorAll('.accordion-review-item').length;
+    const div = document.createElement('div');
+    div.className = 'accordion-review-item';
+    div.style.cssText = 'background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:8px;';
+    div.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <input type="text" name="reviews[${idx}][name]" value="" placeholder="Customer Name (e.g. Sarah Jenkins)" style="width:240px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
+            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-review-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">🗑️ Delete</button>
+        </div>
+        <textarea name="reviews[${idx}][quote]" rows="2" placeholder="Customer Quote / Testimonial..." style="width:100%; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem; font-family:inherit;"></textarea>
+    `;
+    list.appendChild(div);
+};
+
+window.addAccordionFaqItem = function() {
+    const list = document.getElementById('accordion-faqs-list');
+    if (!list) return;
+    const idx = list.querySelectorAll('.accordion-faq-item').length;
+    const div = document.createElement('div');
+    div.className = 'accordion-faq-item';
+    div.style.cssText = 'background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:8px;';
+    div.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <input type="text" name="faqs[${idx}][q]" value="" placeholder="Question (e.g. 🎂 Do you offer vegan cakes?)" style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
+            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-faq-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">🗑️ Delete</button>
+        </div>
+        <textarea name="faqs[${idx}][a]" rows="2" placeholder="Answer / Bakery Policy..." style="width:100%; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem; font-family:inherit;"></textarea>
+    `;
+    list.appendChild(div);
+};
+
 window.moveSectionUp = function(btn) {
     const row = btn.closest('.section-manager-row');
     if (row && row.previousElementSibling) {

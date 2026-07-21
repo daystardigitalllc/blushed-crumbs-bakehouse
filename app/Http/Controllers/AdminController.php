@@ -299,9 +299,35 @@ class AdminController extends Controller
             ];
         }
 
-        // 2. Process Section Copy Inputs
+        // 2. Process Section Copy & Dynamic Sub-Arrays
         $currentContent = $tenant->site_content ?? Tenant::getDefaultSiteContent();
-        
+
+        // Highlights array processing (up to 4 items)
+        $highlightsInput = $request->input('highlights', []);
+        $processedHighlights = [];
+        foreach ($highlightsInput as $hl) {
+            if (!empty($hl['title'])) {
+                $processedHighlights[] = [
+                    'icon' => $hl['icon'] ?? '🎂',
+                    'title' => $hl['title'],
+                    'desc' => $hl['desc'] ?? '',
+                ];
+            }
+        }
+
+        // How It Works array processing (3 steps)
+        $howInput = $request->input('how_it_works', []);
+        $processedHow = [];
+        foreach ($howInput as $step) {
+            if (!empty($step['title'])) {
+                $processedHow[] = [
+                    'title' => $step['title'],
+                    'desc' => $step['desc'] ?? '',
+                ];
+            }
+        }
+
+        // Bullets processing
         $bullets = [];
         for ($i = 1; $i <= 5; $i++) {
             $bulletVal = $request->input("whimsical_bullet_$i");
@@ -310,20 +336,49 @@ class AdminController extends Controller
             }
         }
 
+        // Reviews array processing
+        $reviewsInput = $request->input('reviews', []);
+        $processedReviews = [];
+        foreach ($reviewsInput as $rev) {
+            if (!empty($rev['name']) && !empty($rev['quote'])) {
+                $processedReviews[] = [
+                    'name' => $rev['name'],
+                    'quote' => $rev['quote'],
+                    'stars' => isset($rev['stars']) ? (int)$rev['stars'] : 5,
+                ];
+            }
+        }
+
+        // FAQs array processing
+        $faqsInput = $request->input('faqs', []);
+        $processedFaqs = [];
+        foreach ($faqsInput as $faq) {
+            if (!empty($faq['q']) && !empty($faq['a'])) {
+                $processedFaqs[] = [
+                    'q' => $faq['q'],
+                    'a' => $faq['a'],
+                ];
+            }
+        }
+
         $updatedContent = array_merge($currentContent, [
             'hero_subheading' => $request->input('hero_subheading', $currentContent['hero_subheading'] ?? ''),
             'hero_headline' => $request->input('hero_headline', $currentContent['hero_headline'] ?? ''),
             'hero_cta_primary' => $request->input('hero_cta_primary', $currentContent['hero_cta_primary'] ?? ''),
             'hero_cta_secondary' => $request->input('hero_cta_secondary', $currentContent['hero_cta_secondary'] ?? ''),
-            'whimsical_title' => $request->input('whimsical_title', $currentContent['whimsical_title'] ?? ''),
-            'whimsical_bullets' => !empty($bullets) ? $bullets : ($currentContent['whimsical_bullets'] ?? []),
+            'highlights' => !empty($processedHighlights) ? $processedHighlights : ($currentContent['highlights'] ?? []),
+            'promo_video_url' => $request->input('promo_video_url', $currentContent['promo_video_url'] ?? ''),
             'promo_headline' => $request->input('promo_headline', $currentContent['promo_headline'] ?? ''),
             'promo_subtext' => $request->input('promo_subtext', $currentContent['promo_subtext'] ?? ''),
-            'step_1_title' => $request->input('step_1_title', $currentContent['step_1_title'] ?? ''),
-            'step_2_title' => $request->input('step_2_title', $currentContent['step_2_title'] ?? ''),
-            'step_3_title' => $request->input('step_3_title', $currentContent['step_3_title'] ?? ''),
-            'faq_lead_time' => $request->input('faq_lead_time', $currentContent['faq_lead_time'] ?? ''),
-            'faq_deposit' => $request->input('faq_deposit', $currentContent['faq_deposit'] ?? ''),
+            'how_it_works' => !empty($processedHow) ? $processedHow : ($currentContent['how_it_works'] ?? []),
+            'whimsical_title' => $request->input('whimsical_title', $currentContent['whimsical_title'] ?? ''),
+            'whimsical_bullets' => !empty($bullets) ? $bullets : ($currentContent['whimsical_bullets'] ?? []),
+            'reviews' => !empty($processedReviews) ? $processedReviews : ($currentContent['reviews'] ?? []),
+            'faqs' => !empty($processedFaqs) ? $processedFaqs : ($currentContent['faqs'] ?? []),
+            'cta_banner_url' => $request->input('cta_banner_url', $currentContent['cta_banner_url'] ?? ''),
+            'cta_headline' => $request->input('cta_headline', $currentContent['cta_headline'] ?? ''),
+            'cta_subtext' => $request->input('cta_subtext', $currentContent['cta_subtext'] ?? ''),
+            'cta_btn_text' => $request->input('cta_btn_text', $currentContent['cta_btn_text'] ?? ''),
         ]);
 
         $tenant->update([
@@ -333,7 +388,7 @@ class AdminController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Homepage sections, order & copy saved successfully!',
+            'message' => 'Homepage sections, order, media & copy saved successfully!',
             'section_settings' => $tenant->getOrderedSections(),
             'site_content' => $tenant->site_content,
         ]);

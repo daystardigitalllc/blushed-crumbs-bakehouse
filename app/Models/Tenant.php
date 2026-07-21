@@ -43,9 +43,18 @@ class Tenant extends Model
             'hero_cta_primary' => 'Order Now',
             'hero_cta_secondary' => 'Our Flavors',
             'highlights' => [
-                ['icon' => '🍰', 'title' => 'Cake Tastings Available', 'desc' => 'Tasting boxes for wedding planning'],
-                ['icon' => '🚗', 'title' => 'Delivery Available', 'desc' => 'To local venues and homes'],
-                ['icon' => '📜', 'title' => 'Tennessee Licensed', 'desc' => 'Cottage food operation'],
+                ['icon' => '🎂', 'title' => 'Easy Catering', 'desc' => 'Add custom baked goods to any occasion'],
+                ['icon' => '🚚', 'title' => 'Freshly Baked', 'desc' => 'Made to order right before your event'],
+                ['icon' => '📦', 'title' => 'Local Delivery', 'desc' => 'Flexible pickup & delivery options'],
+                ['icon' => '💖', 'title' => 'Baked with Love', 'desc' => 'Cottage bakery crafted with care'],
+            ],
+            'promo_video_url' => 'images/download (2) (1).mp4',
+            'promo_headline' => '$10 Off Your First Order!',
+            'promo_subtext' => 'Follow us on social media or join our community for instant discounts.',
+            'how_it_works' => [
+                ['title' => 'Pick Your Date & Flavors', 'desc' => 'Use our 12-step form to choose your size, cake flavor, frosting, and upload your inspiration images.'],
+                ['title' => 'Approve Design & Deposit', 'desc' => 'Receive your custom invoice & quote via email. Place a 50% deposit to lock in your date on our calendar.'],
+                ['title' => 'Fresh Pickup or Delivery', 'desc' => 'We bake your creation fresh right before your event. Pick up at our kitchen or get venue delivery!'],
             ],
             'whimsical_title' => 'Whimsical Creations for Every Milestone',
             'whimsical_bullets' => [
@@ -55,6 +64,21 @@ class Tenant extends Model
                 'Signature Sheet Cakes: Perfect for larger crowds, school events, or casual get-togethers.',
                 'Gourmet Chocolate-Covered Strawberries: Ripe, juicy berries hand-dipped in chocolate.'
             ],
+            'reviews' => [
+                ['name' => 'Kristen Ramirez', 'quote' => 'Absolutely breathtaking work!! The detail put into this cake was insane and it tasted unbelievable!! You made me look like the best sister ever, thank you so much for your talent and hard work!!', 'stars' => 5],
+                ['name' => 'Lynne Escue', 'quote' => 'I ordered a strawberry smash cake for my 1 year old, with strawberries on top and custom icing and she devoured it ✨ The cake was so moist & icing wasn’t too sweet! Pick up process was super easy.', 'stars' => 5],
+                ['name' => 'Alexis', 'quote' => 'Not only was I extremely shocked at how cute this cake was, I was truly SO surprised with how delicious it was! I tried to get a slice and having trouble cutting the back, I was SO CONFUSED.', 'stars' => 5],
+                ['name' => 'Pamela Cortes', 'quote' => 'She was super friendly and easy to work with! The cake looked awesome, everything I was hoping for! ❤️', 'stars' => 5],
+            ],
+            'faqs' => [
+                ['q' => '📅 How far in advance should I order?', 'a' => 'We require at least 3 days advance notice for custom orders. For weddings and large multi-tier events, we recommend booking 2-4 weeks in advance to reserve your date.'],
+                ['q' => '💳 What is the deposit requirement?', 'a' => 'A 50% non-refundable deposit is required at booking to secure your date. Remaining balance is due prior to pickup or delivery.'],
+                ['q' => '⚠️ Allergy Information', 'a' => 'We operate under Tennessee cottage food laws. Our kitchen processes wheat, eggs, dairy, and nuts. Please disclose all food allergies during checkout!'],
+            ],
+            'cta_banner_url' => 'images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4',
+            'cta_headline' => 'Ready For Your Perfect Cake?',
+            'cta_subtext' => 'Order your plan or custom order now',
+            'cta_btn_text' => 'Order Now',
             'about_title' => 'About Our Bakery',
             'about_bio' => 'Welcome to our bakehouse! We specialize in custom artisanal cakes, gourmet treats, and unforgettable dessert experiences crafted with premium ingredients and passion.',
             'contact_hours' => 'Mon-Sat: 8:00 AM - 6:00 PM | Sun: Closed',

@@ -63,36 +63,24 @@
             @elseif($secId === 'highlights')
                 <!-- Highlights Bar -->
                 <section class="highlights-bar">
-                    <div class="highlight-item">
-                        <div class="icon-circle">🎂</div>
-                        <h4>Easy Catering</h4>
-                        <p>Add custom baked goods to any occasion</p>
-                    </div>
-                    <div class="highlight-item">
-                        <div class="icon-circle">🚚</div>
-                        <h4>Freshly Baked</h4>
-                        <p>Made to order right before your event</p>
-                    </div>
-                    <div class="highlight-item">
-                        <div class="icon-circle">📦</div>
-                        <h4>Local Delivery</h4>
-                        <p>Flexible pickup &amp; delivery options</p>
-                    </div>
-                    <div class="highlight-item">
-                        <div class="icon-circle">💖</div>
-                        <h4>Baked with Love</h4>
-                        <p>Cottage bakery crafted with care</p>
-                    </div>
+                    @php $highlights = $tenant->getSiteContent('highlights', []); @endphp
+                    @foreach($highlights as $hl)
+                        <div class="highlight-item">
+                            <div class="icon-circle">{{ $hl['icon'] ?? '🎂' }}</div>
+                            <h4>{{ $hl['title'] ?? '' }}</h4>
+                            <p>{{ $hl['desc'] ?? '' }}</p>
+                        </div>
+                    @endforeach
                 </section>
             @elseif($secId === 'promo_video')
                 <!-- Video Background Promo Banner -->
                 <section class="video-promo-banner">
                     <video autoplay loop muted playsinline>
-                        <source src="{{ asset('images/download (2) (1).mp4') }}" type="video/mp4">
+                        <source src="{{ asset($tenant->getSiteContent('promo_video_url', 'images/download (2) (1).mp4')) }}" type="video/mp4">
                     </video>
                     <div class="video-overlay-content">
-                        <h2>$10 Off Your First Order!</h2>
-                        <p>Follow us on social media or join our community for instant discounts.</p>
+                        <h2>{{ $tenant->getSiteContent('promo_headline', '$10 Off Your First Order!') }}</h2>
+                        <p>{{ $tenant->getSiteContent('promo_subtext', 'Follow us on social media or join our community for instant discounts.') }}</p>
                         <button onclick="openOrderModal()" class="btn btn-dark">Order Now</button>
                     </div>
                 </section>
@@ -148,21 +136,14 @@
                     <h2 class="section-title-script" style="margin-bottom:15px;">How Custom Ordering Works</h2>
                     <p style="max-width:600px; margin:0 auto 40px auto; color:var(--dark-text); font-size:1.05rem;">Ordering your dream cake in 3 simple steps</p>
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:25px; max-width:1100px; margin:0 auto;">
-                        <div class="category-card-exact" style="padding:25px; background:white; border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,0.05);">
-                            <span style="font-size:2.5rem; display:block; margin-bottom:10px;">1️⃣</span>
-                            <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:8px; color:var(--dark-text);">Pick Your Date &amp; Flavors</h3>
-                            <p style="font-size:0.9rem; color:#666;">Use our 12-step form to choose your size, cake flavor, frosting, and upload your inspiration images.</p>
-                        </div>
-                        <div class="category-card-exact" style="padding:25px; background:white; border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,0.05);">
-                            <span style="font-size:2.5rem; display:block; margin-bottom:10px;">2️⃣</span>
-                            <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:8px; color:var(--dark-text);">Approve Design &amp; Deposit</h3>
-                            <p style="font-size:0.9rem; color:#666;">Receive your custom invoice &amp; quote via email. Place a 50% deposit to lock in your date on our calendar.</p>
-                        </div>
-                        <div class="category-card-exact" style="padding:25px; background:white; border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,0.05);">
-                            <span style="font-size:2.5rem; display:block; margin-bottom:10px;">3️⃣</span>
-                            <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:8px; color:var(--dark-text);">Fresh Pickup or Delivery</h3>
-                            <p style="font-size:0.9rem; color:#666;">We bake your creation fresh right before your event. Pick up at our kitchen or get venue delivery!</p>
-                        </div>
+                        @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp
+                        @foreach($steps as $idx => $step)
+                            <div class="category-card-exact" style="padding:25px; background:white; border-radius:18px; box-shadow:0 6px 20px rgba(0,0,0,0.05);">
+                                <span style="font-size:2.5rem; display:block; margin-bottom:10px;">{{ ['1️⃣','2️⃣','3️⃣'][$idx] ?? '✨' }}</span>
+                                <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:8px; color:var(--dark-text);">{{ $step['title'] ?? '' }}</h3>
+                                <p style="font-size:0.9rem; color:#666;">{{ $step['desc'] ?? '' }}</p>
+                            </div>
+                        @endforeach
                     </div>
                 </section>
             @elseif($secId === 'reviews')
@@ -170,22 +151,13 @@
                 <section id="reviews" class="reviews-section">
                     <h2 class="section-title-script">What Our Customers Say</h2>
                     <div class="reviews-grid" id="public-reviews-grid">
-                        <div class="cloud-review-card">
-                            <p>"Absolutely breathtaking work!! The detail put into this cake was insane and it tasted unbelievable!! You made me look like the best sister ever, thank you so much for your talent and hard work!!"</p>
-                            <h4>Kristen Ramirez</h4>
-                        </div>
-                        <div class="cloud-review-card">
-                            <p>"I ordered a strawberry smash cake for my 1 year old, with strawberries on top and custom icing and she devoured it ✨ The cake was so moist &amp; icing wasn’t too sweet! Pick up process was super easy."</p>
-                            <h4>Lynne Escue</h4>
-                        </div>
-                        <div class="cloud-review-card">
-                            <p>"Not only was I extremely shocked at how cute this cake was, I was truly SO surprised with how delicious it was! I tried to get a slice and having trouble cutting the back, I was SO CONFUSED."</p>
-                            <h4>Alexis</h4>
-                        </div>
-                        <div class="cloud-review-card">
-                            <p>"She was super friendly and easy to work with! The cake looked awesome, everything I was hoping for! ❤️"</p>
-                            <h4>Pamela Cortes</h4>
-                        </div>
+                        @php $reviews = $tenant->getSiteContent('reviews', []); @endphp
+                        @foreach($reviews as $rev)
+                            <div class="cloud-review-card">
+                                <p>"{{ $rev['quote'] ?? '' }}"</p>
+                                <h4>{{ $rev['name'] ?? '' }}</h4>
+                            </div>
+                        @endforeach
                     </div>
                 </section>
             @elseif($secId === 'faq')
@@ -193,30 +165,25 @@
                 <section class="faq-policies-section" style="padding:70px 25px; background:#ffffff; text-align:center;">
                     <h2 class="section-title-script" style="margin-bottom:15px;">Frequently Asked Questions</h2>
                     <div style="max-width:850px; margin:0 auto; text-align:left; display:flex; flex-direction:column; gap:18px;">
-                        <div style="background:var(--pink-bg); padding:20px; border-radius:14px; border-left:4px solid var(--primary);">
-                            <h4 style="font-size:1.1rem; font-weight:700; color:var(--dark-text); margin-bottom:6px;">📅 How far in advance should I order?</h4>
-                            <p style="font-size:0.92rem; color:#555; line-height:1.6;">We require at least 3 days advance notice for custom orders. For weddings and large multi-tier events, we recommend booking 2-4 weeks in advance to reserve your date.</p>
-                        </div>
-                        <div style="background:var(--pink-bg); padding:20px; border-radius:14px; border-left:4px solid var(--primary);">
-                            <h4 style="font-size:1.1rem; font-weight:700; color:var(--dark-text); margin-bottom:6px;">💳 What is the deposit requirement?</h4>
-                            <p style="font-size:0.92rem; color:#555; line-height:1.6;">A 50% non-refundable deposit is required at booking to secure your date. Remaining balance is due prior to pickup or delivery.</p>
-                        </div>
-                        <div style="background:var(--pink-bg); padding:20px; border-radius:14px; border-left:4px solid var(--primary);">
-                            <h4 style="font-size:1.1rem; font-weight:700; color:var(--dark-text); margin-bottom:6px;">⚠️ Allergy Information</h4>
-                            <p style="font-size:0.92rem; color:#555; line-height:1.6;">We operate under Tennessee cottage food laws. Our kitchen processes wheat, eggs, dairy, and nuts. Please disclose all food allergies during checkout!</p>
-                        </div>
+                        @php $faqs = $tenant->getSiteContent('faqs', []); @endphp
+                        @foreach($faqs as $faq)
+                            <div style="background:var(--pink-bg); padding:20px; border-radius:14px; border-left:4px solid var(--primary);">
+                                <h4 style="font-size:1.1rem; font-weight:700; color:var(--dark-text); margin-bottom:6px;">{{ $faq['q'] ?? '' }}</h4>
+                                <p style="font-size:0.92rem; color:#555; line-height:1.6;">{{ $faq['a'] ?? '' }}</p>
+                            </div>
+                        @endforeach
                     </div>
                 </section>
             @elseif($secId === 'cta_banner')
                 <!-- Footer Call to Action Video Banner -->
                 <section class="cta-video-banner">
                     <video autoplay loop muted playsinline>
-                        <source src="{{ asset('images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4') }}" type="video/mp4">
+                        <source src="{{ asset($tenant->getSiteContent('cta_banner_url', 'images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4')) }}" type="video/mp4">
                     </video>
                     <div class="cta-content">
-                        <h2>Ready For Your Perfect Cake?</h2>
-                        <p>Order your plan or custom order now</p>
-                        <button onclick="openOrderModal()" class="btn btn-dark">Order Now</button>
+                        <h2>{{ $tenant->getSiteContent('cta_headline', 'Ready For Your Perfect Cake?') }}</h2>
+                        <p>{{ $tenant->getSiteContent('cta_subtext', 'Order your plan or custom order now') }}</p>
+                        <button onclick="openOrderModal()" class="btn btn-dark">{{ $tenant->getSiteContent('cta_btn_text', 'Order Now') }}</button>
                     </div>
                 </section>
             @endif
