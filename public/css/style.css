@@ -917,31 +917,44 @@ body {
 }
 
 .cart-bar {
-    background: #fcdbe6;
-    padding: 20px 25px;
+    background: var(--pink-bg);
+    padding: 16px 20px;
     border-radius: 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 30px;
+    margin-top: 25px;
+    border: 1px solid rgba(0,0,0,0.08);
 }
 
-#cart-summary { font-size: 1rem; color: #401829; }
+#cart-summary { font-size: 0.95rem; color: var(--dark-text); }
 #cart-summary strong { font-size: 1.2rem; color: var(--primary); }
 
-.nav-buttons { display: flex; gap: 15px; }
+.nav-buttons {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+}
 
 .next-btn {
     background: var(--primary);
     color: white;
     border: none;
-    padding: 12px 30px;
+    padding: 12px 28px;
     border-radius: 25px;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    box-shadow: 0 4px 15px rgba(230, 115, 153, 0.4);
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     transition: all 0.2s;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .next-btn:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); }
@@ -950,15 +963,70 @@ body {
 .back-btn {
     background: white;
     border: 2px solid #e0e0e0;
-    padding: 12px 25px;
+    padding: 12px 22px;
     border-radius: 25px;
     cursor: pointer;
-    font-weight: 600;
-    color: #555;
+    font-weight: 700;
+    color: var(--dark-text);
     transition: all 0.2s;
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .back-btn:hover { background: #f5f5f5; }
+
+/* 📱 MOBILE RESPONSIVE MODAL & SIDE-BY-SIDE BUTTONS RULES */
+@media (max-width: 600px) {
+    .order-modal-card {
+        padding: 20px 14px !important;
+        width: 96% !important;
+        max-height: 94vh !important;
+        border-radius: 16px !important;
+    }
+    .modal-close-btn {
+        top: 12px !important;
+        right: 14px !important;
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 1.1rem !important;
+    }
+    .sticky-order-summary-bar {
+        padding: 10px 12px !important;
+        margin-bottom: 15px !important;
+    }
+    .sticky-order-summary-bar span {
+        font-size: 0.72rem !important;
+    }
+    .sticky-order-summary-bar strong {
+        font-size: 1.1rem !important;
+    }
+    .nav-buttons {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+        width: 100% !important;
+        padding: 12px 14px !important;
+    }
+    .nav-buttons .back-btn,
+    .nav-buttons .next-btn,
+    .nav-buttons button {
+        flex: 1 !important;
+        min-width: 0 !important;
+        padding: 12px 8px !important;
+        font-size: 0.9rem !important;
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    #product-grid, #flavor-list, #frosting-list, #filling-list, #social-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
+        gap: 10px !important;
+    }
+}
 
 /* Interactive Calendar Grid */
 #interactive-calendar-grid {
