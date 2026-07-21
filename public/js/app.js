@@ -220,7 +220,7 @@ function init12StepOrderForm() {
             const clientEmail = document.getElementById('contact-email').value.trim();
             const clientPhone = document.getElementById('contact-phone').value.trim();
             const submitBtn = document.getElementById('submit-form-btn');
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || document.querySelector('input[name="_token"]')?.value || '';
 
             if (submitBtn) {
                 submitBtn.disabled = true;

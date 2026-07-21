@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery | Blushed Crumbs Bakehouse</title>
     <meta name="description" content="Explore custom artisanal cakes, cupcakes, and treat boxes from Blushed Crumbs Bakehouse.">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

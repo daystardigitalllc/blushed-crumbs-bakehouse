@@ -222,6 +222,7 @@
 
                         @elseif($type === 'contact_info')
                             <form id="order-form">
+                                @csrf
                                 <input type="text" id="contact-name" placeholder="Full Name" required style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc; margin-bottom:12px;">
                                 <input type="email" id="contact-email" placeholder="Email" required style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc; margin-bottom:12px;">
                                 

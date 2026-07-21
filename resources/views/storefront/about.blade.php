@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Blushed Crumbs Bakehouse</title>
     <meta name="description" content="Learn about Blushed Crumbs Bakehouse, our founder story, passion for custom wedding cakes, and artisanal baking in Tennessee.">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
