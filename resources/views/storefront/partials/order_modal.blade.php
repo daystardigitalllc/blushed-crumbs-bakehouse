@@ -120,9 +120,23 @@
                             </div>
 
                         @elseif(in_array($type, ['flavors', 'frosting', 'fillings', 'chips']))
-                            <div id="{{ $type === 'flavors' ? 'flavor-list' : ($type === 'frosting' ? 'frosting-list' : ($type === 'fillings' ? 'filling-list' : 'custom-chip-list-' . $stepNum)) }}">
+                            <div id="{{ $type === 'flavors' ? 'flavor-list' : ($type === 'frosting' ? 'frosting-list' : ($type === 'fillings' ? 'filling-list' : 'custom-chip-list-' . $stepNum)) }}" class="option-chip-grid">
                                 @foreach($options as $opt)
-                                    <div class="product">{{ $opt }}</div>
+                                    @php
+                                        $optStr = trim($opt);
+                                        $addonPrice = 0.00;
+                                        $cleanName = $optStr;
+                                        if (preg_match('/\(\+\$?([0-9]+(?:\.[0-9]{1,2})?)\)/i', $optStr, $matches)) {
+                                            $addonPrice = (float) $matches[1];
+                                            $cleanName = trim(preg_replace('/\(\+\$?([0-9]+(?:\.[0-9]{1,2})?)\)/i', '', $optStr));
+                                        }
+                                    @endphp
+                                    <div class="product option-chip" data-name="{{ $optStr }}" data-clean-name="{{ $cleanName }}" data-addon-price="{{ $addonPrice }}" style="display:inline-flex; align-items:center; justify-content:space-between; gap:8px;">
+                                        <span>{{ $cleanName }}</span>
+                                        @if($addonPrice > 0)
+                                            <span class="price-badge" style="background:#e67399; color:white; font-size:0.75rem; font-weight:700; padding:3px 8px; border-radius:10px; flex-shrink:0;">+ ${{ number_format($addonPrice, 2) }}</span>
+                                        @endif
+                                    </div>
                                 @endforeach
                             </div>
                             
@@ -248,10 +262,21 @@
                             </div>
 
                         @elseif($type === 'select')
-                            <select style="width:100%; padding:14px; border-radius:10px; border:1px solid #ccc; font-family:inherit; font-size:0.95rem;">
+                            <select class="custom-step-select" style="width:100%; padding:14px; border-radius:10px; border:1px solid #ccc; font-family:inherit; font-size:0.95rem;" onchange="updateCartSummary()">
                                 <option value="" disabled selected>Select an option…</option>
                                 @foreach($options as $opt)
-                                    <option value="{{ $opt }}">{{ $opt }}</option>
+                                    @php
+                                        $optStr = trim($opt);
+                                        $addonPrice = 0.00;
+                                        $cleanName = $optStr;
+                                        if (preg_match('/\(\+\$?([0-9]+(?:\.[0-9]{1,2})?)\)/i', $optStr, $matches)) {
+                                            $addonPrice = (float) $matches[1];
+                                            $cleanName = trim(preg_replace('/\(\+\$?([0-9]+(?:\.[0-9]{1,2})?)\)/i', '', $optStr));
+                                        }
+                                    @endphp
+                                    <option value="{{ $optStr }}" data-addon-price="{{ $addonPrice }}" data-clean-name="{{ $cleanName }}">
+                                        {{ $cleanName }} @if($addonPrice > 0) (+ ${{ number_format($addonPrice, 2) }}) @endif
+                                    </option>
                                 @endforeach
                             </select>
 

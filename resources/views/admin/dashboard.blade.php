@@ -227,8 +227,8 @@
                             </select>
                         </div>
                         <div id="field-options-row">
-                            <label>Options <span style="font-weight:400; color:#999;">(comma-separated list of items/flavors)</span></label>
-                            <input type="text" id="field-options" placeholder="Strawberry Bliss, Vanilla Bean, Chocolate Dream">
+                            <label>Options <span style="font-weight:600; color:#e67399;">(comma-separated. Add extra prices like: <strong>Tres Leches (+$5.00), Red Velvet (+$3.50)</strong>)</span></label>
+                            <input type="text" id="field-options" placeholder="Vanilla Bean, Tres Leches (+$5.00), Red Velvet (+$3.50)">
                         </div>
                         <div style="grid-column: 1 / -1; margin-top:10px;">
                             <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Step to Order Form</button>

@@ -357,7 +357,28 @@ function goToStep(stepNum) {
 
 function updateCartSummary() {
     state.subtotal = state.selectedProducts.reduce((sum, item) => sum + item.price, 0);
-    state.total = Math.max(0, state.subtotal - state.discounts);
+
+    // Calculate option add-on prices across selected chips
+    let optionAddons = 0;
+    document.querySelectorAll('.product.selected[data-addon-price]').forEach(el => {
+        const addon = parseFloat(el.dataset.addonPrice || 0);
+        if (!isNaN(addon) && addon > 0) {
+            optionAddons += addon;
+        }
+    });
+
+    // Calculate option add-on prices across selects
+    document.querySelectorAll('select.custom-step-select').forEach(sel => {
+        const selectedOpt = sel.options[sel.selectedIndex];
+        if (selectedOpt && selectedOpt.dataset && selectedOpt.dataset.addonPrice) {
+            const addon = parseFloat(selectedOpt.dataset.addonPrice || 0);
+            if (!isNaN(addon) && addon > 0) {
+                optionAddons += addon;
+            }
+        }
+    });
+
+    state.total = Math.max(0, state.subtotal + optionAddons - state.discounts);
     state.deposit = state.total * 0.5;
 
     const itemsSummaryText = state.selectedProducts.length > 0
@@ -374,11 +395,11 @@ function updateCartSummary() {
     if (globalItemsEl) globalItemsEl.innerText = itemsSummaryText;
 
     if (summaryEl) {
-        summaryEl.innerHTML = `Items: ${state.selectedProducts.length} <br> <strong>Total: $${state.total.toFixed(0)}</strong>`;
+        summaryEl.innerHTML = `Items: ${state.selectedProducts.length} <br> <strong>Total: $${state.total.toFixed(2)}</strong>`;
     }
 
     if (globalTotalEl) {
-        globalTotalEl.innerText = `$${state.total.toFixed(0)}`;
+        globalTotalEl.innerText = `$${state.total.toFixed(2)}`;
     }
 
     if (step1Next) {
@@ -408,6 +429,8 @@ function setupMultiSelectGrid(elementId, targetArray) {
             const idx = targetArray.indexOf(name);
             if (idx > -1) targetArray.splice(idx, 1);
         }
+
+        updateCartSummary();
     });
 }
 

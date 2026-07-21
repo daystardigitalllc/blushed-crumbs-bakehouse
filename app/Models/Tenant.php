@@ -53,8 +53,8 @@ class Tenant extends Model
                 'id' => 'step_3',
                 'type' => 'flavors',
                 'title' => 'Choose Your Flavors',
-                'subtext' => 'Select all that apply (Luxury flavors +$10)',
-                'options' => 'Strawberry Bliss, Vanilla Bean, Chocolate Dream, Creamy Hazelnut, Confetti Explosion, Red Velvet, Swirly Marble, Lemon Drop, Golden Carrot, Raspberry Swirl, Almond Elegance (LUX), Pistachio ice (LUX), Coconut Cream (LUX), Cinnamon spice (LUX), Cotton candy temptation (LUX), Espresso Bean (LUX), Cherry Bark (LUX), Cookie Butter (LUX), Tres Leches (LUX), Banana Creme Pie (LUX)',
+                'subtext' => 'Select all that apply (Luxury flavors +$10.00)',
+                'options' => 'Strawberry Bliss, Vanilla Bean, Chocolate Dream, Creamy Hazelnut, Confetti Explosion, Red Velvet, Swirly Marble, Lemon Drop, Golden Carrot, Raspberry Swirl, Almond Elegance (LUX) (+$10.00), Pistachio ice (LUX) (+$10.00), Coconut Cream (LUX) (+$10.00), Cinnamon spice (LUX) (+$10.00), Cotton candy temptation (LUX) (+$10.00), Espresso Bean (LUX) (+$10.00), Cherry Bark (LUX) (+$10.00), Cookie Butter (LUX) (+$10.00), Tres Leches (LUX) (+$10.00), Banana Creme Pie (LUX) (+$10.00)',
                 'description' => ''
             ],
             [
