@@ -122,19 +122,21 @@
             @endif
 
             @if(!empty($order->inspiration_files) && is_array($order->inspiration_files) && count($order->inspiration_files) > 0)
-            <div class="section-title">🖼️ Attached Inspiration Photos ({{ count($order->inspiration_files) }})</div>
-            <p style="font-size:0.9rem; color:#666; margin-bottom:8px;">Client uploaded {{ count($order->inspiration_files) }} photo(s). They are attached directly to this email and accessible below:</p>
-            <ul style="margin:0 0 16px 0; padding-left:20px; font-size:0.9rem; color:#333;">
+            <div class="section-title">🖼️ Inspiration Photos ({{ count($order->inspiration_files) }})</div>
+            <p style="font-size:0.9rem; color:#666; margin-bottom:12px;">Client uploaded {{ count($order->inspiration_files) }} inspiration photo(s):</p>
+            <div style="margin-bottom:18px;">
                 @foreach($order->inspiration_files as $idx => $filePath)
                     @php
-                        $fileUrl = str_starts_with($filePath, 'http') ? $filePath : url($filePath);
+                        $fullPath = public_path($filePath);
                     @endphp
-                    <li style="margin-bottom:4px;">
-                        📎 <a href="{{ $fileUrl }}" target="_blank" style="color:#e67399; font-weight:700;">Inspiration Image {{ $idx + 1 }}</a>
-                        <span style="font-size:0.8rem; color:#888;">({{ basename($filePath) }})</span>
-                    </li>
+                    @if(file_exists($fullPath))
+                        <div style="margin-bottom:16px; text-align:center;">
+                            <img src="{{ $message->embed($fullPath) }}" alt="Inspiration Photo {{ $idx + 1 }}" style="max-width:100%; max-height:380px; border-radius:14px; border:2px solid #f8c6d7; box-shadow:0 6px 16px rgba(92,29,55,0.1); display:block; margin:0 auto 6px auto;">
+                            <span style="font-size:0.8rem; font-weight:700; color:#7a2b4a;">Inspiration Photo #{{ $idx + 1 }}</span>
+                        </div>
+                    @endif
                 @endforeach
-            </ul>
+            </div>
             @endif
 
             @if(!empty($order->social_follows))
