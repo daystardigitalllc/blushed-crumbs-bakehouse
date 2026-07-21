@@ -405,6 +405,14 @@ window.closeLightbox = function() {
     if (modal) modal.style.display = 'none';
 };
 
+// Mobile Sidebar Drawer Toggle
+window.toggleAdminMobileSidebar = function() {
+    const sidebar = document.getElementById('admin-sidebar-drawer');
+    const overlay = document.getElementById('admin-sidebar-overlay');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('active');
+};
+
 // Baker Admin Portal Controller & Sidebar Switcher
 function initAdminPortal() {
     // Sidebar & Tab Buttons Switcher
@@ -417,6 +425,16 @@ function initAdminPortal() {
             btn.classList.add('active');
             const targetTab = document.getElementById(btn.dataset.tab);
             if (targetTab) targetTab.classList.add('active');
+
+            // Auto-close mobile drawer when a tab is selected
+            const sidebar = document.getElementById('admin-sidebar-drawer');
+            const overlay = document.getElementById('admin-sidebar-overlay');
+            if (sidebar && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+            if (overlay && overlay.classList.contains('active')) {
+                overlay.classList.remove('active');
+            }
         });
     });
 

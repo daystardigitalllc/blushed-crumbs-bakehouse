@@ -373,15 +373,32 @@
 
 <!-- PAGE 4: BAKER ADMIN PORTAL VIEW WITH MODERN SIDEBAR -->
 <div id="admin-portal-view" style="display:none;">
+    <!-- MOBILE TOP BAR WITH HAMBURGER BUTTON -->
+    <div class="admin-mobile-header">
+        <div class="mobile-brand">
+            <span style="font-size:1.8rem;">🌸</span>
+            <strong style="font-size:1.15rem; color:#ffffff;">Blushed Crumbs Admin</strong>
+        </div>
+        <button class="mobile-hamburger-btn" id="mobile-hamburger-trigger" onclick="toggleAdminMobileSidebar()" aria-label="Open Navigation Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <!-- BACKDROP OVERLAY FOR MOBILE SIDEBAR DRAWER -->
+    <div class="admin-sidebar-overlay" id="admin-sidebar-overlay" onclick="toggleAdminMobileSidebar()"></div>
+
     <div class="admin-layout-container">
         <!-- LEFT SIDEBAR -->
-        <aside class="admin-sidebar">
+        <aside class="admin-sidebar" id="admin-sidebar-drawer">
             <div class="admin-sidebar-brand">
                 <span class="logo-icon" style="font-size:2.2rem;">🌸</span>
                 <div>
                     <h3>Blushed Crumbs</h3>
                     <span class="badge-pro">Pro Baker CMS</span>
                 </div>
+                <button class="drawer-close-btn" onclick="toggleAdminMobileSidebar()">✕</button>
             </div>
 
             <nav class="admin-sidebar-nav">
