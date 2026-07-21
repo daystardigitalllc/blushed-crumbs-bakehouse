@@ -405,12 +405,13 @@ window.closeLightbox = function() {
     if (modal) modal.style.display = 'none';
 };
 
-// Bakesy Mobile Admin Controller & Visual Form/Gallery Builder
+// Baker Admin Portal Controller & Sidebar Switcher
 function initAdminPortal() {
-    const tabBtns = document.querySelectorAll('.admin-tabs .tab-btn');
-    tabBtns.forEach(btn => {
+    // Sidebar & Tab Buttons Switcher
+    const adminNavBtns = document.querySelectorAll('.admin-sidebar-nav .admin-nav-item, .admin-tabs .tab-btn');
+    adminNavBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            tabBtns.forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.admin-nav-item, .tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
 
             btn.classList.add('active');
@@ -418,6 +419,53 @@ function initAdminPortal() {
             if (targetTab) targetTab.classList.add('active');
         });
     });
+
+    // Device Gallery File Preview Handler
+    const galFileInput = document.getElementById('gal-image-file');
+    const galPreviewWrap = document.getElementById('gal-upload-preview');
+    const galPreviewImg = document.getElementById('gal-preview-img');
+
+    if (galFileInput && galPreviewImg) {
+        galFileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    galPreviewImg.src = ev.target.result;
+                    if (galPreviewWrap) galPreviewWrap.style.display = 'block';
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+
+    // Custom Payment Method Builder Handler
+    const payForm = document.getElementById('add-payment-method-form');
+    if (payForm) {
+        payForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const methodName = document.getElementById('pay-method-name').value.trim();
+            const methodHandle = document.getElementById('pay-method-handle').value.trim();
+            const methodInstructions = document.getElementById('pay-method-instructions').value.trim();
+
+            const payList = document.getElementById('payment-methods-list');
+            if (payList) {
+                const row = document.createElement('div');
+                row.className = 'payment-method-row';
+                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;';
+                row.innerHTML = `
+                    <div>
+                        <strong style="color:#5c1d37; font-size:1.05rem;">💳 ${methodName}</strong>: <code>${methodHandle}</code>
+                        ${methodInstructions ? `<p style="font-size:0.85rem; color:#666; margin-top:2px;">${methodInstructions}</p>` : ''}
+                    </div>
+                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Remove</button>
+                `;
+                payList.prepend(row);
+            }
+
+            alert(`Payment Method "${methodName}" (${methodHandle}) added to Baker Admin Portal & Client Invoice Options!`);
+            payForm.reset();
+        });
+    }
 
     // Email Routing Form Handler
     const emailForm = document.getElementById('email-routing-form');
@@ -505,11 +553,11 @@ function initAdminPortal() {
             if (adminGrid) {
                 const row = document.createElement('div');
                 row.className = 'product-item-row';
-                row.style.cssText = 'display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;';
+                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee;';
                 row.innerHTML = `
-                    <span><strong>${name}</strong> (${category})</span>
+                    <span><strong>${name}</strong> ($${price.toFixed(2)})</span>
                     <div>
-                        <input type="number" class="price-input" value="${price.toFixed(2)}" style="width:80px; padding:5px; border-radius:6px; border:1px solid #ccc;">
+                        <input type="number" class="price-input" value="${price.toFixed(2)}" style="width:80px;">
                         <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
                     </div>
                 `;
@@ -521,24 +569,21 @@ function initAdminPortal() {
         });
     }
 
-    // Add Gallery Image Form
+    // Add Gallery Image Form (Device Upload Supported!)
     const galleryForm = document.getElementById('add-gallery-form');
     if (galleryForm) {
         galleryForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const title = document.getElementById('gal-title').value;
             const category = document.getElementById('gal-category').value;
-            const imgInput = document.getElementById('gal-image-url');
             const fileInput = document.getElementById('gal-image-file');
 
-            let imageSrc = imgInput ? imgInput.value.trim() : '';
+            let imageSrc = 'public/images/IMG_8117.jpg';
 
-            if (fileInput && fileInput.files && fileInput.files[0]) {
+            if (galPreviewImg && galPreviewImg.src && galPreviewImg.src.startsWith('data:image')) {
+                imageSrc = galPreviewImg.src;
+            } else if (fileInput && fileInput.files && fileInput.files[0]) {
                 imageSrc = URL.createObjectURL(fileInput.files[0]);
-            }
-
-            if (!imageSrc) {
-                imageSrc = 'public/images/IMG_8117.jpg';
             }
 
             const mainGalleryGrid = document.getElementById('public-gallery-grid');
@@ -565,20 +610,24 @@ function initAdminPortal() {
                 adminItem.style.cssText = 'display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);';
                 adminItem.innerHTML = `
                     <div style="display:flex; align-items:center; gap:15px;">
-                        <img src="${imageSrc}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+                        <img src="${imageSrc}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
                         <div>
-                            <strong>${title}</strong><br>
-                            <span style="font-size:0.8rem; color:#888;">${category}</span>
+                            <strong style="color:#5c1d37;">${title}</strong><br>
+                            <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${category}</span>
                         </div>
                     </div>
-                    <button class="btn btn-sm btn-outline" style="color:#d9534f;" onclick="this.parentElement.remove()">Delete</button>
+                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Delete</button>
                 `;
                 adminGalleryList.prepend(adminItem);
             }
 
-            alert(`Photo "${title}" published live to your /gallery page!`);
+            alert(`Photo "${title}" published live from device to your /gallery page!`);
             galleryForm.reset();
+            if (galPreviewWrap) galPreviewWrap.style.display = 'none';
         });
+    }
+}
+;
     }
 
     // Add Review Form
