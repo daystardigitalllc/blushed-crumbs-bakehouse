@@ -226,9 +226,22 @@
                                 <option value="toggle">🔘 Yes / No Toggle</option>
                             </select>
                         </div>
-                        <div id="field-options-row">
-                            <label>Options <span style="font-weight:600; color:#e67399;">(comma-separated. Add extra prices like: <strong>Tres Leches (+$5.00), Red Velvet (+$3.50)</strong>)</span></label>
-                            <input type="text" id="field-options" placeholder="Vanilla Bean, Tres Leches (+$5.00), Red Velvet (+$3.50)">
+                        <div id="field-options-row" style="grid-column: 1 / -1; margin-top: 10px;">
+                            <label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:8px;">
+                                Step Options &amp; Extra Charges
+                                <span style="font-weight:500; font-size:0.85rem; color:#888;">(Separate inputs for option names and optional extra charges)</span>
+                            </label>
+                            
+                            <!-- Dynamic Option Rows Container -->
+                            <div id="option-rows-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                                <!-- Option rows rendered dynamically by JS -->
+                            </div>
+
+                            <input type="hidden" id="field-options">
+
+                            <button type="button" class="btn btn-outline btn-sm" onclick="addAdminOptionRow()" style="border-radius:12px; font-weight:700; color:#e67399; border-color:#f8c6d7;">
+                                ➕ Add Option Choice
+                            </button>
                         </div>
                         <div style="grid-column: 1 / -1; margin-top:10px;">
                             <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Step to Order Form</button>

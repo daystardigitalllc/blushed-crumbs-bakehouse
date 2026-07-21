@@ -705,12 +705,107 @@ function initAdminPortal() {
         });
     }
 
+    // Dynamic Admin Option Builder Functions
+    window.addAdminOptionRow = function(name = '', price = '') {
+        const container = document.getElementById('option-rows-container');
+        if (!container) return;
+
+        const row = document.createElement('div');
+        row.className = 'admin-option-item-row';
+        row.style.cssText = 'display:flex; gap:10px; align-items:center; background:#fff; padding:8px 12px; border-radius:12px; border:1px solid #f0e4ea; box-shadow:0 2px 6px rgba(0,0,0,0.03);';
+        
+        const formattedPrice = (price !== '' && !isNaN(price)) ? parseFloat(price).toFixed(2) : '';
+
+        row.innerHTML = `
+            <div style="flex:2; display:flex; flex-direction:column;">
+                <span style="font-size:0.75rem; font-weight:700; color:#5c1d37; margin-bottom:2px;">Option Name / Flavor</span>
+                <input type="text" class="admin-opt-name" value="${(name || '').replace(/"/g, '&quot;')}" placeholder="e.g. Tres Leches (LUX)" style="padding:10px 12px; border-radius:10px; border:1px solid #ddd; font-size:0.92rem;">
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column;">
+                <span style="font-size:0.75rem; font-weight:700; color:#e67399; margin-bottom:2px;">Extra Charge ($)</span>
+                <div style="display:flex; align-items:center; background:#fff7fa; border:1px solid #f8c6d7; border-radius:10px; padding:0 10px; height:42px;">
+                    <span style="color:#e67399; font-weight:700; margin-right:4px;">+$</span>
+                    <input type="number" step="0.50" min="0" class="admin-opt-price" value="${formattedPrice}" placeholder="0.00" style="border:none; background:transparent; width:100%; outline:none; font-weight:700; color:#5c1d37; font-size:0.92rem;">
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" onclick="this.parentElement.remove()" style="color:#dc3545; border-color:#f8c6d7; padding:8px 12px; border-radius:10px; align-self:flex-end; height:42px;" title="Remove Option">✕</button>
+        `;
+        container.appendChild(row);
+    };
+
+    window.serializeAdminOptions = function() {
+        const rows = document.querySelectorAll('.admin-option-item-row');
+        const optionsArray = [];
+
+        rows.forEach(row => {
+            const nameInput = row.querySelector('.admin-opt-name');
+            const priceInput = row.querySelector('.admin-opt-price');
+            if (!nameInput) return;
+
+            let name = nameInput.value.trim();
+            if (!name) return;
+
+            const price = parseFloat(priceInput?.value || 0);
+            name = name.replace(/\(\+\$?([0-9]+(?:\.[0-9]{1,2})?)\)/gi, '').trim();
+
+            if (!isNaN(price) && price > 0) {
+                optionsArray.push(`${name} (+$${price.toFixed(2)})`);
+            } else {
+                optionsArray.push(name);
+            }
+        });
+
+        const optionsStr = optionsArray.join(', ');
+        const hiddenOptionsInput = document.getElementById('field-options');
+        if (hiddenOptionsInput) {
+            hiddenOptionsInput.value = optionsStr;
+        }
+        return optionsStr;
+    };
+
+    window.populateAdminOptionRows = function(optionsStr = '') {
+        const container = document.getElementById('option-rows-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (!optionsStr) {
+            window.addAdminOptionRow('', '');
+            window.addAdminOptionRow('', '');
+            return;
+        }
+
+        const items = optionsStr.split(',').map(s => s.trim()).filter(Boolean);
+        items.forEach(item => {
+            let name = item;
+            let price = '';
+
+            const pregMatch = item.match(/\(\+\$?([0-9]+(?:\.[0-9]{1,2})?)\)/i);
+            if (pregMatch) {
+                price = pregMatch[1];
+                name = item.replace(/\(\+\$?([0-9]+(?:\.[0-9]{1,2})?)\)/gi, '').trim();
+            }
+
+            window.addAdminOptionRow(name, price);
+        });
+
+        if (items.length === 0) {
+            window.addAdminOptionRow('', '');
+            window.addAdminOptionRow('', '');
+        }
+    };
+
     // Form Studio Schema & Field Builder Handler
     window.toggleOptionsRow = function(val) {
         const optRow = document.getElementById('field-options-row');
         if (optRow) {
             const needsOptions = ['select', 'chips', 'flavors', 'frosting', 'fillings', 'social_discount', 'fulfillment'].includes(val);
             optRow.style.display = needsOptions ? 'block' : 'none';
+            if (needsOptions) {
+                const container = document.getElementById('option-rows-container');
+                if (container && container.children.length === 0) {
+                    window.populateAdminOptionRows('');
+                }
+            }
         }
     };
     setTimeout(() => toggleOptionsRow(document.getElementById('field-type')?.value || 'products'), 100);
@@ -873,7 +968,9 @@ function initAdminPortal() {
             e.preventDefault();
             const labelText = document.getElementById('field-label').value.trim();
             const fieldType = document.getElementById('field-type').value;
-            const optionsText = (document.getElementById('field-options')?.value || '').trim();
+            
+            // Serialize dynamic option rows with extra charges
+            const optionsText = window.serializeAdminOptions();
             const descriptionText = (document.getElementById('field-description')?.value || '').trim();
 
             if (!labelText) return;
@@ -891,6 +988,7 @@ function initAdminPortal() {
             renderFieldsTable();
 
             fieldForm.reset();
+            window.populateAdminOptionRows('');
             toggleOptionsRow('products');
             alert(`Step "${labelText}" added! Click "Save Order Form Layout Live" to update your storefront.`);
         });
