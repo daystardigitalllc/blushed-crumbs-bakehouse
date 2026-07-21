@@ -592,11 +592,25 @@ body {
 
 .product:hover { border-color: var(--primary); background: #fff0f5; }
 
-.product.selected {
+.product.selected,
+.option-chip.selected {
     background: var(--primary) !important;
-    color: white !important;
-    border-color: var(--primary) !important;
-    box-shadow: 0 5px 15px rgba(230, 115, 153, 0.3);
+    color: #ffffff !important;
+    border-color: #5c1d37 !important;
+    box-shadow: 0 6px 18px rgba(230, 115, 153, 0.4) !important;
+    transform: translateY(-2px);
+}
+
+.product.selected span,
+.option-chip.selected span {
+    color: #ffffff !important;
+}
+
+.product.selected .price-badge,
+.option-chip.selected .price-badge {
+    background: #ffffff !important;
+    color: var(--primary) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
 }
 
 .cart-bar {

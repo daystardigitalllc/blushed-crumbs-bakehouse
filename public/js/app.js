@@ -480,21 +480,35 @@ function setupMultiSelectGrid(elementId, targetArray) {
     if (!grid) return;
 
     grid.addEventListener('click', (e) => {
-        const card = e.target.closest('.product');
+        const card = e.target.closest('.product, .option-chip');
         if (!card) return;
         card.classList.toggle('selected');
-        const name = card.dataset.name || card.innerText;
+        const name = card.dataset.cleanName || card.dataset.name || card.innerText.trim();
         
-        if (card.classList.contains('selected')) {
-            targetArray.push(name);
-        } else {
-            const idx = targetArray.indexOf(name);
-            if (idx > -1) targetArray.splice(idx, 1);
+        if (targetArray) {
+            if (card.classList.contains('selected')) {
+                if (!targetArray.includes(name)) targetArray.push(name);
+            } else {
+                const idx = targetArray.indexOf(name);
+                if (idx > -1) targetArray.splice(idx, 1);
+            }
         }
 
         updateCartSummary();
     });
 }
+
+// Universal Chip & Option Click Delegation for Custom Steps
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.option-chip, .option-chip-grid .product, [id*="custom-chip-list"] .product');
+    if (!card) return;
+
+    // Skip grids with custom click handlers
+    if (card.closest('#product-grid, #fulfillment-grid, #social-grid, #flavor-list, #frosting-list, #filling-list')) return;
+
+    card.classList.toggle('selected');
+    updateCartSummary();
+});
 
 function renderInteractiveCalendar() {
     const calGrid = document.getElementById('interactive-calendar-grid');
