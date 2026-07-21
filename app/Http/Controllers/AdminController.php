@@ -284,6 +284,7 @@ class AdminController extends Controller
     {
         $tenant = Tenant::where('slug', 'blushedcrumbs')->first() ?? Tenant::first();
 
+        // 1. Process Section Order & Enabled status
         $sectionsData = $request->input('sections', []);
         $defaults = Tenant::getDefaultSectionSettings();
 
@@ -298,14 +299,43 @@ class AdminController extends Controller
             ];
         }
 
+        // 2. Process Section Copy Inputs
+        $currentContent = $tenant->site_content ?? Tenant::getDefaultSiteContent();
+        
+        $bullets = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $bulletVal = $request->input("whimsical_bullet_$i");
+            if (!empty($bulletVal)) {
+                $bullets[] = $bulletVal;
+            }
+        }
+
+        $updatedContent = array_merge($currentContent, [
+            'hero_subheading' => $request->input('hero_subheading', $currentContent['hero_subheading'] ?? ''),
+            'hero_headline' => $request->input('hero_headline', $currentContent['hero_headline'] ?? ''),
+            'hero_cta_primary' => $request->input('hero_cta_primary', $currentContent['hero_cta_primary'] ?? ''),
+            'hero_cta_secondary' => $request->input('hero_cta_secondary', $currentContent['hero_cta_secondary'] ?? ''),
+            'whimsical_title' => $request->input('whimsical_title', $currentContent['whimsical_title'] ?? ''),
+            'whimsical_bullets' => !empty($bullets) ? $bullets : ($currentContent['whimsical_bullets'] ?? []),
+            'promo_headline' => $request->input('promo_headline', $currentContent['promo_headline'] ?? ''),
+            'promo_subtext' => $request->input('promo_subtext', $currentContent['promo_subtext'] ?? ''),
+            'step_1_title' => $request->input('step_1_title', $currentContent['step_1_title'] ?? ''),
+            'step_2_title' => $request->input('step_2_title', $currentContent['step_2_title'] ?? ''),
+            'step_3_title' => $request->input('step_3_title', $currentContent['step_3_title'] ?? ''),
+            'faq_lead_time' => $request->input('faq_lead_time', $currentContent['faq_lead_time'] ?? ''),
+            'faq_deposit' => $request->input('faq_deposit', $currentContent['faq_deposit'] ?? ''),
+        ]);
+
         $tenant->update([
             'section_settings' => $updatedSections,
+            'site_content' => $updatedContent,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Homepage sections & order saved successfully!',
+            'message' => 'Homepage sections, order & copy saved successfully!',
             'section_settings' => $tenant->getOrderedSections(),
+            'site_content' => $tenant->site_content,
         ]);
     }
 }

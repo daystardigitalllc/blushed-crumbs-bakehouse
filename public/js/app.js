@@ -95,6 +95,21 @@ window.saveSiteContentForm = function() {
 };
 
 // Global Section Manager Reorder & Visibility Handler
+window.toggleSectionAccordion = function(headerEl) {
+    const row = headerEl.closest('.section-manager-row');
+    if (!row) return;
+    const body = row.querySelector('.section-accordion-body');
+    const arrow = row.querySelector('.accordion-arrow');
+
+    if (body) {
+        const isHidden = body.style.display === 'none' || !body.style.display;
+        body.style.display = isHidden ? 'block' : 'none';
+        if (arrow) {
+            arrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+    }
+};
+
 window.moveSectionUp = function(btn) {
     const row = btn.closest('.section-manager-row');
     if (row && row.previousElementSibling) {

@@ -562,125 +562,136 @@
                     </div>
                 </div>
 
-                <!-- HOMEPAGE SECTION MANAGER & REORDER CARD -->
+                <!-- UNIFIED ACCORDION HOMEPAGE SECTION & CONTENT STUDIO -->
                 <div class="form-builder-card" style="border:2px solid #8b5cf6; background:#f5f3ff; margin-top:20px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
                         <div>
-                            <h4 style="color:#6d28d9; margin:0;">☰ Homepage Section Manager &amp; Reorder Engine</h4>
-                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Toggle sections ON/OFF or move them up/down to rearrange your bakery homepage.</p>
+                            <h4 style="color:#6d28d9; margin:0;">☰ Homepage Section &amp; Content Accordion Studio</h4>
+                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Click any section below to expand and edit its copy, images, and text. Reorder or toggle sections ON/OFF in real time.</p>
                         </div>
-                        <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:#7c3aed; border-color:#6d28d9;">💾 Save Section Order &amp; Visibility</button>
+                        <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:#7c3aed; border-color:#6d28d9;">💾 Save All Sections &amp; Copy</button>
                     </div>
 
                     <div id="section-manager-msg" style="display:none; margin-bottom:14px; background:#ddd6fe; color:#4c1d95; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c4b5fd;"></div>
 
                     <form id="section-manager-form">
                         @csrf
-                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:10px;">
-                            @php
-                                $orderedSections = $tenant->getOrderedSections();
-                            @endphp
-                            @foreach($orderedSections as $secId => $sec)
-                                <div class="section-manager-row" data-id="{{ $secId }}" style="background:white; padding:12px 16px; border-radius:10px; border:1px solid #ddd6fe; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                                    <div style="display:flex; align-items:center; gap:12px;">
-                                        <span class="drag-handle" style="cursor:grab; font-weight:800; color:#8b5cf6; font-size:1.2rem;">☰</span>
-                                        <input type="hidden" class="section-order-input" name="sections[{{ $secId }}][order]" value="{{ $sec['order'] ?? 1 }}">
-                                        <strong style="color:#4c1d95; font-size:0.95rem;">{{ $sec['name'] ?? $secId }}</strong>
-                                    </div>
-                                    <div style="display:flex; align-items:center; gap:12px;">
-                                        <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:4px 10px; font-size:0.8rem;">⬆️ Up</button>
-                                        <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:4px 10px; font-size:0.8rem;">⬇️ Down</button>
-                                        <label class="toggle-switch" style="transform:scale(0.85);">
-                                            <input type="checkbox" name="sections[{{ $secId }}][enabled]" value="1" {{ !empty($sec['enabled']) ? 'checked' : '' }}>
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </form>
-                </div>
-
-                <!-- SITE CONTENT EDITOR CARD -->
-                <div class="form-builder-card" style="border:2px solid #06b6d4; background:#f0fdfa; margin-top:20px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
-                        <div>
-                            <h4 style="color:#0f766e; margin:0;">✍️ Bakery Site Copy & Content Editor</h4>
-                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Customize headlines, subtext, bullets, and contact info across your website without breaking layout guardrails.</p>
-                        </div>
-                        <button class="btn btn-primary" onclick="saveSiteContentForm()" style="background:#0d9488; border-color:#0f766e;">💾 Save Site Content</button>
-                    </div>
-
-                    <div id="content-status-msg" style="display:none; margin-bottom:14px; background:#d1fae5; color:#065f46; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #a7f3d0;"></div>
-
-                    <form id="site-content-form" style="display:flex; flex-direction:column; gap:18px;">
-                        @csrf
                         @php
+                            $orderedSections = $tenant->getOrderedSections();
                             $siteContent = $tenant->site_content ?? App\Models\Tenant::getDefaultSiteContent();
                             $bullets = data_get($siteContent, 'whimsical_bullets', []);
                         @endphp
 
-                        <!-- HERO SECTION COPY -->
-                        <div style="background:white; padding:16px; border-radius:12px; border:1px solid #ccfbf1;">
-                            <h5 style="color:#0f766e; margin-bottom:12px; font-size:1rem; font-weight:700;">🌟 Hero Section</h5>
-                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
-                                <div>
-                                    <label style="font-weight:600; font-size:0.85rem;">Hero Subheading</label>
-                                    <input type="text" name="hero_subheading" value="{{ data_get($siteContent, 'hero_subheading') }}" placeholder="Order For Any Occasion" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.85rem;">Main Headline</label>
-                                    <input type="text" name="hero_headline" value="{{ data_get($siteContent, 'hero_headline') }}" placeholder="Blushed Crumbs Bakehouse" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.85rem;">Primary CTA Button Text</label>
-                                    <input type="text" name="hero_cta_primary" value="{{ data_get($siteContent, 'hero_cta_primary') }}" placeholder="Order Now" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.85rem;">Secondary Button Text</label>
-                                    <input type="text" name="hero_cta_secondary" value="{{ data_get($siteContent, 'hero_cta_secondary') }}" placeholder="Our Flavors" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                            </div>
-                        </div>
+                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:12px;">
+                            @foreach($orderedSections as $secId => $sec)
+                                <div class="section-manager-row" data-id="{{ $secId }}" style="background:white; border-radius:12px; border:1px solid #ddd6fe; overflow:hidden; box-shadow:0 2px 8px rgba(109, 40, 217, 0.05);">
+                                    
+                                    <!-- ACCORDION HEADER ROW -->
+                                    <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; cursor:pointer; background:#FAF8FF; user-select:none;">
+                                        <div style="display:flex; align-items:center; gap:12px;">
+                                            <span class="drag-handle" style="cursor:grab; font-weight:800; color:#8b5cf6; font-size:1.2rem;" onclick="event.stopPropagation()">☰</span>
+                                            <input type="hidden" class="section-order-input" name="sections[{{ $secId }}][order]" value="{{ $sec['order'] ?? 1 }}">
+                                            <strong style="color:#4c1d95; font-size:1rem;">{{ $sec['name'] ?? $secId }}</strong>
+                                        </div>
 
-                        <!-- WHIMSICAL & STORY SECTION -->
-                        <div style="background:white; padding:16px; border-radius:12px; border:1px solid #ccfbf1;">
-                            <h5 style="color:#0f766e; margin-bottom:12px; font-size:1rem; font-weight:700;">✨ Whimsical Creations & Specialties</h5>
-                            <div style="margin-bottom:12px;">
-                                <label style="font-weight:600; font-size:0.85rem;">Section Title</label>
-                                <input type="text" name="whimsical_title" value="{{ data_get($siteContent, 'whimsical_title') }}" placeholder="Whimsical Creations for Every Milestone" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            <div style="display:flex; flex-direction:column; gap:8px;">
-                                <label style="font-weight:600; font-size:0.85rem;">Specialty Bullets (Up to 5)</label>
-                                <input type="text" name="whimsical_bullet_1" value="{{ $bullets[0] ?? '' }}" placeholder="Bullet 1: Custom Wedding Cakes..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
-                                <input type="text" name="whimsical_bullet_2" value="{{ $bullets[1] ?? '' }}" placeholder="Bullet 2: Birthday & Party Cakes..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
-                                <input type="text" name="whimsical_bullet_3" value="{{ $bullets[3] ?? '' }}" placeholder="Bullet 3: Anniversary Cakes..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
-                                <input type="text" name="whimsical_bullet_4" value="{{ $bullets[3] ?? '' }}" placeholder="Bullet 4: Signature Sheet Cakes..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
-                                <input type="text" name="whimsical_bullet_5" value="{{ $bullets[4] ?? '' }}" placeholder="Bullet 5: Gourmet Chocolate Berries..." style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                        </div>
+                                        <div style="display:flex; align-items:center; gap:10px;" onclick="event.stopPropagation()">
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:3px 8px; font-size:0.78rem;">⬆️ Up</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:3px 8px; font-size:0.78rem;">⬇️ Down</button>
+                                            <label class="toggle-switch" style="transform:scale(0.8);">
+                                                <input type="checkbox" name="sections[{{ $secId }}][enabled]" value="1" {{ !empty($sec['enabled']) ? 'checked' : '' }}>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                            <span class="accordion-arrow" style="font-size:1rem; color:#8b5cf6; font-weight:800; margin-left:6px; transition:transform 0.2s ease;">🔽</span>
+                                        </div>
+                                    </div>
 
-                        <!-- ABOUT & CONTACT SECTION -->
-                        <div style="background:white; padding:16px; border-radius:12px; border:1px solid #ccfbf1;">
-                            <h5 style="color:#0f766e; margin-bottom:12px; font-size:1rem; font-weight:700;">📖 About Story & Contact Details</h5>
-                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:12px;">
-                                <div>
-                                    <label style="font-weight:600; font-size:0.85rem;">About Section Title</label>
-                                    <input type="text" name="about_title" value="{{ data_get($siteContent, 'about_title') }}" placeholder="About Our Bakery" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                    <!-- EXPANDABLE ACCORDION BODY WITH SECTION COPY & CONTENT EDITORS -->
+                                    <div class="section-accordion-body" style="display:none; padding:18px; border-top:1px solid #e9d5ff; background:#ffffff;">
+                                        @if($secId === 'hero')
+                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Hero Copy &amp; Buttons</h6>
+                                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Subheading</label>
+                                                    <input type="text" name="hero_subheading" value="{{ data_get($siteContent, 'hero_subheading') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Main Headline</label>
+                                                    <input type="text" name="hero_headline" value="{{ data_get($siteContent, 'hero_headline') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Primary Button Text</label>
+                                                    <input type="text" name="hero_cta_primary" value="{{ data_get($siteContent, 'hero_cta_primary') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Secondary Button Text</label>
+                                                    <input type="text" name="hero_cta_secondary" value="{{ data_get($siteContent, 'hero_cta_secondary') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                            </div>
+
+                                        @elseif($secId === 'whimsical')
+                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Whimsical Creations Title &amp; Bullets</h6>
+                                            <div style="margin-bottom:10px;">
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Title</label>
+                                                <input type="text" name="whimsical_title" value="{{ data_get($siteContent, 'whimsical_title') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                            </div>
+                                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Specialty Bullets</label>
+                                                <input type="text" name="whimsical_bullet_1" value="{{ $bullets[0] ?? '' }}" placeholder="Bullet 1..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                <input type="text" name="whimsical_bullet_2" value="{{ $bullets[1] ?? '' }}" placeholder="Bullet 2..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                <input type="text" name="whimsical_bullet_3" value="{{ $bullets[2] ?? '' }}" placeholder="Bullet 3..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                <input type="text" name="whimsical_bullet_4" value="{{ $bullets[3] ?? '' }}" placeholder="Bullet 4..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                <input type="text" name="whimsical_bullet_5" value="{{ $bullets[4] ?? '' }}" placeholder="Bullet 5..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                            </div>
+
+                                        @elseif($secId === 'promo_video')
+                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Video Promo Banner Text</h6>
+                                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Banner Headline</label>
+                                                    <input type="text" name="promo_headline" value="{{ data_get($siteContent, 'promo_headline', '$10 Off Your First Order!') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Subtext</label>
+                                                    <input type="text" name="promo_subtext" value="{{ data_get($siteContent, 'promo_subtext', 'Follow us on social media or join our community for instant discounts.') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                            </div>
+
+                                        @elseif($secId === 'how_it_works')
+                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit 3-Step Ordering Guide Copy</h6>
+                                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Step 1 Title</label>
+                                                    <input type="text" name="step_1_title" value="{{ data_get($siteContent, 'step_1_title', 'Pick Your Date & Flavors') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Step 2 Title</label>
+                                                    <input type="text" name="step_2_title" value="{{ data_get($siteContent, 'step_2_title', 'Approve Design & Deposit') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Step 3 Title</label>
+                                                    <input type="text" name="step_3_title" value="{{ data_get($siteContent, 'step_3_title', 'Fresh Pickup or Delivery') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                            </div>
+
+                                        @elseif($secId === 'faq')
+                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit FAQ &amp; Policy Notice Content</h6>
+                                            <div style="display:flex; flex-direction:column; gap:10px;">
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Lead Time Policy</label>
+                                                    <input type="text" name="faq_lead_time" value="{{ data_get($siteContent, 'faq_lead_time', 'We require at least 3 days advance notice for custom orders.') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Deposit Requirement</label>
+                                                    <input type="text" name="faq_deposit" value="{{ data_get($siteContent, 'faq_deposit', 'A 50% non-refundable deposit is required at booking to secure your date.') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                            </div>
+
+                                        @else
+                                            <p style="font-size:0.85rem; color:#666; margin:0;">Standard section enabled. Click Save to apply section order &amp; visibility state.</p>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.85rem;">Business Hours</label>
-                                    <input type="text" name="contact_hours" value="{{ data_get($siteContent, 'contact_hours') }}" placeholder="Mon-Sat: 8:00 AM - 6:00 PM | Sun: Closed" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.85rem;">Location & Service Area</label>
-                                    <input type="text" name="contact_location" value="{{ data_get($siteContent, 'contact_location') }}" placeholder="Nashville, TN & Surrounding Areas" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                            </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.85rem;">Bakery Bio & Story</label>
-                                <textarea name="about_bio" rows="4" placeholder="Welcome to our bakehouse..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; font-family:inherit;">{{ data_get($siteContent, 'about_bio') }}</textarea>
-                            </div>
+                            @endforeach
                         </div>
                     </form>
                 </div>
