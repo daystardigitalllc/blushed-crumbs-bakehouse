@@ -133,7 +133,7 @@
                                     <div class="product option-chip" data-name="{{ $optStr }}" data-clean-name="{{ $cleanName }}" data-addon-price="{{ $addonPrice }}" style="display:inline-flex; align-items:center; justify-content:space-between; gap:8px;">
                                         <span>{{ $cleanName }}</span>
                                         @if($addonPrice > 0)
-                                            <span class="price-badge" style="background:#e67399; color:white; font-size:0.75rem; font-weight:700; padding:3px 8px; border-radius:10px; flex-shrink:0;">+ ${{ number_format($addonPrice, 2) }}</span>
+                                            <span class="price-badge" style="font-size:0.75rem; font-weight:700; padding:3px 8px; border-radius:10px; flex-shrink:0;">+ ${{ number_format($addonPrice, 2) }}</span>
                                         @endif
                                     </div>
                                 @endforeach
@@ -155,12 +155,12 @@
                             </div>
 
                             <div id="address-wrapper" class="hidden-field" style="display:none; margin-bottom:20px;">
-                                <p style="text-align:left; margin-top: 15px; font-weight: 600; color: #b35978;">Delivery Address</p>
+                                <p style="text-align:left; margin-top: 15px; font-weight: 600; color: var(--dark-text);">Delivery Address</p>
                                 <input type="text" id="delivery-address" placeholder="Street Address, City, State, ZIP" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc;">
                             </div>
 
                             <div id="time-slot-wrapper">
-                                <p style="text-align:left; margin-top: 20px; font-weight: 600; color: #b35978;">Select Time Frame</p>
+                                <p style="text-align:left; margin-top: 20px; font-weight: 600; color: var(--dark-text);">Select Time Frame</p>
                                 <div class="time-radio-grid" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
                                     @php $timeSlots = !empty($options) ? $options : ['8:30 AM', '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM']; @endphp
                                     @foreach($timeSlots as $slotIndex => $slot)
@@ -191,15 +191,15 @@
                         @elseif($type === 'file_upload')
                             <input type="file" id="inspiration-upload" multiple accept="image/*" style="display: none;">
 
-                            <div id="upload-container" class="upload-dropzone" style="border:2px dashed #e67399; background:#fff7fa; padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('inspiration-upload').click();">
+                            <div id="upload-container" class="upload-dropzone" style="padding:30px 20px; text-align:center; cursor:pointer;" onclick="document.getElementById('inspiration-upload').click();">
                                 <div class="upload-prompt">
-                                    <span class="upload-icon" style="font-size:2.5rem; color:#e67399; display:block; margin-bottom:8px;">✦</span>
-                                    <p style="font-size:1.05rem; font-weight:600; color:#5c1d37; margin-bottom:4px;">Drag &amp; drop your images here or <strong>click to browse</strong></p>
+                                    <span class="upload-icon" style="font-size:2.5rem; color:var(--primary); display:block; margin-bottom:8px;">✦</span>
+                                    <p style="font-size:1.05rem; font-weight:600; color:var(--dark-text); margin-bottom:4px;">Drag &amp; drop your images here or <strong>click to browse</strong></p>
                                     <span style="font-size: 12px; color: #888;">{{ !empty($description) ? $description : 'Supports PNG, JPG, JPEG' }}</span>
                                 </div>
                             </div>
 
-                            <div id="upload-count-status" style="margin-top:15px; font-weight:700; color:#e67399; text-align:center; display:none;"></div>
+                            <div id="upload-count-status" style="margin-top:15px; font-weight:700; color:var(--primary); text-align:center; display:none;"></div>
                             <div id="preview-gallery" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:15px; justify-content:center;"></div>
 
                             <div class="nav-buttons cart-bar" style="margin-top:25px;">

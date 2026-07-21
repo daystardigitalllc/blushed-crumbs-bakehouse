@@ -909,11 +909,37 @@ body {
     color: #ffffff !important;
 }
 
+.price-badge {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
 .product.selected .price-badge,
 .option-chip.selected .price-badge {
     background: #ffffff !important;
     color: var(--primary) !important;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+}
+
+/* Upload Dropzone */
+.upload-dropzone {
+    border: 2px dashed var(--primary) !important;
+    padding: 35px 20px;
+    text-align: center;
+    border-radius: 16px;
+    background: var(--pink-bg) !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upload-dropzone:hover {
+    border-style: solid !important;
+    transform: translateY(-2px);
 }
 
 .cart-bar {
