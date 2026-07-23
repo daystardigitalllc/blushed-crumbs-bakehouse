@@ -11,7 +11,7 @@ use App\Models\Review;
 use App\Models\Customer;
 use App\Models\GalleryItem;
 use App\Models\Order;
-
+use Illuminate\Support\Facades\Hash;
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
