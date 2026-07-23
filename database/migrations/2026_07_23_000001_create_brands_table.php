@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
-            $table->string('name');                          // "BakeryPro"
-            $table->string('slug')->unique();                // "bakerypro"
+            $table->string('name');                         
+            $table->string('slug')->unique();                
             $table->string('domain')->unique();              // "doughmain.pro"
             $table->string('logo_url')->nullable();
             $table->json('branding_settings')->nullable();   // colors, fonts, marketing copy

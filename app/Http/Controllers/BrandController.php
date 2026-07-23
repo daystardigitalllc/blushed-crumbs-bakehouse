@@ -13,7 +13,7 @@ class BrandController extends Controller
      */
     public function landing(Request $request)
     {
-        $brand = Brand::where('slug', 'bakerypro')->first();
+        $brand = Brand::where('slug', 'doughmain')->first();
 
         return view('brand.landing', [
             'brand' => $brand,

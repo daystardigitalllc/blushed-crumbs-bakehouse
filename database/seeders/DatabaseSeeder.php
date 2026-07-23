@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'superadmin',
         ]
     );
-        // ─── 1. Create Brand: BakeryPro ───
+        // ─── 1. Create Brand:  ───
         $brand = Brand::create([
             'name' => 'DoughMain',
             'slug' => 'doughmain',

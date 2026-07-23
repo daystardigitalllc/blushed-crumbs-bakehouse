@@ -14,7 +14,7 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ─── BakeryPro SaaS Landing Page ───
+// ───  SaaS Landing Page ───
 // This route is hit when the user visits the main brand domain (doughmain.pro)
 // The StorefrontController checks the host and renders the landing page or storefront
 Route::get('/landing', [BrandController::class, 'landing'])->name('brand.landing');

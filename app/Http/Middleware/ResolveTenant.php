@@ -28,9 +28,6 @@ class ResolveTenant
         $mainBrandDomains = [
             'doughmain.pro',
             'doughmain.pro.test',
-            'bakerypro.com',
-            'bakerypro.test',
-            'bakery_pro.test',
             'localhost',
             '127.0.0.1',
         ];
@@ -75,7 +72,7 @@ class ResolveTenant
         if (!$tenant && !$isMainDomain && str_ends_with($host, '.test')) {
             $parts = explode('.', $host);
             // e.g. mybakery.test -> subdomain 'mybakery'
-            if (count($parts) === 2 && !in_array($parts[0], ['doughmain', 'bakerypro', 'bakery_pro'])) {
+            if (count($parts) === 2 && !in_array($parts[0], ['doughmain'])) {
                 $subdomain = $parts[0];
                 $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
             }

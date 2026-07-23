@@ -80,8 +80,8 @@ class AuthController extends Controller
             $counter++;
         }
 
-        // Find the BakeryPro brand (default for now)
-        $brand = Brand::where('slug', 'bakerypro')->first();
+        // Find the doughmain brand (default for now)
+        $brand = Brand::where('slug', 'doughmain')->first();
 
         // Create the tenant
         $tenant = Tenant::create([

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BakeryPro — AI-Powered Bakery Website Builder</title>
+    <title>DoughMain — AI-Powered Bakery Website Builder</title>
     <meta name="description" content="Create your bakery website with AI in minutes. No coding required. Manage products, accept orders, and grow your bakery business online.">
     
     <!-- Google Fonts -->

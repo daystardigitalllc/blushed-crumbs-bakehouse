@@ -116,7 +116,7 @@
 
         <div class="footer">
             <p>This invoice was sent by <strong>{{ $tenant->name }}</strong></p>
-            <p>Powered by BakeryPro</p>
+            <p>Powered by DoughMain.Pro</p>
         </div>
     </div>
 </body>
