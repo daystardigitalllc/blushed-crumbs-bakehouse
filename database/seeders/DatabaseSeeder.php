@@ -16,6 +16,17 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+
+
+    $tenant = Tenant::updateOrCreate(
+    [
+        'id' => 1,
+    ],
+    [
+        'name' => 'Doughmain Admin',
+        // add whatever required tenant fields you have
+    ]
+);
         User::updateOrCreate(
     [
         'email' => 'austinhayes144@gmail.com',
