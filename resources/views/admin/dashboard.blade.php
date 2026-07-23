@@ -77,7 +77,11 @@
             </nav>
 
             <div class="admin-sidebar-footer">
-                <a href="/" target="_blank" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white; text-decoration:none;">← Exit to Storefront</a>
+                <a href="/" target="_blank" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white; text-decoration:none; margin-bottom:10px;">← Exit to Storefront</a>
+                <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                    @csrf
+                    <button type="submit" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white;">🚪 Sign Out</button>
+                </form>
             </div>
         </aside>
 
