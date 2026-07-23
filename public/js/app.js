@@ -68,7 +68,7 @@ window.saveSiteContentForm = function() {
     const formData = new FormData(form);
     const msgEl = document.getElementById('content-status-msg');
 
-    fetch('/admin/content', {
+    fetch('/dashboard/content', {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
@@ -154,7 +154,7 @@ window.uploadSectionMedia = function(fileInput, targetInputId) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
     window.showToast('Uploading background media...', 'info');
 
-    fetch('/admin/upload-media', {
+    fetch('/dashboard/upload-media', {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': csrfToken,
@@ -247,7 +247,7 @@ window.saveSectionManagerForm = function() {
     const formData = new FormData(form);
     const msgEl = document.getElementById('section-manager-msg');
 
-    fetch('/admin/sections', {
+    fetch('/dashboard/sections', {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
@@ -368,6 +368,15 @@ function initOrderModalTrigger() {
             openOrderModal();
         });
     });
+
+    const modal = document.getElementById('order-modal-popup');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeOrderModal();
+            }
+        });
+    }
 }
 
 window.openOrderModal = function() {
@@ -965,7 +974,7 @@ function initAdminPortal() {
             if (emailInput && emailInput.value.trim()) {
                 const routingEmail = emailInput.value.trim();
 
-                fetch('/admin/settings/email', {
+                fetch('/dashboard/settings/email', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1233,7 +1242,7 @@ function initAdminPortal() {
             saveBtn.innerText = '⏳ Saving Form Steps...';
         }
 
-        fetch('/admin/form-builder', {
+        fetch('/dashboard/form-builder', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1552,7 +1561,7 @@ function initAdminPortal() {
                 submitBtn.innerText = '⏳ Uploading Photo...';
             }
 
-            fetch('/admin/gallery', {
+            fetch('/dashboard/gallery', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': csrfToken,
@@ -1636,7 +1645,7 @@ function initAdminPortal() {
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-        fetch('/admin/gallery/' + id, {
+        fetch('/dashboard/gallery/' + id, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': csrfToken,
@@ -1673,7 +1682,7 @@ function initAdminPortal() {
             const name = document.getElementById('rev-client-name').value;
             const text = document.getElementById('rev-text').value;
 
-            fetch('/admin/reviews', {
+            fetch('/dashboard/reviews', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1722,7 +1731,7 @@ window.generateInvoiceFromOrder = function(orderId, totalAmount, depositAmount) 
 window.sendInvoice = function(invoiceId) {
     if (!confirm('Are you sure you want to send this invoice to the client?')) return;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-    fetch(`/admin/invoices/${invoiceId}/send`, {
+    fetch(`/dashboard/invoices/${invoiceId}/send`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1750,7 +1759,7 @@ window.deleteInvoice = function(invoiceId, btnElement) {
     
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
     
-    fetch(`/admin/invoices/${invoiceId}`, {
+    fetch(`/dashboard/invoices/${invoiceId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -1817,7 +1826,7 @@ window.saveLeadTime = function() {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-    fetch('/admin/settings/booking', {
+    fetch('/dashboard/settings/booking', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -2071,7 +2080,7 @@ window.copyClientPayLink = function(identifier, orderId) {
         doCopy(identifier, orderId);
     } else {
         const targetOrderId = orderId || identifier;
-        fetch('/admin/invoices', {
+        fetch('/dashboard/invoices', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -2341,7 +2350,7 @@ function saveAdminCalendarState() {
     localStorage.setItem('admin_recurring_closed', JSON.stringify(window.adminCalState.recurringClosedDays));
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-    fetch('/admin/settings/booking', {
+    fetch('/dashboard/settings/booking', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -2379,7 +2388,7 @@ window.selectBakeryTheme = function(themeId, cardEl) {
     }
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-    fetch('/admin/theme', {
+    fetch('/dashboard/theme', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -2414,7 +2423,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.updateOrderStatus = function(orderId, status) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
     
-    fetch(`/admin/orders/${orderId}/status`, {
+    fetch(`/dashboard/orders/${orderId}/status`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -2446,7 +2455,7 @@ window.updateOrderStatus = function(orderId, status) {
 window.updateInvoiceStatus = function(invoiceId, status) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
     
-    fetch(`/admin/invoices/${invoiceId}/status`, {
+    fetch(`/dashboard/invoices/${invoiceId}/status`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -2503,7 +2512,7 @@ function submitInvoiceEdits(sendAfter) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
     if (invoiceId) {
-        fetch(`/admin/invoices/${invoiceId}`, {
+        fetch(`/dashboard/invoices/${invoiceId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -2539,7 +2548,7 @@ function submitInvoiceEdits(sendAfter) {
             alert('Failed to update invoice.');
         });
     } else {
-        fetch('/admin/invoices', {
+        fetch('/dashboard/invoices', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
