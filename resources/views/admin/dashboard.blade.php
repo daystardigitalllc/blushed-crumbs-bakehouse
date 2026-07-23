@@ -626,7 +626,7 @@
 
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
                         @php
-                            $themes = App\Models\Tenant::getAvailableThemes();
+                            $themes = $tenant->getAvailableThemesForTenant();
                             $currentTheme = $tenant->theme_id ?? 'sweet_elegant';
                         @endphp
                         @foreach($themes as $t)
