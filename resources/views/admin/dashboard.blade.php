@@ -1163,7 +1163,7 @@
                     const res = await fetch('/dashboard/settings/logo', {
                         method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': csrfToken,
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
                             'Accept': 'application/json'
                         },
                         body: formData

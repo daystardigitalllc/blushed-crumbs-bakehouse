@@ -168,8 +168,8 @@ class AdminController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $fileName = time() . '_' . Str::slug($request->title) . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('gallery', $fileName, 'public');
-            $imageUrl = 'storage/' . $path;
+            $file->move(public_path('uploads/gallery'), $fileName);
+            $imageUrl = '/uploads/gallery/' . $fileName;
 
             $galleryItem = GalleryItem::create([
                 'tenant_id' => $tenant->id,

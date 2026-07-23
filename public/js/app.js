@@ -1809,6 +1809,9 @@ window.toggleLeadTimeInput = function(checkbox) {
     } else {
         localStorage.setItem('lead_time_enabled', '0');
     }
+    
+    // Auto-save when toggled to avoid users not knowing they need to save
+    if (typeof saveLeadTime === 'function') saveLeadTime();
 };
 
 window.saveLeadTime = function() {
@@ -1844,7 +1847,7 @@ window.saveLeadTime = function() {
     .then(data => {
         const msg = document.getElementById('lead-time-save-msg');
         if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
-        renderInteractiveCalendar();
+        if (typeof renderInteractiveCalendar === 'function') renderInteractiveCalendar();
     })
     .catch(err => console.error('Save Lead Time Error:', err));
 };
@@ -2427,7 +2430,8 @@ window.updateOrderStatus = function(orderId, status) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
         },
         body: JSON.stringify({ status: status })
     })
