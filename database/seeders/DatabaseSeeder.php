@@ -18,13 +18,13 @@ class DatabaseSeeder extends Seeder
     {
 
 
-    $tenant = Tenant::updateOrCreate(
+ $tenant = Tenant::updateOrCreate(
     [
-        'id' => 1,
+        'slug' => 'doughmain-admin',
     ],
     [
         'name' => 'Doughmain Admin',
-        // add whatever required tenant fields you have
+        'slug' => 'doughmain-admin',
     ]
 );
         User::updateOrCreate(
