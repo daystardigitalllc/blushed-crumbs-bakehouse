@@ -1509,7 +1509,14 @@ function initAdminPortal() {
             e.preventDefault();
             const name = document.getElementById('new-prod-name').value;
             const price = parseFloat(document.getElementById('new-prod-price').value);
-            const category = document.getElementById('new-prod-category').value;
+            let category = document.getElementById('new-prod-category').value;
+            if (category === 'custom_new') {
+                category = document.getElementById('new-prod-category-custom').value;
+                if (!category) {
+                    alert('Please enter a custom category name.');
+                    return;
+                }
+            }
 
             // Dynamically add to product grid in Order Form Step 1
             const step1Grid = document.getElementById('product-grid');
@@ -1526,19 +1533,28 @@ function initAdminPortal() {
             if (adminGrid) {
                 const row = document.createElement('div');
                 row.className = 'product-item-row';
-                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee;';
+                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid #f0e4ea;';
                 row.innerHTML = `
-                    <span><strong>${name}</strong> ($${price.toFixed(2)})</span>
                     <div>
+                        <strong style="color:#5c1d37;">${name}</strong>
+                        <span style="background:#f9e0eb; color:#7a2b4a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-left:8px;">${category}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:0.85rem; color:#999;">$</span>
                         <input type="number" class="price-input" value="${price.toFixed(2)}" style="width:80px;">
-                        <button class="btn btn-sm btn-secondary" onclick="alert('Price updated!')">Save Price</button>
+                        <button class="btn btn-sm btn-secondary" onclick="showToast('Price updated successfully!')">Save</button>
+                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.closest('.product-item-row').remove()">✕</button>
                     </div>
                 `;
                 adminGrid.prepend(row);
             }
 
             alert(`Product "${name}" added to order builder & live storefront!`);
+            
+            // Reset the form
             prodForm.reset();
+            document.getElementById('new-prod-category-custom').style.display = 'none';
+            document.getElementById('new-prod-category-custom').removeAttribute('required');
         });
     }
 

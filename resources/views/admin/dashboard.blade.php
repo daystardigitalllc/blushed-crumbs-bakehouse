@@ -336,13 +336,15 @@
                         </div>
                         <div>
                             <label>Category</label>
-                            <select id="new-prod-category">
+                            <select id="new-prod-category" onchange="if(this.value === 'custom_new'){ document.getElementById('new-prod-category-custom').style.display='block'; document.getElementById('new-prod-category-custom').setAttribute('required', 'true'); } else { document.getElementById('new-prod-category-custom').style.display='none'; document.getElementById('new-prod-category-custom').removeAttribute('required'); }">
                                 <option value="Single Tier">Single Tier</option>
                                 <option value="Multi-Tier">Multi-Tier</option>
                                 <option value="By The Dozen">By The Dozen</option>
                                 <option value="Treats">Treats</option>
                                 <option value="Party Packs">Party Packs</option>
+                                <option value="custom_new">+ Add Custom Category...</option>
                             </select>
+                            <input type="text" id="new-prod-category-custom" placeholder="Type new category name..." style="display:none; margin-top:8px;">
                         </div>
                         <div style="grid-column: 1 / -1;">
                             <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Product to Catalog</button>
