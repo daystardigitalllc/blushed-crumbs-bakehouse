@@ -1158,12 +1158,19 @@ function initAdminPortal() {
                 <td class="drag-handle">⠿</td>
                 <td style="color:#e67399; font-weight:800; font-size:0.95rem;">Step ${i + 1}</td>
                 <td>
-                    <strong style="color:#5c1d37; font-size:0.95rem;">${f.title || f.label || 'Step ' + (i+1)}</strong>
-                    ${f.subtext ? `<br><span style="font-size:0.8rem; color:#888;">${f.subtext}</span>` : ''}
+                    <strong style="color:#5c1d37; font-size:0.95rem; border-bottom:1px dashed #ccc; cursor:text; padding:2px;" contenteditable="true" onblur="updateField(${i}, 'title', this.innerText)" title="Click to edit title">${f.title || f.label || 'Step ' + (i+1)}</strong>
+                    <br>
+                    <span style="font-size:0.8rem; color:#888; border-bottom:1px dashed #ccc; cursor:text; padding:2px;" contenteditable="true" onblur="updateField(${i}, 'subtext', this.innerText)" title="Click to edit subtext">${f.subtext || 'Add subtext...'}</span>
                 </td>
                 <td><span style="background:#fff0f5; color:#5c1d37; font-weight:700; padding:4px 10px; border-radius:12px; border:1px solid #f8c6d7; font-size:0.8rem;">${typeLabels[f.type] || f.type}</span></td>
                 <td style="color:#666; font-size:0.85rem; max-width:260px; word-wrap:break-word;">
-                    ${f.options ? f.options : (f.description ? f.description : '—')}
+                    ${['flavors', 'frosting', 'fillings', 'fulfillment', 'social_discount', 'select', 'chips'].includes(f.type) ?
+                        `<span style="border-bottom:1px dashed #ccc; cursor:text; padding:2px; display:inline-block; min-width:50px;" contenteditable="true" onblur="updateField(${i}, 'options', this.innerText)" title="Edit Options (comma separated)">${f.options || '—'}</span>` :
+                      (['textarea', 'allergies', 'file_upload', 'text', 'toggle'].includes(f.type) ?
+                        `<span style="border-bottom:1px dashed #ccc; cursor:text; padding:2px; display:inline-block; min-width:50px;" contenteditable="true" onblur="updateField(${i}, 'description', this.innerText)" title="Edit Placeholder/Description">${f.description || '—'}</span>` :
+                        `<span style="color:#aaa;">—</span>`
+                      )
+                    }
                 </td>
                 <td>
                     <div style="display:flex; gap:6px; align-items:center;">
@@ -1209,6 +1216,11 @@ function initAdminPortal() {
         }
         window._customFields.splice(idx, 1);
         renderFieldsTable();
+    };
+
+    window.updateField = function(idx, key, value) {
+        if (value === '—' || value === 'Add subtext...') value = '';
+        window._customFields[idx][key] = value.trim();
     };
 
     // Save Form Schema to Server Endpoint

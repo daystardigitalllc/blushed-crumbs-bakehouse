@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery | Blushed Crumbs Bakehouse</title>
+    <!-- Favicon -->
+    @if(isset($tenant) && $tenant->logo_path)
+        <link rel="icon" href="{{ asset($tenant->logo_path) }}">
+    @else
+        <link rel="icon" href="{{ asset('images/favicon.png') }}">
+    @endif
     <meta name="description" content="Explore custom artisanal cakes, cupcakes, and treat boxes from Blushed Crumbs Bakehouse.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 

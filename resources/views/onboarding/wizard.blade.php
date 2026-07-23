@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Onboarding - DoughMain</title>
+    <!-- Favicon -->
+    @if(isset($tenant) && $tenant->logo_path)
+        <link rel="icon" href="{{ asset($tenant->logo_path) }}">
+    @else
+        <link rel="icon" href="{{ asset('images/favicon.png') }}">
+    @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">

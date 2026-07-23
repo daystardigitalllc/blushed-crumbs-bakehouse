@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Blushed Crumbs Bakehouse</title>
+    <!-- Favicon -->
+    @if(isset($tenant) && $tenant->logo_path)
+        <link rel="icon" href="{{ asset($tenant->logo_path) }}">
+    @else
+        <link rel="icon" href="{{ asset('images/favicon.png') }}">
+    @endif
     <meta name="description" content="Learn about Blushed Crumbs Bakehouse, our founder story, passion for custom wedding cakes, and artisanal baking in Tennessee.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 

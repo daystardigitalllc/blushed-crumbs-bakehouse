@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoughMain — AI-Powered Bakery Website Builder</title>
     <meta name="description" content="Create your bakery website with AI in minutes. No coding required. Manage products, accept orders, and grow your bakery business online.">
-    
+    @if(isset($tenant) && $tenant->logo_path)
+        <link rel="icon" href="{{ asset($tenant->logo_path) }}">
+    @else
+        <link rel="icon" href="{{ asset('images/favicon.png') }}">
+    @endif
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -504,7 +508,7 @@
     <nav class="navbar">
         <div class="container">
             <a href="/" class="nav-logo">
-                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo" style="height: 46px; width: auto; object-fit: contain;">
+                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo" style="height: 90px; width: auto; object-fit: contain;">
                 <span>Doughmain.pro</span>
             </a>
             <div class="nav-links">
@@ -666,7 +670,7 @@
                 <a href="/register" class="btn btn-light" style="font-size: 1.1rem; padding: 16px 32px;">Create Your Free Account</a>
             </div>
             <div class="copyright fade-in">
-                &copy; 2026 Daystar Pro Platform. Doughmain.pro is a Daystar Digital product.
+                &copy; 2026 Doughmain Pro Platform, a <a href="https://daystardigital.co" style="color:inherit; text-decoration:underline;">Daystar Digital LLC</a> product.
             </div>
         </div>
     </footer>
