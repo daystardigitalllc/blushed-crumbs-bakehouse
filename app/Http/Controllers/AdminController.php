@@ -102,7 +102,7 @@ class AdminController extends Controller
 
     public function saveFormSchema(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
         $request->validate([
             'schema' => 'required|array',
         ]);
@@ -119,7 +119,7 @@ class AdminController extends Controller
 
     public function saveBookingSettings(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
         
         $settings = [
             'lead_time_enabled' => $request->boolean('lead_time_enabled'),
@@ -140,7 +140,7 @@ class AdminController extends Controller
 
     public function saveEmailRouting(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
         $validated = $request->validate([
             'email' => 'required|email|max:255',
         ]);
@@ -157,7 +157,7 @@ class AdminController extends Controller
 
     public function storeGallery(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -200,7 +200,7 @@ class AdminController extends Controller
 
     public function destroyGallery(Request $request, $id)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
         $item = GalleryItem::where('tenant_id', $tenant->id)->findOrFail($id);
 
         if ($item->image_url && str_starts_with($item->image_url, 'storage/')) {
@@ -222,7 +222,7 @@ class AdminController extends Controller
 
     public function saveTheme(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
         $availableThemes = array_keys($tenant->getAvailableThemesForTenant());
         
         \Log::info('saveTheme called', [
@@ -256,7 +256,7 @@ class AdminController extends Controller
 
     public function saveContent(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         $data = $request->validate([
             'hero_subheading' => 'nullable|string|max:255',
@@ -314,7 +314,7 @@ class AdminController extends Controller
 
     public function saveSectionSettings(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         // 1. Process Section Order & Enabled status
         $sectionsData = $request->input('sections', []);
@@ -462,7 +462,7 @@ class AdminController extends Controller
 
     public function updateOrderStatus(Request $request, Order $order)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         // Security: ensure order belongs to this tenant
         if ($order->tenant_id !== $tenant->id) {
@@ -486,7 +486,7 @@ class AdminController extends Controller
 
     public function storeReview(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         $validated = $request->validate([
             'client_name' => 'required|string|max:255',
@@ -511,7 +511,7 @@ class AdminController extends Controller
 
     public function deleteReview(Request $request, Review $review)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         if ($review->tenant_id !== $tenant->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
@@ -529,7 +529,7 @@ class AdminController extends Controller
 
     public function storeCustomer(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -557,7 +557,7 @@ class AdminController extends Controller
 
     public function createInvoice(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         $validated = $request->validate([
             'order_id' => 'required|exists:orders,id',
@@ -598,7 +598,7 @@ class AdminController extends Controller
 
     public function sendInvoice(Request $request, Invoice $invoice)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         if ($invoice->tenant_id !== $tenant->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
@@ -635,7 +635,7 @@ class AdminController extends Controller
 
     public function updateInvoice(Request $request, Invoice $invoice)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         if ($invoice->tenant_id !== $tenant->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
@@ -660,9 +660,9 @@ class AdminController extends Controller
         ]);
     }
 
-    public function destroyInvoice(Invoice $invoice)
+    public function destroyInvoice(Request $request, Invoice $invoice)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         if ($invoice->tenant_id !== $tenant->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
@@ -679,7 +679,7 @@ class AdminController extends Controller
 
     public function updateInvoiceStatus(Request $request, Invoice $invoice)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         if ($invoice->tenant_id !== $tenant->id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
@@ -705,7 +705,7 @@ class AdminController extends Controller
 
     public function saveCustomDomain(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         $validated = $request->validate([
             'custom_domain' => 'nullable|string|max:255',
@@ -741,7 +741,7 @@ class AdminController extends Controller
 
     public function saveReviewSettings(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         $validated = $request->validate([
             'max_reviews_display' => 'required|integer|min:1|max:50',
@@ -762,7 +762,7 @@ class AdminController extends Controller
      */
     public function cancelSubscription(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
         $tenant->update([
             'is_active' => false,
             'plan_tier' => 'canceled',
@@ -779,7 +779,7 @@ class AdminController extends Controller
      */
     public function submitSupportTicket(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
             'message' => 'required|string|max:3000',
@@ -806,7 +806,7 @@ class AdminController extends Controller
      */
     public function saveLogo(Request $request)
     {
-        $tenant = $this->tenant();
+        $tenant = $this->tenant($request);
 
         $request->validate([
             'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
