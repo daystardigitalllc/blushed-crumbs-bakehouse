@@ -3164,15 +3164,18 @@ body.theme-clean_minimal {
     .order-modal-overlay {
         padding: 0 !important;
         align-items: flex-end !important;
+        height: 100dvh !important;
+        height: -webkit-fill-available !important; /* Fallback for Safari */
     }
 
     .order-modal-card {
         width: 100% !important;
         max-width: 100% !important;
-        height: 100vh !important;
-        max-height: 100vh !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
         border-radius: 0 !important;
         padding: 16px 14px 90px 14px !important;
+        overflow-y: auto !important;
         box-shadow: none !important;
     }
 
