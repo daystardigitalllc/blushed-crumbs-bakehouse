@@ -16,6 +16,17 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        User::updateOrCreate(
+    [
+        'email' => 'austinhayes144@gmail.com',
+    ],
+    [
+        'name' => 'Austin Hayes',
+        'password' => Hash::make('Test1234!'),
+        'role' => 'superadmin',
+        'tenant_id' => null,
+    ]
+);
         // ─── 1. Create Brand: BakeryPro ───
         $brand = Brand::create([
             'name' => 'BakeryPro',
