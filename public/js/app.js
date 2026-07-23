@@ -753,9 +753,11 @@ function renderInteractiveCalendar() {
 
     const today = new Date();
     const leadCutoff = new Date();
-    if (leadTimeEnabled) {
-        leadCutoff.setDate(today.getDate() + leadTimeDays);
-    }
+    
+    // Toggle ON (leadTimeEnabled = true) means standard 3 days. 
+    // Toggle OFF means custom number of days.
+    const actualLeadDays = leadTimeEnabled ? 3 : leadTimeDays;
+    leadCutoff.setDate(today.getDate() + actualLeadDays);
 
     for (let day = 1; day <= daysInMonth; day++) {
         const dateObj = new Date(year, month, day);
@@ -766,7 +768,7 @@ function renderInteractiveCalendar() {
         const isRecurringClosed = recurringClosed.includes(dayOfWeek);
         
         let isLeadTimeBlocked = false;
-        if (leadTimeEnabled && dateObj < leadCutoff && dateObj >= new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+        if (dateObj < leadCutoff && dateObj >= new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
             isLeadTimeBlocked = true;
         }
 
@@ -1803,12 +1805,6 @@ window.toggleLeadTimeInput = function(checkbox) {
     if (!wrapper) return;
     // When UNCHECKED (disabled), show the custom days input
     wrapper.style.display = checkbox.checked ? 'none' : 'block';
-    if (checkbox.checked) {
-        localStorage.setItem('lead_time_days', '3');
-        localStorage.setItem('lead_time_enabled', '1');
-    } else {
-        localStorage.setItem('lead_time_enabled', '0');
-    }
     
     // Auto-save when toggled to avoid users not knowing they need to save
     if (typeof saveLeadTime === 'function') saveLeadTime();

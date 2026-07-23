@@ -21,8 +21,8 @@
     <!-- MOBILE TOP BAR WITH HAMBURGER BUTTON -->
     <div class="admin-mobile-header">
         <div class="mobile-brand" style="display:flex; align-items:center; gap:8px;">
-            <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:34px; width:auto;">
-            <strong style="font-size:1.15rem; color:#ffffff;">Doughmain.pro</strong>
+            <img src="{{ $tenant->logo_path ? asset($tenant->logo_path) : asset('images/doughmain_logo.png') }}" alt="{{ $tenant->name ?? 'Bakery Logo' }}" style="height:34px; width:auto; border-radius:4px;">
+            <strong style="font-size:1.15rem; color:#ffffff;">{{ $tenant->name ?? 'Doughmain.pro' }}</strong>
         </div>
         <button class="mobile-hamburger-btn" id="mobile-hamburger-trigger" onclick="toggleAdminMobileSidebar()" aria-label="Open Navigation Menu">
             <span></span>
@@ -38,7 +38,7 @@
         <!-- LEFT SIDEBAR -->
         <aside class="admin-sidebar" id="admin-sidebar-drawer">
             <div class="admin-sidebar-brand">
-                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:44px; width:auto; object-fit:contain;">
+                <img src="{{ $tenant->logo_path ? asset($tenant->logo_path) : asset('images/doughmain_logo.png') }}" alt="{{ $tenant->name ?? 'Bakery Logo' }}" style="height:44px; width:auto; object-fit:contain; border-radius:4px;">
                 <div>
                     <h3 style="font-size:1.05rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px;">{{ $tenant->name }}</h3>
                     <span class="badge-pro">Baker CMS</span>
@@ -77,7 +77,7 @@
             </nav>
 
             <div class="admin-sidebar-footer">
-                <a href="/site/{{ $tenant->subdomain }}" target="_blank" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white; text-decoration:none;">← Exit to Storefront</a>
+                <a href="/" target="_blank" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white; text-decoration:none;">← Exit to Storefront</a>
             </div>
         </aside>
 
