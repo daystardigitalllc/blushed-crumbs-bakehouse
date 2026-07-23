@@ -3313,8 +3313,9 @@ body.theme-clean_minimal {
     }
     
     .hero-wrapper h1 {
-        font-size: 3.2rem !important;
+        font-size: 2.4rem !important;
         margin-bottom: 25px !important;
+        word-wrap: break-word !important;
     }
     
     .hero-buttons {
@@ -3329,6 +3330,19 @@ body.theme-clean_minimal {
 
     .raining-cake {
         display: none !important;
+    }
+
+    .hero-cloud-elementor-top,
+    .hero-cloud-elementor-bottom {
+        left: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+    }
+    
+    .hero-cloud-elementor-bottom {
+        transform: rotate(180deg) !important;
+        transform-origin: center center !important;
     }
 
     .categories-grid-exact,
