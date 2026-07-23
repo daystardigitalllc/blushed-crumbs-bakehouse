@@ -707,7 +707,6 @@ body {
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    min-width: 1000px;
     height: 140px;
     z-index: 5;
     pointer-events: none;
@@ -721,7 +720,6 @@ body {
     left: 50%;
     transform: translateX(-50%) rotate(180deg);
     width: 100%;
-    min-width: 1000px;
     height: 150px;
     z-index: 5;
     pointer-events: none;
