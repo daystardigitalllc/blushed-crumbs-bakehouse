@@ -18,30 +18,38 @@ class DatabaseSeeder extends Seeder
     {
 
 
- $tenant = Tenant::updateOrCreate(
-    [
-        'slug' => 'doughmain-admin',
-    ],
-    [
-        'name' => 'Doughmain Admin',
-        'slug' => 'doughmain-admin',
-    ]
-);
-        User::updateOrCreate(
-    [
-        'email' => 'austinhayes144@gmail.com',
-    ],
-    [
-        'name' => 'Austin Hayes',
-        'password' => Hash::make('Test1234!'),
-        'role' => 'superadmin',
-        'tenant_id' => $tenant->id,    
-    ]
-);
+  $adminTenant = Tenant::updateOrCreate(
+        [
+            'slug' => 'doughmain-admin',
+        ],
+        [
+            'name' => 'Doughmain Admin',
+            'slug' => 'doughmain-admin',
+            'owner_name' => 'Austin Hayes',
+            'email' => 'austinhayes144@gmail.com',
+            'plan_tier' => 'standard',
+            'theme_id' => 'sweet_elegant',
+            'onboarding_completed' => true,
+            'is_active' => true,
+        ]
+    );
+
+    // ─── Super Admin User ───
+    User::updateOrCreate(
+        [
+            'email' => 'austinhayes144@gmail.com',
+        ],
+        [
+            'tenant_id' => $adminTenant->id,
+            'name' => 'Austin Hayes',
+            'password' => Hash::make('Test1234!'),
+            'role' => 'superadmin',
+        ]
+    );
         // ─── 1. Create Brand: BakeryPro ───
         $brand = Brand::create([
-            'name' => 'BakeryPro',
-            'slug' => 'bakerypro',
+            'name' => 'DoughMain',
+            'slug' => 'doughmain',
             'domain' => 'doughmain.pro',
             'logo_url' => null,
             'branding_settings' => [
@@ -51,10 +59,10 @@ class DatabaseSeeder extends Seeder
             ],
             'pricing_plans' => [
                 'standard' => [
-                    'name' => 'BakeryPro',
+                    'name' => 'DoughMain Free',
                     'price' => 29,
                     'features' => [
-                        'BakeryPro subdomain',
+                        'DoughMain subdomain',
                         'AI website creation',
                         'Theme selection',
                         'Product management',
@@ -64,10 +72,10 @@ class DatabaseSeeder extends Seeder
                     ],
                 ],
                 'pro' => [
-                    'name' => 'BakeryPro+',
+                    'name' => 'DoughMain Pro',
                     'price' => 50,
                     'features' => [
-                        'Everything in BakeryPro',
+                        'Everything in DoughMain',
                         'Custom domain support',
                         'Priority support',
                         'Advanced analytics',
