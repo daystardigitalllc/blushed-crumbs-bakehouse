@@ -3190,6 +3190,15 @@ body.theme-clean_minimal {
 
     #cake-order-builder {
         padding: 0 !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .step.active {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
     }
 
     .sticky-order-summary-bar {
@@ -3223,11 +3232,11 @@ body.theme-clean_minimal {
 
     /* Sticky Bottom Action Navigation Bar */
     .cart-bar {
-        position: fixed !important;
+        position: sticky !important;
         bottom: 0 !important;
         left: 0 !important;
         width: 100% !important;
-        margin-top: 0 !important;
+        margin-top: auto !important;
         padding: 12px 16px !important;
         border-radius: 20px 20px 0 0 !important;
         background: #ffffff !important;
