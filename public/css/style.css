@@ -615,11 +615,20 @@ body.theme-clean_minimal .next-btn {
     font-family: 'Poppins', 'Inter', sans-serif;
 }
 
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
 body {
     background-color: var(--pink-bg);
     color: var(--dark-text);
     line-height: 1.6;
+}
+
+#storefront-view {
     overflow-x: hidden;
+    width: 100%;
 }
 
 /* Site Header */
