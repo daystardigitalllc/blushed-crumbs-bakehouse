@@ -1661,31 +1661,116 @@ function initAdminPortal() {
             const name = document.getElementById('rev-client-name').value;
             const text = document.getElementById('rev-text').value;
 
-            const pubGrid = document.getElementById('public-reviews-grid');
-            if (pubGrid) {
-                const revCard = document.createElement('div');
-                revCard.className = 'cloud-review-card';
-                revCard.innerHTML = `<p>"${text}"</p><h4>${name}</h4>`;
-                pubGrid.prepend(revCard);
-            }
-            alert('Review published directly to storefront!');
-            revForm.reset();
+            fetch('/admin/reviews', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    client_name: name,
+                    review_text: text,
+                    rating: 5,
+                    is_featured: true
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert('Review published directly to storefront!');
+                    window.location.reload();
+                } else {
+                    alert('Failed to save review.');
+                }
+            })
+            .catch(err => {
+                console.error('Error saving review:', err);
+                alert('An error occurred.');
+            });
         });
     }
 }
 
-window.generateInvoiceFromOrder = function(invNum, clientName, total, deposit) {
-    document.getElementById('modal-inv-num').innerText = invNum;
-    document.getElementById('modal-inv-client').innerText = clientName;
-    document.getElementById('modal-inv-total').innerText = '$' + total.toFixed(2);
-    document.getElementById('modal-inv-deposit').innerText = '$' + deposit.toFixed(2);
+window.generateInvoiceFromOrder = function(orderId, totalAmount, depositAmount) {
+    const editInvId = document.getElementById('edit-invoice-id');
+    const editOrderId = document.getElementById('edit-order-id');
+    const editTotal = document.getElementById('edit-invoice-total');
+    const editDeposit = document.getElementById('edit-invoice-deposit');
+    const editNotes = document.getElementById('edit-invoice-notes');
+    const modal = document.getElementById('invoice-edit-modal');
 
-    document.getElementById('invoice-modal').style.display = 'flex';
+    if (editInvId) editInvId.value = '';
+    if (editOrderId) editOrderId.value = orderId || '';
+    if (editTotal) editTotal.value = parseFloat(totalAmount || 0).toFixed(2);
+    if (editDeposit) editDeposit.value = parseFloat(depositAmount || (totalAmount * 0.5)).toFixed(2);
+    if (editNotes) editNotes.value = '';
+    if (modal) modal.style.display = 'flex';
 };
 
-window.closeInvoiceModal = function() {
-    document.getElementById('invoice-modal').style.display = 'none';
+window.sendInvoice = function(invoiceId) {
+    if (!confirm('Are you sure you want to send this invoice to the client?')) return;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    fetch(`/admin/invoices/${invoiceId}/send`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(err => {
+        console.error('Send Invoice Error:', err);
+        alert('Failed to send invoice.');
+    });
 };
+
+window.deleteInvoice = function(invoiceId, btnElement) {
+    if (!confirm('Are you sure you want to delete this invoice? This action cannot be undone.')) return;
+    
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    
+    fetch(`/admin/invoices/${invoiceId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            if (window.showToast) {
+                window.showToast(data.message, 'success');
+            } else {
+                alert(data.message);
+            }
+            if (btnElement) {
+                const tr = btnElement.closest('tr');
+                if (tr) tr.remove();
+            } else {
+                location.reload();
+            }
+        } else {
+            alert('Error deleting invoice: ' + data.message);
+        }
+    })
+    .catch(err => {
+        console.error('Delete Invoice Error:', err);
+        alert('Failed to delete invoice.');
+    });
+};
+
+
 
 /* ============================================
    SETTINGS TAB — LEAD TIME, COLORS, TYPOGRAPHY
@@ -1939,8 +2024,66 @@ window.resetTypography = function() {
 })();
 
 
-window.copyClientPayLink = function(orderNum) {
-    alert(`Invoice payment link for Order #${orderNum} copied!`);
+window.copyClientPayLink = function(identifier, orderId) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+    function doCopy(invNum, ordId) {
+        const payUrl = `${window.location.origin}/invoices/${invNum}`;
+        try {
+            const textarea = document.createElement('textarea');
+            textarea.value = payUrl;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        } catch (err) {
+            console.error('Copy fallback error:', err);
+        }
+
+        if (ordId) {
+            window.updateOrderStatus(ordId, 'invoiced');
+        }
+
+        if (window.showToast) {
+            window.showToast(`Invoice link copied & order set to INVOICED!`, 'success');
+        } else {
+            alert(`Invoice link copied: ${payUrl}`);
+        }
+    }
+
+    if (typeof identifier === 'string' && identifier.startsWith('INV-')) {
+        doCopy(identifier, orderId);
+    } else {
+        const targetOrderId = orderId || identifier;
+        fetch('/admin/invoices', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                order_id: targetOrderId,
+                mark_invoiced: true
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.invoice) {
+                doCopy(data.invoice.invoice_number, targetOrderId);
+            } else {
+                alert('Error generating invoice link: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(err => {
+            console.error('Copy Link Error:', err);
+            alert('Failed to generate invoice link.');
+        });
+    }
 };
 
 function appendOrderToAdminQueue(order) {
@@ -1953,7 +2096,15 @@ function appendOrderToAdminQueue(order) {
     card.innerHTML = `
         <div class="order-card-header">
             <div class="due-badge due-urgent">⏰ DUE: ${order.due_date} (${order.time_slot})</div>
-            <span class="status-tag status-new">NEW REQUEST</span>
+            <select class="status-select status-${order.status || 'new'}" onchange="updateOrderStatus(${order.id}, this.value)">
+                <option value="new" ${(!order.status || order.status === 'new') ? 'selected' : ''}>NEW</option>
+                <option value="invoiced" ${order.status === 'invoiced' ? 'selected' : ''}>INVOICED</option>
+                <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>PAID</option>
+                <option value="in_progress" ${order.status === 'in_progress' ? 'selected' : ''}>IN PROGRESS</option>
+                <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>READY</option>
+                <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>COMPLETED</option>
+                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>CANCELLED</option>
+            </select>
         </div>
         <div class="order-card-body">
             <h4>#${order.order_number} - ${order.client_name}</h4>
@@ -1965,7 +2116,7 @@ function appendOrderToAdminQueue(order) {
             </div>
         </div>
         <div class="order-card-actions">
-            <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder('${order.order_number}', '${order.client_name}', ${order.total_price}, ${order.deposit_amount})">💳 Create Invoice</button>
+            <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder(${order.id})">💳 Create Invoice</button>
         </div>
     `;
     queue.prepend(card);
@@ -1976,28 +2127,37 @@ function appendOrderToAdminQueue(order) {
    ============================================ */
 
 window.adminCalState = {
-    currentYear: 2026,
-    currentMonth: 6, // July (0-indexed)
-    blockedDates: new Set(['2026-07-04', '2026-07-25']), // Default demo blocked dates
-    recurringClosedDays: [0, 1] // Default: Sun (0) & Mon (1)
+    currentYear: new Date().getFullYear(),
+    currentMonth: new Date().getMonth(),
+    blockedDates: new Set(['2026-07-04', '2026-07-25']),
+    recurringClosedDays: [0, 1]
 };
 
-// Initialize Admin Calendar from localStorage
 (function loadAdminCalendarSettings() {
     try {
-        const savedBlocked = localStorage.getItem('admin_blocked_dates');
-        if (savedBlocked) {
-            window.adminCalState.blockedDates = new Set(JSON.parse(savedBlocked));
-        }
-
-        const savedRecurring = localStorage.getItem('admin_recurring_closed');
-        if (savedRecurring) {
-            window.adminCalState.recurringClosedDays = JSON.parse(savedRecurring);
+        if (window._serverBookingSettings) {
+            if (Array.isArray(window._serverBookingSettings.blocked_dates)) {
+                window.adminCalState.blockedDates = new Set(window._serverBookingSettings.blocked_dates);
+            }
+            if (Array.isArray(window._serverBookingSettings.recurring_closed_days)) {
+                window.adminCalState.recurringClosedDays = window._serverBookingSettings.recurring_closed_days;
+            }
         }
     } catch(e) {}
 })();
 
 window.initAdminCalendarUI = function() {
+    try {
+        if (window._serverBookingSettings) {
+            if (Array.isArray(window._serverBookingSettings.blocked_dates)) {
+                window.adminCalState.blockedDates = new Set(window._serverBookingSettings.blocked_dates);
+            }
+            if (Array.isArray(window._serverBookingSettings.recurring_closed_days)) {
+                window.adminCalState.recurringClosedDays = window._serverBookingSettings.recurring_closed_days;
+            }
+        }
+    } catch(e) {}
+
     const grid = document.getElementById('admin-calendar-grid');
     if (!grid) return;
 
@@ -2076,20 +2236,24 @@ function renderAdminCalendarGrid() {
         dayEl.title = isBlocked ? `Blocked (${dateStr}) - Click to Unblock` : (isWeeklyClosed ? `Closed (${dayHeaders[dayOfWeek]}) - Click to Override Block` : `Available - Click to Block`);
 
         dayEl.onclick = function() {
-            if (isBlocked) {
-                window.adminCalState.blockedDates.delete(dateStr);
-            } else {
-                window.adminCalState.blockedDates.add(dateStr);
-            }
-            saveAdminCalendarState();
-            renderAdminCalendarGrid();
-            renderBlockedDatesList();
-            renderInteractiveCalendar(); // Update storefront modal calendar too!
+            window.toggleAdminCalDate(dateStr);
         };
 
         grid.appendChild(dayEl);
     }
 }
+
+window.toggleAdminCalDate = function(dateStr) {
+    if (window.adminCalState.blockedDates.has(dateStr)) {
+        window.adminCalState.blockedDates.delete(dateStr);
+    } else {
+        window.adminCalState.blockedDates.add(dateStr);
+    }
+    saveAdminCalendarState();
+    renderAdminCalendarGrid();
+    renderBlockedDatesList();
+    if (window.renderInteractiveCalendar) renderInteractiveCalendar();
+};
 
 function renderBlockedDatesList() {
     const list = document.getElementById('admin-blocked-dates-list');
@@ -2119,7 +2283,7 @@ window.removeBlockedDate = function(dateStr) {
     saveAdminCalendarState();
     renderAdminCalendarGrid();
     renderBlockedDatesList();
-    renderInteractiveCalendar();
+    if (window.renderInteractiveCalendar) renderInteractiveCalendar();
 };
 
 window.addManualBlockedDate = function() {
@@ -2133,7 +2297,7 @@ window.addManualBlockedDate = function() {
     saveAdminCalendarState();
     renderAdminCalendarGrid();
     renderBlockedDatesList();
-    renderInteractiveCalendar();
+    if (window.renderInteractiveCalendar) renderInteractiveCalendar();
     input.value = '';
 };
 
@@ -2143,21 +2307,49 @@ window.saveRecurringClosedDays = function() {
         selected.push(parseInt(cb.value));
     });
     window.adminCalState.recurringClosedDays = selected;
-    localStorage.setItem('admin_recurring_closed', JSON.stringify(selected));
+
+    saveAdminCalendarState();
 
     const msg = document.getElementById('recurring-save-msg');
     if (msg) {
         msg.style.display = 'inline';
         setTimeout(() => msg.style.display = 'none', 2500);
     }
+    if (window.showToast) {
+        window.showToast('Recurring availability schedule saved!', 'success');
+    }
 
     renderAdminCalendarGrid();
-    renderInteractiveCalendar();
+    if (window.renderInteractiveCalendar) renderInteractiveCalendar();
 };
 
 function saveAdminCalendarState() {
     const arr = Array.from(window.adminCalState.blockedDates);
     localStorage.setItem('admin_blocked_dates', JSON.stringify(arr));
+    localStorage.setItem('admin_recurring_closed', JSON.stringify(window.adminCalState.recurringClosedDays));
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    fetch('/admin/settings/booking', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            lead_time_enabled: true,
+            lead_time_days: 3,
+            recurring_closed_days: window.adminCalState.recurringClosedDays,
+            blocked_dates: arr
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success && data.settings) {
+            window._serverBookingSettings = data.settings;
+        }
+    })
+    .catch(err => console.error('Booking save error:', err));
 }
 
 // Global Bakery Theme Switcher
@@ -2206,3 +2398,174 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 200);
 });
 
+// Update order status via AJAX
+window.updateOrderStatus = function(orderId, status) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    fetch(`/admin/orders/${orderId}/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ status: status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.showToast(data.message, 'success');
+            
+            // Dynamically update the select box color class
+            const selectBox = document.querySelector(`select[onchange="updateOrderStatus(${orderId}, this.value)"]`);
+            if (selectBox) {
+                selectBox.value = data.status;
+                selectBox.className = `status-select status-${data.status}`;
+            }
+        } else {
+            window.showToast(data.message || 'Failed to update status', 'error');
+        }
+    })
+    .catch(err => {
+        window.showToast('Error updating status: ' + err.message, 'error');
+    });
+};
+
+// Update invoice status via AJAX
+window.updateInvoiceStatus = function(invoiceId, status) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    
+    fetch(`/admin/invoices/${invoiceId}/status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify({ status: status })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.showToast(data.message, 'success');
+            const selectBox = document.querySelector(`select[onchange="updateInvoiceStatus(${invoiceId}, this.value)"]`);
+            if (selectBox) {
+                selectBox.value = data.status;
+                selectBox.className = `status-select status-${data.status}`;
+            }
+        } else {
+            window.showToast(data.message || 'Failed to update status', 'error');
+        }
+    })
+    .catch(err => {
+        window.showToast('Error updating status: ' + err.message, 'error');
+    });
+};
+
+window.openInvoiceEditModal = function(invoiceId, totalAmount, depositAmount, notes, orderId) {
+    document.getElementById('edit-invoice-id').value = invoiceId || '';
+    document.getElementById('edit-order-id').value = orderId || '';
+    document.getElementById('edit-invoice-total').value = parseFloat(totalAmount || 0).toFixed(2);
+    document.getElementById('edit-invoice-deposit').value = parseFloat(depositAmount || 0).toFixed(2);
+    document.getElementById('edit-invoice-notes').value = notes || '';
+    
+    document.getElementById('invoice-edit-modal').style.display = 'flex';
+};
+
+window.closeInvoiceEditModal = function() {
+    document.getElementById('invoice-edit-modal').style.display = 'none';
+};
+
+window.saveInvoiceEdits = function() {
+    submitInvoiceEdits(false);
+};
+
+window.saveAndSendInvoice = function() {
+    submitInvoiceEdits(true);
+};
+
+function submitInvoiceEdits(sendAfter) {
+    const invoiceId = document.getElementById('edit-invoice-id').value;
+    const orderId = document.getElementById('edit-order-id').value;
+    const totalAmount = document.getElementById('edit-invoice-total').value;
+    const depositAmount = document.getElementById('edit-invoice-deposit').value;
+    const notes = document.getElementById('edit-invoice-notes').value;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+    if (invoiceId) {
+        fetch(`/admin/invoices/${invoiceId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                total_amount: totalAmount,
+                deposit_amount: depositAmount,
+                notes: notes
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                closeInvoiceEditModal();
+                if (sendAfter) {
+                    if (orderId) {
+                        window.updateOrderStatus(orderId, 'invoiced');
+                    }
+                    window.sendInvoice(invoiceId);
+                } else {
+                    if (window.showToast) {
+                        window.showToast('Invoice updated & saved!', 'success');
+                    }
+                    setTimeout(() => location.reload(), 1000);
+                }
+            } else {
+                alert('Error updating invoice: ' + data.message);
+            }
+        })
+        .catch(err => {
+            console.error('Invoice Update Error:', err);
+            alert('Failed to update invoice.');
+        });
+    } else {
+        fetch('/admin/invoices', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                order_id: orderId,
+                total_amount: totalAmount,
+                deposit_amount: depositAmount,
+                notes: notes,
+                mark_invoiced: sendAfter
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                closeInvoiceEditModal();
+                if (sendAfter) {
+                    if (orderId) {
+                        window.updateOrderStatus(orderId, 'invoiced');
+                    }
+                    if (data.invoice && data.invoice.id) {
+                        window.sendInvoice(data.invoice.id);
+                    }
+                } else {
+                    if (window.showToast) {
+                        window.showToast('Invoice created & saved!', 'success');
+                    }
+                    setTimeout(() => location.reload(), 1000);
+                }
+            } else {
+                alert('Error creating invoice: ' + data.message);
+            }
+        })
+        .catch(err => {
+            console.error('Invoice Creation Error:', err);
+            alert('Failed to create invoice.');
+        });
+    }
+}

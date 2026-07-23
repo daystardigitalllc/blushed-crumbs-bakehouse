@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('client_email');
             $table->decimal('total_amount', 10, 2);
             $table->decimal('deposit_amount', 10, 2);
-            $table->enum('status', ['unpaid', 'deposit_paid', 'paid_in_full', 'cancelled'])->default('unpaid');
+            $table->enum('status', ['unpaid', 'pending', 'deposit_paid', 'paid_in_full', 'cancelled'])->default('unpaid');
             $table->string('payment_method_used')->nullable(); // Venmo, CashApp, PayPal, Stripe, etc.
             $table->timestamp('due_date')->nullable();
             $table->text('notes')->nullable();

@@ -23,6 +23,25 @@ class Invoice extends Model
         'notes',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($invoice) {
+            $allowedStatuses = ['unpaid', 'deposit_paid', 'paid_in_full', 'cancelled'];
+            if (empty($invoice->status) || !in_array($invoice->status, $allowedStatuses)) {
+                $invoice->status = 'unpaid';
+            }
+        });
+
+        static::updating(function ($invoice) {
+            $allowedStatuses = ['unpaid', 'deposit_paid', 'paid_in_full', 'cancelled'];
+            if (empty($invoice->status) || !in_array($invoice->status, $allowedStatuses)) {
+                $invoice->status = 'unpaid';
+            }
+        });
+    }
+
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);

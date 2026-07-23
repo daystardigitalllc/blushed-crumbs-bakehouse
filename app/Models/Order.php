@@ -11,6 +11,7 @@ class Order extends Model
 
     protected $fillable = [
         'tenant_id',
+        'customer_id',
         'order_number',
         'client_name',
         'client_email',
@@ -54,5 +55,10 @@ class Order extends Model
     public function invoice()
     {
         return $this->hasOne(Invoice::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }

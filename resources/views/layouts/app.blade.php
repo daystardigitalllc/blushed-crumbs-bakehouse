@@ -15,7 +15,7 @@
     <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
-<body>
+<body class="{{ isset($tenant) && $tenant->theme_id ? 'theme-' . $tenant->theme_id : 'theme-sweet_elegant' }}">
     @yield('content')
 
     <!-- JavaScript Assets -->

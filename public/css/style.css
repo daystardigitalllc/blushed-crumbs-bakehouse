@@ -806,6 +806,11 @@ body {
     animation: cakeRain 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards, floatGently 3.5s ease-in-out infinite 1.4s alternate;
 }
 
+/* Hide raining cakes by default on all themes except Sweet & Elegant */
+body:not(.theme-sweet_elegant) .raining-cake {
+    display: none !important;
+}
+
 /* 5 Cakes Encircling H1 Text & Buttons */
 .hero-cake-top-right {
     top: 25px;
@@ -1609,6 +1614,8 @@ body.theme-clean_minimal {
     font-weight: 700;
     padding: 6px 14px;
     border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .due-urgent { background: #ff4d4f; color: white; }
@@ -1622,9 +1629,46 @@ body.theme-clean_minimal {
     border-radius: 8px;
 }
 
-.status-new { background: #fffbe6; color: #faad14; }
-.status-in_progress { background: #e6f7ff; color: #1890ff; }
-.status-completed { background: #f6ffed; color: #52c41a; }
+.admin-main-content select.status-new { background: #fffbe6 !important; color: #faad14 !important; }
+.admin-main-content select.status-in_progress { background: #e6f7ff !important; color: #1890ff !important; }
+.admin-main-content select.status-paid { background: #f6ffed !important; color: #52c41a !important; border: 1px solid #b7eb8f !important; }
+.admin-main-content select.status-completed { background: #e6f7ff !important; color: #1890ff !important; }
+.admin-main-content select.status-invoiced { background: #f9f0ff !important; color: #722ed1 !important; }
+.admin-main-content select.status-ready { background: #fff0f6 !important; color: #eb2f96 !important; }
+.admin-main-content select.status-cancelled { background: #fff1f0 !important; color: #f5222d !important; }
+.admin-main-content select.status-unpaid { background: #fffbe6 !important; color: #faad14 !important; }
+.admin-main-content select.status-deposit_paid { background: #e6f7ff !important; color: #1890ff !important; }
+.admin-main-content select.status-paid_in_full { background: #f6ffed !important; color: #52c41a !important; }
+
+.admin-main-content select.status-select {
+    padding: 6px 30px 6px 12px !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23333'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 10px center !important;
+    background-size: 12px !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04) !important;
+    transition: all 0.2s ease !important;
+    height: 32px !important;
+    width: auto !important;
+    min-width: 130px !important;
+    text-transform: uppercase !important;
+}
+.status-select:hover {
+    border-color: #cbd5e1;
+    background-color: #fff;
+}
+.status-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(230, 115, 153, 0.2);
+}
 
 .order-card-actions {
     margin-top: 20px;
@@ -2220,7 +2264,7 @@ body.theme-clean_minimal {
 
 /* HIGH-END MODERN ADMIN SIDEBAR & WORKSPACE GLOWUP */
 #admin-portal-view {
-    background-color: #fcf7fa !important;
+    background-color: var(--theme-section-bg, #fcf7fa) !important;
     height: 100vh;
     display: flex !important;
     flex-direction: column;
@@ -2237,7 +2281,7 @@ body.theme-clean_minimal {
 
 .admin-sidebar {
     width: 280px !important;
-    background: #2b0d1b !important;
+    background: var(--theme-accent-bg, #2b0d1b) !important;
     color: white !important;
     padding: 35px 22px !important;
     display: flex !important;
@@ -2260,18 +2304,18 @@ body.theme-clean_minimal {
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.admin-sidebar-brand h3 {
+.admin-sidebar .admin-sidebar-brand h3 {
     font-family: 'Poppins', sans-serif;
     font-size: 1.2rem;
     font-weight: 800;
-    color: #ffffff;
+    color: #ffffff !important;
     letter-spacing: -0.3px;
     line-height: 1.2;
 }
 
 .admin-sidebar-brand .badge-pro {
     display: inline-block;
-    background: linear-gradient(135deg, #e67399, #c94b75);
+    background: var(--primary, #e67399);
     color: white;
     font-size: 0.72rem;
     font-weight: 700;
@@ -2312,7 +2356,7 @@ body.theme-clean_minimal {
 }
 
 .admin-nav-item.active {
-    background: linear-gradient(135deg, #e67399, #c94b75) !important;
+    background: var(--primary, #e67399) !important;
     color: #ffffff !important;
     font-weight: 700 !important;
     box-shadow: 0 8px 22px rgba(230, 115, 153, 0.45) !important;
@@ -2327,7 +2371,7 @@ body.theme-clean_minimal {
 .admin-main-content {
     flex: 1 !important;
     padding: 45px 50px !important;
-    background-color: #fcf7fa !important;
+    background-color: var(--theme-section-bg, #fcf7fa) !important;
     overflow-y: auto;
     height: 100%;
 }

@@ -20,14 +20,24 @@
 <header class="site-header">
     <div class="header-container">
         <a href="{{ route('storefront.index') }}" class="logo">
-            <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Bakehouse Logo">
+            @if(!empty($tenant->logo_path))
+                <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
+            @else
+                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);">🧁 {{ $tenant->name }}</span>
+            @endif
         </a>
         <nav class="nav-links">
             <a href="{{ route('storefront.index') }}">Home</a>
             <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
-            <a href="{{ route('admin.dashboard') }}" class="admin-btn">🔑 Baker Admin Portal</a>
+            @php
+                $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
+                $bakerPortalUrl = request()->is('site/*') 
+                    ? url('/site/' . $sub . '/dashboard') 
+                    : route('baker.dashboard');
+            @endphp
+            <a href="{{ $bakerPortalUrl }}" class="admin-btn">🔑 Baker Portal</a>
         </nav>
     </div>
 </header>
@@ -95,24 +105,33 @@
                 <section id="categories" class="categories-section">
                     <h2 class="section-title-script">Our Categories</h2>
                     <div class="categories-grid-exact">
-                        <div class="category-card-exact">
-                            <div class="category-image-frame">
-                                <img src="{{ asset('images/IMG_8117.jpg') }}" alt="Single Tier Cakes">
+                        @php
+                            $catList = $tenant->getSiteContent('categories', [
+                                ['title' => 'Single Tier Cakes', 'desc' => 'Perfect for birthdays & intimate gatherings'],
+                                ['title' => 'Multi Tier Custom Cakes', 'desc' => 'Bespoke designs for weddings & celebrations'],
+                                ['title' => 'Treats & Sweets By The Dozen', 'desc' => 'Cupcakes, macarons, and dessert tables']
+                            ]);
+                            $userImages = $tenant->gallery_images ?? [];
+                            $defaultImages = [
+                                asset('images/IMG_8117.jpg'),
+                                asset('images/IMG_8084.jpg'),
+                                asset('images/IMG_8042.jpg'),
+                            ];
+                        @endphp
+                        @foreach($catList as $idx => $cat)
+                            @php
+                                $imgUrl = !empty($userImages[$idx]) ? asset($userImages[$idx]) : ($defaultImages[$idx % count($defaultImages)]);
+                            @endphp
+                            <div class="category-card-exact">
+                                <div class="category-image-frame">
+                                    <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? 'Category' }}">
+                                </div>
+                                <h3>{{ $cat['title'] ?? 'Category' }}</h3>
+                                @if(!empty($cat['desc']))
+                                    <p style="font-size:0.88rem; color:#666; margin-top:4px; text-align:center;">{{ $cat['desc'] }}</p>
+                                @endif
                             </div>
-                            <h3>Single Tier Cakes</h3>
-                        </div>
-                        <div class="category-card-exact">
-                            <div class="category-image-frame">
-                                <img src="{{ asset('images/IMG_8084.jpg') }}" alt="Multi Tier Cakes">
-                            </div>
-                            <h3>Multi Tier Cakes</h3>
-                        </div>
-                        <div class="category-card-exact">
-                            <div class="category-image-frame">
-                                <img src="{{ asset('images/IMG_8042.jpg') }}" alt="By The Dozen">
-                            </div>
-                            <h3>By The Dozen</h3>
-                        </div>
+                        @endforeach
                     </div>
                 </section>
             @elseif($secId === 'whimsical')
@@ -157,11 +176,20 @@
                 <section id="reviews" class="reviews-section">
                     <h2 class="section-title-script">What Our Customers Say</h2>
                     <div class="reviews-grid" id="public-reviews-grid">
-                        @php $reviews = $tenant->getSiteContent('reviews', []); @endphp
-                        @foreach($reviews as $rev)
+                        @php 
+                            $defaultReviews = [
+                                ['name' => 'Sarah M.', 'quote' => 'The custom cake for our celebration was absolute perfection! Tasted even better than it looked!'],
+                                ['name' => 'Jessica & David K.', 'quote' => 'Hands down the best pastries and baked goods in town. Fresh, flavorful, and stunning presentation!'],
+                                ['name' => 'Emily R.', 'quote' => 'Ordering online was effortless and pickup was smooth. Our guests raved about the dessert table!']
+                            ];
+                            $dbReviews = (isset($reviews) && count($reviews) > 0) ? $reviews : [];
+                            $aiReviews = $tenant->getSiteContent('reviews', []);
+                            $displayReviews = !empty($dbReviews) ? $dbReviews : (!empty($aiReviews) ? $aiReviews : $defaultReviews);
+                        @endphp
+                        @foreach($displayReviews as $rev)
                             <div class="cloud-review-card">
-                                <p>"{{ $rev['quote'] ?? '' }}"</p>
-                                <h4>{{ $rev['name'] ?? '' }}</h4>
+                                <p>"{{ is_array($rev) ? ($rev['quote'] ?? $rev['text'] ?? '') : ($rev->review_text ?? '') }}"</p>
+                                <h4>{{ is_array($rev) ? ($rev['name'] ?? '') : ($rev->client_name ?? '') }}</h4>
                             </div>
                         @endforeach
                     </div>
@@ -181,15 +209,12 @@
                     </div>
                 </section>
             @elseif($secId === 'cta_banner')
-                <!-- Footer Call to Action Video Banner -->
-                <section class="cta-video-banner">
-                    <video autoplay loop muted playsinline>
-                        <source src="{{ asset($tenant->getSiteContent('cta_banner_url', 'images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4')) }}" type="video/mp4">
-                    </video>
-                    <div class="cta-content">
-                        <h2>{{ $tenant->getSiteContent('cta_headline', 'Ready For Your Perfect Cake?') }}</h2>
-                        <p>{{ $tenant->getSiteContent('cta_subtext', 'Order your plan or custom order now') }}</p>
-                        <button onclick="openOrderModal()" class="btn btn-dark">{{ $tenant->getSiteContent('cta_btn_text', 'Order Now') }}</button>
+                <!-- Footer Call to Action Banner -->
+                <section class="cta-video-banner" style="background: linear-gradient(135deg, var(--primary, #e67399) 0%, var(--pink-bg, #fff7fa) 100%); padding: 65px 25px; text-align: center; border-top: 1px solid rgba(0,0,0,0.04);">
+                    <div class="cta-content" style="max-width:750px; margin:0 auto;">
+                        <h2 style="font-family: 'Great Vibes', cursive; font-size: 3.8rem; color: var(--dark-text, #2c2419); margin-bottom: 10px;">{{ $tenant->getSiteContent('cta_headline', 'Ready For Your Perfect Cake?') }}</h2>
+                        <p style="font-size: 1.1rem; color: var(--dark-text, #2c2419); opacity: 0.9; margin-bottom: 24px;">{{ $tenant->getSiteContent('cta_subtext', 'Order your plan or custom order now') }}</p>
+                        <button onclick="openOrderModal()" class="btn btn-primary" style="padding: 14px 34px; font-size: 1.1rem; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">{{ $tenant->getSiteContent('cta_btn_text', 'Order Now') }}</button>
                     </div>
                 </section>
             @endif
@@ -201,7 +226,11 @@
 
 <footer class="site-footer">
     <div class="footer-logo">
-        <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Logo">
+        @if(!empty($tenant->logo_path))
+            <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
+        @else
+            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);">🧁 {{ $tenant->name }}</span>
+        @endif
     </div>
     <div class="footer-nav">
         <a href="{{ route('storefront.index') }}" class="footer-link">Home</a>

@@ -17,14 +17,24 @@
 <header class="site-header">
     <div class="header-container">
         <a href="{{ route('storefront.index') }}" class="logo">
-            <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Bakehouse Logo">
+            @if(!empty($tenant->logo_path))
+                <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
+            @else
+                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);">🧁 {{ $tenant->name }}</span>
+            @endif
         </a>
         <nav class="nav-links">
             <a href="{{ route('storefront.index') }}">Home</a>
             <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.gallery') }}" class="active">Gallery</a>
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
-            <a href="{{ route('admin.dashboard') }}" class="admin-btn">🔑 Baker Admin Portal</a>
+            @php
+                $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
+                $bakerPortalUrl = request()->is('site/*') 
+                    ? url('/site/' . $sub . '/dashboard') 
+                    : route('baker.dashboard');
+            @endphp
+            <a href="{{ $bakerPortalUrl }}" class="admin-btn">🔑 Baker Portal</a>
         </nav>
     </div>
 </header>
@@ -81,14 +91,18 @@
 
 <footer class="site-footer">
     <div class="footer-logo">
-        <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Logo">
+        @if(!empty($tenant->logo_path))
+            <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
+        @else
+            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);">🧁 {{ $tenant->name }}</span>
+        @endif
     </div>
     <div class="footer-nav">
         <a href="{{ route('storefront.index') }}">Home</a>
         <a href="{{ route('storefront.about') }}">About</a>
         <a href="{{ route('storefront.gallery') }}">Gallery</a>
     </div>
-    <p class="copyright-text">Copyright © 2026 Blushed Crumbs Bakehouse | Powered by Daystar Digital</p>
+    <p class="copyright-text">Copyright &copy; 2026 {{ $tenant->name ?? 'Bakery' }} | Powered by Doughmain.pro</p>
 </footer>
 
 <script src="{{ asset('js/app.js') }}"></script>

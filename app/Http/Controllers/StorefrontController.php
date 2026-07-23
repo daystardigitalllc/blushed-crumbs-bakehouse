@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tenant;
+use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\Customer;
 use App\Models\GalleryItem;
 use App\Models\Order;
 use App\Mail\NewOrderNotification;
@@ -18,26 +20,22 @@ class StorefrontController extends Controller
     {
         $host = $request->getHost();
 
-        // 1. Multi-Tenant Domain Routing
-        $tenant = Tenant::where('domain', $host)
-            ->orWhere('slug', 'blushedcrumbs')
-            ->first();
+        // 1. Get the tenant from middleware
+        $tenant = $request->attributes->get('tenant');
 
-        // Safe Fallback: Auto-create tenant if database is empty or fresh
         if (!$tenant) {
-            $tenant = Tenant::firstOrCreate(
-                ['slug' => 'blushedcrumbs'],
-                [
-                    'name' => 'Blushed Crumbs Bakehouse',
-                    'domain' => 'blushed-crumbs-bakehouse.test',
-                    'subdomain' => 'blushedcrumbs',
-                    'owner_name' => 'Baker',
-                    'email' => 'orders@blushedcrumbsbakehouse.com',
-                    'plan_tier' => 'pro',
-                ]
-            );
+            // If no tenant is resolved (e.g. root domain bakery_pro.test), show the landing page
+            $brand = Brand::where('domain', $host)->first() ?? Brand::first();
+            return view('brand.landing', [
+                'brand' => $brand,
+                'pricing' => $brand->pricing_plans ?? [
+                    'free' => ['name' => 'Free Baker', 'price' => 0],
+                    'pro' => ['name' => 'Pro Baker', 'price' => 29],
+                ],
+            ]);
         }
 
+        // Ensure form schema and booking settings are populated
         if (empty($tenant->form_schema)) {
             $tenant->form_schema = Tenant::getDefaultFormSchema();
             $tenant->save();
@@ -52,39 +50,60 @@ class StorefrontController extends Controller
             $tenant->save();
         }
 
-        // 2. If visiting the main SaaS domain (e.g. bakebox.daystardigital.co), render SaaS Landing Page
-        if ($host === 'bakebox.daystardigital.co' && !$request->has('tenant')) {
-            return view('saas.landing', [
-                'pricing' => [
-                    'standard' => 29,
-                    'pro' => 50,
-                ]
-            ]);
-        }
-
-        // Render client storefront for Blushed Crumbs Bakehouse
+        // Render client storefront
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
-        $reviews = Review::where('tenant_id', $tenant->id)->where('is_featured', true)->latest()->get();
+        
+        // Reviews: pull from the reviews DB table, limited by max_reviews_display
+        $maxReviews = $tenant->max_reviews_display ?? 3;
+        $reviews = Review::where('tenant_id', $tenant->id)
+            ->where('is_featured', true)
+            ->latest()
+            ->limit($maxReviews)
+            ->get();
+        
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
 
         return view('storefront.index', compact('tenant', 'products', 'reviews', 'gallery'));
     }
 
+    public function preview(Request $request, $subdomain)
+    {
+        $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
+        if (!$tenant) {
+            abort(404, 'Bakery website not found.');
+        }
+
+        $request->attributes->set('tenant', $tenant);
+        app()->instance('tenant', $tenant);
+
+        return $this->index($request);
+    }
+
+    public function previewAbout(Request $request, $subdomain)
+    {
+        $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
+        if (!$tenant) { abort(404, 'Bakery website not found.'); }
+        $request->attributes->set('tenant', $tenant);
+        app()->instance('tenant', $tenant);
+        return view('storefront.about', compact('tenant'));
+    }
+
+    public function previewGallery(Request $request, $subdomain)
+    {
+        $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
+        if (!$tenant) { abort(404, 'Bakery website not found.'); }
+        $request->attributes->set('tenant', $tenant);
+        app()->instance('tenant', $tenant);
+
+        $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
+        return view('storefront.gallery', compact('tenant', 'gallery'));
+    }
+
     public function about(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
+        $tenant = $request->attributes->get('tenant');
         if (!$tenant) {
-            $tenant = Tenant::firstOrCreate(
-                ['slug' => 'blushedcrumbs'],
-                [
-                    'name' => 'Blushed Crumbs Bakehouse',
-                    'domain' => 'blushed-crumbs-bakehouse.test',
-                    'subdomain' => 'blushedcrumbs',
-                    'owner_name' => 'Baker',
-                    'email' => 'orders@blushedcrumbsbakehouse.com',
-                    'plan_tier' => 'pro',
-                ]
-            );
+            abort(404, 'Bakery not found.');
         }
 
         return view('storefront.about', compact('tenant'));
@@ -92,19 +111,9 @@ class StorefrontController extends Controller
 
     public function gallery(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
+        $tenant = $request->attributes->get('tenant');
         if (!$tenant) {
-            $tenant = Tenant::firstOrCreate(
-                ['slug' => 'blushedcrumbs'],
-                [
-                    'name' => 'Blushed Crumbs Bakehouse',
-                    'domain' => 'blushed-crumbs-bakehouse.test',
-                    'subdomain' => 'blushedcrumbs',
-                    'owner_name' => 'Baker',
-                    'email' => 'orders@blushedcrumbsbakehouse.com',
-                    'plan_tier' => 'pro',
-                ]
-            );
+            abort(404, 'Bakery not found.');
         }
 
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
@@ -113,20 +122,9 @@ class StorefrontController extends Controller
 
     public function submitOrder(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
-
+        $tenant = $request->attributes->get('tenant');
         if (!$tenant) {
-            $tenant = Tenant::firstOrCreate(
-                ['slug' => 'blushedcrumbs'],
-                [
-                    'name' => 'Blushed Crumbs Bakehouse',
-                    'domain' => 'blushed-crumbs-bakehouse.test',
-                    'subdomain' => 'blushedcrumbs',
-                    'owner_name' => 'Baker',
-                    'email' => 'orders@blushedcrumbsbakehouse.com',
-                    'plan_tier' => 'pro',
-                ]
-            );
+            return response()->json(['success' => false, 'message' => 'Bakery not found.'], 404);
         }
 
         $validated = $request->validate([
@@ -175,13 +173,22 @@ class StorefrontController extends Controller
             }
         }
 
-        $orderNumber = 'BC-' . rand(1000, 9999);
+        // Auto-create or find customer in CRM
+        $customer = Customer::findOrCreateFromOrder(
+            $tenant->id,
+            $request->input('client_name'),
+            $request->input('client_email'),
+            $request->input('client_phone')
+        );
+
+        $orderNumber = strtoupper(substr($tenant->slug, 0, 2)) . '-' . rand(1000, 9999);
         $totalPrice = (float) ($request->input('total_price') ?? 0.00);
         $depositAmount = round($totalPrice * 0.5, 2);
         $dueDate = $request->input('due_date') ?: now()->addDays(7)->format('Y-m-d');
 
         $order = Order::create([
             'tenant_id' => $tenant->id,
+            'customer_id' => $customer->id,
             'order_number' => $orderNumber,
             'client_name' => $request->input('client_name'),
             'client_email' => $request->input('client_email'),
@@ -202,6 +209,9 @@ class StorefrontController extends Controller
             'deposit_amount' => $depositAmount,
             'status' => 'new',
         ]);
+
+        // Update customer stats
+        $customer->recordOrder($totalPrice);
 
         // Send Email Notification via SMTP to baker
         $routingEmail = $tenant->email ?? 'orders@blushedcrumbsbakehouse.com';
@@ -225,5 +235,43 @@ class StorefrontController extends Controller
             'routing_email' => $routingEmail,
             'order' => $order,
         ]);
+    }
+
+    public function showInvoice(Request $request, $invoiceNumber)
+    {
+        $tenant = $request->attributes->get('tenant') ?? Tenant::first();
+
+        $invoice = \App\Models\Invoice::with('order')
+            ->where('invoice_number', $invoiceNumber)
+            ->first();
+
+        if (!$invoice) {
+            abort(404, 'Invoice not found.');
+        }
+
+        if ($invoice->tenant_id) {
+            $tenant = Tenant::find($invoice->tenant_id) ?? $tenant;
+        }
+
+        $rawSettings = $tenant->payment_settings ?? [];
+        $paymentSettings = [];
+
+        if (is_array($rawSettings)) {
+            foreach ($rawSettings as $key => $val) {
+                if (is_array($val)) {
+                    $paymentSettings[] = [
+                        'name' => $val['name'] ?? ucfirst($key),
+                        'handle' => $val['handle'] ?? ($val['username'] ?? ''),
+                    ];
+                } elseif (is_string($val) && !empty(trim($val))) {
+                    $paymentSettings[] = [
+                        'name' => ucfirst($key),
+                        'handle' => $val,
+                    ];
+                }
+            }
+        }
+
+        return view('invoices.show', compact('tenant', 'invoice', 'paymentSettings'));
     }
 }

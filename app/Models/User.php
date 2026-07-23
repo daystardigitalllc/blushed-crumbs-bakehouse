@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class User extends Authenticatable
+{
+    use HasFactory, Notifiable;
+
+    protected $fillable = [
+        'tenant_id',
+        'name',
+        'email',
+        'password',
+        'role',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    public function isOwner(): bool
+    {
+        return $this->role === 'owner';
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array($this->role, ['owner', 'admin', 'superadmin']);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        if ($this->role === 'superadmin') {
+            return true;
+        }
+
+        $superAdminEmails = [
+            'austinhayes144@gmail.com',
+            'austinhayes.dev@gmail.com',
+            'admin@doughmain.pro',
+        ];
+
+        return in_array(strtolower($this->email), $superAdminEmails) || str_ends_with(strtolower($this->email), '@doughmain.pro');
+    }
+}

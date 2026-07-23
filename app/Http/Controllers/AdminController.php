@@ -4,33 +4,52 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Models\Tenant;
 use App\Models\Order;
 use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\Customer;
 use App\Models\GalleryItem;
 use App\Models\SupportTicket;
 
 class AdminController extends Controller
 {
-    public function dashboard(Request $request)
+    /**
+     * Resolve the target tenant for the Baker Dashboard.
+     */
+    private function tenant(?Request $request = null, ?string $subdomain = null): Tenant
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
-        if (!$tenant) {
-            $tenant = Tenant::firstOrCreate(
-                ['slug' => 'blushedcrumbs'],
-                [
-                    'name' => 'Blushed Crumbs Bakehouse',
-                    'domain' => 'blushed-crumbs-bakehouse.test',
-                    'subdomain' => 'blushedcrumbs',
-                    'owner_name' => 'Baker',
-                    'email' => 'orders@blushedcrumbsbakehouse.com',
-                    'plan_tier' => 'pro',
-                ]
-            );
+        if ($subdomain) {
+            $t = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->first();
+            if ($t) return $t;
         }
+
+        if ($request && $request->attributes->get('tenant')) {
+            return $request->attributes->get('tenant');
+        }
+
+        return auth()->user()?->tenant ?? Tenant::first();
+    }
+
+    public function dashboard(Request $request, ?string $subdomain = null)
+    {
+        // 1. If accessed on root domain without tenant context, redirect appropriately
+        if (!$subdomain && !$request->attributes->get('tenant') && !$request->route('subdomain')) {
+            $user = auth()->user();
+            if ($user && $user->isSuperAdmin()) {
+                return redirect('/admin');
+            }
+            if ($user && $user->tenant) {
+                $sub = $user->tenant->subdomain ?? $user->tenant->slug;
+                return redirect('/site/' . $sub . '/dashboard');
+            }
+            return redirect('/login');
+        }
+
+        $tenant = $this->tenant($request, $subdomain);
 
         // Fallback default form schema & booking settings if empty
         if (empty($tenant->form_schema)) {
@@ -59,16 +78,31 @@ class AdminController extends Controller
         $reviews = Review::where('tenant_id', $tenant->id)->latest()->get();
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
         $supportTickets = SupportTicket::where('tenant_id', $tenant->id)->latest()->get();
+        $customers = Customer::where('tenant_id', $tenant->id)->orderBy('total_spent', 'desc')->get();
+
+        // Revenue stats
+        $totalRevenue = Order::where('tenant_id', $tenant->id)
+            ->whereIn('status', ['completed', 'in_progress', 'ready'])
+            ->sum('total_price');
+        $pendingOrders = Order::where('tenant_id', $tenant->id)
+            ->whereIn('status', ['new', 'invoiced'])
+            ->count();
+        $customerCount = Customer::where('tenant_id', $tenant->id)->count();
+
+        $serverBookingSettings = $tenant->booking_settings ?? [];
+        $siteContent = $tenant->site_content ?? \App\Models\Tenant::getDefaultSiteContent();
 
         return view('admin.dashboard', compact(
             'tenant', 'urgentOrders', 'allOrders', 'invoices', 
-            'products', 'reviews', 'gallery', 'supportTickets'
+            'products', 'reviews', 'gallery', 'supportTickets',
+            'customers', 'totalRevenue', 'pendingOrders', 'customerCount',
+            'serverBookingSettings', 'siteContent'
         ));
     }
 
     public function saveFormSchema(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
+        $tenant = $this->tenant();
         $request->validate([
             'schema' => 'required|array',
         ]);
@@ -85,7 +119,7 @@ class AdminController extends Controller
 
     public function saveBookingSettings(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
+        $tenant = $this->tenant();
         
         $settings = [
             'lead_time_enabled' => $request->boolean('lead_time_enabled'),
@@ -106,7 +140,7 @@ class AdminController extends Controller
 
     public function saveEmailRouting(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->firstOrFail();
+        $tenant = $this->tenant();
         $validated = $request->validate([
             'email' => 'required|email|max:255',
         ]);
@@ -123,20 +157,7 @@ class AdminController extends Controller
 
     public function storeGallery(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
-        if (!$tenant) {
-            $tenant = Tenant::firstOrCreate(
-                ['slug' => 'blushedcrumbs'],
-                [
-                    'name' => 'Blushed Crumbs Bakehouse',
-                    'domain' => 'blushed-crumbs-bakehouse.test',
-                    'subdomain' => 'blushedcrumbs',
-                    'owner_name' => 'Baker',
-                    'email' => 'orders@blushedcrumbsbakehouse.com',
-                    'plan_tier' => 'pro',
-                ]
-            );
-        }
+        $tenant = $this->tenant();
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -179,11 +200,7 @@ class AdminController extends Controller
 
     public function destroyGallery(Request $request, $id)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->first();
-        if (!$tenant) {
-            return response()->json(['success' => false, 'message' => 'Tenant not found.'], 404);
-        }
-
+        $tenant = $this->tenant();
         $item = GalleryItem::where('tenant_id', $tenant->id)->findOrFail($id);
 
         if ($item->image_url && str_starts_with($item->image_url, 'storage/')) {
@@ -205,10 +222,13 @@ class AdminController extends Controller
 
     public function saveTheme(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->first() ?? Tenant::first();
+        $tenant = $this->tenant();
+
+        // Validate against themes available to THIS tenant (sweet_elegant is exclusive)
+        $availableThemes = array_keys($tenant->getAvailableThemesForTenant());
 
         $request->validate([
-            'theme_id' => 'required|string|in:sweet_elegant,rustic_kitchen,modern_bakery,playful_treats',
+            'theme_id' => 'required|string|in:' . implode(',', $availableThemes),
         ]);
 
         $tenant->update([
@@ -224,7 +244,7 @@ class AdminController extends Controller
 
     public function saveContent(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->first() ?? Tenant::first();
+        $tenant = $this->tenant();
 
         $data = $request->validate([
             'hero_subheading' => 'nullable|string|max:255',
@@ -282,7 +302,7 @@ class AdminController extends Controller
 
     public function saveSectionSettings(Request $request)
     {
-        $tenant = Tenant::where('slug', 'blushedcrumbs')->first() ?? Tenant::first();
+        $tenant = $this->tenant();
 
         // 1. Process Section Order & Enabled status
         $sectionsData = $request->input('sections', []);
@@ -425,5 +445,379 @@ class AdminController extends Controller
             'message' => 'No file uploaded.',
         ], 400);
     }
-}
 
+    // ─── New: Order Status Management ───
+
+    public function updateOrderStatus(Request $request, Order $order)
+    {
+        $tenant = $this->tenant();
+
+        // Security: ensure order belongs to this tenant
+        if ($order->tenant_id !== $tenant->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'status' => 'required|string|in:new,invoiced,in_progress,ready,completed,cancelled,paid',
+        ]);
+
+        $order->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order status updated to: ' . ucfirst(str_replace('_', ' ', $request->status)),
+            'status' => $order->status,
+        ]);
+    }
+
+    // ─── New: Review Management ───
+
+    public function storeReview(Request $request)
+    {
+        $tenant = $this->tenant();
+
+        $validated = $request->validate([
+            'client_name' => 'required|string|max:255',
+            'review_text' => 'required|string|max:2000',
+            'rating' => 'nullable|integer|min:1|max:5',
+        ]);
+
+        $review = Review::create([
+            'tenant_id' => $tenant->id,
+            'client_name' => $validated['client_name'],
+            'review_text' => $validated['review_text'],
+            'rating' => $validated['rating'] ?? 5,
+            'is_featured' => true,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Review published successfully!',
+            'review' => $review,
+        ]);
+    }
+
+    public function deleteReview(Request $request, Review $review)
+    {
+        $tenant = $this->tenant();
+
+        if ($review->tenant_id !== $tenant->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $review->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Review deleted successfully.',
+        ]);
+    }
+
+    // ─── New: Customer Management ───
+
+    public function storeCustomer(Request $request)
+    {
+        $tenant = $this->tenant();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:50',
+            'notes' => 'nullable|string|max:2000',
+        ]);
+
+        $customer = Customer::create([
+            'tenant_id' => $tenant->id,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'notes' => $validated['notes'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Customer added successfully!',
+            'customer' => $customer,
+        ]);
+    }
+
+    // ─── New: Invoice Management ───
+
+    public function createInvoice(Request $request)
+    {
+        $tenant = $this->tenant();
+
+        $validated = $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'total_amount' => 'nullable|numeric|min:0',
+            'deposit_amount' => 'nullable|numeric|min:0',
+            'notes' => 'nullable|string|max:2000',
+            'mark_invoiced' => 'nullable|boolean',
+        ]);
+
+        $order = Order::where('tenant_id', $tenant->id)->findOrFail($validated['order_id']);
+
+        $invoiceNumber = 'INV-' . strtoupper(Str::random(6));
+
+        $invoice = Invoice::create([
+            'tenant_id' => $tenant->id,
+            'order_id' => $order->id,
+            'invoice_number' => $invoiceNumber,
+            'client_name' => $order->client_name,
+            'client_email' => $order->client_email,
+            'total_amount' => $validated['total_amount'] ?? $order->total_price,
+            'deposit_amount' => $validated['deposit_amount'] ?? $order->deposit_amount,
+            'status' => 'unpaid',
+            'due_date' => $order->due_date,
+            'notes' => $validated['notes'] ?? null,
+        ]);
+
+        // Only update order status to invoiced if explicitly requested
+        if ($request->boolean('mark_invoiced', false)) {
+            $order->update(['status' => 'invoiced']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice ' . $invoiceNumber . ' created!',
+            'invoice' => $invoice,
+        ]);
+    }
+
+    public function sendInvoice(Request $request, Invoice $invoice)
+    {
+        $tenant = $this->tenant();
+
+        if ($invoice->tenant_id !== $tenant->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        // Build payment methods from tenant settings
+        $paymentSettings = $tenant->payment_settings ?? [];
+
+        try {
+            Mail::send('emails.invoice', [
+                'invoice' => $invoice,
+                'tenant' => $tenant,
+                'paymentSettings' => $paymentSettings,
+            ], function ($message) use ($invoice, $tenant) {
+                $message->to($invoice->client_email)
+                    ->subject('Invoice ' . $invoice->invoice_number . ' from ' . $tenant->name)
+                    ->from(config('mail.from.address'), $tenant->name);
+            });
+
+            // We do not change status to "sent" because our enum does not have "sent", 
+            // and we rely on the dropdown now. It stays "unpaid" or whatever it was.
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice sent to ' . $invoice->client_email,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateInvoice(Request $request, Invoice $invoice)
+    {
+        $tenant = $this->tenant();
+
+        if ($invoice->tenant_id !== $tenant->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            'total_amount' => 'required|numeric|min:0',
+            'deposit_amount' => 'required|numeric|min:0',
+            'notes' => 'nullable|string|max:2000',
+        ]);
+
+        $invoice->update([
+            'total_amount' => $validated['total_amount'],
+            'deposit_amount' => $validated['deposit_amount'],
+            'notes' => $validated['notes'] ?? null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice updated successfully!',
+            'invoice' => $invoice,
+        ]);
+    }
+
+    public function destroyInvoice(Invoice $invoice)
+    {
+        $tenant = $this->tenant();
+
+        if ($invoice->tenant_id !== $tenant->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $invoiceNumber = $invoice->invoice_number;
+        $invoice->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice ' . $invoiceNumber . ' deleted successfully!',
+        ]);
+    }
+
+    public function updateInvoiceStatus(Request $request, Invoice $invoice)
+    {
+        $tenant = $this->tenant();
+
+        if ($invoice->tenant_id !== $tenant->id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        $validated = $request->validate([
+            'status' => 'required|string|in:unpaid,deposit_paid,paid_in_full,cancelled'
+        ]);
+
+        $invoice->update([
+            'status' => $validated['status']
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice status updated!',
+            'status' => $invoice->status,
+        ]);
+    }
+
+
+    // ─── New: Custom Domain ───
+
+    public function saveCustomDomain(Request $request)
+    {
+        $tenant = $this->tenant();
+
+        $validated = $request->validate([
+            'custom_domain' => 'nullable|string|max:255',
+        ]);
+
+        $domain = $validated['custom_domain'];
+
+        // Basic validation: no spaces, has a dot
+        if ($domain && (!str_contains($domain, '.') || str_contains($domain, ' '))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid domain format.',
+            ], 422);
+        }
+
+        // Ensure uniqueness
+        if ($domain && Tenant::where('custom_domain', $domain)->where('id', '!=', $tenant->id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This domain is already connected to another account.',
+            ], 422);
+        }
+
+        $tenant->update(['custom_domain' => $domain ?: null]);
+
+        return response()->json([
+            'success' => true,
+            'message' => $domain ? 'Custom domain saved! Point your DNS to our server.' : 'Custom domain removed.',
+        ]);
+    }
+
+    // ─── New: Review Display Settings ───
+
+    public function saveReviewSettings(Request $request)
+    {
+        $tenant = $this->tenant();
+
+        $validated = $request->validate([
+            'max_reviews_display' => 'required|integer|min:1|max:50',
+        ]);
+
+        $tenant->update([
+            'max_reviews_display' => $validated['max_reviews_display'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Review settings updated!',
+        ]);
+    }
+
+    /**
+     * Cancel Bakery Subscription (Baker Portal).
+     */
+    public function cancelSubscription(Request $request)
+    {
+        $tenant = $this->tenant();
+        $tenant->update([
+            'is_active' => false,
+            'plan_tier' => 'canceled',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subscription canceled successfully.',
+        ]);
+    }
+
+    /**
+     * Submit Support Ticket (Baker Portal).
+     */
+    public function submitSupportTicket(Request $request)
+    {
+        $tenant = $this->tenant();
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:3000',
+            'type' => 'nullable|string|in:support,billing,custom_code,feature_request',
+        ]);
+
+        $ticket = SupportTicket::create([
+            'tenant_id' => $tenant->id,
+            'subject' => $validated['subject'],
+            'message' => $validated['message'],
+            'type' => $validated['type'] ?? 'support',
+            'status' => 'open',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Support ticket submitted! Our team will respond shortly.',
+            'ticket' => $ticket,
+        ]);
+    }
+
+    /**
+     * Upload and update Bakery Logo (Baker Portal Settings).
+     */
+    public function saveLogo(Request $request)
+    {
+        $tenant = $this->tenant();
+
+        $request->validate([
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $filename = 'logo_' . time() . '_' . Str::random(6) . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/logos'), $filename);
+            
+            $logoPath = '/uploads/logos/' . $filename;
+            $tenant->update(['logo_path' => $logoPath]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bakery logo updated successfully!',
+                'logo_path' => asset($logoPath),
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'No image file selected.',
+        ], 400);
+    }
+}

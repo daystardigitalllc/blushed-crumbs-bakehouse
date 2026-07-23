@@ -18,14 +18,24 @@
 <header class="site-header">
     <div class="header-container">
         <a href="{{ route('storefront.index') }}" class="logo">
-            <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Bakehouse Logo">
+            @if(!empty($tenant->logo_path))
+                <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
+            @else
+                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);">🧁 {{ $tenant->name }}</span>
+            @endif
         </a>
         <nav class="nav-links">
             <a href="{{ route('storefront.index') }}">Home</a>
             <a href="{{ route('storefront.about') }}" class="active">About</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
-            <a href="{{ route('admin.dashboard') }}" class="admin-btn">🔑 Baker Admin Portal</a>
+            @php
+                $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
+                $bakerPortalUrl = request()->is('site/*') 
+                    ? url('/site/' . $sub . '/dashboard') 
+                    : route('baker.dashboard');
+            @endphp
+            <a href="{{ $bakerPortalUrl }}" class="admin-btn">🔑 Baker Portal</a>
         </nav>
     </div>
 </header>
@@ -34,14 +44,17 @@
     <!-- HERO SECTION -->
     <section class="about-hero-section">
         <span class="about-hero-subtitle">ABOUT US</span>
-        <h1 class="about-hero-title">Who is Blushed Crumbs?</h1>
+        <h1 class="about-hero-title">Who is {{ $tenant->name }}?</h1>
     </section>
 
     <!-- MEET THE FOUNDER SECTION -->
     <section class="meet-founder-section">
         <div class="meet-founder-container">
             <div class="meet-founder-img-wrap">
-                <img src="{{ asset('images/baker_founder_portrait.jpg') }}" alt="Meet The Founder">
+                @php
+                    $founderImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : asset('images/baker_founder_portrait.jpg');
+                @endphp
+                <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}">
             </div>
             <div class="meet-founder-content">
                 <h2>{{ $tenant->getSiteContent('about_title', 'About Our Bakery') }}</h2>
@@ -136,7 +149,11 @@
 <!-- ABOUT PAGE FOOTER -->
 <footer class="about-footer">
     <div class="about-footer-logo">
-        <img src="{{ asset('images/blushedlogo.png') }}" alt="Blushed Crumbs Logo">
+        @if(!empty($tenant->logo_path))
+            <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
+        @else
+            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:#ffffff;">🧁 {{ $tenant->name }}</span>
+        @endif
     </div>
     <div class="about-footer-nav">
         <a href="{{ route('storefront.index') }}">Home</a>

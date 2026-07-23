@@ -13,16 +13,26 @@ class Tenant extends Model
         'name',
         'slug',
         'domain',
+        'subdomain',
+        'custom_domain',
+        'brand_id',
         'owner_name',
         'email',
         'phone',
         'plan_tier',
         'theme_id',
+        'logo_path',
+        'gallery_images',
+        'instagram_url',
+        'facebook_url',
         'payment_settings',
         'form_schema',
         'site_content',
         'section_settings',
         'booking_settings',
+        'ai_generated_content',
+        'onboarding_completed',
+        'max_reviews_display',
         'is_active',
     ];
 
@@ -32,6 +42,9 @@ class Tenant extends Model
         'site_content' => 'array',
         'section_settings' => 'array',
         'booking_settings' => 'array',
+        'ai_generated_content' => 'array',
+        'gallery_images' => 'array',
+        'onboarding_completed' => 'boolean',
         'is_active' => 'boolean',
     ];
 
@@ -122,7 +135,26 @@ class Tenant extends Model
         return $sections;
     }
 
-    public static function getAvailableThemes()
+    /**
+     * Get themes available to this specific tenant.
+     * Sweet & Elegant is exclusive to Blushed Crumbs (custom-built for them).
+     */
+    public function getAvailableThemesForTenant(): array
+    {
+        $all = static::getAllThemes();
+
+        // Sweet & Elegant is exclusive to Blushed Crumbs
+        if ($this->slug !== 'blushedcrumbs') {
+            unset($all['sweet_elegant']);
+        }
+
+        return $all;
+    }
+
+    /**
+     * Master theme registry — all themes across the platform.
+     */
+    public static function getAllThemes(): array
     {
         return [
             'sweet_elegant' => [
@@ -131,6 +163,7 @@ class Tenant extends Model
                 'subtitle' => 'Romantic pinks, luxury vintage script, soft cloud dividers',
                 'preview_bg' => '#fcebf1',
                 'preview_accent' => '#e67399',
+                'exclusive' => true,
             ],
             'rustic_kitchen' => [
                 'id' => 'rustic_kitchen',
@@ -175,6 +208,14 @@ class Tenant extends Model
                 'preview_accent' => '#111111',
             ],
         ];
+    }
+
+    /**
+     * Backward-compatible static accessor (for views that call Tenant::getAvailableThemes()).
+     */
+    public static function getAvailableThemes(): array
+    {
+        return static::getAllThemes();
     }
 
     public static function getDefaultFormSchema()
@@ -277,6 +318,23 @@ class Tenant extends Model
                 'description' => ''
             ],
         ];
+    }
+
+    // ─── Relationships ───
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
     }
 
     public function orders()

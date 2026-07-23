@@ -1,15 +1,28 @@
 @extends('layouts.app')
 
-@section('title', 'Baker Admin Portal | Blushed Crumbs Bakehouse')
+@section('title', 'Baker Admin Portal | ' . ($tenant->name ?? 'Doughmain.pro'))
 
 @section('content')
+@php
+    $serverFormSchema = $tenant->form_schema ?? \App\Models\Tenant::getDefaultFormSchema();
+    $serverBookingSettings = $tenant->booking_settings ?? [
+        'lead_time_enabled' => true,
+        'lead_time_days' => 3,
+        'recurring_closed_days' => [0, 1],
+        'blocked_dates' => ['2026-07-04', '2026-07-25']
+    ];
+@endphp
+<script>
+    window._serverFormSchema = @json($serverFormSchema);
+    window._serverBookingSettings = @json($serverBookingSettings);
+</script>
 <!-- PAGE 4: BAKER ADMIN PORTAL VIEW WITH MODERN SIDEBAR -->
 <div id="admin-portal-view">
     <!-- MOBILE TOP BAR WITH HAMBURGER BUTTON -->
     <div class="admin-mobile-header">
-        <div class="mobile-brand">
-            <span style="font-size:1.8rem;">🌸</span>
-            <strong style="font-size:1.15rem; color:#ffffff;">Blushed Crumbs Admin</strong>
+        <div class="mobile-brand" style="display:flex; align-items:center; gap:8px;">
+            <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:34px; width:auto;">
+            <strong style="font-size:1.15rem; color:#ffffff;">Doughmain.pro</strong>
         </div>
         <button class="mobile-hamburger-btn" id="mobile-hamburger-trigger" onclick="toggleAdminMobileSidebar()" aria-label="Open Navigation Menu">
             <span></span>
@@ -25,10 +38,10 @@
         <!-- LEFT SIDEBAR -->
         <aside class="admin-sidebar" id="admin-sidebar-drawer">
             <div class="admin-sidebar-brand">
-                <span class="logo-icon" style="font-size:2.2rem;">🌸</span>
+                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:44px; width:auto; object-fit:contain;">
                 <div>
-                    <h3>Blushed Crumbs</h3>
-                    <span class="badge-pro">Pro Baker CMS</span>
+                    <h3 style="font-size:1.05rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px;">{{ $tenant->name }}</h3>
+                    <span class="badge-pro">Baker CMS</span>
                 </div>
                 <button class="drawer-close-btn" onclick="toggleAdminMobileSidebar()">✕</button>
             </div>
@@ -52,19 +65,19 @@
                 <button class="admin-nav-item" data-tab="tab-reviews">
                     <span>⭐</span> Client Reviews
                 </button>
-                <button class="admin-nav-item" data-tab="tab-support">
-                    <span>💬</span> Baker Support
-                </button>
                 <button class="admin-nav-item" data-tab="tab-calendar">
                     <span>📆</span> Availability & Blackouts
                 </button>
                 <button class="admin-nav-item" data-tab="tab-settings">
                     <span>🔧</span> Settings
                 </button>
+                <button class="admin-nav-item" data-tab="tab-subscription-support">
+                    <span>💳</span> Subscription &amp; Support
+                </button>
             </nav>
 
             <div class="admin-sidebar-footer">
-                <a href="{{ route('storefront.index') }}" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white; text-decoration:none;">← Exit to Storefront</a>
+                <a href="/site/{{ $tenant->subdomain }}" target="_blank" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white; text-decoration:none;">← Exit to Storefront</a>
             </div>
         </aside>
 
@@ -87,7 +100,15 @@
                                 <div class="due-badge {{ $isUrgent ? 'due-urgent' : 'due-normal' }}">
                                     ⏰ DUE: {{ $dueDate->format('M d, Y') }} ({{ $order->time_slot }})
                                 </div>
-                                <span class="status-tag status-{{ $order->status }}">{{ strtoupper($order->status) }}</span>
+                                <select class="status-select status-{{ $order->status }}" onchange="updateOrderStatus({{ $order->id }}, this.value)">
+                                    <option value="new" {{ $order->status == 'new' ? 'selected' : '' }}>NEW</option>
+                                    <option value="invoiced" {{ $order->status == 'invoiced' ? 'selected' : '' }}>INVOICED</option>
+                                    <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>PAID</option>
+                                    <option value="in_progress" {{ $order->status == 'in_progress' ? 'selected' : '' }}>IN PROGRESS</option>
+                                    <option value="ready" {{ $order->status == 'ready' ? 'selected' : '' }}>READY</option>
+                                    <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>COMPLETED</option>
+                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
+                                </select>
                             </div>
 
                             <div class="order-card-body">
@@ -133,15 +154,23 @@
                             </div>
 
                             <div class="order-card-actions">
-                                <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder('{{ $order->order_number }}', '{{ $order->client_name }}', {{ $order->total_price }}, {{ $order->deposit_amount }})">💳 Create Invoice</button>
-                                <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $order->order_number }}')">📋 Copy Invoice Link</button>
+                                <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder({{ $order->id }}, {{ $order->total_price }}, {{ $order->deposit_amount }})">💳 Create Invoice</button>
+                                <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $order->invoice ? $order->invoice->invoice_number : '' }}', {{ $order->id }})">📋 Copy Invoice Link</button>
                             </div>
                         </div>
                     @empty
                         <div class="order-card urgent-border">
                             <div class="order-card-header">
                                 <div class="due-badge due-urgent">⏰ DUE: Tomorrow (9:30 AM)</div>
-                                <span class="status-tag status-in_progress">IN PROGRESS</span>
+                                <select class="status-select status-in_progress" onchange="updateOrderStatus(1, this.value)">
+                                    <option value="new">NEW</option>
+                                    <option value="invoiced">INVOICED</option>
+                                    <option value="paid">PAID</option>
+                                    <option value="in_progress" selected>IN PROGRESS</option>
+                                    <option value="ready">READY</option>
+                                    <option value="completed">COMPLETED</option>
+                                    <option value="cancelled">CANCELLED</option>
+                                </select>
                             </div>
                             <div class="order-card-body">
                                 <h4>#BC-1092 - Sarah Jenkins</h4>
@@ -153,8 +182,8 @@
                                 </div>
                             </div>
                             <div class="order-card-actions">
-                                <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder('BC-1092', 'Sarah Jenkins', 60, 30)">💳 Create Invoice</button>
-                                <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('BC-1092')">📋 Copy Invoice Link</button>
+                                <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder(1, 60, 30)">💳 Create Invoice</button>
+                                <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('INV-6THPBF', 1)">📋 Copy Invoice Link</button>
                             </div>
                         </div>
                     @endforelse
@@ -413,6 +442,49 @@
                     <p class="subtitle">Add your custom payment methods, set payout usernames, and generate digital client invoices!</p>
                 </div>
 
+                <!-- RECENT INVOICES TRACKER -->
+                <div class="form-builder-card" style="margin-bottom:20px;">
+                    <h4>📋 Recent Invoices</h4>
+                    <table style="width:100%; border-collapse:collapse; text-align:left; margin-top:10px;">
+                        <thead>
+                            <tr style="border-bottom:2px solid #f0e4ea;">
+                                <th style="padding:12px 8px;">Invoice #</th>
+                                <th style="padding:12px 8px;">Client</th>
+                                <th style="padding:12px 8px;">Amount</th>
+                                <th style="padding:12px 8px;">Status</th>
+                                <th style="padding:12px 8px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($invoices as $inv)
+                                <tr style="border-bottom:1px solid #f0e4ea;">
+                                    <td style="padding:12px 8px; font-family:monospace;">{{ $inv->invoice_number }}</td>
+                                    <td style="padding:12px 8px;">{{ $inv->client_name }}</td>
+                                    <td style="padding:12px 8px; font-weight:700;">${{ number_format($inv->total_amount, 2) }}</td>
+                                    <td style="padding:12px 8px;">
+                                        <select class="status-select status-{{ $inv->status }}" onchange="updateInvoiceStatus({{ $inv->id }}, this.value)">
+                                            <option value="unpaid" {{ $inv->status == 'unpaid' ? 'selected' : '' }}>UNPAID</option>
+                                            <option value="deposit_paid" {{ $inv->status == 'deposit_paid' ? 'selected' : '' }}>DEPOSIT PAID</option>
+                                            <option value="paid_in_full" {{ $inv->status == 'paid_in_full' ? 'selected' : '' }}>PAID IN FULL</option>
+                                            <option value="cancelled" {{ $inv->status == 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
+                                        </select>
+                                    </td>
+                                    <td style="padding:12px 8px;">
+                                        <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $inv->invoice_number }}')">📋 Copy Link</button>
+                                        <button class="btn btn-sm btn-outline" onclick="openInvoiceEditModal({{ $inv->id }}, {{ $inv->total_amount }}, {{ $inv->deposit_amount ?? 0 }}, '{{ addslashes($inv->notes ?? '') }}', {{ $inv->order_id ?? 'null' }})">✏️ Edit</button>
+                                        <button class="btn btn-sm btn-primary" onclick="sendInvoice('{{ $inv->id }}')">📧 Send</button>
+                                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteInvoice({{ $inv->id }}, this)">🗑️ Delete</button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" style="text-align:center; padding:20px; color:#888;">No invoices created yet.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
                 <!-- ADD CUSTOM PAYMENT METHOD CARD -->
                 <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
                     <h4 style="color:#5c1d37;">➕ Add Custom Payment Option</h4>
@@ -461,49 +533,77 @@
             <div id="tab-reviews" class="tab-content">
                 <div class="section-header">
                     <h3>⭐ Customer Reviews Manager</h3>
-                    <p class="subtitle">Add client reviews directly to your homepage!</p>
+                    <p class="subtitle">Manage client reviews and testimonials displayed on your storefront!</p>
                 </div>
-                <div class="form-builder-card">
+
+                <!-- ADD NEW REVIEW CARD -->
+                <div class="form-builder-card" style="margin-bottom:20px; border:2px solid #e67399; background:#fff7fa;">
+                    <h4 style="color:#5c1d37; margin-bottom:12px;">➕ Add New Client Review</h4>
                     <form id="add-review-form" style="display:flex; flex-direction:column; gap:12px;">
                         <div>
-                            <label>Client Name</label>
-                            <input type="text" id="rev-client-name" placeholder="Client Name" required>
+                            <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Client Name</label>
+                            <input type="text" id="rev-client-name" class="form-control" placeholder="e.g. Lynne Escue" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
                         </div>
                         <div>
-                            <label>Review Text</label>
-                            <textarea id="rev-text" placeholder="Paste review text here..." required style="height:90px;"></textarea>
+                            <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Review Text</label>
+                            <textarea id="rev-text" class="form-control" placeholder="Paste client review text here..." required style="width:100%; height:90px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Publish Review to Storefront</button>
+                        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Publish Review to Storefront</button>
                     </form>
                 </div>
-            </div>
 
-            <!-- TAB 6: Support -->
-            <div id="tab-support" class="tab-content">
-                <div class="section-header">
-                    <h3>💬 Custom Code & Support Request</h3>
-                    <p class="subtitle">Direct support request form for custom features ($50/mo Pro Tier perk)</p>
-                </div>
+                <!-- PUBLISHED REVIEWS LIST -->
                 <div class="form-builder-card">
-                    <form id="support-request-form" style="display:flex; flex-direction:column; gap:12px;">
-                        <div>
-                            <label>Subject</label>
-                            <input type="text" placeholder="e.g. Custom theme tweak request" required>
-                        </div>
-                        <div>
-                            <label>Description</label>
-                            <textarea placeholder="Describe custom code or support request..." required style="height:110px;"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send Support Request</button>
-                    </form>
+                    <h4>📋 Published Reviews</h4>
+                    <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">The following reviews are currently live on your bakery storefront:</p>
+
+                    <div id="admin-reviews-list" style="display:flex; flex-direction:column; gap:12px;">
+                        @forelse($reviews as $rev)
+                            <div class="review-item-row" data-id="{{ $rev->id }}" style="background:white; padding:16px; border-radius:12px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:flex-start; gap:15px;">
+                                <div>
+                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                                        <strong style="color:#5c1d37; font-size:1rem;">{{ $rev->client_name }}</strong>
+                                        <span style="color:#ffc107; font-size:0.9rem;">★★★★★</span>
+                                    </div>
+                                    <p style="font-size:0.9rem; color:#555; margin:0; line-height:1.5;">"{{ $rev->review_text }}"</p>
+                                </div>
+                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteReview({{ $rev->id }}, this)">🗑️ Delete</button>
+                            </div>
+                        @empty
+                            <p style="color:#888; text-align:center; padding:20px;">No reviews added yet. Use the form above to publish client reviews!</p>
+                        @endforelse
+                    </div>
                 </div>
             </div>
 
             <!-- TAB: Settings -->
             <div id="tab-settings" class="tab-content">
                 <div class="section-header">
-                    <h3>🎨 Bakery Theme & Storefront Options</h3>
-                    <p class="subtitle">Choose a professionally curated bakery theme and configure lead times for your site.</p>
+                    <h3>🎨 Bakery Theme &amp; Storefront Options</h3>
+                    <p class="subtitle">Choose a professionally curated bakery theme, upload your brand logo, and configure settings.</p>
+                </div>
+
+                <!-- BAKERY LOGO MANAGEMENT CARD -->
+                <div class="form-builder-card" style="border:2px solid #6d28d9; background:#FAF8FF; margin-bottom:20px;">
+                    <h4 style="color:#4c1d95; margin-bottom:6px;">🖼️ Bakery Brand Logo</h4>
+                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Upload your official bakery logo. This will be displayed in the header &amp; footer across all your storefront pages.</p>
+                    
+                    <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                        <div style="width:90px; height:90px; border-radius:16px; background:#ffffff; border:2px dashed #c4b5fd; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:6px;">
+                            <img id="bakery-logo-preview" src="{{ $tenant->logo_path ? asset($tenant->logo_path) : asset('images/doughmain_logo.png') }}" alt="Bakery Logo" style="max-width:100%; max-height:100%; object-fit:contain;">
+                        </div>
+                        <div style="flex:1; min-width:240px;">
+                            <form id="bakery-logo-form" onsubmit="uploadBakeryLogo(event)" style="display:flex; flex-direction:column; gap:10px;">
+                                <input type="file" id="bakery-logo-file" name="logo" accept="image/*" required onchange="previewBakeryLogoFile(this)" style="font-size:0.88rem;">
+                                <div style="display:flex; gap:10px; align-items:center;">
+                                    <button type="submit" class="btn btn-primary" style="background:#6d28d9; border-color:#6d28d9;">
+                                        💾 Save Bakery Logo
+                                    </button>
+                                    <span id="logo-upload-status" style="font-size:0.85rem; font-weight:600; color:#059669; display:none;">✓ Logo updated!</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- CURATED BAKERY THEMES CARD -->
@@ -513,7 +613,7 @@
                             <h4 style="color:#5c1d37; margin:0;">🌸 Select Your Bakery Theme</h4>
                             <p style="font-size:0.88rem; color:#666; margin-top:4px;">Pick a standardized, low-maintenance design template. Customizes colors and layout automatically.</p>
                         </div>
-                        <a href="{{ route('storefront.index') }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:#e67399; color:#e67399;">👁️ View Live Storefront ↗</a>
+                        <a href="/site/{{ $tenant->subdomain }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:#e67399; color:#e67399;">👁️ View Live Storefront ↗</a>
                     </div>
 
                     <div id="theme-status-msg" style="display:none; margin-bottom:14px; background:#d4edda; color:#155724; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c3e6cb;"></div>
@@ -789,6 +889,23 @@
                             @endforeach
                         </div>
                     </form>
+                </div> <!-- CLOSE Storefront Sections Builder Card -->
+
+                <!-- BAKER SUPPORT CARD -->
+                <div class="form-builder-card" style="margin-top:20px; border:2px solid #6d28d9; background:#fbf8ff;">
+                    <h4 style="color:#4c1d95; margin-bottom:4px;">💬 Baker Support & Custom Code Request</h4>
+                    <p style="font-size:0.88rem; color:#666; margin-bottom:14px;">Direct support request form for custom features, theme tweaks, or code assistance ($50/mo Pro Tier perk).</p>
+                    <form id="support-request-form" style="display:flex; flex-direction:column; gap:12px;">
+                        <div>
+                            <label style="font-weight:700; font-size:0.85rem; color:#4c1d95; display:block; margin-bottom:4px;">Subject</label>
+                            <input type="text" class="form-control" placeholder="e.g. Custom theme tweak request" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
+                        </div>
+                        <div>
+                            <label style="font-weight:700; font-size:0.85rem; color:#4c1d95; display:block; margin-bottom:4px;">Description</label>
+                            <textarea class="form-control" placeholder="Describe custom code or support request..." required style="width:100%; height:100px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background:#6d28d9; border-color:#6d28d9; align-self:flex-start;">Send Support Request</button>
+                    </form>
                 </div>
             </div>
 
@@ -814,8 +931,11 @@
                             ['5', 'Friday'],
                             ['6', 'Saturday']
                         ] as [$dayVal, $dayName])
+                        @php
+                            $isClosedChecked = in_array((int)$dayVal, $serverBookingSettings['recurring_closed_days'] ?? [0, 1]);
+                        @endphp
                         <label style="display:flex; align-items:center; gap:8px; background:white; padding:10px 16px; border-radius:12px; border:1px solid #f0e4ea; font-weight:600; cursor:pointer; user-select:none;">
-                            <input type="checkbox" class="recurring-closed-checkbox" value="{{ $dayVal }}">
+                            <input type="checkbox" class="recurring-closed-checkbox" value="{{ $dayVal }}" {{ $isClosedChecked ? 'checked' : '' }}>
                             <span>{{ $dayName }}</span>
                         </label>
                         @endforeach
@@ -837,7 +957,7 @@
                         <!-- Month Navigation -->
                         <div style="display:flex; align-items:center; gap:10px; background:#fff0f5; padding:6px 14px; border-radius:14px; border:1px solid #f8c6d7;">
                             <button class="btn btn-sm btn-outline" style="padding:4px 10px;" onclick="changeAdminCalMonth(-1)">◀ Prev</button>
-                            <span id="admin-cal-month-year" style="font-weight:800; color:#5c1d37; min-width:130px; text-align:center;">July 2026</span>
+                            <span id="admin-cal-month-year" style="font-weight:800; color:#5c1d37; min-width:130px; text-align:center;">{{ now()->format('F Y') }}</span>
                             <button class="btn btn-sm btn-outline" style="padding:4px 10px;" onclick="changeAdminCalMonth(1)">Next ▶</button>
                         </div>
                     </div>
@@ -851,7 +971,38 @@
 
                     <!-- Interactive Admin Calendar Grid -->
                     <div id="admin-calendar-grid" class="admin-cal-grid">
-                        <!-- Rendered by JS -->
+                        @php
+                            $calNow = \Carbon\Carbon::now();
+                            $calYear = $calNow->year;
+                            $calMonth = $calNow->month;
+                            $calDaysInMonth = $calNow->daysInMonth;
+                            $calFirstDayIndex = \Carbon\Carbon::create($calYear, $calMonth, 1)->dayOfWeek;
+                            $calDayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                            $calBlockedDates = $serverBookingSettings['blocked_dates'] ?? ['2026-07-04', '2026-07-25'];
+                            $calRecurringClosed = $serverBookingSettings['recurring_closed_days'] ?? [0, 1];
+                        @endphp
+
+                        @foreach($calDayHeaders as $dh)
+                            <div class="admin-cal-header-day">{{ $dh }}</div>
+                        @endforeach
+
+                        @for($i = 0; $i < $calFirstDayIndex; $i++)
+                            <div class="admin-cal-day empty-slot"></div>
+                        @endfor
+
+                        @for($day = 1; $day <= $calDaysInMonth; $day++)
+                            @php
+                                $dateObj = \Carbon\Carbon::create($calYear, $calMonth, $day);
+                                $dayOfWeek = $dateObj->dayOfWeek;
+                                $dateStr = $dateObj->format('Y-m-d');
+                                $isBlocked = in_array($dateStr, $calBlockedDates);
+                                $isWeeklyClosed = in_array($dayOfWeek, $calRecurringClosed);
+                                $statusClass = $isBlocked ? 'blocked' : ($isWeeklyClosed ? 'weekly-closed' : 'available');
+                            @endphp
+                            <div class="admin-cal-day {{ $statusClass }}" data-date="{{ $dateStr }}" onclick="toggleAdminCalDate('{{ $dateStr }}')">
+                                {{ $day }}
+                            </div>
+                        @endfor
                     </div>
 
                     <!-- Manual Date Picker Quick Add -->
@@ -869,13 +1020,207 @@
                     <h4>📋 Currently Blocked Custom Dates</h4>
                     <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">These specific dates are currently blacked out for client orders:</p>
                     <div id="admin-blocked-dates-list" style="display:flex; flex-wrap:wrap; gap:10px;">
-                        <!-- Rendered by JS -->
+                        @forelse($serverBookingSettings['blocked_dates'] ?? ['2026-07-04', '2026-07-25'] as $bDate)
+                            <div class="blocked-date-badge">
+                                <span>🚫 {{ $bDate }}</span>
+                                <button title="Unblock Date" onclick="removeBlockedDate('{{ $bDate }}')">✕</button>
+                            </div>
+                        @empty
+                            <span style="color:#aaa; font-size:0.9rem;">No custom blocked dates added yet. Click any calendar date above or use the manual input!</span>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 9: Subscription & Support -->
+            <div id="tab-subscription-support" class="tab-content">
+                <div class="section-header">
+                    <h3>💳 Subscription &amp; Platform Support</h3>
+                    <p class="subtitle">Manage your bakery plan subscription and get direct support from Doughmain.pro.</p>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px;">
+                    <!-- SUBSCRIPTION CARD -->
+                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Bakery Plan &amp; Billing</h4>
+                        <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <span style="font-weight:600; color:#475569;">Current Plan:</span>
+                                <span style="font-weight:800; color:#e67399; text-transform:uppercase;">{{ strtoupper($tenant->plan_tier ?? 'standard') }} (${{ $tenant->plan_tier === 'pro' ? '50' : '29' }}/mo)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:600; color:#475569;">Account Status:</span>
+                                <span style="color:#059669; font-weight:700;">● {{ $tenant->is_active ? 'Active' : 'Suspended/Canceled' }}</span>
+                            </div>
+                        </div>
+                        <form onsubmit="handleCancelSubscription(event)">
+                            <button type="submit" class="btn" style="background:#ef4444; color:#fff; width:100%; padding:12px; font-weight:600; border-radius:10px; border:none; cursor:pointer;">
+                                End Subscription / Cancel Account
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- SUPPORT TICKET FORM CARD -->
+                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Submit Support Ticket</h4>
+                        <form onsubmit="handleSubmitSupportTicket(event)">
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Ticket Subject</label>
+                                <input type="text" id="ticket_subject" name="subject" required class="form-input" placeholder="e.g. Need help updating custom domain" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                            </div>
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Category</label>
+                                <select id="ticket_type" name="type" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                                    <option value="support">General Support</option>
+                                    <option value="billing">Billing &amp; Subscription</option>
+                                    <option value="custom_code">Theme &amp; Customization</option>
+                                    <option value="feature_request">Feature Request</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:16px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Describe Your Request</label>
+                                <textarea id="ticket_message" name="message" required rows="4" class="form-input" placeholder="Tell our support team how we can assist your bakery..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">
+                                Submit Support Ticket 🚀
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
 
         </main>
 
+        <script>
+            async function handleCancelSubscription(e) {
+                e.preventDefault();
+                if (!confirm('Are you sure you want to end your bakery plan subscription? Your website will be deactivated.')) return;
+                try {
+                    const res = await fetch('/dashboard/subscription/cancel', {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+                    });
+                    const data = await res.json();
+                    alert(data.message || 'Subscription canceled.');
+                    window.location.reload();
+                } catch(err) {
+                    console.error(err);
+                    alert('Error canceling subscription.');
+                }
+            }
+
+            async function handleSubmitSupportTicket(e) {
+                e.preventDefault();
+                const subject = document.getElementById('ticket_subject').value;
+                const type = document.getElementById('ticket_type').value;
+                const message = document.getElementById('ticket_message').value;
+
+                try {
+                    const res = await fetch('/dashboard/support/ticket', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ subject, type, message })
+                    });
+                    const data = await res.json();
+                    alert(data.message || 'Support ticket submitted!');
+                    document.getElementById('ticket_subject').value = '';
+                    document.getElementById('ticket_message').value = '';
+                } catch(err) {
+                    console.error(err);
+                    alert('Error submitting support ticket.');
+                }
+            }
+
+            function previewBakeryLogoFile(input) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('bakery-logo-preview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            async function uploadBakeryLogo(e) {
+                e.preventDefault();
+                const fileInput = document.getElementById('bakery-logo-file');
+                if (!fileInput.files || !fileInput.files[0]) {
+                    alert('Please select a logo image file to upload.');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('logo', fileInput.files[0]);
+
+                const statusEl = document.getElementById('logo-upload-status');
+                statusEl.style.display = 'none';
+
+                try {
+                    const res = await fetch('/dashboard/settings/logo', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        if (data.logo_path) {
+                            document.getElementById('bakery-logo-preview').src = data.logo_path;
+                        }
+                        statusEl.innerText = '✓ Logo saved!';
+                        statusEl.style.display = 'inline-block';
+                        setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+                    } else {
+                        alert(data.message || 'Error uploading logo.');
+                    }
+                } catch(err) {
+                    console.error(err);
+                    alert('Failed to upload logo.');
+                }
+            }
+        </script>
+
+    <!-- INVOICE EDIT / CREATION MODAL -->
+<div id="invoice-edit-modal" class="order-modal-overlay" style="display:none; z-index:9999;">
+    <div class="order-modal-card" style="max-width: 500px; width:90%;">
+        <div class="order-modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:12px; margin-bottom:16px;">
+            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; color:#5c1d37; margin:0;">💳 Invoice Details</h2>
+            <button class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeInvoiceEditModal()">✕</button>
+        </div>
+        <div class="order-modal-body">
+            <form id="invoice-edit-form" onsubmit="event.preventDefault();">
+                <input type="hidden" id="edit-invoice-id">
+                <input type="hidden" id="edit-order-id">
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Total Amount ($)</label>
+                    <input type="number" step="0.01" id="edit-invoice-total" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Required Deposit Amount ($)</label>
+                    <input type="number" step="0.01" id="edit-invoice-deposit" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Baker Notes & Payment Instructions</label>
+                    <textarea id="edit-invoice-notes" class="form-control" rows="3" placeholder="e.g. Please send Venmo deposit to @Blushed_Crumbs with Order # in memo..." style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:0.9rem; font-family:inherit;"></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid #eee; padding-top:16px;">
+                    <button type="button" class="btn btn-outline" onclick="closeInvoiceEditModal()">Cancel</button>
+                    <button type="button" class="btn btn-outline" onclick="saveInvoiceEdits()" style="border-color:#e67399; color:#e67399;">💾 Save Invoice</button>
+                    <button type="button" class="btn btn-primary" onclick="saveAndSendInvoice()">📧 Save & Send</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 @endsection
