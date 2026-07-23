@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         'name' => 'Austin Hayes',
         'password' => Hash::make('Test1234!'),
         'role' => 'superadmin',
-        'tenant_id' => null,
+        'tenant_id' => $tenant->id,    
     ]
 );
         // ─── 1. Create Brand: BakeryPro ───
