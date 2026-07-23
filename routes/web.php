@@ -14,6 +14,11 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
 // ───  SaaS Landing Page ───
 // This route is hit when the user visits the main brand domain (doughmain.pro)
 // The StorefrontController checks the host and renders the landing page or storefront
@@ -74,6 +79,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('/settings/domain', [AdminController::class, 'saveCustomDomain'])->name('admin.settings.domain');
     Route::post('/settings/reviews', [AdminController::class, 'saveReviewSettings'])->name('admin.settings.reviews');
     Route::post('/settings/logo', [AdminController::class, 'saveLogo'])->name('admin.settings.logo');
+    Route::post('/settings/password', [AdminController::class, 'updatePassword'])->name('admin.settings.password');
     Route::post('/subscription/cancel', [AdminController::class, 'cancelSubscription'])->name('admin.subscription.cancel');
     Route::post('/support/ticket', [AdminController::class, 'submitSupportTicket'])->name('admin.support.ticket');
 });

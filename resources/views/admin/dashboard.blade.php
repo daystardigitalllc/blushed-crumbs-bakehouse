@@ -1040,6 +1040,34 @@
                 </div>
 
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px;">
+                    <!-- CHANGE PASSWORD CARD -->
+                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Account Security</h4>
+                        <form action="{{ route('admin.settings.password') }}" method="POST">
+                            @csrf
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Current Password</label>
+                                <input type="password" name="current_password" required class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                                @error('current_password') <span style="color:#ef4444; font-size:0.8rem;">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">New Password</label>
+                                <input type="password" name="new_password" required minlength="8" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                                @error('new_password') <span style="color:#ef4444; font-size:0.8rem;">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="form-group" style="margin-bottom:16px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Confirm New Password</label>
+                                <input type="password" name="new_password_confirmation" required minlength="8" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">
+                                Update Password 🔒
+                            </button>
+                            @if(session('success'))
+                                <div style="margin-top:10px; color:#059669; font-size:0.9rem; font-weight:600; text-align:center;">{{ session('success') }}</div>
+                            @endif
+                        </form>
+                    </div>
+
                     <!-- SUBSCRIPTION CARD -->
                     <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
                         <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Bakery Plan &amp; Billing</h4>

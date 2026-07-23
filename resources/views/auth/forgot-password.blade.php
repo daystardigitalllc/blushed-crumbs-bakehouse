@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - DoughMain</title>
+    <title>Forgot Password - DoughMain</title>
     <!-- Favicon -->
     @if(isset($tenant) && $tenant->logo_path)
         <link rel="icon" href="{{ asset($tenant->logo_path) }}">
@@ -218,7 +218,7 @@
                 <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:52px; width:auto;">
                 <span>Doughmain.pro</span>
             </div>
-            <p class="tagline">Manage your bakery website</p>
+            <p class="tagline">Enter your email to reset your password</p>
         </div>
 
         <div class="card">
@@ -232,7 +232,13 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('login') }}">
+            @if(session('status'))
+                <div style="background:#d1fae5; color:#065f46; padding:1rem; border-radius:10px; margin-bottom:1.5rem; font-size:0.9rem; border:1px solid #a7f3d0;">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('password.email') }}">
                 @csrf
 
                 <div class="form-group">
@@ -240,24 +246,11 @@
                     <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus placeholder="baker@example.com">
                 </div>
 
-                <div class="form-group">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label for="password" class="form-label" style="margin-bottom:0;">Password</label>
-                        <a href="{{ route('password.request') }}" style="font-size:0.85rem; color:var(--accent); text-decoration:none; font-weight:500;">Forgot Password?</a>
-                    </div>
-                    <input id="password" type="password" class="form-control" name="password" required placeholder="••••••••" style="margin-top:0.5rem;">
-                </div>
-
-                <div class="remember-me">
-                    <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                    <label for="remember">Remember me</label>
-                </div>
-
-                <button type="submit" class="btn-submit">Sign In</button>
+                <button type="submit" class="btn-submit">Send Reset Link</button>
             </form>
 
             <div class="links">
-                <a href="/register">Don't have an account? Sign up</a>
+                <a href="{{ route('login') }}">Back to Login</a>
             </div>
         </div>
     </div>

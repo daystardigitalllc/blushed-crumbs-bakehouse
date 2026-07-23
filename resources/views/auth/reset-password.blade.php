@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - DoughMain</title>
+    <title>Reset Password - DoughMain</title>
     <!-- Favicon -->
     @if(isset($tenant) && $tenant->logo_path)
         <link rel="icon" href="{{ asset($tenant->logo_path) }}">
@@ -218,7 +218,7 @@
                 <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:52px; width:auto;">
                 <span>Doughmain.pro</span>
             </div>
-            <p class="tagline">Manage your bakery website</p>
+            <p class="tagline">Set your new password</p>
         </div>
 
         <div class="card">
@@ -232,33 +232,28 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('password.update') }}">
                 @csrf
+                
+                <input type="hidden" name="token" value="{{ $token }}">
 
                 <div class="form-group">
                     <label for="email" class="form-label">Email Address</label>
-                    <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus placeholder="baker@example.com">
+                    <input id="email" type="email" class="form-control" name="email" value="{{ $request->email ?? old('email') }}" required autofocus readonly style="background:#f3f4f6;">
                 </div>
 
                 <div class="form-group">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <label for="password" class="form-label" style="margin-bottom:0;">Password</label>
-                        <a href="{{ route('password.request') }}" style="font-size:0.85rem; color:var(--accent); text-decoration:none; font-weight:500;">Forgot Password?</a>
-                    </div>
-                    <input id="password" type="password" class="form-control" name="password" required placeholder="••••••••" style="margin-top:0.5rem;">
+                    <label for="password" class="form-label">New Password</label>
+                    <input id="password" type="password" class="form-control" name="password" required placeholder="••••••••">
                 </div>
 
-                <div class="remember-me">
-                    <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                    <label for="remember">Remember me</label>
+                <div class="form-group">
+                    <label for="password_confirmation" class="form-label">Confirm New Password</label>
+                    <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" required placeholder="••••••••">
                 </div>
 
-                <button type="submit" class="btn-submit">Sign In</button>
+                <button type="submit" class="btn-submit">Reset Password</button>
             </form>
-
-            <div class="links">
-                <a href="/register">Don't have an account? Sign up</a>
-            </div>
         </div>
     </div>
 </body>
