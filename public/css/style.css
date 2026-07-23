@@ -3174,9 +3174,14 @@ body.theme-clean_minimal {
         height: 100dvh !important;
         max-height: 100dvh !important;
         border-radius: 0 !important;
-        padding: 16px 14px 90px 14px !important;
+        padding: 16px 14px 110px 14px !important;
         overflow-y: auto !important;
         box-shadow: none !important;
+    }
+
+    @keyframes fadeInStep {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     .modal-close-btn {
@@ -3232,12 +3237,12 @@ body.theme-clean_minimal {
 
     /* Sticky Bottom Action Navigation Bar */
     .cart-bar {
-        position: sticky !important;
+        position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
         width: 100% !important;
-        margin-top: auto !important;
-        padding: 12px 16px !important;
+        margin-top: 0 !important;
+        padding: 12px 16px 20px 16px !important; /* Extra bottom padding for mobile safe area */
         border-radius: 20px 20px 0 0 !important;
         background: #ffffff !important;
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
