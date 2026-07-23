@@ -144,7 +144,7 @@ class Tenant extends Model
         $all = static::getAllThemes();
 
         // Sweet & Elegant is exclusive to Blushed Crumbs
-        if ($this->slug !== 'blushedcrumbs') {
+        if ($this->subdomain !== 'blushedcrumbs') {
             unset($all['sweet_elegant']);
         }
 
