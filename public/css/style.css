@@ -3213,25 +3213,29 @@ body.theme-clean_minimal {
 
     /* Sticky Bottom Action Navigation Bar */
     .cart-bar {
-        position: sticky !important;
+        position: fixed !important;
         bottom: 0 !important;
         left: 0 !important;
-        right: 0 !important;
-        margin-top: 24px !important;
-        padding: 14px 16px !important;
+        width: 100% !important;
+        margin-top: 0 !important;
+        padding: 12px 16px !important;
         border-radius: 20px 20px 0 0 !important;
         background: #ffffff !important;
-        box-shadow: 0 -8px 25px rgba(92, 29, 55, 0.12) !important;
-        border-top: 1.5px solid #f8c6d7 !important;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+        border-top: 1.5px solid #eaeaea !important;
         flex-direction: column !important;
-        gap: 10px !important;
-        z-index: 900 !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        z-index: 9999 !important;
+        box-sizing: border-box !important;
     }
 
     .nav-buttons {
         width: 100% !important;
         display: flex !important;
-        gap: 10px !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 12px !important;
     }
 
     .next-btn, .back-btn, #submit-form-btn {
@@ -3242,6 +3246,7 @@ body.theme-clean_minimal {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        margin: 0 !important;
     }
 
     /* Mobile Calendar */
@@ -3282,6 +3287,73 @@ body.theme-clean_minimal {
     .upload-dropzone {
         padding: 24px 14px !important;
     }
+    /* Storefront Global Responsive Enhancements */
+    .header-container {
+        flex-direction: column !important;
+        gap: 15px !important;
+        padding: 10px 15px !important;
+    }
+    
+    .nav-links {
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 15px !important;
+    }
+    
+    .hero-section {
+        padding: 40px 15px 60px 15px !important;
+        min-height: auto !important;
+    }
+    
+    .hero-wrapper h1 {
+        font-size: 3.2rem !important;
+        margin-bottom: 25px !important;
+    }
+    
+    .hero-buttons {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+    
+    .hero-buttons .btn {
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    .raining-cake {
+        display: none !important;
+    }
+
+    .categories-grid-exact,
+    .how-it-works-grid,
+    .reviews-grid,
+    .gallery-masonry-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    .whimsical-two-column {
+        flex-direction: column !important;
+    }
+
+    .whimsical-col-right h2 {
+        font-size: 2.2rem !important;
+    }
+
+    .highlights-bar {
+        flex-wrap: wrap !important;
+        gap: 20px !important;
+        padding: 30px 15px !important;
+    }
+
+    .highlight-item {
+        flex: 1 1 45% !important;
+        min-width: 140px !important;
+    }
+    
+    .footer-content {
+        flex-direction: column !important;
+        gap: 30px !important;
+        text-align: center !important;
+    }
 }
-
-

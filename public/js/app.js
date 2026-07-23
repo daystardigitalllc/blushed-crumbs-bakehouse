@@ -732,14 +732,47 @@ document.addEventListener('click', (e) => {
     updateCartSummary();
 });
 
+let currentCalYear = new Date().getFullYear();
+let currentCalMonth = new Date().getMonth();
+
 function renderInteractiveCalendar() {
     const calGrid = document.getElementById('interactive-calendar-grid');
     if (!calGrid) return;
 
     calGrid.innerHTML = '';
-    const daysInMonth = 31;
-    const year = 2026;
-    const month = 6; // 0-indexed: 6 = July
+    
+    // Create Header for Month Navigation if it doesn't exist
+    let calHeader = document.getElementById('interactive-calendar-header');
+    if (!calHeader) {
+        calHeader = document.createElement('div');
+        calHeader.id = 'interactive-calendar-header';
+        calHeader.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-weight:600;';
+        calGrid.parentNode.insertBefore(calHeader, calGrid);
+    }
+    
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    calHeader.innerHTML = `
+        <button class="btn btn-outline btn-sm" id="prev-month-btn" style="padding:4px 10px; border-radius:6px;">&larr;</button>
+        <span style="font-size:1.1rem; color:var(--dark-text);">${monthNames[currentCalMonth]} ${currentCalYear}</span>
+        <button class="btn btn-outline btn-sm" id="next-month-btn" style="padding:4px 10px; border-radius:6px;">&rarr;</button>
+    `;
+    
+    document.getElementById('prev-month-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        currentCalMonth--;
+        if (currentCalMonth < 0) { currentCalMonth = 11; currentCalYear--; }
+        renderInteractiveCalendar();
+    });
+    
+    document.getElementById('next-month-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        currentCalMonth++;
+        if (currentCalMonth > 11) { currentCalMonth = 0; currentCalYear++; }
+        renderInteractiveCalendar();
+    });
+
+    const daysInMonth = new Date(currentCalYear, currentCalMonth + 1, 0).getDate();
+    const firstDayIndex = new Date(currentCalYear, currentCalMonth, 1).getDay(); // 0 = Sunday
 
     const bSettings = window._serverBookingSettings || {};
     const leadTimeEnabled = bSettings.lead_time_enabled ?? (localStorage.getItem('lead_time_enabled') !== '0');
@@ -747,44 +780,66 @@ function renderInteractiveCalendar() {
 
     const customBlocked = window.adminCalState?.blockedDates
         ? Array.from(window.adminCalState.blockedDates)
-        : (bSettings.blocked_dates || ['2026-07-04', '2026-07-25']);
+        : (bSettings.blocked_dates || []);
 
     const recurringClosed = window.adminCalState?.recurringClosedDays || bSettings.recurring_closed_days || [0, 1];
 
     const today = new Date();
-    const leadCutoff = new Date();
+    today.setHours(0,0,0,0);
+    const leadCutoff = new Date(today);
     
     // Toggle ON (leadTimeEnabled = true) means standard 3 days. 
     // Toggle OFF means custom number of days.
     const actualLeadDays = leadTimeEnabled ? 3 : leadTimeDays;
     leadCutoff.setDate(today.getDate() + actualLeadDays);
 
+    // Add empty slots for days before the 1st of the month
+    for (let i = 0; i < firstDayIndex; i++) {
+        const emptyEl = document.createElement('div');
+        emptyEl.className = 'cal-day empty';
+        emptyEl.style.visibility = 'hidden';
+        calGrid.appendChild(emptyEl);
+    }
+
     for (let day = 1; day <= daysInMonth; day++) {
-        const dateObj = new Date(year, month, day);
+        const dateObj = new Date(currentCalYear, currentCalMonth, day);
         const dayOfWeek = dateObj.getDay();
-        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dateStr = `${currentCalYear}-${String(currentCalMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
         const isCustomBlocked = customBlocked.includes(dateStr);
         const isRecurringClosed = recurringClosed.includes(dayOfWeek);
         
         let isLeadTimeBlocked = false;
-        if (dateObj < leadCutoff && dateObj >= new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
+        if (dateObj < leadCutoff && dateObj >= today) {
             isLeadTimeBlocked = true;
         }
+        
+        // Also block days in the past
+        let isPast = false;
+        if (dateObj < today) {
+            isPast = true;
+        }
 
-        const isBooked = isCustomBlocked || isRecurringClosed || isLeadTimeBlocked;
+        const isBooked = isCustomBlocked || isRecurringClosed || isLeadTimeBlocked || isPast;
 
         const dayEl = document.createElement('div');
         dayEl.className = `cal-day ${isBooked ? 'booked' : ''}`;
-        if (isLeadTimeBlocked) dayEl.title = `Unavailable (${leadTimeDays}-day lead time required)`;
+        
+        if (isPast) dayEl.title = 'Past Date';
+        else if (isLeadTimeBlocked) dayEl.title = `Unavailable (${actualLeadDays}-day lead time required)`;
         else if (isRecurringClosed && !isCustomBlocked) dayEl.title = 'Closed (Weekly)';
         else if (isCustomBlocked) dayEl.title = 'Blocked Date';
         
         dayEl.innerText = day;
+        
+        // If this date was previously selected, mark it
+        if (state.selectedDate === dateStr) {
+            dayEl.classList.add('selected');
+        }
 
         if (!isBooked) {
             dayEl.addEventListener('click', () => {
-                document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+                document.querySelectorAll('#interactive-calendar-grid .cal-day').forEach(d => d.classList.remove('selected'));
                 dayEl.classList.add('selected');
                 state.selectedDate = dateStr;
                 const selDateEl = document.getElementById('selected-date');
