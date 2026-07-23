@@ -3204,6 +3204,7 @@ body.theme-clean_minimal {
         flex: 1 !important;
         display: flex !important;
         flex-direction: column !important;
+        margin-bottom: 100px !important;
     }
 
     .sticky-order-summary-bar {
