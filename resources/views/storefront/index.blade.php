@@ -67,9 +67,9 @@
                             <source src="{{ asset($heroBg) }}" type="video/mp4">
                         </video>
                     @endif
-                    <img src="{{ asset('images/7281AA41-A119-4BA3-A024-887E9580F7A2-removebg-preview (1).png') }}" class="raining-cake hero-cake-top-right" alt="Top Right Lavender Crown Cake">
+                    <img src="{{ asset('images/cherry_cake-removebg-preview.png') }}" class="raining-cake hero-cake-top-right" alt="Top Right Cherry Cake">
                     <img src="{{ asset('images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png') }}" class="raining-cake hero-cake-middle-left" alt="Middle Left Pink Crown Heart Cake">
-                    <img src="{{ asset('images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png') }}" class="raining-cake hero-cake-far-right" alt="Chocolate 2-Tier Ruffles Cake">
+                    <img src="{{ asset('images/elmo_cake-removebg-preview.png') }}" class="raining-cake hero-cake-far-right" alt="Chocolate 2-Tier Ruffles Cake">
                     <img src="{{ asset('images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png') }}" class="raining-cake hero-cake-bottom-left" alt="Bottom Left White Heart Cake">
                     <img src="{{ asset('images/chocolatecake.png') }}" class="raining-cake hero-cake-bottom-right" alt="Bottom Right Floral Vintage Cake">
 

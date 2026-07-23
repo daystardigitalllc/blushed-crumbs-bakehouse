@@ -223,17 +223,29 @@ class AdminController extends Controller
     public function saveTheme(Request $request)
     {
         $tenant = $this->tenant();
-
-        // Validate against themes available to THIS tenant (sweet_elegant is exclusive)
         $availableThemes = array_keys($tenant->getAvailableThemesForTenant());
-
-        $request->validate([
-            'theme_id' => 'required|string|in:' . implode(',', $availableThemes),
+        
+        \Log::info('saveTheme called', [
+            'tenant_id' => $tenant->id,
+            'tenant_subdomain' => $tenant->subdomain,
+            'requested_theme' => $request->theme_id,
+            'available' => $availableThemes
         ]);
+
+        try {
+            $request->validate([
+                'theme_id' => 'required|string|in:' . implode(',', $availableThemes),
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('saveTheme validation failed', ['errors' => $e->errors()]);
+            throw $e;
+        }
 
         $tenant->update([
             'theme_id' => $request->theme_id,
         ]);
+        
+        \Log::info('saveTheme updated successfully', ['new_theme' => $tenant->theme_id]);
 
         return response()->json([
             'success' => true,
