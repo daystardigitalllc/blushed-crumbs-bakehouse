@@ -1735,8 +1735,8 @@ body.theme-clean_minimal {
     .admin-btn { padding: 6px 16px; font-size: 0.85rem; }
 
     /* Cloud Dividers - Maintain un-squished natural cloud proportions on mobile */
-    .hero-cloud-elementor-top { height: 80px; min-width: 750px; left: 50%; transform: translateX(-50%); }
-    .hero-cloud-elementor-bottom { height: 85px; min-width: 750px; left: 50%; transform: translateX(-50%) rotate(180deg); }
+    .hero-cloud-elementor-top { height: 80px; width: 100%; left: 0; transform: none; }
+    .hero-cloud-elementor-bottom { height: 85px; width: 100%; left: 0; transform: rotate(180deg); }
 
     /* Hero Section */
     .hero-section { padding: 50px 15px 60px 15px; min-height: auto; }
