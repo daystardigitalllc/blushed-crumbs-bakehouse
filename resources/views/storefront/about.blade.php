@@ -140,34 +140,29 @@
 @include('storefront.partials.order_modal')
 
 <!-- ABOUT PAGE FOOTER -->
-<footer class="about-footer">
-    <div class="about-footer-logo">
+<footer class="site-footer">
+    <div class="footer-logo">
         @if(!empty($tenant->logo_path))
             <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
         @else
             <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:#ffffff;">🧁 {{ $tenant->name }}</span>
         @endif
     </div>
-    <div class="about-footer-nav">
-        <a href="{{ route('storefront.index') }}">Home</a>
-        <a href="{{ route('storefront.about') }}" class="active">About</a>
-        <a href="{{ route('storefront.menu') }}">Menu</a>
-        <a href="{{ route('storefront.gallery') }}">Gallery</a>
-        <a href="{{ route('storefront.policy') }}">Policy</a>
+    <div class="footer-nav">
+        <a href="{{ route('storefront.index') }}" class="footer-link">Home</a>
+        <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
+        <a href="{{ route('storefront.menu') }}" class="footer-link">Menu</a>
+        <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
+        <a href="{{ route('storefront.policy') }}" class="footer-link">Policy</a>
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
             $bakerPortalUrl = request()->is('site/*') 
                 ? url('/site/' . $sub . '/dashboard') 
                 : route('baker.dashboard');
         @endphp
-        <a href="{{ $bakerPortalUrl }}">Baker Login</a>
+        <a href="{{ $bakerPortalUrl }}" class="footer-link">Baker Login</a>
     </div>
-    <div class="about-social-icons">
-        <a href="#">🌐</a>
-        <a href="#">✉️</a>
-        <a href="#">🎵</a>
-    </div>
-    <p class="about-copyright">Copyright © 2026 {{ $tenant->name }} | <a href="{{ route('legal.index') }}" style="color:inherit;">Legal Hub</a> &middot; <a href="{{ route('storefront.privacy') }}" style="color:inherit;">Privacy</a> &middot; <a href="{{ route('storefront.terms') }}" style="color:inherit;">Terms</a> | Powered By <span>Doughmain.pro</span></p>
+    <p class="copyright-text">Copyright &copy; 2026 {{ $tenant->name ?? 'Bakery' }} | <a href="{{ route('legal.index') }}" class="footer-link">Legal Hub</a> &middot; <a href="{{ route('storefront.privacy') }}" class="footer-link">Privacy</a> &middot; <a href="{{ route('storefront.terms') }}" class="footer-link">Terms</a> | Powered by <a href="https://doughmain.pro" target="_blank" class="footer-link footer-brand-link">Doughmain.pro</a></p>
 </footer>
 
 <script src="{{ asset('js/app.js') }}"></script>
