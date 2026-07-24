@@ -118,7 +118,7 @@ class Tenant extends Model
             'hero' => ['id' => 'hero', 'name' => '🌟 Hero Banner Section', 'enabled' => true, 'order' => 1],
             'highlights' => ['id' => 'highlights', 'name' => '🛡️ Trust Highlights Bar', 'enabled' => true, 'order' => 2],
             'promo_video' => ['id' => 'promo_video', 'name' => '🎥 Video Background Promo Banner', 'enabled' => true, 'order' => 3],
-            'categories' => ['id' => 'categories', 'name' => '🧁 Category Showcase Grid', 'enabled' => true, 'order' => 4],
+            'categories' => ['id' => 'categories', 'name' => '🧁 Category Showcase Grid', 'enabled' => false, 'order' => 4],
             'whimsical' => ['id' => 'whimsical', 'name' => '✨ Whimsical Creations & Specialties', 'enabled' => true, 'order' => 5],
             'how_it_works' => ['id' => 'how_it_works', 'name' => '📝 How Custom Ordering Works (3 Steps)', 'enabled' => true, 'order' => 6],
             'reviews' => ['id' => 'reviews', 'name' => '⭐ Customer Reviews & Social Proof', 'enabled' => true, 'order' => 7],
@@ -134,6 +134,22 @@ class Tenant extends Model
             return ($a['order'] ?? 0) <=> ($b['order'] ?? 0);
         });
         return $sections;
+    }
+
+    /**
+     * Get Starter (Free) themes available for onboarding.
+     */
+    public static function getStarterThemes(): array
+    {
+        $all = static::getAllThemes();
+        $starterKeys = ['rustic_kitchen', 'modern_bakery', 'playful_treats'];
+        $starter = [];
+        foreach ($starterKeys as $key) {
+            if (isset($all[$key])) {
+                $starter[$key] = $all[$key];
+            }
+        }
+        return $starter;
     }
 
     /**

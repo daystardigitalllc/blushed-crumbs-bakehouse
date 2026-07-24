@@ -99,8 +99,8 @@ class AuthController extends Controller
 
         return \Illuminate\Support\Facades\DB::transaction(function () use ($validated) {
             // Generate a unique slug/subdomain from the bakery name
-            $slug = Str::slug($validated['bakery_name'], '');
-            $subdomain = Str::slug($validated['bakery_name'], '');
+            $slug = Str::slug($validated['bakery_name']);
+            $subdomain = Str::slug($validated['bakery_name']);
 
             // Ensure uniqueness
             $baseSlug = $slug ?: 'bakery';

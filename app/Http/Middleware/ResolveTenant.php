@@ -53,9 +53,14 @@ class ResolveTenant
                 }
 
                 if ($subdomain && !in_array($subdomain, ['www', 'app', 'mail', 'admin', 'doughmain'])) {
-                    $tenant = Tenant::where('subdomain', $subdomain)
-                        ->where('is_active', true)
-                        ->first();
+                    $normalizedSub = str_replace('-', '', $subdomain);
+                    $tenant = Tenant::where(function($q) use ($subdomain, $normalizedSub) {
+                        $q->where('subdomain', $subdomain)
+                          ->orWhere('subdomain', $normalizedSub)
+                          ->orWhere('slug', $subdomain)
+                          ->orWhere('slug', $normalizedSub);
+                    })->where('is_active', true)->first();
+
                     if ($tenant) {
                         $request->attributes->set('brand', $b);
                         break;

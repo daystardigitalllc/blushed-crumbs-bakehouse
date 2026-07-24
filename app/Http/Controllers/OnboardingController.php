@@ -19,7 +19,7 @@ class OnboardingController extends Controller
             return redirect('/dashboard');
         }
 
-        $themes = $tenant->getAvailableThemesForTenant();
+        $themes = Tenant::getStarterThemes();
 
         return view('onboarding.wizard', compact('tenant', 'themes'));
     }

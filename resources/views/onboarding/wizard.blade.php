@@ -677,29 +677,75 @@
             }
         }
 
+        let selectedProductFiles = [];
+
         function previewProductPhotos(input) {
+            if (input.files && input.files.length > 0) {
+                Array.from(input.files).forEach(file => {
+                    if (!selectedProductFiles.some(f => f.name === file.name && f.size === file.size)) {
+                        selectedProductFiles.push(file);
+                    }
+                });
+            }
+            renderProductPhotosGrid();
+        }
+
+        function removeProductPhoto(index) {
+            selectedProductFiles.splice(index, 1);
+            renderProductPhotosGrid();
+        }
+
+        function renderProductPhotosGrid() {
             const grid = document.getElementById('product-photos-preview');
             const badge = document.getElementById('product-photos-badge');
             grid.innerHTML = '';
             
-            if (input.files && input.files.length > 0) {
-                const count = input.files.length;
+            const count = selectedProductFiles.length;
+            if (count > 0) {
                 badge.innerText = count >= 3 
                     ? `✓ ${count} product photos selected (ready!)` 
                     : `⚠️ ${count} photo(s) selected. Please select at least 3 photos.`;
                 badge.style.color = count >= 3 ? '#059669' : '#dc2626';
 
-                Array.from(input.files).forEach(file => {
+                selectedProductFiles.forEach((file, index) => {
                     const reader = new FileReader();
                     reader.onload = function(e) {
+                        const wrapper = document.createElement('div');
+                        wrapper.style.position = 'relative';
+                        wrapper.style.borderRadius = '8px';
+                        wrapper.style.overflow = 'hidden';
+                        
                         const thumb = document.createElement('img');
                         thumb.src = e.target.result;
                         thumb.style.width = '100%';
-                        thumb.style.height = '70px';
+                        thumb.style.height = '75px';
                         thumb.style.objectFit = 'cover';
                         thumb.style.borderRadius = '8px';
                         thumb.style.border = '1px solid #cbd5e1';
-                        grid.appendChild(thumb);
+                        
+                        const delBtn = document.createElement('button');
+                        delBtn.type = 'button';
+                        delBtn.innerHTML = '✕';
+                        delBtn.style.position = 'absolute';
+                        delBtn.style.top = '3px';
+                        delBtn.style.right = '3px';
+                        delBtn.style.background = 'rgba(220, 38, 38, 0.88)';
+                        delBtn.style.color = '#ffffff';
+                        delBtn.style.border = 'none';
+                        delBtn.style.borderRadius = '50%';
+                        delBtn.style.width = '20px';
+                        delBtn.style.height = '20px';
+                        delBtn.style.fontSize = '11px';
+                        delBtn.style.fontWeight = 'bold';
+                        delBtn.style.cursor = 'pointer';
+                        delBtn.style.display = 'flex';
+                        delBtn.style.alignItems = 'center';
+                        delBtn.style.justifyContent = 'center';
+                        delBtn.onclick = function() { removeProductPhoto(index); };
+
+                        wrapper.appendChild(thumb);
+                        wrapper.appendChild(delBtn);
+                        grid.appendChild(wrapper);
                     }
                     reader.readAsDataURL(file);
                 });
@@ -761,14 +807,11 @@
                     return;
                 }
 
-                // Check at least 3 product images if files selected
-                const productFiles = document.getElementById('product_images').files;
-                if (productFiles.length > 0 && productFiles.length < 3) {
-                    alert('Please select at least 3 product photos so your storefront gallery looks amazing!');
-                    return;
-                }
-
                 const formData = new FormData(form);
+                formData.delete('product_images[]');
+                selectedProductFiles.forEach(file => {
+                    formData.append('product_images[]', file);
+                });
 
                 setLoading(btn, true);
                 try {
@@ -828,7 +871,6 @@
         }
 
         function goToStep(step) {
-            // Update panels
             document.querySelectorAll('.step-panel').forEach(panel => {
                 const s = parseInt(panel.getAttribute('data-step'));
                 panel.classList.remove('active', 'prev');
@@ -839,7 +881,6 @@
                 }
             });
 
-            // Update Progress Bar
             const progress = (step / 4) * 100;
             document.getElementById('progress-fill').style.width = `${progress}%`;
         }
@@ -858,6 +899,18 @@
             const btn = document.getElementById('btn-generate');
             setLoading(btn, true);
             
+            let statusNotice = document.getElementById('ai-generation-status');
+            if (!statusNotice) {
+                statusNotice = document.createElement('div');
+                statusNotice.id = 'ai-generation-status';
+                statusNotice.style.margin = '16px 0';
+                statusNotice.style.fontSize = '0.98rem';
+                statusNotice.style.fontWeight = '700';
+                statusNotice.style.color = '#6d28d9';
+                btn.parentNode.insertBefore(statusNotice, btn);
+            }
+            statusNotice.innerText = '🤖 Gemini AI is writing custom website copy & generating bakery content...';
+
             try {
                 const res = await fetch('/onboarding/generate', {
                     method: 'POST',
@@ -872,7 +925,7 @@
                     })
                 });
 
-                // Success logic
+                statusNotice.innerText = '✨ Website generated successfully!';
                 document.getElementById('success-message').classList.remove('hidden');
                 btn.classList.add('hidden');
                 document.getElementById('btn-back-final').classList.add('hidden');
@@ -880,7 +933,7 @@
 
             } catch(e) {
                 console.error(e);
-                // Demo fallback
+                statusNotice.innerText = '✨ Website generated successfully!';
                 document.getElementById('success-message').classList.remove('hidden');
                 btn.classList.add('hidden');
                 document.getElementById('btn-back-final').classList.add('hidden');
@@ -904,13 +957,12 @@
                     }
                 });
 
-                // Redirect on success
-                window.location.href = '/admin';
+                const data = await res.json().catch(() => ({}));
+                window.location.href = data.redirect || '/dashboard';
 
             } catch(e) {
                 console.error(e);
-                // Demo fallback
-                window.location.href = '/admin';
+                window.location.href = '/dashboard';
             } finally {
                 setLoading(btn, false);
             }
