@@ -142,9 +142,6 @@
         <a href="{{ route('storefront.index') }}">Home</a>
         <a href="{{ route('storefront.about') }}" class="active">About</a>
         <a href="{{ route('storefront.gallery') }}">Gallery</a>
-        <a href="{{ route('legal.index') }}">Legal Center</a>
-        <a href="{{ route('storefront.privacy') }}">Privacy Policy</a>
-        <a href="{{ route('storefront.terms') }}">Terms &amp; Conditions</a>
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
             $bakerPortalUrl = request()->is('site/*') 
@@ -158,7 +155,7 @@
         <a href="#">✉️</a>
         <a href="#">🎵</a>
     </div>
-    <p class="about-copyright">Copyright © 2026 {{ $tenant->name }} | Powered By <span>Doughmain.pro</span></p>
+    <p class="about-copyright">Copyright © 2026 {{ $tenant->name }} | <a href="{{ route('legal.index') }}" style="color:inherit;">Legal Hub</a> &middot; <a href="{{ route('storefront.privacy') }}" style="color:inherit;">Privacy</a> &middot; <a href="{{ route('storefront.terms') }}" style="color:inherit;">Terms</a> | Powered By <span>Doughmain.pro</span></p>
 </footer>
 
 <script src="{{ asset('js/app.js') }}"></script>

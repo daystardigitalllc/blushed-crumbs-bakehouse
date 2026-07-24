@@ -235,9 +235,6 @@
         <a href="{{ route('storefront.index') }}" class="footer-link">Home</a>
         <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
         <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
-        <a href="{{ route('legal.index') }}" class="footer-link">Legal Center</a>
-        <a href="{{ route('storefront.privacy') }}" class="footer-link">Privacy Policy</a>
-        <a href="{{ route('storefront.terms') }}" class="footer-link">Terms &amp; Conditions</a>
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
             $bakerPortalUrl = request()->is('site/*') 
