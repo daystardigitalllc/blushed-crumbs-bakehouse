@@ -163,32 +163,11 @@
                             </div>
                         </div>
                     @empty
-                        <div class="order-card urgent-border">
-                            <div class="order-card-header">
-                                <div class="due-badge due-urgent">⏰ DUE: Tomorrow (9:30 AM)</div>
-                                <select class="status-select status-in_progress" onchange="updateOrderStatus(1, this.value)">
-                                    <option value="new">NEW</option>
-                                    <option value="invoiced">INVOICED</option>
-                                    <option value="paid">PAID</option>
-                                    <option value="in_progress" selected>IN PROGRESS</option>
-                                    <option value="ready">READY</option>
-                                    <option value="completed">COMPLETED</option>
-                                    <option value="cancelled">CANCELLED</option>
-                                </select>
-                            </div>
-                            <div class="order-card-body">
-                                <h4>#BC-1092 - Sarah Jenkins</h4>
-                                <p><strong>Phone:</strong> (555) 234-8890 | <strong>Email:</strong> sarah.j@example.com</p>
-                                <p><strong>Item:</strong> 6” Cake ($65.00) | <strong>Flavor:</strong> Strawberry Bliss | <strong>Frosting:</strong> Vanilla Buttercream</p>
-                                <p class="notes-box" style="background:#fff7fa; padding:8px 12px; border-radius:8px; margin-top:8px;"><strong>Special Notes:</strong> "Happy 30th Birthday Emma!" in gold lettering</p>
-                                <div class="pricing-breakdown" style="margin-top:10px;">
-                                    <span>Total: <strong>$60.00</strong></span> | <span>50% Deposit: <strong>$30.00</strong> (✅ Paid)</span>
-                                </div>
-                            </div>
-                            <div class="order-card-actions">
-                                <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder(1, 60, 30)">💳 Create Invoice</button>
-                                <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('INV-6THPBF', 1)">📋 Copy Invoice Link</button>
-                            </div>
+                        <div style="background:#ffffff; border:2px dashed #e2e8f0; border-radius:16px; padding:48px; text-align:center; color:#64748b; grid-column: 1 / -1;">
+                            <span style="font-size:3rem; display:block; margin-bottom:12px;">🧁</span>
+                            <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:6px;">No Customer Orders Yet</h4>
+                            <p style="font-size:0.95rem; margin-bottom:18px;">When customers submit cake inquiries or place orders on your storefront, they will appear here in order of due date!</p>
+                            <a href="{{ url('/') }}" target="_blank" class="btn btn-primary" style="display:inline-block; padding:10px 20px; font-size:0.9rem; text-decoration:none;">View Your Storefront →</a>
                         </div>
                     @endforelse
                 </div>
@@ -630,13 +609,25 @@
                             $currentTheme = $tenant->theme_id ?? 'sweet_elegant';
                         @endphp
                         @foreach($themes as $t)
-                            <div class="bakery-theme-card" onclick="selectBakeryTheme('{{ $t['id'] }}', this)" style="border:{{ $currentTheme === $t['id'] ? '3px solid #e67399' : '2px solid #ddd' }}; background:white; padding:16px; border-radius:14px; cursor:pointer; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+                            @php
+                                $isStarterTheme = in_array($t['id'], ['rustic_kitchen', 'modern_bakery', 'playful_treats']);
+                                $isLockedTheme = ($tenant->plan_tier !== 'pro') && !$isStarterTheme;
+                            @endphp
+                            <div class="bakery-theme-card" 
+                                 onclick="{{ $isLockedTheme ? "alert('Upgrade to Pro ($29/mo) to unlock this premium theme!')" : "selectBakeryTheme('".$t['id']."', this)" }}" 
+                                 style="border:{{ $currentTheme === $t['id'] ? '3px solid #e67399' : '2px solid #ddd' }}; background:white; padding:16px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
                                 <div style="height:80px; background:{{ $t['preview_bg'] }}; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; border:1px solid #eee;">
                                     <span style="font-weight:800; color:{{ $t['preview_accent'] }}; font-size:1.1rem;">{{ $t['name'] }}</span>
                                 </div>
                                 <h5 style="font-size:1rem; font-weight:700; color:#5c1d37; margin-bottom:4px;">{{ $t['name'] }}</h5>
                                 <p style="font-size:0.8rem; color:#666; line-height:1.4;">{{ $t['subtitle'] }}</p>
-                                <span class="theme-badge" style="display:{{ $currentTheme === $t['id'] ? 'inline-block' : 'none' }}; margin-top:8px; font-size:0.75rem; background:#e67399; color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
+                                @if($currentTheme === $t['id'])
+                                    <span class="theme-badge" style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#e67399; color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
+                                @elseif($isLockedTheme)
+                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#fef3c7; color:#92400e; padding:3px 10px; border-radius:20px; font-weight:700;">🔒 PRO ONLY ($29/mo)</span>
+                                @else
+                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#d1fae5; color:#065f46; padding:3px 10px; border-radius:20px; font-weight:700;">Free Tier 🎁</span>
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -1080,7 +1071,7 @@
                         <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:16px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                 <span style="font-weight:600; color:#475569;">Current Plan:</span>
-                                <span style="font-weight:800; color:#e67399; text-transform:uppercase;">{{ strtoupper($tenant->plan_tier ?? 'standard') }} (${{ $tenant->plan_tier === 'pro' ? '50' : '29' }}/mo)</span>
+                                <span style="font-weight:800; color:#e67399; text-transform:uppercase;">{{ $tenant->plan_tier === 'pro' ? 'PRO ($29/mo)' : 'FREE ($0/mo)' }}</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <span style="font-weight:600; color:#475569;">Account Status:</span>

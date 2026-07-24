@@ -570,21 +570,22 @@
             <div class="cards-grid">
                 @if(isset($themes) && (is_array($themes) || $themes instanceof \Illuminate\Support\Collection) && count($themes) > 0)
                     @foreach($themes as $theme)
-                    <label class="selection-card theme-card">
-                        <input type="radio" name="theme_id" value="{{ $theme['id'] ?? $theme->id ?? '' }}">
+                    @php
+                        $themeId = $theme['id'] ?? $theme->id ?? '';
+                        $isStarter = in_array($themeId, ['rustic_kitchen', 'modern_bakery', 'playful_treats']);
+                        $isLocked = ($tenant->plan_tier !== 'pro') && !$isStarter;
+                    @endphp
+                    <label class="selection-card theme-card" style="{{ $isLocked ? 'opacity:0.55; filter:grayscale(25%); cursor:not-allowed;' : '' }}">
+                        <input type="radio" name="theme_id" value="{{ $themeId }}" {{ $isLocked ? 'disabled' : '' }} {{ $themeId === 'rustic_kitchen' ? 'checked' : '' }}>
                         <div class="checkmark">✓</div>
                         <div class="theme-preview" style="background-color: {{ $theme['preview_bg'] ?? $theme->preview_bg ?? '#f3f4f6' }}">
                             <div class="theme-accent" style="background-color: {{ $theme['preview_accent'] ?? $theme->preview_accent ?? '#e67399' }}"></div>
                         </div>
                         <div class="theme-content">
-                            @php
-                                $themeId = $theme['id'] ?? $theme->id ?? '';
-                                $isFree = in_array($themeId, ['rustic_kitchen', 'modern_bakery', 'playful_treats', 'sweet_elegant']);
-                            @endphp
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                                 <h3 class="card-title" style="margin:0;">{{ $theme['name'] ?? $theme->name ?? 'Theme' }}</h3>
-                                <span style="font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:12px; background:{{ $isFree ? '#d1fae5' : '#fef3c7' }}; color:{{ $isFree ? '#065f46' : '#92400e' }};">
-                                    {{ $isFree ? 'Free Tier 🎁' : 'Pro Tier 🌟' }}
+                                <span style="font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:12px; background:{{ $isLocked ? '#fef3c7' : '#d1fae5' }}; color:{{ $isLocked ? '#92400e' : '#065f46' }};">
+                                    {{ $isLocked ? '🔒 PRO ONLY ($29/mo)' : 'Free Tier 🎁' }}
                                 </span>
                             </div>
                             <p class="card-desc">{{ $theme['subtitle'] ?? $theme->subtitle ?? '' }}</p>
@@ -605,7 +606,7 @@
         <div class="step-panel" data-step="4">
             <div class="step-header">
                 <h2>Ready to Rise &amp; Launch! 🚀</h2>
-                <p>AI is proofing your content. Fresh out of the oven in seconds.</p>
+                <p>We are building your website for you. Fresh out of the oven in seconds.</p>
             </div>
             
             <div class="summary-box">
@@ -909,7 +910,7 @@
                 statusNotice.style.color = '#6d28d9';
                 btn.parentNode.insertBefore(statusNotice, btn);
             }
-            statusNotice.innerText = '🤖 Gemini AI is writing custom website copy & generating bakery content...';
+            statusNotice.innerText = '✨ We are building your website for you...';
 
             try {
                 const res = await fetch('/onboarding/generate', {
