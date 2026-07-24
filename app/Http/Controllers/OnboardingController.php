@@ -67,28 +67,28 @@ class OnboardingController extends Controller
             $logoFile = $request->file('logo');
             if ($logoFile->isValid()) {
                 $filename = 'logo_' . $tenant->id . '_' . time() . '.' . $logoFile->getClientOriginalExtension();
-                $destPath = public_path('uploads/logos');
+                $destPath = public_path('uploads/tenants/' . $tenant->id . '/logos');
                 if (!file_exists($destPath)) {
-                    mkdir($destPath, 0777, true);
+                    mkdir($destPath, 0755, true);
                 }
                 $logoFile->move($destPath, $filename);
-                $tenant->logo_path = 'uploads/logos/' . $filename;
+                $tenant->logo_path = 'uploads/tenants/' . $tenant->id . '/logos/' . $filename;
             }
         }
 
         // Handle Product Images Uploads
         $galleryImages = $tenant->gallery_images ?? [];
         if ($request->hasFile('product_images')) {
-            $destPath = public_path('uploads/gallery');
+            $destPath = public_path('uploads/tenants/' . $tenant->id . '/gallery');
             if (!file_exists($destPath)) {
-                mkdir($destPath, 0777, true);
+                mkdir($destPath, 0755, true);
             }
 
             foreach ($request->file('product_images') as $idx => $file) {
                 if ($file && $file->isValid()) {
                     $filename = 'product_' . $tenant->id . '_' . time() . '_' . $idx . '.' . $file->getClientOriginalExtension();
                     $file->move($destPath, $filename);
-                    $path = 'uploads/gallery/' . $filename;
+                    $path = 'uploads/tenants/' . $tenant->id . '/gallery/' . $filename;
                     $galleryImages[] = $path;
 
                     \App\Models\GalleryItem::create([

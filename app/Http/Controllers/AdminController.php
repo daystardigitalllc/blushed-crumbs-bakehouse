@@ -168,8 +168,12 @@ class AdminController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $fileName = time() . '_' . Str::slug($request->title) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/gallery'), $fileName);
-            $imageUrl = '/uploads/gallery/' . $fileName;
+            $destPath = public_path('uploads/tenants/' . $tenant->id . '/gallery');
+            if (!file_exists($destPath)) {
+                mkdir($destPath, 0755, true);
+            }
+            $file->move($destPath, $fileName);
+            $imageUrl = 'uploads/tenants/' . $tenant->id . '/gallery/' . $fileName;
 
             $galleryItem = GalleryItem::create([
                 'tenant_id' => $tenant->id,
@@ -815,9 +819,13 @@ class AdminController extends Controller
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $filename = 'logo_' . time() . '_' . Str::random(6) . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/logos'), $filename);
+            $destPath = public_path('uploads/tenants/' . $tenant->id . '/logos');
+            if (!file_exists($destPath)) {
+                mkdir($destPath, 0755, true);
+            }
+            $file->move($destPath, $filename);
             
-            $logoPath = '/uploads/logos/' . $filename;
+            $logoPath = 'uploads/tenants/' . $tenant->id . '/logos/' . $filename;
             $tenant->update(['logo_path' => $logoPath]);
 
             return response()->json([

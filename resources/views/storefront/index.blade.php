@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blushed Crumbs Bakehouse | Where Every Celebration Gets Its Sweet Ending</title>
+    <title>{{ $tenant->name ?? 'Artisanal Bakehouse' }} | {{ $tenant->getSiteContent('hero_subheading', 'Where Every Celebration Gets Its Sweet Ending') }}</title>
     <!-- Favicon -->
     @if(isset($tenant) && $tenant->logo_path)
         <link rel="icon" href="{{ asset($tenant->logo_path) }}">
     @else
         <link rel="icon" href="{{ asset('images/favicon.png') }}">
     @endif
-    <meta name="description" content="Custom artisanal cakes, cupcakes, treat boxes & wedding baking in Tennessee. Order custom cakes online with ease.">
+    <meta name="description" content="{{ $tenant->getSiteContent('about_bio', 'Custom artisanal cakes, cupcakes, treat boxes & wedding baking. Order custom cakes online with ease.') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Google Fonts -->
@@ -69,8 +69,8 @@
                     <img src="{{ asset('images/chocolatecake.png') }}" class="raining-cake hero-cake-bottom-right" alt="Bottom Right Floral Vintage Cake">
 
                     <div class="hero-wrapper" style="position:relative; z-index:2;">
-                        <span class="subheading">{{ $tenant->getSiteContent('hero_subheading', 'Welcome to ' . ($tenant->name ?? 'Blushed Crumbs Bakehouse')) }}</span>
-                        <h1>{{ $tenant->getSiteContent('hero_headline', 'Where Every Celebration Gets Its Sweet Ending.') }}</h1>
+                        <span class="subheading">{{ $tenant->getSiteContent('hero_subheading', 'Welcome to ' . ($tenant->name ?? 'our bakehouse')) }}</span>
+                        <h1>{{ $tenant->getSiteContent('hero_headline', $tenant->name ?? 'Artisanal Bakehouse') }}</h1>
                         <div class="hero-buttons">
                             <button onclick="openOrderModal()" class="btn btn-primary">{{ $tenant->getSiteContent('hero_cta_primary', 'Custom Order') }}</button>
                             <a href="{{ route('storefront.gallery') }}" class="btn btn-secondary">Our Treats</a>
@@ -127,19 +127,22 @@
                                 ['title' => 'Treats & Sweets By The Dozen', 'desc' => 'Cupcakes, macarons, and dessert tables']
                             ]);
                             $userImages = $tenant->gallery_images ?? [];
-                            $defaultImages = [
-                                asset('images/IMG_8117.jpg'),
-                                asset('images/IMG_8084.jpg'),
-                                asset('images/IMG_8042.jpg'),
-                            ];
+                            $tenantLogo = !empty($tenant->logo_path) ? asset($tenant->logo_path) : null;
                         @endphp
                         @foreach($catList as $idx => $cat)
                             @php
-                                $imgUrl = !empty($userImages[$idx]) ? asset($userImages[$idx]) : ($defaultImages[$idx % count($defaultImages)]);
+                                $imgUrl = !empty($userImages[$idx]) ? asset($userImages[$idx]) : ($tenantLogo ?? null);
                             @endphp
                             <div class="category-card-exact">
-                                <div class="category-image-frame">
-                                    <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? 'Category' }}">
+                                <div class="category-image-frame" style="display:flex; align-items:center; justify-content:center; background:var(--pink-bg); min-height:220px;">
+                                    @if($imgUrl)
+                                        <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? 'Category' }}">
+                                    @else
+                                        <div style="text-align:center; padding:30px 15px;">
+                                            <span style="font-size:3rem; display:block; margin-bottom:8px;">🧁</span>
+                                            <h4 style="margin:0; font-size:1.1rem; color:var(--dark-text);">{{ $cat['title'] ?? 'Category' }}</h4>
+                                        </div>
+                                    @endif
                                 </div>
                                 <h3>{{ $cat['title'] ?? 'Category' }}</h3>
                                 @if(!empty($cat['desc']))
@@ -154,7 +157,22 @@
                 <section class="whimsical-section">
                     <div class="whimsical-two-column">
                         <div class="whimsical-col-left">
-                            <img src="{{ asset('images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png') }}" alt="Whimsical Mermaid Cake on Silver Stand">
+                            @php
+                                $wImg = $tenant->getSiteContent('whimsical_image_url');
+                                if (empty($wImg) && $tenant->subdomain === 'blushedcrumbs') {
+                                    $wImg = 'images/96CABFE2-736F-4865-AA15-7FEB14C9D0BE-removebg-preview.png';
+                                } elseif (empty($wImg) && !empty($tenant->gallery_images[0])) {
+                                    $wImg = $tenant->gallery_images[0];
+                                }
+                            @endphp
+                            @if($wImg)
+                                <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation">
+                            @else
+                                <div style="text-align:center; padding:40px 20px; background:rgba(255,255,255,0.15); border-radius:24px;">
+                                    <span style="font-size:4rem; display:block; margin-bottom:12px;">✨</span>
+                                    <h3 style="color:#ffffff;">Handcrafted Excellence</h3>
+                                </div>
+                            @endif
                         </div>
                         <div class="whimsical-col-right">
                             <h2>{{ $tenant->getSiteContent('whimsical_title', 'Whimsical Creations for Every Milestone') }}</h2>
