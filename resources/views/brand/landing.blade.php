@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoughMain — AI-Powered Bakery Website Builder</title>
-    <meta name="description" content="Create your bakery website with AI in minutes. No coding required. Manage products, accept orders, and grow your bakery business online.">
+    <title>Doughmain.pro — Build, Host, &amp; Manage Your Bakery Website Completely Free</title>
+    <meta name="description" content="Build, host, and manage your bakery website completely free. AI website builder, 0% commissions, custom cake order forms, and instant payment requests for custom bakers.">
     @if(isset($tenant) && $tenant->logo_path)
         <link rel="icon" href="{{ asset($tenant->logo_path) }}">
     @else
@@ -13,7 +13,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -165,7 +165,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(26, 10, 46, 0.78) 0%, rgba(64, 24, 41, 0.72) 100%);
+            background: linear-gradient(135deg, rgba(26, 10, 46, 0.85) 0%, rgba(64, 24, 41, 0.80) 100%);
             z-index: 1;
         }
 
@@ -175,9 +175,9 @@
         }
 
         .hero h1 {
-            font-size: 4rem;
+            font-size: 3.8rem;
             font-weight: 800;
-            max-width: 850px;
+            max-width: 900px;
             margin: 0 auto 24px;
             letter-spacing: -0.02em;
             color: #ffffff;
@@ -185,18 +185,135 @@
         }
 
         .hero p.subheadline {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.9);
-            max-width: 680px;
-            margin: 0 auto 40px;
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.92);
+            max-width: 720px;
+            margin: 0 auto 36px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        .hero-badge-pill {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .hero .secondary-text {
             font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             margin-top: 20px;
             display: block;
+        }
+
+        /* Value Prop Bar */
+        .value-prop-bar {
+            background-color: #ffffff;
+            padding: 30px 0;
+            border-bottom: 1px solid #eef2f6;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+
+        .value-prop-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .value-prop-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--dark-section);
+        }
+
+        .value-prop-item span.icon {
+            font-size: 1.6rem;
+            background: #fff7fa;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(230,115,153,0.15);
+        }
+
+        /* Custom Domain Trust Section */
+        .domain-trust-section {
+            padding: 90px 0;
+            background: linear-gradient(135deg, #1a0a2e 0%, #2e1052 100%);
+            color: #ffffff;
+        }
+
+        .domain-trust-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .domain-trust-content h2 {
+            color: #ffffff;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .domain-trust-content p {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 28px;
+        }
+
+        .domain-trust-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 32px;
+            border-radius: 20px;
+        }
+
+        .trust-stat-box {
+            display: flex;
+            gap: 20px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .trust-stat {
+            flex: 1;
+        }
+
+        .trust-stat .stat-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-pink);
+        }
+
+        .trust-stat .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         /* How It Works */
@@ -211,7 +328,7 @@
         }
 
         .section-header h2 {
-            font-size: 2.5rem;
+            font-size: 2.6rem;
             margin-bottom: 16px;
         }
 
@@ -235,6 +352,22 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
         }
 
+        .step-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--primary-pink);
+            color: var(--white);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
         .step-icon {
             font-size: 3rem;
             margin-bottom: 24px;
@@ -247,35 +380,18 @@
             border-radius: 50%;
             box-shadow: 0 10px 20px rgba(230, 115, 153, 0.1);
         }
-        
-        .step-number {
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            background: var(--deep-purple);
-            color: var(--white);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 10px rgba(109, 40, 217, 0.3);
-        }
 
         .step-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 16px;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
         }
 
         .step-card p {
             color: var(--text-gray);
+            font-size: 1rem;
         }
 
-        /* Features */
+        /* Features Section */
         .features {
             padding: 100px 0;
             background-color: var(--soft-pink);
@@ -291,119 +407,114 @@
             background: var(--white);
             padding: 32px;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            transition: transform 0.3s;
-            border: 1px solid rgba(0,0,0,0.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s ease;
         }
 
         .feature-item:hover {
             transform: translateY(-5px);
-            border-color: rgba(230, 115, 153, 0.2);
         }
 
         .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 20px;
+            font-size: 2.5rem;
+            margin-bottom: 16px;
         }
 
         .feature-item h3 {
             font-size: 1.25rem;
-            margin-bottom: 12px;
-            color: var(--deep-purple);
+            margin-bottom: 8px;
         }
 
         .feature-item p {
             color: var(--text-gray);
             font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        /* Pricing */
+        /* Pricing Section */
         .pricing {
-            padding: 120px 0;
+            padding: 100px 0;
             background-color: var(--white);
-            position: relative;
         }
 
-        /* Pricing Grid */
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 32px;
-            margin: 40px auto 0;
-            max-width: 850px;
+            grid-template-columns: 1fr 1.05fr;
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
             align-items: stretch;
         }
 
         .pricing-card {
-            background-color: var(--dark-section);
-            color: var(--white);
+            background: var(--soft-pink);
             border-radius: 24px;
-            padding: 40px 32px;
-            text-align: left;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 48px 40px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            border: 2px solid transparent;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .pricing-card.featured {
-            border: 2px solid var(--primary-pink);
+            background: #ffffff;
+            border-color: var(--primary-pink);
+            box-shadow: 0 20px 50px rgba(230, 115, 153, 0.2);
+            transform: scale(1.02);
         }
-        
-        .pricing-card.featured::before {
-            content: '';
-            position: absolute;
-            top: -3px; left: -3px; right: -3px; bottom: -3px;
-            background: linear-gradient(45deg, var(--primary-pink), var(--deep-purple), var(--primary-pink));
-            border-radius: 27px;
-            z-index: -1;
-            animation: borderGlow 3s ease-in-out infinite alternate;
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
         }
 
         .plan-badge {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
         }
 
-        .badge-free { background: rgba(255, 255, 255, 0.15); color: #fff; }
-        .badge-pro { background: var(--primary-pink); color: #fff; }
-        .badge-master { background: var(--deep-purple); color: #fff; }
+        .badge-free {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .badge-pro {
+            background: var(--primary-pink);
+            color: var(--white);
+        }
 
         .pricing-card h3 {
-            color: var(--white);
-            font-size: 1.8rem;
-            margin-bottom: 6px;
+            font-size: 2rem;
+            margin-bottom: 8px;
         }
 
         .pricing-card .tagline {
-            font-size: 0.9rem;
-            color: #aaa;
-            margin-bottom: 20px;
-            min-height: 42px;
-            line-height: 1.4;
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            min-height: 48px;
         }
 
         .price {
-            font-size: 3.2rem;
             font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
             font-weight: 800;
+            color: var(--dark-section);
             margin-bottom: 24px;
-            color: var(--primary-pink);
             line-height: 1;
         }
 
         .price span {
             font-size: 1rem;
             font-weight: 500;
-            color: #ccc;
+            color: #888888;
         }
 
         .pricing-features {
@@ -413,10 +524,10 @@
         }
 
         .pricing-features li {
-            margin-bottom: 16px;
-            padding-left: 32px;
+            margin-bottom: 14px;
+            padding-left: 28px;
             position: relative;
-            font-size: 1.05rem;
+            font-size: 0.98rem;
         }
 
         .pricing-features li::before {
@@ -425,7 +536,7 @@
             left: 0;
             color: var(--primary-pink);
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .pricing-card .btn {
@@ -435,10 +546,35 @@
         }
         
         .pricing-note {
-            margin-top: 24px;
-            font-size: 0.95rem;
+            margin-top: 32px;
+            font-size: 1rem;
             color: var(--text-gray);
             text-align: center;
+        }
+
+        /* ROI Comparison Card */
+        .roi-comparison-card {
+            max-width: 900px;
+            margin: 60px auto 0;
+            background: linear-gradient(135deg, #fff7fa 0%, #f3e8ff 100%);
+            border: 2px solid #e67399;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(230, 115, 153, 0.12);
+        }
+
+        .roi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 24px;
+        }
+
+        .roi-column {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
 
         /* Footer CTA */
@@ -475,8 +611,11 @@
             .features-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            .domain-trust-container, .pricing-grid, .roi-grid {
+                grid-template-columns: 1fr;
+            }
             .hero h1 {
-                font-size: 3rem;
+                font-size: 2.8rem;
             }
         }
 
@@ -488,16 +627,13 @@
                 padding: 140px 0 80px;
             }
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
             }
             .pricing-card {
                 padding: 32px 24px;
             }
             .footer-cta h2 {
                 font-size: 2rem;
-            }
-            .nav-links {
-                gap: 16px;
             }
         }
     </style>
@@ -513,7 +649,7 @@
             </a>
             <div class="nav-links">
                 <a href="/login" class="nav-login">Login</a>
-                <a href="/register" class="btn btn-primary">Get Started Free</a>
+                <a href="/register" class="btn btn-primary">Build Your Free Site →</a>
             </div>
         </div>
     </nav>
@@ -521,10 +657,75 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container fade-in">
-            <h1>The Only Website Builder Your Bakery Will Ever Knead.</h1>
-            <p class="subheadline">We handle the code. You handle the dough. Claim your slice of the web with a professional Doughmain—AI-powered, zero coding, built specifically for bakers.</p>
-            <a href="/register" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 32px;">Start Baking Your Site →</a>
-            <span class="secondary-text">No credit card required &middot; Free to start &middot; Proof your site in minutes</span>
+            <h1>Build, host, and manage your bakery website completely free.</h1>
+            <p class="subheadline">The easiest way for a bakery to get a beautiful website that actually takes orders—for free. Upgrade anytime when you're ready to look like an established brand with your own domain.</p>
+            
+            <div class="hero-badges">
+                <div class="hero-badge-pill">✨ 0% Commissions (Keep 100% of sales)</div>
+                <div class="hero-badge-pill">☁️ Free Web Hosting &amp; AI Builder</div>
+                <div class="hero-badge-pill">⚡ 0% Platform Fees Forever</div>
+            </div>
+
+            <a href="/register" class="btn btn-primary" style="font-size: 1.15rem; padding: 18px 36px;">Build Your Free Bakery Site →</a>
+            <span class="secondary-text">No credit card required &middot; Free forever &middot; Upgrade anytime &middot; Cancel anytime</span>
+        </div>
+    </section>
+
+    <!-- Value Prop Bar -->
+    <section class="value-prop-bar">
+        <div class="container">
+            <div class="value-prop-grid">
+                <div class="value-prop-item">
+                    <span class="icon">💰</span>
+                    <span>Keep 100% Of Your Profit</span>
+                </div>
+                <div class="value-prop-item">
+                    <span class="icon">🎂</span>
+                    <span>12-Step Custom Cake Builder</span>
+                </div>
+                <div class="value-prop-item">
+                    <span class="icon">🤖</span>
+                    <span>AI Website Copywriter</span>
+                </div>
+                <div class="value-prop-item">
+                    <span class="icon">⚡</span>
+                    <span>Free Web Hosting Included</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Domain Authority & Trust Section -->
+    <section class="domain-trust-section">
+        <div class="container">
+            <div class="domain-trust-container fade-in">
+                <div class="domain-trust-content">
+                    <span style="color:var(--primary-pink); font-weight:700; text-transform:uppercase; letter-spacing:0.1em; font-size:0.9rem;">The Brand Authority Advantage</span>
+                    <h2>Ready to Look Like a Real Business?</h2>
+                    <p>Clients booking $500+ custom wedding cakes and corporate events don't want to place orders through a temporary social media link. They trust an established business with its own domain: <strong>yourbakery.com</strong>.</p>
+                    <p>Build your brand on <em>land you own</em>, not rented space. Upgrade to Pro whenever you're ready to claim your custom domain and command the prices your talent deserves.</p>
+                </div>
+                <div class="domain-trust-card">
+                    <h3 style="color:#fff; font-size:1.5rem; margin-bottom:16px;">Why High-End Bakers Choose Pro:</h3>
+                    <ul style="list-style:none; color:rgba(255,255,255,0.9); line-height:2;">
+                        <li>🔒 <strong>4x Higher Buyer Trust</strong> with <code>yourbakery.com</code></li>
+                        <li>💎 <strong>Command Higher Prices</strong> for custom cake orders</li>
+                        <li>🎨 <strong>Unlimited Access to All Themes</strong> (+ all future releases)</li>
+                        <li>📊 <strong>Baker CRM &amp; Revenue Analytics</strong></li>
+                        <li>⭐ <strong>Client Reviews &amp; Social Proof Showcase</strong></li>
+                    </ul>
+                    <div class="trust-stat-box">
+                        <div class="trust-stat">
+                            <div class="stat-number">4x</div>
+                            <div class="stat-label">Higher Client Trust</div>
+                        </div>
+                        <div class="trust-stat">
+                            <div class="stat-number">$0</div>
+                            <div class="stat-label">Sales Commission</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -533,26 +734,26 @@
         <div class="container">
             <div class="section-header fade-in">
                 <h2>How It Works</h2>
-                <p style="color:var(--text-gray); margin-top:8px;">Built from scratch, just like your best recipes.</p>
+                <p style="color:var(--text-gray); margin-top:8px;">Built from scratch, specifically crafted for bakery owners.</p>
             </div>
             <div class="steps-grid">
                 <div class="step-card fade-in">
                     <div class="step-number">1</div>
                     <div class="step-icon">📝</div>
-                    <h3>Tell Us What You Knead</h3>
-                    <p>Share your bakery name, specialties, and style. Everything you knead to get started.</p>
+                    <h3>Answer A Few Questions</h3>
+                    <p>Share your bakery name, location, specialties, and style preferences in under 2 minutes.</p>
                 </div>
                 <div class="step-card fade-in" style="transition-delay: 0.1s;">
                     <div class="step-number">2</div>
                     <div class="step-icon">🤖</div>
-                    <h3>Watch It Proof &amp; Rise with AI</h3>
-                    <p>Our AI Website Builder proofs your digital presence, writes your copy, and bakes your site layout.</p>
+                    <h3>AI Generates Your Site</h3>
+                    <p>Our AI Website Builder creates your homepage, writes high-converting copy, and suggests themes.</p>
                 </div>
                 <div class="step-card fade-in" style="transition-delay: 0.2s;">
                     <div class="step-number">3</div>
                     <div class="step-icon">🚀</div>
-                    <h3>Fresh Out Of The Oven</h3>
-                    <p>Pick a theme, add your pastries, and publish. Your bakery website is hot and ready!</p>
+                    <h3>Launch &amp; Take Orders</h3>
+                    <p>Publish your site free. Accept custom inquiries, send payment requests, and grow your business!</p>
                 </div>
             </div>
         </div>
@@ -562,45 +763,45 @@
     <section class="features">
         <div class="container">
             <div class="section-header fade-in">
-                <h2>Fully Baked Features for Brilliant Bakers</h2>
-                <p style="color:var(--text-gray); margin-top:8px;">Don't let your online presence go stale. Get a fresh Doughmain.</p>
+                <h2>Everything Your Bakery Needs To Succeed</h2>
+                <p style="color:var(--text-gray); margin-top:8px;">Turn casual visitors into loyal custom cake clients.</p>
             </div>
             <div class="features-grid">
                 <div class="feature-item fade-in">
                     <div class="feature-icon">🎨</div>
                     <h3>Artisanal Themes</h3>
-                    <p>Choose from 3 core themes on Free, or unlock all themes with Pro.</p>
-                    <span style="font-size:0.75rem; font-weight:700; color:#6d28d9; background:#f3e8ff; padding:3px 10px; border-radius:12px; margin-top:10px; display:inline-block;">Free &amp; Pro Plans</span>
+                    <p>Core themes on Starter (Free), or unlock Unlimited Access to All Themes with Pro.</p>
+                    <span style="font-size:0.75rem; font-weight:700; color:#6d28d9; background:#f3e8ff; padding:4px 12px; border-radius:12px; margin-top:12px; display:inline-block;">Starter &amp; Pro Plans</span>
                 </div>
                 <div class="feature-item fade-in" style="transition-delay: 0.1s;">
                     <div class="feature-icon">🛒</div>
-                    <h3>Custom Cake Builder</h3>
-                    <p>Cake order intake form with flavors, fillings, date selection, and photo uploads.</p>
-                    <span style="font-size:0.75rem; font-weight:700; color:#065f46; background:#d1fae5; padding:3px 10px; border-radius:12px; margin-top:10px; display:inline-block;">Free Forever</span>
+                    <h3>Custom Cake Inquiry Builder</h3>
+                    <p>12-step custom cake form with flavor options, tier selections, calendar booking, and inspiration photo uploads.</p>
+                    <span style="font-size:0.75rem; font-weight:700; color:#065f46; background:#d1fae5; padding:4px 12px; border-radius:12px; margin-top:12px; display:inline-block;">Free Forever</span>
                 </div>
                 <div class="feature-item fade-in" style="transition-delay: 0.2s;">
                     <div class="feature-icon">📧</div>
-                    <h3>Invoices &amp; Quick Payments</h3>
-                    <p>Send custom invoices and accept Venmo, CashApp, Zelle, or PayPal with zero platform fees.</p>
-                    <span style="font-size:0.75rem; font-weight:700; color:#065f46; background:#d1fae5; padding:3px 10px; border-radius:12px; margin-top:10px; display:inline-block;">Free Forever</span>
+                    <h3>Invoices &amp; 0% Commission Payments</h3>
+                    <p>Send custom quotes and accept Venmo, CashApp, Zelle, or PayPal with ZERO platform fees.</p>
+                    <span style="font-size:0.75rem; font-weight:700; color:#065f46; background:#d1fae5; padding:4px 12px; border-radius:12px; margin-top:12px; display:inline-block;">Free Forever</span>
                 </div>
                 <div class="feature-item fade-in">
                     <div class="feature-icon">👥</div>
                     <h3>Baker Customer CRM</h3>
-                    <p>Track repeat buyers, full order histories, and lifetime spend automatically in one dashboard.</p>
-                    <span style="font-size:0.75rem; font-weight:700; color:#92400e; background:#fef3c7; padding:3px 10px; border-radius:12px; margin-top:10px; display:inline-block;">Pro Feature 🌟</span>
+                    <p>Track repeat buyers, order histories, and total client spend automatically in your dashboard.</p>
+                    <span style="font-size:0.75rem; font-weight:700; color:#92400e; background:#fef3c7; padding:4px 12px; border-radius:12px; margin-top:12px; display:inline-block;">Pro Feature 🌟</span>
                 </div>
                 <div class="feature-item fade-in" style="transition-delay: 0.1s;">
                     <div class="feature-icon">⭐</div>
-                    <h3>Client Review Proofing</h3>
-                    <p>Showcase glowing client reviews and testimonials directly on your live storefront.</p>
-                    <span style="font-size:0.75rem; font-weight:700; color:#92400e; background:#fef3c7; padding:3px 10px; border-radius:12px; margin-top:10px; display:inline-block;">Pro Feature 🌟</span>
+                    <h3>Client Reviews &amp; Testimonials</h3>
+                    <p>Showcase glowing customer reviews and rating stars directly on your storefront to boost conversions.</p>
+                    <span style="font-size:0.75rem; font-weight:700; color:#92400e; background:#fef3c7; padding:4px 12px; border-radius:12px; margin-top:12px; display:inline-block;">Pro Feature 🌟</span>
                 </div>
                 <div class="feature-item fade-in" style="transition-delay: 0.2s;">
                     <div class="feature-icon">🌐</div>
                     <h3>Custom Domain Connection</h3>
-                    <p>Use yourbakery.doughmain.pro free, or upgrade to Pro to connect your custom domain (yourbakery.com).</p>
-                    <span style="font-size:0.75rem; font-weight:700; color:#92400e; background:#fef3c7; padding:3px 10px; border-radius:12px; margin-top:10px; display:inline-block;">Pro Feature 🌟</span>
+                    <p>Use <code>yourbakery.doughmain.pro</code> free, or connect your own domain (<code>yourbakery.com</code>).</p>
+                    <span style="font-size:0.75rem; font-weight:700; color:#92400e; background:#fef3c7; padding:4px 12px; border-radius:12px; margin-top:12px; display:inline-block;">Pro Feature 🌟</span>
                 </div>
             </div>
         </div>
@@ -610,54 +811,88 @@
     <section class="pricing">
         <div class="container">
             <div class="section-header fade-in">
-                <h2>Simple, Transparent Pricing</h2>
-                <p style="color:var(--text-gray); margin-top:8px;">Everything you need to grow your bakery online. The proof is in the platform.</p>
+                <h2>Simple, Transparent Product Tiers</h2>
+                <p style="color:var(--text-gray); margin-top:8px;">Start free. Build your bakery. Upgrade anytime when your business grows.</p>
             </div>
             
             <div class="pricing-grid fade-in">
-                <!-- TIER 1: FREE BAKER ($0) -->
+                <!-- TIER 1: STARTER (FREE) -->
                 <div class="pricing-card">
                     <div>
                         <span class="plan-badge badge-free">Free Forever</span>
-                        <h3>Free Baker</h3>
-                        <p class="tagline">Run your entire bakery business 100% free with zero monthly costs.</p>
+                        <h3>Starter</h3>
+                        <p class="tagline">Everything you need to build your bakery website, list products, and take custom orders completely free.</p>
                         <div class="price">$0<span>/forever</span></div>
                         <ul class="pricing-features">
-                            <li><code>yourbakery.doughmain.pro</code> subdomain</li>
-                            <li>3 Core Themes (Rustic, Modern, Playful)</li>
-                            <li>Full Invoices &amp; Payment Requests (Venmo, CashApp, Zelle, PayPal)</li>
-                            <li>AI Website Builder</li>
-                            <li>Online Custom Cake Order Form</li>
-                            <li>Pastry &amp; Menu Product Catalog</li>
-                            <li>Standard Online Order Intake</li>
-                            <li>Zero Monthly Fees or Commissions</li>
+                            <li><code>yourbakery.doughmain.pro</code> free subdomain</li>
+                            <li>Free Web Hosting Included</li>
+                            <li>AI Website Builder &amp; Auto Copywriting</li>
+                            <li>3 Core Bakery Themes</li>
+                            <li>12-Step Custom Cake Inquiry Form</li>
+                            <li>Pastry Product &amp; Menu Catalog</li>
+                            <li>Invoice Creation &amp; Direct Payment Requests</li>
+                            <li><strong>0% Platform Commissions (Keep 100% of Sales)</strong></li>
                         </ul>
                     </div>
-                    <a href="/register" class="btn btn-light" style="margin-top:24px;">Start Free Forever</a>
+                    <a href="/register" class="btn btn-light" style="margin-top:24px;">Build Your Free Site</a>
                 </div>
 
-                <!-- TIER 2: PRO BAKER ($29/MO) - FEATURED -->
+                <!-- TIER 2: PRO ($29/MO) - FEATURED -->
                 <div class="pricing-card featured">
                     <div>
-                        <span class="plan-badge badge-pro">Most Popular 🔥</span>
-                        <h3>Pro Baker</h3>
-                        <p class="tagline">Connect your custom domain, unlock all themes, CRM analytics, and white-labeling.</p>
+                        <span class="plan-badge badge-pro">Recommended 🔥</span>
+                        <h3>Pro</h3>
+                        <p class="tagline">Look like an established business with your custom domain (yourbakery.com) and professional tools.</p>
                         <div class="price">$29<span>/month</span></div>
                         <ul class="pricing-features">
-                            <li><strong>Everything in Free, plus:</strong></li>
-                            <li>Custom Domain Connection (<code>yourbakery.com</code>)</li>
-                            <li>Access to All Themes (+ All Future Releases)</li>
+                            <li><strong>Everything in Starter, plus:</strong></li>
+                            <li><strong>Custom Domain Connection (<code>yourbakery.com</code>)</strong></li>
+                            <li><strong>Unlimited Access to All Themes (+ All Future Releases)</strong></li>
                             <li>Baker Customer CRM &amp; Lifetime Spend Analytics</li>
                             <li>Advanced Calendar Rules (Lead times &amp; Blackout dates)</li>
-                            <li>Client Reviews &amp; Social Proofing</li>
-                            <li>Remove "Powered by Doughmain" (White-Label)</li>
+                            <li>Client Reviews &amp; Social Proof Showcase</li>
+                            <li>Remove "Powered by Doughmain" (White Labeling)</li>
+                            <li>Priority Support &amp; Faster AI Generations</li>
                         </ul>
                     </div>
-                    <a href="/register" class="btn btn-primary" style="margin-top:24px;">Start 14-Day Free Trial</a>
+                    <a href="/register" class="btn btn-primary" style="margin-top:24px;">Start Free &rarr; Upgrade Anytime</a>
                 </div>
             </div>
 
-            <p class="pricing-note fade-in">Switch or cancel plans anytime in your Baker Admin Dashboard.</p>
+            <p class="pricing-note fade-in">✨ <strong>Upgrade anytime. Cancel anytime.</strong> No lock-in contracts or hidden fees.</p>
+
+            <!-- ROI Comparison Box -->
+            <div class="roi-comparison-card fade-in">
+                <div style="text-align:center;">
+                    <span style="color:#d25a80; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; font-size:0.85rem;">Why $29/Month Is A No-Brainer</span>
+                    <h3 style="font-size:1.8rem; margin-top:4px;">One Single Birthday Cake Pays For Your Entire Year</h3>
+                    <p style="color:var(--text-gray); font-size:1rem; max-width:650px; margin:8px auto 0;">Compare what it costs to stitch together traditional web software vs. Doughmain Pro:</p>
+                </div>
+                <div class="roi-grid">
+                    <div class="roi-column">
+                        <h4 style="color:#991b1b; font-size:1.1rem; margin-bottom:12px;">❌ Traditional Software Stack</h4>
+                        <ul style="list-style:none; font-size:0.92rem; line-height:1.8; color:#555;">
+                            <li>• Web Design Agency Quote: <strong>$2,500 – $5,000</strong></li>
+                            <li>• Separate Web Hosting: <strong>$20/mo</strong></li>
+                            <li>• Forms &amp; File Upload Plugin: <strong>$15/mo</strong></li>
+                            <li>• Booking &amp; Calendar Tool: <strong>$20/mo</strong></li>
+                            <li>• Customer CRM App: <strong>$25/mo</strong></li>
+                            <li style="border-top:1px solid #eee; padding-top:8px; margin-top:8px; font-weight:700; color:#111;">Total Cost: $3,500+ upfront + $80+/mo</li>
+                        </ul>
+                    </div>
+                    <div class="roi-column" style="border:2px solid #e67399; background:#fff7fa;">
+                        <h4 style="color:#065f46; font-size:1.1rem; margin-bottom:12px;">✅ Doughmain Pro</h4>
+                        <ul style="list-style:none; font-size:0.92rem; line-height:1.8; color:#1a0a2e;">
+                            <li>• Free AI Website Builder &amp; Hosting</li>
+                            <li>• 12-Step Custom Cake Builder Included</li>
+                            <li>• <code>yourbakery.com</code> Custom Domain Included</li>
+                            <li>• All Themes &amp; Future Theme Releases</li>
+                            <li>• Built-in Baker CRM &amp; Client Reviews</li>
+                            <li style="border-top:1px solid #e67399; padding-top:8px; margin-top:8px; font-weight:700; color:#e67399; font-size:1.05rem;">Only $29/mo (Less than 1 cake profit!)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -665,9 +900,9 @@
     <footer class="footer-cta">
         <div class="container">
             <div class="fade-in">
-                <h2>Stop loafing around with generic site builders.</h2>
-                <p>Give your brand the perfect environment to rise online. Create your Doughmain today.</p>
-                <a href="/register" class="btn btn-light" style="font-size: 1.1rem; padding: 16px 32px;">Create Your Free Account</a>
+                <h2>Build your bakery website today.</h2>
+                <p>Give your brand the perfect environment to rise online. Build, host, and manage your website completely free.</p>
+                <a href="/register" class="btn btn-light" style="font-size: 1.15rem; padding: 18px 36px;">Build Your Free Bakery Site →</a>
             </div>
             <div class="copyright fade-in" style="line-height: 1.8;">
                 &copy; 2026 Doughmain Pro Platform, a <a href="https://daystardigital.co" style="color:inherit; text-decoration:underline;">Daystar Digital LLC</a> product. &middot; <a href="/legal" style="color:inherit; text-decoration:underline; font-weight: 600;">Legal Center &amp; Policies</a> &middot; <a href="/legal/terms" style="color:inherit; text-decoration:underline;">Terms of Service</a> &middot; <a href="/legal/privacy" style="color:inherit; text-decoration:underline;">Privacy Policy</a> &middot; <a href="/legal/acceptable-use" style="color:inherit; text-decoration:underline;">Acceptable Use</a>
@@ -688,7 +923,7 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add("visible");
-                        observer.unobserve(entry.target); // Unobserve after animation triggers
+                        observer.unobserve(entry.target);
                     }
                 });
             }, observerOptions);
@@ -697,7 +932,6 @@
                 observer.observe(element);
             });
             
-            // Trigger hero animation immediately
             setTimeout(() => {
                 const heroElements = document.querySelectorAll(".hero .fade-in");
                 heroElements.forEach(el => el.classList.add("visible"));
