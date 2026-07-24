@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery | Blushed Crumbs Bakehouse</title>
+    <title>Gallery | {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }}</title>
     <!-- Favicon -->
     @if(isset($tenant) && $tenant->logo_path)
         <link rel="icon" href="{{ asset($tenant->logo_path) }}">
     @else
         <link rel="icon" href="{{ asset('images/favicon.png') }}">
     @endif
-    <meta name="description" content="Explore custom artisanal cakes, cupcakes, and treat boxes from Blushed Crumbs Bakehouse.">
+    <meta name="description" content="Explore custom artisanal cakes, cupcakes, and treat boxes from {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }}.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,14 +33,7 @@
             <a href="{{ route('storefront.index') }}">Home</a>
             <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.gallery') }}" class="active">Gallery</a>
-            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
-            @php
-                $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
-                $bakerPortalUrl = request()->is('site/*') 
-                    ? url('/site/' . $sub . '/dashboard') 
-                    : route('baker.dashboard');
-            @endphp
-            <a href="{{ $bakerPortalUrl }}" class="admin-btn">🔑 Baker Portal</a>
+            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
         </nav>
     </div>
 </header>
@@ -104,11 +97,21 @@
         @endif
     </div>
     <div class="footer-nav">
-        <a href="{{ route('storefront.index') }}">Home</a>
-        <a href="{{ route('storefront.about') }}">About</a>
-        <a href="{{ route('storefront.gallery') }}">Gallery</a>
+        <a href="{{ route('storefront.index') }}" class="footer-link">Home</a>
+        <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
+        <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
+        <a href="{{ route('legal.index') }}" class="footer-link">Legal Center</a>
+        <a href="{{ route('storefront.privacy') }}" class="footer-link">Privacy Policy</a>
+        <a href="{{ route('storefront.terms') }}" class="footer-link">Terms &amp; Conditions</a>
+        @php
+            $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
+            $bakerPortalUrl = request()->is('site/*') 
+                ? url('/site/' . $sub . '/dashboard') 
+                : route('baker.dashboard');
+        @endphp
+        <a href="{{ $bakerPortalUrl }}" class="footer-link">Baker Login</a>
     </div>
-    <p class="copyright-text">Copyright &copy; 2026 {{ $tenant->name ?? 'Bakery' }} | Powered by Doughmain.pro</p>
+    <p class="copyright-text">Copyright &copy; 2026 {{ $tenant->name ?? 'Bakery' }} | <a href="{{ route('legal.index') }}" class="footer-link">Legal Hub</a> &middot; <a href="{{ route('storefront.privacy') }}" class="footer-link">Privacy</a> &middot; <a href="{{ route('storefront.terms') }}" class="footer-link">Terms</a> | Powered by <a href="https://doughmain.pro" target="_blank" class="footer-link footer-brand-link">Doughmain.pro</a></p>
 </footer>
 
 <script src="{{ asset('js/app.js') }}"></script>

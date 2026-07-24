@@ -99,6 +99,26 @@ class StorefrontController extends Controller
         return view('storefront.gallery', compact('tenant', 'gallery'));
     }
 
+    public function previewPrivacy(Request $request, $subdomain)
+    {
+        $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
+        if (!$tenant) { abort(404, 'Bakery website not found.'); }
+        $request->attributes->set('tenant', $tenant);
+        app()->instance('tenant', $tenant);
+
+        return view('legal.privacy', compact('tenant'));
+    }
+
+    public function previewTerms(Request $request, $subdomain)
+    {
+        $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
+        if (!$tenant) { abort(404, 'Bakery website not found.'); }
+        $request->attributes->set('tenant', $tenant);
+        app()->instance('tenant', $tenant);
+
+        return view('legal.terms', compact('tenant'));
+    }
+
     public function about(Request $request)
     {
         $tenant = $request->attributes->get('tenant');
@@ -120,6 +140,18 @@ class StorefrontController extends Controller
         return view('storefront.gallery', compact('tenant', 'gallery'));
     }
 
+    public function privacy(Request $request)
+    {
+        $tenant = $request->attributes->get('tenant');
+        return view('legal.privacy', compact('tenant'));
+    }
+
+    public function terms(Request $request)
+    {
+        $tenant = $request->attributes->get('tenant');
+        return view('legal.terms', compact('tenant'));
+    }
+
     public function submitOrder(Request $request)
     {
         $tenant = $request->attributes->get('tenant');
@@ -131,14 +163,22 @@ class StorefrontController extends Controller
             'client_name' => 'required|string|max:255',
             'client_email' => 'required|email|max:255',
             'client_phone' => 'required|string|max:50',
-            'due_date' => 'nullable|string',
-            'time_slot' => 'nullable|string',
-            'fulfillment_type' => 'nullable|string',
-            'delivery_address' => 'nullable|string',
-            'special_notes' => 'nullable|string',
-            'allergies' => 'nullable|string',
+            'due_date' => 'nullable|string|max:50',
+            'time_slot' => 'nullable|string|max:50',
+            'fulfillment_type' => 'nullable|string|max:50',
+            'delivery_address' => 'nullable|string|max:500',
+            'special_notes' => 'nullable|string|max:2000',
+            'allergies' => 'nullable|string|max:1000',
             'total_price' => 'nullable|numeric',
         ]);
+
+        // Sanitize freeform text inputs against XSS/HTML injection attacks
+        $clientName = strip_tags(trim($validated['client_name']));
+        $clientEmail = filter_var(trim($validated['client_email']), FILTER_SANITIZE_EMAIL);
+        $clientPhone = strip_tags(trim($validated['client_phone']));
+        $deliveryAddress = isset($validated['delivery_address']) ? strip_tags(trim($validated['delivery_address'])) : null;
+        $specialNotes = isset($validated['special_notes']) ? strip_tags(trim($validated['special_notes'])) : null;
+        $allergies = isset($validated['allergies']) ? strip_tags(trim($validated['allergies'])) : null;
 
         // Parse array parameters if passed as JSON strings via FormData
         $items = $request->input('items');
@@ -156,7 +196,7 @@ class StorefrontController extends Controller
         $socialFollows = $request->input('social_follows');
         if (is_string($socialFollows)) { $socialFollows = json_decode($socialFollows, true); }
 
-        // Process file uploads
+        // Process file uploads with strict extension checks
         $inspirationFiles = [];
         if ($request->hasFile('inspiration_files')) {
             $destinationPath = public_path('uploads/inspiration');
@@ -164,11 +204,15 @@ class StorefrontController extends Controller
                 mkdir($destinationPath, 0777, true);
             }
 
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic'];
             foreach ($request->file('inspiration_files') as $file) {
                 if ($file->isValid()) {
-                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                    $file->move($destinationPath, $filename);
-                    $inspirationFiles[] = 'uploads/inspiration/' . $filename;
+                    $ext = strtolower($file->getClientOriginalExtension());
+                    if (in_array($ext, $allowedExtensions)) {
+                        $filename = time() . '_' . uniqid() . '.' . $ext;
+                        $file->move($destinationPath, $filename);
+                        $inspirationFiles[] = 'uploads/inspiration/' . $filename;
+                    }
                 }
             }
         }
@@ -176,9 +220,9 @@ class StorefrontController extends Controller
         // Auto-create or find customer in CRM
         $customer = Customer::findOrCreateFromOrder(
             $tenant->id,
-            $request->input('client_name'),
-            $request->input('client_email'),
-            $request->input('client_phone')
+            $clientName,
+            $clientEmail,
+            $clientPhone
         );
 
         $orderNumber = strtoupper(substr($tenant->slug, 0, 2)) . '-' . rand(1000, 9999);
@@ -190,19 +234,19 @@ class StorefrontController extends Controller
             'tenant_id' => $tenant->id,
             'customer_id' => $customer->id,
             'order_number' => $orderNumber,
-            'client_name' => $request->input('client_name'),
-            'client_email' => $request->input('client_email'),
-            'client_phone' => $request->input('client_phone'),
+            'client_name' => $clientName,
+            'client_email' => $clientEmail,
+            'client_phone' => $clientPhone,
             'due_date' => $dueDate,
-            'time_slot' => $request->input('time_slot', '8:30 AM'),
-            'fulfillment_type' => $request->input('fulfillment_type', 'pickup'),
-            'delivery_address' => $request->input('delivery_address'),
+            'time_slot' => strip_tags($request->input('time_slot', '8:30 AM')),
+            'fulfillment_type' => strip_tags($request->input('fulfillment_type', 'pickup')),
+            'delivery_address' => $deliveryAddress,
             'items' => $items ?? [],
             'flavors' => $flavors ?? [],
             'frosting' => $frosting ?? [],
             'fillings' => $fillings ?? [],
-            'special_notes' => $request->input('special_notes'),
-            'allergies' => $request->input('allergies'),
+            'special_notes' => $specialNotes,
+            'allergies' => $allergies,
             'social_follows' => $socialFollows ?? [],
             'inspiration_files' => $inspirationFiles,
             'total_price' => $totalPrice,

@@ -275,6 +275,12 @@
 
             <div class="links">
                 <a href="/login">Already have an account? Sign in</a>
+                <div style="margin-top: 1.25rem; font-size: 0.8rem; color: var(--text-muted);">
+                    By registering, you agree to our 
+                    <a href="/legal/terms" style="color: var(--accent); text-decoration: underline; font-weight:600;">Terms of Service</a>, 
+                    <a href="/legal/privacy" style="color: var(--accent); text-decoration: underline; font-weight:600;">Privacy Policy</a>, and 
+                    <a href="/legal/acceptable-use" style="color: var(--accent); text-decoration: underline; font-weight:600;">Acceptable Use Policy</a>.
+                </div>
             </div>
         </div>
     </div>

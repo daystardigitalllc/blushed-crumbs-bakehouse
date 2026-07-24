@@ -36,14 +36,7 @@
             <a href="{{ route('storefront.index') }}">Home</a>
             <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
-            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
-            @php
-                $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
-                $bakerPortalUrl = request()->is('site/*') 
-                    ? url('/site/' . $sub . '/dashboard') 
-                    : route('baker.dashboard');
-            @endphp
-            <a href="{{ $bakerPortalUrl }}" class="admin-btn">🔑 Baker Portal</a>
+            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
         </nav>
     </div>
 </header>
@@ -242,8 +235,18 @@
         <a href="{{ route('storefront.index') }}" class="footer-link">Home</a>
         <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
         <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
+        <a href="{{ route('legal.index') }}" class="footer-link">Legal Center</a>
+        <a href="{{ route('storefront.privacy') }}" class="footer-link">Privacy Policy</a>
+        <a href="{{ route('storefront.terms') }}" class="footer-link">Terms &amp; Conditions</a>
+        @php
+            $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
+            $bakerPortalUrl = request()->is('site/*') 
+                ? url('/site/' . $sub . '/dashboard') 
+                : route('baker.dashboard');
+        @endphp
+        <a href="{{ $bakerPortalUrl }}" class="footer-link">Baker Login</a>
     </div>
-    <p class="copyright-text">Copyright &copy; 2026 {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }} | Powered by <a href="https://bakery.pro" target="_blank" class="footer-link footer-brand-link">Bakery.Pro</a> &mdash; <em>Want your own bakery website?</em></p>
+    <p class="copyright-text">Copyright &copy; 2026 {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }} | <a href="{{ route('legal.index') }}" class="footer-link">Legal Hub</a> &middot; <a href="{{ route('storefront.privacy') }}" class="footer-link">Privacy</a> &middot; <a href="{{ route('storefront.terms') }}" class="footer-link">Terms</a> | Powered by <a href="https://doughmain.pro" target="_blank" class="footer-link footer-brand-link">Doughmain.pro</a></p>
 </footer>
 
 <script src="{{ asset('js/app.js') }}"></script>

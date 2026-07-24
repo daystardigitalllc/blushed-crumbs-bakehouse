@@ -104,4 +104,20 @@ class BrandController extends Controller
 
         return redirect()->back()->with('success', 'Support ticket status updated!');
     }
+
+    /**
+     * Platform Privacy Policy.
+     */
+    public function privacy(Request $request)
+    {
+        return view('legal.privacy');
+    }
+
+    /**
+     * Platform Terms & Conditions.
+     */
+    public function terms(Request $request)
+    {
+        return view('legal.terms');
+    }
 }

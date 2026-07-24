@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | Blushed Crumbs Bakehouse</title>
+    <title>About Us | {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }}</title>
     <!-- Favicon -->
     @if(isset($tenant) && $tenant->logo_path)
         <link rel="icon" href="{{ asset($tenant->logo_path) }}">
     @else
         <link rel="icon" href="{{ asset('images/favicon.png') }}">
     @endif
-    <meta name="description" content="Learn about Blushed Crumbs Bakehouse, our founder story, passion for custom wedding cakes, and artisanal baking in Tennessee.">
+    <meta name="description" content="Learn about {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }}, our founder story, passion for custom wedding cakes, and artisanal baking.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,14 +34,7 @@
             <a href="{{ route('storefront.index') }}">Home</a>
             <a href="{{ route('storefront.about') }}" class="active">About</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
-            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order</a>
-            @php
-                $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
-                $bakerPortalUrl = request()->is('site/*') 
-                    ? url('/site/' . $sub . '/dashboard') 
-                    : route('baker.dashboard');
-            @endphp
-            <a href="{{ $bakerPortalUrl }}" class="admin-btn">🔑 Baker Portal</a>
+            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
         </nav>
     </div>
 </header>
@@ -76,77 +69,61 @@
 
     <!-- THE INGREDIENTS BEHIND SECTION -->
     <section class="ingredients-section">
-        <h2 class="ingredients-title">The Ingredients Behind Blushed Crumbs Bakehouse</h2>
+        <h2 class="ingredients-title">The Ingredients Behind {{ $tenant->name }}</h2>
         <div class="ingredients-grid-6">
             <div class="ingredient-card">
-                <div class="ingredient-card-header">
-                    <span>💖</span>
-                    <h4>Baked with Passion</h4>
-                </div>
-                <p>Baking isn't just a job for us – it's our true calling. We bring endless energy, enthusiasm, and love into the kitchen every single day to create edible art that makes your heart skip a beat.</p>
+                <div class="ingredient-icon-circle">👩‍🍳</div>
+                <h3>100% Homemade</h3>
+                <p>Baked completely from scratch using traditional family techniques and premium real ingredients.</p>
             </div>
             <div class="ingredient-card">
-                <div class="ingredient-card-header">
-                    <span>🎨</span>
-                    <h4>Artistry & Imagination</h4>
-                </div>
-                <p>Our talented bakers thrive on custom design. From delicate buttercream piping to show-stopping cake crowns, we turn your wildest, sweetest daydreams into stunning, delicious reality.</p>
+                <div class="ingredient-icon-circle">🎂</div>
+                <h3>Custom Design</h3>
+                <p>Every cake is designed uniquely to match your vision, theme, and celebration style.</p>
             </div>
             <div class="ingredient-card">
-                <div class="ingredient-card-header">
-                    <span>✨</span>
-                    <h4>Sweet Innovation</h4>
-                </div>
-                <p>We love putting a modern, playful twist on classic traditions. Whether we are crafting a trend-setting heart cake or inventing irresistible new flavor pairings, we constantly push the boundaries of luxury baking.</p>
+                <div class="ingredient-icon-circle">🍓</div>
+                <h3>Fresh Flavors</h3>
+                <p>Real fruit preserves, rich cocoa, real vanilla beans, and signature velvet frostings.</p>
             </div>
             <div class="ingredient-card">
-                <div class="ingredient-card-header">
-                    <span>🍓</span>
-                    <h4>Premium Ingredients</h4>
-                </div>
-                <p>A beautiful cake is nothing without an unforgettable taste. We meticulously source the finest, highest-quality ingredients to ensure every single crumb satisfies your sweet tooth and tastes absolutely flawless.</p>
+                <div class="ingredient-icon-circle">📅</div>
+                <h3>Reliable Booking</h3>
+                <p>Easy custom order scheduling with guaranteed calendar availability for your date.</p>
             </div>
             <div class="ingredient-card">
-                <div class="ingredient-card-header">
-                    <span>🍦</span>
-                    <h4>Spreading Pure Joy</h4>
-                </div>
-                <p>Your celebration is our celebration, and your happiness means everything to us. From your very first inquiry to the very last bite, we are dedicated to giving you a magical, stress-free experience.</p>
+                <div class="ingredient-icon-circle">✨</div>
+                <h3>Attention to Detail</h3>
+                <p>Intricate piping, elegant edible details, and perfection in every single bite.</p>
             </div>
             <div class="ingredient-card">
-                <div class="ingredient-card-header">
-                    <span>👑</span>
-                    <h4>Seamless Celebration</h4>
-                </div>
-                <p>We believe ordering a custom cake should be a piece of cake. We keep our process simple, clear, and perfectly tailored, taking the stress out of event planning so you can focus entirely on celebrating.</p>
+                <div class="ingredient-icon-circle">💬</div>
+                <h3>Personalized Service</h3>
+                <p>Direct communication with the baker to ensure your event dessert is stress-free.</p>
             </div>
         </div>
     </section>
 
-    <!-- OUR MISSION SECTION -->
-    <section class="mission-section">
-        <div class="mission-container">
-            <div class="mission-content">
-                <h2>Our Mission</h2>
-                <p>Our mission is to make the world a sweeter, more beautiful place one celebration at a time. We strive to provide our clients with jaw-dropping, custom cake designs and unforgettable flavor experiences, crafted with luxury ingredients and a seamless, personalized process that lets you focus entirely on making memories.</p>
-                <div class="mission-bullets-2x2">
-                    <div>✨ Artistry & Flavorful</div>
-                    <div>🍓 Premium Ingredients</div>
-                    <div>👑 Custom Experience</div>
-                    <div>💖 Made to Celebrate</div>
-                </div>
+    <!-- SPECIALTIES SHOWCASE -->
+    <section class="about-specialties-section">
+        <h2 class="about-specialties-title">What We Bake Best</h2>
+        <div class="specialties-cards-container">
+            <div class="specialty-item-card">
+                <span class="specialty-badge">POPULAR</span>
+                <h3>Custom Celebration Cakes</h3>
+                <p>Multi-tiered birthday, baby shower, and milestone cakes baked fresh for your big moment.</p>
             </div>
-            <div class="mission-img-wrap">
-                <img src="{{ asset('images/bento_cake_mission.jpg') }}" alt="Our Mission Bento Cake">
+            <div class="specialty-item-card">
+                <span class="specialty-badge">LUXURY</span>
+                <h3>Wedding Cake Experience</h3>
+                <p>Elegantly crafted wedding tiers, tasting boxes, and full dessert table styling.</p>
+            </div>
+            <div class="specialty-item-card">
+                <span class="specialty-badge">PARTY</span>
+                <h3>Cupcakes & Dessert Bars</h3>
+                <p>Gourmet filled cupcakes, dessert shooters, and chocolate-covered treat boxes.</p>
             </div>
         </div>
-    </section>
-
-    <!-- CTA BANNER -->
-    <section class="about-cta-banner">
-        <h2>Ready For Your Perfect Cake?</h2>
-        <p>Browse our gallery or submit a custom order to get started</p>
-        <button onclick="openOrderModal()" class="about-cta-btn">Submit Order</button>
     </section>
 </div>
 
@@ -165,14 +142,23 @@
         <a href="{{ route('storefront.index') }}">Home</a>
         <a href="{{ route('storefront.about') }}" class="active">About</a>
         <a href="{{ route('storefront.gallery') }}">Gallery</a>
-        <a href="#" onclick="openOrderModal()">Order</a>
+        <a href="{{ route('legal.index') }}">Legal Center</a>
+        <a href="{{ route('storefront.privacy') }}">Privacy Policy</a>
+        <a href="{{ route('storefront.terms') }}">Terms &amp; Conditions</a>
+        @php
+            $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
+            $bakerPortalUrl = request()->is('site/*') 
+                ? url('/site/' . $sub . '/dashboard') 
+                : route('baker.dashboard');
+        @endphp
+        <a href="{{ $bakerPortalUrl }}">Baker Login</a>
     </div>
     <div class="about-social-icons">
         <a href="#">🌐</a>
         <a href="#">✉️</a>
         <a href="#">🎵</a>
     </div>
-    <p class="about-copyright">Copyright © 2026 Blushed Crumbs Bakehouse | Powered By <span>Daystar Digital</span></p>
+    <p class="about-copyright">Copyright © 2026 {{ $tenant->name }} | Powered By <span>Doughmain.pro</span></p>
 </footer>
 
 <script src="{{ asset('js/app.js') }}"></script>

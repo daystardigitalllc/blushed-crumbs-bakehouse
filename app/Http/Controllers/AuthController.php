@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use App\Models\Brand;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\AuditLog;
 
 class AuthController extends Controller
 {
@@ -43,10 +45,38 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        // Security: Rate limiting / brute-force protection (max 5 attempts per minute per IP + email)
+        $throttleKey = Str::lower($credentials['email']) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            AuditLog::logEvent('auth.login.throttled', null, null, [
+                'email' => $credentials['email'],
+                'seconds' => $seconds,
+            ], 'warning');
+
+            return back()->withErrors([
+                'email' => "Too many login attempts. Please try again in {$seconds} seconds.",
+            ])->onlyInput('email');
+        }
+
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
+
+            $user = Auth::user();
+            AuditLog::logEvent('auth.login.success', $user->tenant_id, $user->id, [
+                'email' => $user->email,
+            ]);
+
             return $this->redirectUserAfterAuth();
         }
+
+        RateLimiter::hit($throttleKey, 60);
+
+        AuditLog::logEvent('auth.login.failed', null, null, [
+            'email' => $credentials['email'],
+        ], 'warning');
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
@@ -86,11 +116,11 @@ class AuthController extends Controller
         // Create the tenant
         $tenant = Tenant::create([
             'brand_id' => $brand?->id,
-            'name' => $validated['bakery_name'],
+            'name' => strip_tags($validated['bakery_name']),
             'slug' => $slug,
             'subdomain' => $subdomain,
-            'owner_name' => $validated['owner_name'],
-            'email' => $validated['email'],
+            'owner_name' => strip_tags($validated['owner_name']),
+            'email' => filter_var($validated['email'], FILTER_SANITIZE_EMAIL),
             'plan_tier' => 'standard',
             'theme_id' => 'rustic_kitchen',
             'is_active' => true,
@@ -101,10 +131,15 @@ class AuthController extends Controller
         // Create the owner user
         $user = User::create([
             'tenant_id' => $tenant->id,
-            'name' => $validated['owner_name'],
-            'email' => $validated['email'],
+            'name' => strip_tags($validated['owner_name']),
+            'email' => filter_var($validated['email'], FILTER_SANITIZE_EMAIL),
             'password' => Hash::make($validated['password']),
             'role' => 'owner',
+        ]);
+
+        AuditLog::logEvent('auth.register', $tenant->id, $user->id, [
+            'bakery_name' => $tenant->name,
+            'subdomain' => $tenant->subdomain,
         ]);
 
         // Auto-login
@@ -115,6 +150,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $user = Auth::user();
+        if ($user) {
+            AuditLog::logEvent('auth.logout', $user->tenant_id, $user->id);
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

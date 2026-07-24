@@ -258,6 +258,11 @@
 
             <div class="links">
                 <a href="/register">Don't have an account? Sign up</a>
+                <div style="margin-top: 1.25rem; font-size: 0.8rem; color: var(--text-muted);">
+                    <a href="/legal" style="color: var(--accent); font-weight: 600;">Legal Center</a> &middot; 
+                    <a href="/legal/privacy" style="color: var(--text-muted);">Privacy Policy</a> &middot; 
+                    <a href="/legal/terms" style="color: var(--text-muted);">Terms &amp; Conditions</a>
+                </div>
             </div>
         </div>
     </div>

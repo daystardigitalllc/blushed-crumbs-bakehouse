@@ -669,8 +669,8 @@
                 <p>Give your brand the perfect environment to rise online. Create your Doughmain today.</p>
                 <a href="/register" class="btn btn-light" style="font-size: 1.1rem; padding: 16px 32px;">Create Your Free Account</a>
             </div>
-            <div class="copyright fade-in">
-                &copy; 2026 Doughmain Pro Platform, a <a href="https://daystardigital.co" style="color:inherit; text-decoration:underline;">Daystar Digital LLC</a> product.
+            <div class="copyright fade-in" style="line-height: 1.8;">
+                &copy; 2026 Doughmain Pro Platform, a <a href="https://daystardigital.co" style="color:inherit; text-decoration:underline;">Daystar Digital LLC</a> product. &middot; <a href="/legal" style="color:inherit; text-decoration:underline; font-weight: 600;">Legal Center &amp; Policies</a> &middot; <a href="/legal/terms" style="color:inherit; text-decoration:underline;">Terms of Service</a> &middot; <a href="/legal/privacy" style="color:inherit; text-decoration:underline;">Privacy Policy</a> &middot; <a href="/legal/acceptable-use" style="color:inherit; text-decoration:underline;">Acceptable Use</a>
             </div>
         </div>
     </footer>

@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\OnboardingController;
 
+use App\Http\Controllers\LegalController;
+
 // ─── Authentication Routes ───
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -19,9 +21,12 @@ Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name(
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
+// ─── Legal Hub & Policy Routes ───
+Route::get('/legal', [LegalController::class, 'index'])->name('legal.index');
+Route::get('/legal/{slug}', [LegalController::class, 'show'])->name('legal.show');
+Route::get('/site/{subdomain}/legal/{slug}', [LegalController::class, 'previewShow'])->name('legal.preview');
+
 // ───  SaaS Landing Page ───
-// This route is hit when the user visits the main brand domain (doughmain.pro)
-// The StorefrontController checks the host and renders the landing page or storefront
 Route::get('/landing', [BrandController::class, 'landing'])->name('brand.landing');
 
 // ─── Storefront Routes (Public Bakery Website) ───
@@ -31,8 +36,12 @@ Route::get('/site/{subdomain}/dashboard', [AdminController::class, 'dashboard'])
 Route::get('/site/{subdomain}/admin', [AdminController::class, 'dashboard']);
 Route::get('/site/{subdomain}/about', [StorefrontController::class, 'previewAbout'])->name('storefront.preview.about');
 Route::get('/site/{subdomain}/gallery', [StorefrontController::class, 'previewGallery'])->name('storefront.preview.gallery');
+Route::get('/site/{subdomain}/privacy', [StorefrontController::class, 'previewPrivacy'])->name('storefront.preview.privacy');
+Route::get('/site/{subdomain}/terms', [StorefrontController::class, 'previewTerms'])->name('storefront.preview.terms');
 Route::get('/about', [StorefrontController::class, 'about'])->name('storefront.about');
 Route::get('/gallery', [StorefrontController::class, 'gallery'])->name('storefront.gallery');
+Route::get('/privacy', [StorefrontController::class, 'privacy'])->name('storefront.privacy');
+Route::get('/terms', [StorefrontController::class, 'terms'])->name('storefront.terms');
 Route::post('/order', [StorefrontController::class, 'submitOrder'])->name('storefront.order.submit');
 Route::get('/invoices/{invoiceNumber}', [StorefrontController::class, 'showInvoice'])->name('invoices.show');
 
@@ -43,6 +52,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/onboarding/import-social', [OnboardingController::class, 'importSocial'])->name('onboarding.social.import');
     Route::post('/onboarding/generate', [OnboardingController::class, 'generate'])->name('onboarding.generate');
     Route::post('/onboarding/publish', [OnboardingController::class, 'publish'])->name('onboarding.publish');
+
+    // Data Privacy & Compliance Endpoints (GDPR/CCPA Data Export & Deletion)
+    Route::get('/account/data-export', [LegalController::class, 'exportData'])->name('account.data.export');
+    Route::post('/account/delete-request', [LegalController::class, 'requestDeletion'])->name('account.delete.request');
 });
 
 // ─── Super Admin Brand Portal (Platform SuperAdmin Only) ───
