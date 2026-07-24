@@ -445,32 +445,18 @@
 
                                                         <div>
                                                             <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image Selection</label>
-                                                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; align-items:center;">
-                                                                <div>
-                                                                    <span style="font-size:0.75rem; color:#6d28d9; font-weight:700; display:block; margin-bottom:2px;">Select From Device Gallery:</span>
-                                                                    <select name="categories[{{ $cIdx }}][image_url]" class="form-input" style="width:100%; padding:7px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem;">
-                                                                        <option value="">-- Clean Theme Frame --</option>
-                                                                        @foreach($gallery as $gItem)
-                                                                            @php $gSrc = $gItem->image_url ?? $gItem->image_path; @endphp
-                                                                            <option value="{{ $gSrc }}" {{ ($cat['image_url'] ?? '') === $gSrc ? 'selected' : '' }}>
-                                                                                📷 {{ $gItem->title }} ({{ $gItem->category }})
-                                                                            </option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                </div>
-
-                                                                <div>
-                                                                    <span style="font-size:0.75rem; color:#6d28d9; font-weight:700; display:block; margin-bottom:2px;">Or Upload New Category Photo:</span>
-                                                                    <input type="file" name="category_image_{{ $cIdx }}" accept="image/*" style="font-size:0.8rem; width:100%;">
-                                                                </div>
+                                                            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                                                                <input type="text" id="cat_img_input_{{ $cIdx }}" name="categories[{{ $cIdx }}][image_url]" value="{{ $cat['image_url'] ?? '' }}" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
+                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_{{ $cIdx }}'), 'cat_preview_{{ $cIdx }}')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">📷 Device Gallery</button>
+                                                                <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                                    📁 Upload File
+                                                                    <input type="file" name="category_image_{{ $cIdx }}" accept="image/*" style="display:none;" onchange="uploadSectionMedia(this, 'cat_img_input_{{ $cIdx }}', 'cat_preview_{{ $cIdx }}')">
+                                                                </label>
                                                             </div>
-
-                                                            @if(!empty($cat['image_url']))
-                                                                <div style="margin-top:8px; display:flex; align-items:center; gap:10px;">
-                                                                    <img src="{{ asset($cat['image_url']) }}" style="width:42px; height:42px; object-fit:cover; border-radius:6px; border:1px solid #ddd;">
-                                                                    <span style="font-size:0.8rem; color:#15803d; font-weight:600;">✅ Active Category Photo Attached</span>
-                                                                </div>
-                                                            @endif
+                                                            <div id="cat_preview_{{ $cIdx }}" style="margin-top:8px; {{ !empty($cat['image_url']) ? 'display:flex;' : 'display:none;' }} align-items:center; gap:8px;">
+                                                                <img src="{{ !empty($cat['image_url']) ? asset($cat['image_url']) : '' }}" style="width:38px; height:38px; object-fit:cover; border-radius:6px; border:1px solid #ddd;">
+                                                                <span style="font-size:0.78rem; color:#15803d; font-weight:600;">✅ Category Photo Attached</span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 @endforeach
@@ -480,7 +466,22 @@
                                             </button>
 
                                         @elseif($secId === 'whimsical')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Whimsical Creations Title &amp; Bullets</h6>
+                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Whimsical Creations Photo, Title &amp; Bullets</h6>
+                                            <div style="margin-bottom:12px; background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Photo / Image</label>
+                                                <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
+                                                    <input type="text" id="whimsical_image_url" name="whimsical_image_url" value="{{ data_get($siteContent, 'whimsical_image_url', '') }}" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
+                                                    <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('whimsical_image_url'), 'whimsical_preview')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">📷 Device Gallery</button>
+                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
+                                                        📁 Upload File
+                                                        <input type="file" accept="image/*" onchange="uploadSectionMedia(this, 'whimsical_image_url', 'whimsical_preview')" style="display:none;">
+                                                    </label>
+                                                </div>
+                                                <div id="whimsical_preview" style="margin-top:8px; {{ !empty(data_get($siteContent, 'whimsical_image_url')) ? 'display:flex;' : 'display:none;' }} align-items:center; gap:10px;">
+                                                    <img src="{{ !empty(data_get($siteContent, 'whimsical_image_url')) ? asset(data_get($siteContent, 'whimsical_image_url')) : '' }}" style="height:48px; width:48px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
+                                                    <span style="font-size:0.8rem; color:#15803d; font-weight:600;">✅ Active Photo Attached</span>
+                                                </div>
+                                            </div>
                                             <div style="margin-bottom:10px;">
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Title</label>
                                                 <input type="text" name="whimsical_title" value="{{ data_get($siteContent, 'whimsical_title') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
@@ -1422,6 +1423,38 @@
                 initQuillMenuEditor();
             }
 
+            let activeGalleryPickerTarget = null;
+            let activeGalleryPickerPreview = null;
+
+            function openGalleryPicker(targetInput, previewElId = null) {
+                activeGalleryPickerTarget = targetInput;
+                activeGalleryPickerPreview = previewElId ? document.getElementById(previewElId) : null;
+                const modal = document.getElementById('gallery-picker-modal');
+                if (modal) modal.style.display = 'flex';
+            }
+
+            function closeGalleryPickerModal() {
+                const modal = document.getElementById('gallery-picker-modal');
+                if (modal) modal.style.display = 'none';
+            }
+
+            function selectGalleryPickerImage(fullAssetUrl, relativePath) {
+                if (activeGalleryPickerTarget) {
+                    activeGalleryPickerTarget.value = relativePath;
+                    activeGalleryPickerTarget.dispatchEvent(new Event('change'));
+                }
+                if (activeGalleryPickerPreview) {
+                    if (fullAssetUrl) {
+                        activeGalleryPickerPreview.style.display = 'flex';
+                        const img = activeGalleryPickerPreview.querySelector('img');
+                        if (img) img.src = fullAssetUrl;
+                    } else {
+                        activeGalleryPickerPreview.style.display = 'none';
+                    }
+                }
+                closeGalleryPickerModal();
+            }
+
             function addAccordionCategoryItem() {
                 const list = document.getElementById('accordion-categories-list');
                 if (!list) return;
@@ -1440,17 +1473,17 @@
                     </div>
                     <div>
                         <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image Selection</label>
-                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; align-items:center;">
-                            <div>
-                                <span style="font-size:0.75rem; color:#6d28d9; font-weight:700; display:block; margin-bottom:2px;">Select From Device Gallery:</span>
-                                <select name="categories[${idx}][image_url]" class="form-input" style="width:100%; padding:7px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem;">
-                                    <option value="">-- Clean Theme Frame --</option>
-                                </select>
-                            </div>
-                            <div>
-                                <span style="font-size:0.75rem; color:#6d28d9; font-weight:700; display:block; margin-bottom:2px;">Or Upload New Category Photo:</span>
-                                <input type="file" name="category_image_${idx}" accept="image/*" style="font-size:0.8rem; width:100%;">
-                            </div>
+                        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                            <input type="text" id="cat_img_input_${idx}" name="categories[${idx}][image_url]" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
+                            <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_${idx}'), 'cat_preview_${idx}')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">📷 Device Gallery</button>
+                            <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                📁 Upload File
+                                <input type="file" name="category_image_${idx}" accept="image/*" style="display:none;" onchange="uploadSectionMedia(this, 'cat_img_input_${idx}', 'cat_preview_${idx}')">
+                            </label>
+                        </div>
+                        <div id="cat_preview_${idx}" style="margin-top:8px; display:none; align-items:center; gap:8px;">
+                            <img src="" style="width:38px; height:38px; object-fit:cover; border-radius:6px; border:1px solid #ddd;">
+                            <span style="font-size:0.78rem; color:#15803d; font-weight:600;">✅ Category Photo Attached</span>
                         </div>
                     </div>
                 `;
@@ -1547,6 +1580,38 @@
                     <button type="button" class="btn btn-primary" onclick="saveAndSendInvoice()">📧 Save & Send</button>
                 </div>
             </form>
+        </div>
+<!-- DEVICE GALLERY MEDIA PICKER MODAL -->
+<div id="gallery-picker-modal" class="order-modal-overlay" style="display:none; z-index:99999;">
+    <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid #8b5cf6; padding:20px; box-shadow:0 20px 50px rgba(109,40,217,0.2);">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e9d5ff; padding-bottom:12px; margin-bottom:16px;">
+            <div>
+                <h3 style="margin:0; color:#6d28d9; font-size:1.2rem; font-family:'Outfit',sans-serif;">📷 Device Gallery Media Picker</h3>
+                <p style="margin:2px 0 0 0; font-size:0.82rem; color:#666;">Click any photo thumbnail to attach it to this section.</p>
+            </div>
+            <button type="button" class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeGalleryPickerModal()">✕</button>
+        </div>
+        
+        <div id="gallery-picker-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:12px; overflow-y:auto; padding-right:6px; flex:1; max-height:50vh;">
+            @forelse($gallery as $gItem)
+                @php $gSrc = $gItem->image_url ?? $gItem->image_path; @endphp
+                <div class="gallery-picker-item" onclick="selectGalleryPickerImage('{{ asset($gSrc) }}', '{{ $gSrc }}')" style="cursor:pointer; border:2px solid #e9d5ff; border-radius:10px; overflow:hidden; background:#ffffff; transition:all 0.2s ease; text-align:center; padding:6px;">
+                    <img src="{{ asset($gSrc) }}" style="width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:4px;">
+                    <strong style="font-size:0.75rem; color:#4c1d95; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $gItem->title }}</strong>
+                    <span style="font-size:0.7rem; color:#8b5cf6;">{{ $gItem->category }}</span>
+                </div>
+            @empty
+                <div style="grid-column:1 / -1; text-align:center; padding:30px; color:#666;">
+                    <span style="font-size:2.5rem; display:block; margin-bottom:8px;">📷</span>
+                    <p style="margin:0; font-weight:600;">No images in Device Gallery yet.</p>
+                    <p style="font-size:0.8rem; color:#888;">Upload photos under the <strong>Device Gallery</strong> sidebar tab first or upload directly below.</p>
+                </div>
+            @endforelse
+        </div>
+
+        <div style="margin-top:16px; border-top:1px solid #e9d5ff; pt:12px; display:flex; justify-content:space-between; align-items:center;">
+            <button type="button" class="btn btn-outline" onclick="selectGalleryPickerImage('', '')" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">❌ Clear Selection (Theme Default)</button>
+            <button type="button" class="btn btn-outline" onclick="closeGalleryPickerModal()">Cancel</button>
         </div>
     </div>
 </div>

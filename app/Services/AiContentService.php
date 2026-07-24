@@ -178,6 +178,11 @@ Return JSON with these exact keys:
   ],
   "whimsical_title": "specialties section title",
   "whimsical_bullets": ["bullet 1", "bullet 2", "bullet 3"],
+  "faqs": [
+    {"q": "How far in advance should I order?", "a": "We require at least 3 days advance notice for custom orders."},
+    {"q": "What is the deposit requirement?", "a": "A 50% deposit is required at booking to lock in your date."},
+    {"q": "Allergy & Dietary Information", "a": "Please disclose any dietary needs or food allergies during checkout!"}
+  ],
   "cta_headline": "footer CTA headline",
   "cta_subtext": "footer CTA subtext",
   "cta_btn_text": "footer CTA button text",
@@ -204,6 +209,7 @@ PROMPT;
             'reviews' => $ai['reviews'] ?? [],
             'whimsical_title' => $ai['whimsical_title'] ?? '',
             'whimsical_bullets' => $ai['whimsical_bullets'] ?? [],
+            'faqs' => $ai['faqs'] ?? [],
             'cta_headline' => $ai['cta_headline'] ?? '',
             'cta_subtext' => $ai['cta_subtext'] ?? '',
             'cta_btn_text' => $ai['cta_btn_text'] ?? 'Order Now',

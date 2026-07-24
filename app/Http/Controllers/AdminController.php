@@ -438,6 +438,7 @@ class AdminController extends Controller
             'promo_subtext' => $request->input('promo_subtext', $currentContent['promo_subtext'] ?? ''),
             'how_it_works' => !empty($processedHow) ? $processedHow : ($currentContent['how_it_works'] ?? []),
             'whimsical_title' => $request->input('whimsical_title', $currentContent['whimsical_title'] ?? ''),
+            'whimsical_image_url' => $request->input('whimsical_image_url', $currentContent['whimsical_image_url'] ?? ''),
             'whimsical_bullets' => !empty($bullets) ? $bullets : ($currentContent['whimsical_bullets'] ?? []),
             'reviews' => !empty($processedReviews) ? $processedReviews : ($currentContent['reviews'] ?? []),
             'faqs' => !empty($processedFaqs) ? $processedFaqs : ($currentContent['faqs'] ?? []),
