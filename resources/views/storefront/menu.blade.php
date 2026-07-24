@@ -173,7 +173,9 @@
         $hasImage = !empty($menuData['menu_image_path']);
         $customText = trim($menuData['menu_text'] ?? '');
         $hasProducts = isset($products) && count($products) > 0;
-        $hasMenuContent = $hasImage || !empty($customText) || $hasHasProducts = $hasProducts;
+        $hasMenuContent = $hasImage || !empty($customText) || $hasProducts;
+        $imagePath = $menuData['menu_image_path'] ?? '';
+        $isPdf = Str::endsWith(strtolower($imagePath), '.pdf');
     @endphp
 
     @if(!$hasMenuContent)
@@ -190,29 +192,31 @@
         </section>
     @else
 
-        <!-- UPLOADED MENU IMAGE CARD -->
+        <!-- 1. UPLOADED MENU FILE CARD (IMAGE OR PDF) -->
         @if(($menuType === 'image' || $menuType === 'both') && $hasImage)
             <section class="image-menu-wrapper">
-                <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); margin-bottom:16px; font-size:1.8rem;">📄 Official Bakery Menu</h2>
-                <p style="color:#666; font-size:0.92rem; margin-bottom:20px;">Click the menu image below to view full-screen</p>
-                <a href="{{ asset($menuData['menu_image_path']) }}" target="_blank">
-                    <img src="{{ asset($menuData['menu_image_path']) }}" alt="{{ $tenant->name }} Menu Card">
-                </a>
+                <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); margin-bottom:12px; font-size:1.8rem;">📄 Official Bakery Menu</h2>
+                @if($isPdf)
+                    <div style="background:var(--theme-card-bg, #ffffff); border:1px solid rgba(0,0,0,0.1); border-radius:20px; padding:40px 20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); max-width:700px; margin:20px auto;">
+                        <div style="font-size:4rem; margin-bottom:12px;">📄</div>
+                        <h3 style="font-family:var(--theme-heading-font); color:var(--dark-text); margin-bottom:8px;">Official Menu PDF</h3>
+                        <p style="color:#666; font-size:0.95rem; margin-bottom:20px;">Click below to view or download our full menu PDF</p>
+                        <a href="{{ asset($imagePath) }}" target="_blank" class="btn btn-primary" style="padding:12px 28px; font-size:1rem; border-radius:30px; display:inline-block; text-decoration:none;">
+                            📄 Open Official Menu PDF ↗
+                        </a>
+                    </div>
+                @else
+                    <p style="color:#666; font-size:0.92rem; margin-bottom:20px;">Click the menu image below to view full-screen</p>
+                    <a href="{{ asset($imagePath) }}" target="_blank">
+                        <img src="{{ asset($imagePath) }}" alt="{{ $tenant->name }} Menu Card">
+                    </a>
+                @endif
             </section>
         @endif
 
-        <!-- CUSTOM MENU COPY & PRICING TEXT (WYSIWYG RICH HTML) -->
-        @if(($menuType === 'text' || $menuType === 'both' || !$hasImage) && !empty($customText))
-            <section class="menu-text-section">
-                <div class="menu-formatted-content">
-                    {!! $customText !!}
-                </div>
-            </section>
-        @endif
-
-        <!-- CATALOG PRODUCTS GRID IF ADDED BY BAKER -->
+        <!-- 2. CATALOG PRODUCTS GRID IF ADDED BY BAKER -->
         @if($hasProducts && ($menuType === 'text' || $menuType === 'both'))
-            <section style="max-width:1100px; margin:0 auto 60px auto; padding:0 20px;">
+            <section style="max-width:1100px; margin:40px auto 40px auto; padding:0 20px;">
                 <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); text-align:center; margin-bottom:25px; font-size:2rem;">🎂 Featured Catalog &amp; Pricing</h2>
                 <div class="product-menu-grid">
                     @foreach($products as $p)
@@ -224,6 +228,15 @@
                             <div style="font-size:1.2rem; font-weight:800; color:var(--primary);">${{ number_format($p->price, 2) }}</div>
                         </div>
                     @endforeach
+                </div>
+            </section>
+        @endif
+
+        <!-- 3. CUSTOM MENU COPY & PRICING TEXT (WYSIWYG RICH HTML — ALWAYS BELOW IMAGE/CARDS) -->
+        @if(!empty($customText))
+            <section class="menu-text-section">
+                <div class="menu-formatted-content">
+                    {!! $customText !!}
                 </div>
             </section>
         @endif

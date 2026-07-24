@@ -382,24 +382,48 @@
                             <div>
                                 <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">Menu Display Mode</label>
                                 <select name="menu_type" id="admin_menu_type" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-                                    <option value="both" {{ $menuType === 'both' ? 'selected' : '' }}>Both (Uploaded Image Card + Styled Theme Menu Grid)</option>
-                                    <option value="text" {{ $menuType === 'text' ? 'selected' : '' }}>Styled Theme Menu Grid Only</option>
-                                    <option value="image" {{ $menuType === 'image' ? 'selected' : '' }}>Uploaded Menu Image / PDF Only</option>
+                                    <option value="both" {{ $menuType === 'both' ? 'selected' : '' }}>Both (Uploaded Menu Image + Catalog Grid + Custom Notes)</option>
+                                    <option value="text" {{ $menuType === 'text' ? 'selected' : '' }}>Styled Theme Menu Grid + Custom Notes</option>
+                                    <option value="image" {{ $menuType === 'image' ? 'selected' : '' }}>Uploaded Menu Image / PDF + Custom Notes</option>
                                 </select>
+                                <small style="color:#64748b; font-size:0.8rem; display:block; margin-top:4px;">
+                                    💡 Custom notes (WYSIWYG editor below) will appear at the bottom of your public menu page.
+                                </small>
                             </div>
 
                             <!-- Upload Menu File -->
                             <div>
-                                <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">Upload Official Menu Image (JPG, PNG, WEBP, PDF)</label>
-                                <input type="file" name="menu_image" id="admin_menu_image" accept="image/*,.pdf" class="form-input" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; background:#fff;">
+                                <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">
+                                    Upload Official Bakery Menu Image/PDF
+                                </label>
+
                                 @if($menuImagePath)
-                                    <div style="margin-top:8px; font-size:0.85rem; color:#059669; font-weight:600; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                                        <span>✓ Current Upload: <a href="{{ asset($menuImagePath) }}" target="_blank" style="text-decoration:underline;">View Uploaded Menu ↗</a></span>
-                                        <label style="color:#dc2626; font-weight:600; font-size:0.8rem; cursor:pointer;">
-                                            <input type="checkbox" name="remove_menu_image" value="1"> 🗑️ Delete Image
+                                    <div style="background:#f0fdf4; border:1.5px solid #22c55e; border-radius:12px; padding:12px 16px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                                        <div style="display:flex; align-items:center; gap:12px;">
+                                            @if(Str::endsWith(strtolower($menuImagePath), '.pdf'))
+                                                <span style="font-size:2rem;">📄</span>
+                                            @else
+                                                <img src="{{ asset($menuImagePath) }}" alt="Current Menu Thumbnail" style="width:48px; height:48px; object-fit:cover; border-radius:8px; border:1px solid #bbf7d0;">
+                                            @endif
+                                            <div>
+                                                <div style="font-weight:700; color:#15803d; font-size:0.88rem;">✅ Menu File Active on Storefront</div>
+                                                <a href="{{ asset($menuImagePath) }}" target="_blank" style="color:#166534; font-size:0.82rem; font-weight:600; text-decoration:underline;">
+                                                    🔍 Click to View Uploaded File ↗
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <label style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; padding:4px 10px; border-radius:8px; font-weight:700; font-size:0.8rem; cursor:pointer;">
+                                            <input type="checkbox" name="remove_menu_image" value="1"> 🗑️ Delete Active File
                                         </label>
                                     </div>
+                                    <small style="color:#64748b; font-size:0.8rem; display:block; margin-bottom:6px;">Upload new file below to replace current file:</small>
+                                @else
+                                    <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:8px 12px; margin-bottom:8px; font-size:0.82rem; color:#64748b;">
+                                        ℹ️ No official menu image/PDF uploaded yet. Select a file below to upload.
+                                    </div>
                                 @endif
+
+                                <input type="file" name="menu_image" id="admin_menu_image" accept="image/*,.pdf" class="form-input" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; background:#fff;">
                             </div>
                         </div>
 
