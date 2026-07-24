@@ -577,6 +577,202 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
 
+        /* ─── FEATURE SHOWCASE SLIDER ─── */
+        .feature-slider-section {
+            padding: 100px 0;
+            background: linear-gradient(180deg, #ffffff 0%, #fff7fa 100%);
+            overflow: hidden;
+        }
+
+        .badge-feature-pill {
+            display: inline-block;
+            background: #f3e8ff;
+            color: #6d28d9;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 6px 16px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 12px;
+        }
+
+        .slider-tabs-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .slider-tab-btn {
+            background: #ffffff;
+            border: 1.5px solid #eef2f6;
+            color: var(--text-dark);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .slider-tab-btn:hover {
+            border-color: var(--primary-pink);
+            color: var(--primary-pink);
+            transform: translateY(-2px);
+        }
+
+        .slider-tab-btn.active {
+            background: var(--dark-section);
+            border-color: var(--dark-section);
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(26, 10, 46, 0.25);
+        }
+
+        .slider-stage-wrapper {
+            position: relative;
+            max-width: 1050px;
+            margin: 0 auto;
+            min-height: 480px;
+        }
+
+        .feature-slide-card {
+            display: none;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 40px;
+            align-items: center;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(26, 10, 46, 0.08);
+            border: 1px solid rgba(230, 115, 153, 0.2);
+            animation: fadeInSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .feature-slide-card.active {
+            display: grid;
+        }
+
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-info h3 {
+            font-size: 2.2rem;
+            margin-bottom: 16px;
+            color: var(--dark-section);
+        }
+
+        .slide-info p {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .slide-badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+
+        .slide-pill {
+            background: #fff7fa;
+            border: 1px solid #fbcfe8;
+            color: #be185d;
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        /* Mockup Screens */
+        .mockup-preview-container {
+            background: linear-gradient(135deg, #1a0a2e 0%, #2e1052 100%);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .mockup-header-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .mockup-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .mockup-body {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            color: #1f2937;
+        }
+
+        /* Slider Controls */
+        .slider-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 36px;
+        }
+
+        .slider-arrow {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .slider-arrow:hover {
+            background: var(--primary-pink);
+            color: #ffffff;
+            border-color: var(--primary-pink);
+            transform: scale(1.08);
+        }
+
+        .slider-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .slider-dots .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .slider-dots .dot.active {
+            background: var(--primary-pink);
+            width: 30px;
+            border-radius: 10px;
+        }
+
         /* Footer CTA */
         .footer-cta {
             background-color: var(--dark-section);
@@ -759,6 +955,281 @@
         </div>
     </section>
 
+    <!-- ─── INTERACTIVE FEATURE SHOWCASE SLIDER ─── -->
+    <section class="feature-slider-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <span class="badge-feature-pill">🔥 Platform Deep-Dive</span>
+                <h2>Features Cooked Up Exclusively For Bakeries</h2>
+                <p style="color:var(--text-gray); margin-top:8px;">Click any feature tab below to see live UI previews of how Doughmain elevates your bakery.</p>
+            </div>
+
+            <!-- Slider Nav Tabs -->
+            <div class="slider-tabs-nav fade-in">
+                <button class="slider-tab-btn active" onclick="goToFeatureSlide(0)">📷 Device Gallery</button>
+                <button class="slider-tab-btn" onclick="goToFeatureSlide(1)">📝 12-Step Cake Builder</button>
+                <button class="slider-tab-btn" onclick="goToFeatureSlide(2)">💳 Invoices &amp; Payments</button>
+                <button class="slider-tab-btn" onclick="goToFeatureSlide(3)">🧁 Bakery Menu Catalog</button>
+                <button class="slider-tab-btn" onclick="goToFeatureSlide(4)">📊 Baker Customer CRM</button>
+                <button class="slider-tab-btn" onclick="goToFeatureSlide(5)">📅 Calendar Lead Times</button>
+            </div>
+
+            <!-- Slider Stage -->
+            <div class="slider-stage-wrapper fade-in">
+
+                <!-- SLIDE 0: Device Gallery -->
+                <div class="feature-slide-card active" data-slide-index="0">
+                    <div class="slide-info">
+                        <span style="color:#d25a80; font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;">Mobile &amp; Device Uploads</span>
+                        <h3>Snap &amp; Publish Photos Live To Your Gallery</h3>
+                        <p>No clunky FTP or complex web tools. Snap photos of custom cakes, cupcakes, or dessert boxes directly on your phone or tablet and publish them instantly to your public gallery with one tap.</p>
+                        <div class="slide-badge-list">
+                            <span class="slide-pill">📱 Mobile Friendly</span>
+                            <span class="slide-pill">⚡ Instant Live Updates</span>
+                            <span class="slide-pill">🏷️ Category Tagging</span>
+                        </div>
+                        <a href="/register" class="btn btn-primary">Try Device Gallery Free →</a>
+                    </div>
+                    <div class="mockup-preview-container">
+                        <div class="mockup-header-bar">
+                            <div class="mockup-dot" style="background:#ef4444;"></div>
+                            <div class="mockup-dot" style="background:#f59e0b;"></div>
+                            <div class="mockup-dot" style="background:#10b981;"></div>
+                            <span style="color:rgba(255,255,255,0.7); font-size:0.75rem; margin-left: auto;">Baker Admin &gt; Device Gallery</span>
+                        </div>
+                        <div class="mockup-body">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                                <span style="font-weight:700; font-size:0.95rem;">📱 Device Camera Upload</span>
+                                <span style="background:#d1fae5; color:#065f46; font-size:0.75rem; padding:3px 10px; border-radius:12px; font-weight:700;">Live Sync</span>
+                            </div>
+                            <div style="border:2px dashed #e67399; background:#fff7fa; border-radius:10px; padding:16px; text-align:center; margin-bottom:14px;">
+                                <span style="font-size:1.8rem; display:block;">📸</span>
+                                <strong style="font-size:0.88rem; color:#1a0a2e;">Tap to select photos from phone or tablet</strong>
+                            </div>
+                            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;">
+                                <div style="border-radius:8px; overflow:hidden; position:relative; background:#eee;">
+                                    <img src="{{ asset('images/elmo_cake_isolated_1784837218834.jpg') }}" alt="Elmo Cake" style="width:100%; height:75px; object-fit:cover;">
+                                    <span style="position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.6); color:#fff; font-size:0.65rem; padding:1px 4px; border-radius:4px;">Custom</span>
+                                </div>
+                                <div style="border-radius:8px; overflow:hidden; position:relative; background:#eee;">
+                                    <img src="{{ asset('images/cherry_cake_isolated_1784837230270.jpg') }}" alt="Cherry Cake" style="width:100%; height:75px; object-fit:cover;">
+                                    <span style="position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.6); color:#fff; font-size:0.65rem; padding:1px 4px; border-radius:4px;">Cakes</span>
+                                </div>
+                                <div style="border-radius:8px; overflow:hidden; position:relative; background:#eee;">
+                                    <img src="{{ asset('images/sample_cake_inspiration_1784655186840.jpg') }}" alt="Pastry" style="width:100%; height:75px; object-fit:cover;">
+                                    <span style="position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.6); color:#fff; font-size:0.65rem; padding:1px 4px; border-radius:4px;">Treats</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 1: 12-Step Custom Cake Inquiry Builder -->
+                <div class="feature-slide-card" data-slide-index="1">
+                    <div class="slide-info">
+                        <span style="color:#d25a80; font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;">Intelligent Order Intake</span>
+                        <h3>12-Step Custom Cake Builder &amp; Inquiry Form</h3>
+                        <p>Eliminate back-and-forth messaging! Guide clients step-by-step through choosing cake sizes, tiers, sponges, fillings, pickup dates, and inspiration image uploads.</p>
+                        <div class="slide-badge-list">
+                            <span class="slide-pill">🎂 Tier &amp; Size Selectors</span>
+                            <span class="slide-pill">🍓 Flavor &amp; Filling Chips</span>
+                            <span class="slide-pill">🖼️ Inspiration Uploads</span>
+                        </div>
+                        <a href="/register" class="btn btn-primary">Try Order Builder Free →</a>
+                    </div>
+                    <div class="mockup-preview-container">
+                        <div class="mockup-header-bar">
+                            <div class="mockup-dot" style="background:#ef4444;"></div>
+                            <div class="mockup-dot" style="background:#f59e0b;"></div>
+                            <div class="mockup-dot" style="background:#10b981;"></div>
+                            <span style="color:rgba(255,255,255,0.7); font-size:0.75rem; margin-left: auto;">Storefront &gt; Custom Order Form</span>
+                        </div>
+                        <div class="mockup-body">
+                            <div style="font-weight:700; font-size:0.95rem; margin-bottom:6px;">Step 3 of 12: Select Flavor &amp; Fillings</div>
+                            <p style="font-size:0.8rem; color:#666; margin-bottom:12px;">Choose your signature sponge &amp; gourmet buttercream:</p>
+                            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;">
+                                <span style="background:#e67399; color:#fff; font-size:0.75rem; font-weight:700; padding:6px 12px; border-radius:16px;">✓ Vanilla Bean Velvet</span>
+                                <span style="background:#f3f4f6; color:#374151; font-size:0.75rem; font-weight:600; padding:6px 12px; border-radius:16px;">Rich Dark Chocolate</span>
+                                <span style="background:#e67399; color:#fff; font-size:0.75rem; font-weight:700; padding:6px 12px; border-radius:16px;">✓ Strawberry Compote</span>
+                                <span style="background:#f3f4f6; color:#374151; font-size:0.75rem; font-weight:600; padding:6px 12px; border-radius:16px;">Salted Caramel</span>
+                            </div>
+                            <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:10px; font-size:0.78rem;">
+                                📅 <strong>Selected Event Date:</strong> Saturday, Oct 24th <span style="color:#059669; font-weight:700;">(Available)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 2: Invoices & Payments -->
+                <div class="feature-slide-card" data-slide-index="2">
+                    <div class="slide-info">
+                        <span style="color:#d25a80; font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;">0% Commission Sales</span>
+                        <h3>Invoices with Venmo, CashApp, Credit Card, &amp; Zelle</h3>
+                        <p>Send clean, branded invoices directly to your client's inbox. Set deposit amounts and accept direct payments via Venmo, CashApp, PayPal, Zelle, or Credit Cards with zero fees.</p>
+                        <div class="slide-badge-list">
+                            <span class="slide-pill">💚 Venmo &amp; CashApp</span>
+                            <span class="slide-pill">⚡ Zelle &amp; Credit Cards</span>
+                            <span class="slide-pill">💰 0% Platform Fees</span>
+                        </div>
+                        <a href="/register" class="btn btn-primary">Send Invoices Free →</a>
+                    </div>
+                    <div class="mockup-preview-container">
+                        <div class="mockup-header-bar">
+                            <div class="mockup-dot" style="background:#ef4444;"></div>
+                            <div class="mockup-dot" style="background:#f59e0b;"></div>
+                            <div class="mockup-dot" style="background:#10b981;"></div>
+                            <span style="color:rgba(255,255,255,0.7); font-size:0.75rem; margin-left: auto;">Invoice #INV-1048</span>
+                        </div>
+                        <div class="mockup-body">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <strong style="font-size:0.95rem;">🎂 Custom 2-Tier Birthday Cake</strong>
+                                <span style="font-weight:800; font-size:1.1rem; color:#1a0a2e;">$145.00</span>
+                            </div>
+                            <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:8px 12px; font-size:0.78rem; color:#065f46; margin-bottom:14px;">
+                                🛡️ 50% Deposit Paid ($72.50) &middot; Remaining Balance Due at Pickup
+                            </div>
+                            <span style="font-size:0.78rem; color:#666; font-weight:700; display:block; margin-bottom:8px;">Choose Preferred Payment Option:</span>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                                <div style="background:#008CFF; color:#fff; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; text-align:center;">💙 Venmo</div>
+                                <div style="background:#00D632; color:#fff; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; text-align:center;">💚 CashApp</div>
+                                <div style="background:#7414CA; color:#fff; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; text-align:center;">💜 Zelle</div>
+                                <div style="background:#1a0a2e; color:#fff; padding:6px 10px; border-radius:6px; font-size:0.72rem; font-weight:700; text-align:center;">💳 Credit Card</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 3: Bakery Menu Catalog -->
+                <div class="feature-slide-card" data-slide-index="3">
+                    <div class="slide-info">
+                        <span style="color:#d25a80; font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;">Artisanal Product Catalog</span>
+                        <h3>Interactive Bakery Menu &amp; Pastry Showcase</h3>
+                        <p>Display your signature baked goods, custom cupcakes, wedding tasting boxes, and chocolate treats in a sleek, responsive product showcase menu.</p>
+                        <div class="slide-badge-list">
+                            <span class="slide-pill">🧁 Pastry Grid</span>
+                            <span class="slide-pill">🏷️ Category Badges</span>
+                            <span class="slide-pill">✨ Flavor Tagging</span>
+                        </div>
+                        <a href="/register" class="btn btn-primary">Build Your Menu Free →</a>
+                    </div>
+                    <div class="mockup-preview-container">
+                        <div class="mockup-header-bar">
+                            <div class="mockup-dot" style="background:#ef4444;"></div>
+                            <div class="mockup-dot" style="background:#f59e0b;"></div>
+                            <div class="mockup-dot" style="background:#10b981;"></div>
+                            <span style="color:rgba(255,255,255,0.7); font-size:0.75rem; margin-left: auto;">Bakery Menu</span>
+                        </div>
+                        <div class="mockup-body">
+                            <div style="display:flex; gap:8px; margin-bottom:12px; font-size:0.75rem;">
+                                <span style="background:#1a0a2e; color:#fff; padding:4px 10px; border-radius:12px; font-weight:700;">All Items</span>
+                                <span style="background:#f3f4f6; color:#374151; padding:4px 10px; border-radius:12px;">Custom Cakes</span>
+                                <span style="background:#f3f4f6; color:#374151; padding:4px 10px; border-radius:12px;">Cupcakes</span>
+                            </div>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                <div style="border:1px solid #e5e7eb; border-radius:8px; padding:10px; background:#fafafa;">
+                                    <strong style="font-size:0.82rem; display:block;">Gourmet Cupcake Box</strong>
+                                    <span style="font-size:0.75rem; color:#6d28d9; font-weight:700;">$36.00 / Dozen</span>
+                                </div>
+                                <div style="border:1px solid #e5e7eb; border-radius:8px; padding:10px; background:#fafafa;">
+                                    <strong style="font-size:0.82rem; display:block;">Wedding Cake Tier</strong>
+                                    <span style="font-size:0.75rem; color:#6d28d9; font-weight:700;">From $250.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 4: Baker Customer CRM -->
+                <div class="feature-slide-card" data-slide-index="4">
+                    <div class="slide-info">
+                        <span style="color:#d25a80; font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;">Client Relationship Management</span>
+                        <h3>Baker Customer CRM &amp; Lifetime Spend Tracker</h3>
+                        <p>Keep track of repeat clients, past order preferences, milestone birthday dates, and total lifetime spend automatically in one organized Baker Admin CRM.</p>
+                        <div class="slide-badge-list">
+                            <span class="slide-pill">👥 Client History</span>
+                            <span class="slide-pill">💎 VIP Spend Tracking</span>
+                            <span class="slide-pill">📅 Order Records</span>
+                        </div>
+                        <a href="/register" class="btn btn-primary">Try Baker CRM Free →</a>
+                    </div>
+                    <div class="mockup-preview-container">
+                        <div class="mockup-header-bar">
+                            <div class="mockup-dot" style="background:#ef4444;"></div>
+                            <div class="mockup-dot" style="background:#f59e0b;"></div>
+                            <div class="mockup-dot" style="background:#10b981;"></div>
+                            <span style="color:rgba(255,255,255,0.7); font-size:0.75rem; margin-left: auto;">Baker Dashboard &gt; CRM</span>
+                        </div>
+                        <div class="mockup-body">
+                            <div style="font-weight:700; font-size:0.88rem; margin-bottom:10px;">VIP Client Roster</div>
+                            <div style="border-bottom:1px solid #eee; padding-bottom:8px; margin-bottom:8px; display:flex; justify-content:space-between; font-size:0.78rem;">
+                                <div>
+                                    <strong>Sarah Jenkins</strong> <span style="background:#fef3c7; color:#92400e; font-size:0.65rem; padding:1px 6px; border-radius:4px; font-weight:700;">VIP</span>
+                                    <div style="color:#888; font-size:0.7rem;">4 Orders &middot; Last: 2 wks ago</div>
+                                </div>
+                                <div style="text-align:right; font-weight:800; color:#059669;">$580.00</div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.78rem;">
+                                <div>
+                                    <strong>Michael Torres</strong>
+                                    <div style="color:#888; font-size:0.7rem;">2 Orders &middot; Birthday Smash Cake</div>
+                                </div>
+                                <div style="text-align:right; font-weight:800; color:#059669;">$210.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 5: Calendar Lead Times -->
+                <div class="feature-slide-card" data-slide-index="5">
+                    <div class="slide-info">
+                        <span style="color:#d25a80; font-weight:700; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em;">Booking &amp; Availability</span>
+                        <h3>Calendar Lead Times &amp; Blackout Rules</h3>
+                        <p>Never get overbooked! Set minimum advance notice (e.g. 3 days notice required), block off vacation dates, and control recurring closed days effortlessly.</p>
+                        <div class="slide-badge-list">
+                            <span class="slide-pill">⏳ Lead Time Controls</span>
+                            <span class="slide-pill">🚫 Blackout Dates</span>
+                            <span class="slide-pill">🗓️ Recurring Off Days</span>
+                        </div>
+                        <a href="/register" class="btn btn-primary">Try Calendar Controls Free →</a>
+                    </div>
+                    <div class="mockup-preview-container">
+                        <div class="mockup-header-bar">
+                            <div class="mockup-dot" style="background:#ef4444;"></div>
+                            <div class="mockup-dot" style="background:#f59e0b;"></div>
+                            <div class="mockup-dot" style="background:#10b981;"></div>
+                            <span style="color:rgba(255,255,255,0.7); font-size:0.75rem; margin-left: auto;">Settings &gt; Availability</span>
+                        </div>
+                        <div class="mockup-body">
+                            <div style="font-weight:700; font-size:0.88rem; margin-bottom:10px;">Order Lead Time &amp; Notice Rules</div>
+                            <div style="background:#f3f4f6; border-radius:8px; padding:10px; margin-bottom:10px; font-size:0.78rem;">
+                                ⏱️ <strong>Minimum Advance Notice:</strong> <span style="color:#e67399; font-weight:700;">3 Days Notice</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem;">
+                                <span>🚫 Blocked Vacation Dates:</span>
+                                <span style="background:#fee2e2; color:#b91c1c; font-weight:700; font-size:0.7rem; padding:2px 8px; border-radius:6px;">Nov 24 - Nov 28</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Controls (Prev / Next & Dots) -->
+            <div class="slider-controls fade-in">
+                <button class="slider-arrow" onclick="prevFeatureSlide()">←</button>
+                <div class="slider-dots" id="feature-slider-dots">
+                    <span class="dot active" onclick="goToFeatureSlide(0)"></span>
+                    <span class="dot" onclick="goToFeatureSlide(1)"></span>
+                    <span class="dot" onclick="goToFeatureSlide(2)"></span>
+                    <span class="dot" onclick="goToFeatureSlide(3)"></span>
+                    <span class="dot" onclick="goToFeatureSlide(4)"></span>
+                    <span class="dot" onclick="goToFeatureSlide(5)"></span>
+                </div>
+                <button class="slider-arrow" onclick="nextFeatureSlide()">→</button>
+            </div>
+        </div>
+    </section>
+
     <!-- Features Grid -->
     <section class="features">
         <div class="container">
@@ -910,8 +1381,53 @@
         </div>
     </footer>
 
-    <!-- Scripts for animations -->
+    <!-- Scripts for animations & Feature Slider -->
     <script>
+        // Feature Slider Logic
+        let currentFeatureIndex = 0;
+        const totalFeatureSlides = 6;
+        let featureAutoSlideTimer = null;
+
+        function goToFeatureSlide(index) {
+            currentFeatureIndex = index;
+            
+            document.querySelectorAll('.feature-slide-card').forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.querySelectorAll('.slider-tab-btn').forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+            
+            document.querySelectorAll('#feature-slider-dots .dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+
+            resetFeatureAutoSlide();
+        }
+
+        function nextFeatureSlide() {
+            let nextIndex = (currentFeatureIndex + 1) % totalFeatureSlides;
+            goToFeatureSlide(nextIndex);
+        }
+
+        function prevFeatureSlide() {
+            let prevIndex = (currentFeatureIndex - 1 + totalFeatureSlides) % totalFeatureSlides;
+            goToFeatureSlide(prevIndex);
+        }
+
+        function startFeatureAutoSlide() {
+            featureAutoSlideTimer = setInterval(() => {
+                let nextIndex = (currentFeatureIndex + 1) % totalFeatureSlides;
+                goToFeatureSlide(nextIndex);
+            }, 6000);
+        }
+
+        function resetFeatureAutoSlide() {
+            if (featureAutoSlideTimer) clearInterval(featureAutoSlideTimer);
+            startFeatureAutoSlide();
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             const observerOptions = {
                 root: null,
@@ -936,6 +1452,8 @@
                 const heroElements = document.querySelectorAll(".hero .fade-in");
                 heroElements.forEach(el => el.classList.add("visible"));
             }, 100);
+
+            startFeatureAutoSlide();
         });
     </script>
 </body>
