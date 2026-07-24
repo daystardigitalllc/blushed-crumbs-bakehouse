@@ -865,8 +865,8 @@
             <div class="roi-comparison-card fade-in">
                 <div style="text-align:center;">
                     <span style="color:#d25a80; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; font-size:0.85rem;">Why $29/Month Is A No-Brainer</span>
-                    <h3 style="font-size:1.8rem; margin-top:4px;">One Single Birthday Cake Pays For Your Entire Year</h3>
-                    <p style="color:var(--text-gray); font-size:1rem; max-width:650px; margin:8px auto 0;">Compare what it costs to stitch together traditional web software vs. Doughmain Pro:</p>
+                    <h3 style="font-size:1.8rem; margin-top:4px;">One Single Birthday Cake Order Pays For Your Month of Pro</h3>
+                    <p style="color:var(--text-gray); font-size:1rem; max-width:650px; margin:8px auto 0;">Sell just one custom cake a month (or 1 wedding cake a year) and Doughmain Pro is 100% paid for!</p>
                 </div>
                 <div class="roi-grid">
                     <div class="roi-column">
