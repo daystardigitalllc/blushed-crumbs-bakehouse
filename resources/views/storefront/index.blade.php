@@ -131,7 +131,8 @@
                         @endphp
                         @foreach($catList as $idx => $cat)
                             @php
-                                $imgUrl = !empty($userImages[$idx]) ? asset($userImages[$idx]) : ($tenantLogo ?? null);
+                                $catImg = !empty($cat['image_url']) ? $cat['image_url'] : (!empty($userImages[$idx]) ? $userImages[$idx] : null);
+                                $imgUrl = !empty($catImg) ? asset($catImg) : null;
                             @endphp
                             <div class="category-card-exact">
                                 <div class="category-image-frame" style="display:flex; align-items:center; justify-content:center; background:var(--pink-bg); min-height:220px;">

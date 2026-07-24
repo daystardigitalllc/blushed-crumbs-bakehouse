@@ -865,6 +865,67 @@
                                                 @endfor
                                             </div>
 
+                                        @elseif($secId === 'categories')
+                                            <h6 style="color:#6d28d9; margin-bottom:6px; font-weight:700;">🧁 Categories Showcase Grid (Titles, Descriptions &amp; Custom Category Photos)</h6>
+                                            <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Add, edit, or remove bakery categories. You can select an existing photo from your Device Gallery or upload a fresh category photo right here.</p>
+
+                                            @php 
+                                                $catList = data_get($siteContent, 'categories', [
+                                                    ['title' => 'Single Tier Cakes', 'desc' => 'Perfect for birthdays & intimate gatherings', 'image_url' => ''],
+                                                    ['title' => 'Multi Tier Custom Cakes', 'desc' => 'Bespoke designs for weddings & celebrations', 'image_url' => ''],
+                                                    ['title' => 'Treats & Sweets By The Dozen', 'desc' => 'Cupcakes, macarons, and dessert tables', 'image_url' => '']
+                                                ]); 
+                                            @endphp
+
+                                            <div id="accordion-categories-list" style="display:flex; flex-direction:column; gap:12px;">
+                                                @foreach($catList as $cIdx => $cat)
+                                                    <div class="accordion-category-item" style="background:#FAF8FF; padding:16px; border-radius:12px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:10px;">
+                                                        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                                                            <input type="text" name="categories[{{ $cIdx }}][title]" value="{{ $cat['title'] ?? '' }}" placeholder="Category Title (e.g. Single Tier Cakes)" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-weight:700; font-size:0.95rem;">
+                                                            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-category-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:4px 10px; font-size:0.8rem;">🗑️ Delete Category</button>
+                                                        </div>
+
+                                                        <div>
+                                                            <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Short Description</label>
+                                                            <input type="text" name="categories[{{ $cIdx }}][desc]" value="{{ $cat['desc'] ?? '' }}" placeholder="Category Description..." style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-size:0.88rem;">
+                                                        </div>
+
+                                                        <div>
+                                                            <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image Selection</label>
+                                                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; align-items:center;">
+                                                                <div>
+                                                                    <span style="font-size:0.75rem; color:#6d28d9; font-weight:700; display:block; margin-bottom:2px;">Select From Device Gallery:</span>
+                                                                    <select name="categories[{{ $cIdx }}][image_url]" class="form-input" style="width:100%; padding:7px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem;">
+                                                                        <option value="">-- Clean Theme Frame --</option>
+                                                                        @foreach($gallery as $gItem)
+                                                                            @php $gSrc = $gItem->image_url ?? $gItem->image_path; @endphp
+                                                                            <option value="{{ $gSrc }}" {{ ($cat['image_url'] ?? '') === $gSrc ? 'selected' : '' }}>
+                                                                                📷 {{ $gItem->title }} ({{ $gItem->category }})
+                                                                            </option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+
+                                                                <div>
+                                                                    <span style="font-size:0.75rem; color:#6d28d9; font-weight:700; display:block; margin-bottom:2px;">Or Upload New Category Photo:</span>
+                                                                    <input type="file" name="category_image_{{ $cIdx }}" accept="image/*" style="font-size:0.8rem; width:100%;">
+                                                                </div>
+                                                            </div>
+
+                                                            @if(!empty($cat['image_url']))
+                                                                <div style="margin-top:8px; display:flex; align-items:center; gap:10px;">
+                                                                    <img src="{{ asset($cat['image_url']) }}" style="width:42px; height:42px; object-fit:cover; border-radius:6px; border:1px solid #ddd;">
+                                                                    <span style="font-size:0.8rem; color:#15803d; font-weight:600;">✅ Active Category Photo Attached</span>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionCategoryItem()" style="margin-top:12px; border-color:#8b5cf6; color:#6d28d9; font-weight:700;">
+                                                + Add New Category
+                                            </button>
+
                                         @elseif($secId === 'whimsical')
                                             <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Whimsical Creations Title &amp; Bullets</h6>
                                             <div style="margin-bottom:10px;">
@@ -1351,6 +1412,41 @@
                 document.addEventListener('DOMContentLoaded', initQuillMenuEditor);
             } else {
                 initQuillMenuEditor();
+            }
+
+            function addAccordionCategoryItem() {
+                const list = document.getElementById('accordion-categories-list');
+                if (!list) return;
+                const idx = list.querySelectorAll('.accordion-category-item').length;
+                const div = document.createElement('div');
+                div.className = 'accordion-category-item';
+                div.style.cssText = 'background:#FAF8FF; padding:16px; border-radius:12px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:10px;';
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                        <input type="text" name="categories[${idx}][title]" placeholder="Category Title (e.g. Gourmet Cupcakes)" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-weight:700; font-size:0.95rem;">
+                        <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-category-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:4px 10px; font-size:0.8rem;">🗑️ Delete Category</button>
+                    </div>
+                    <div>
+                        <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Short Description</label>
+                        <input type="text" name="categories[${idx}][desc]" placeholder="Category Description..." style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-size:0.88rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image Selection</label>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; align-items:center;">
+                            <div>
+                                <span style="font-size:0.75rem; color:#6d28d9; font-weight:700; display:block; margin-bottom:2px;">Select From Device Gallery:</span>
+                                <select name="categories[${idx}][image_url]" class="form-input" style="width:100%; padding:7px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem;">
+                                    <option value="">-- Clean Theme Frame --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <span style="font-size:0.75rem; color:#6d28d9; font-weight:700; display:block; margin-bottom:2px;">Or Upload New Category Photo:</span>
+                                <input type="file" name="category_image_${idx}" accept="image/*" style="font-size:0.8rem; width:100%;">
+                            </div>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(div);
             }
 
             function clearMenuQuillEditor() {

@@ -397,12 +397,41 @@ class AdminController extends Controller
             }
         }
 
+        // Categories array processing (Title, Desc, Gallery Image select or direct upload)
+        $categoriesInput = $request->input('categories', []);
+        $processedCategories = [];
+        foreach ($categoriesInput as $cIdx => $cat) {
+            if (!empty($cat['title'])) {
+                $imgUrl = $cat['image_url'] ?? '';
+
+                if ($request->hasFile("category_image_$cIdx")) {
+                    $cFile = $request->file("category_image_$cIdx");
+                    if ($cFile->isValid()) {
+                        $cFilename = 'cat_' . $tenant->id . '_' . time() . '_' . $cIdx . '.' . $cFile->getClientOriginalExtension();
+                        $cDest = public_path('uploads/tenants/' . $tenant->id . '/categories');
+                        if (!file_exists($cDest)) {
+                            mkdir($cDest, 0755, true);
+                        }
+                        $cFile->move($cDest, $cFilename);
+                        $imgUrl = 'uploads/tenants/' . $tenant->id . '/categories/' . $cFilename;
+                    }
+                }
+
+                $processedCategories[] = [
+                    'title' => $cat['title'],
+                    'desc' => $cat['desc'] ?? '',
+                    'image_url' => $imgUrl,
+                ];
+            }
+        }
+
         $updatedContent = array_merge($currentContent, [
             'hero_subheading' => $request->input('hero_subheading', $currentContent['hero_subheading'] ?? ''),
             'hero_headline' => $request->input('hero_headline', $currentContent['hero_headline'] ?? ''),
             'hero_cta_primary' => $request->input('hero_cta_primary', $currentContent['hero_cta_primary'] ?? ''),
             'hero_cta_secondary' => $request->input('hero_cta_secondary', $currentContent['hero_cta_secondary'] ?? ''),
             'hero_bg_url' => $request->input('hero_bg_url', $currentContent['hero_bg_url'] ?? ''),
+            'categories' => !empty($processedCategories) ? $processedCategories : ($currentContent['categories'] ?? []),
             'highlights' => !empty($processedHighlights) ? $processedHighlights : ($currentContent['highlights'] ?? []),
             'promo_video_url' => $request->input('promo_video_url', $currentContent['promo_video_url'] ?? ''),
             'promo_headline' => $request->input('promo_headline', $currentContent['promo_headline'] ?? ''),
