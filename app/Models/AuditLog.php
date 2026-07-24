@@ -34,7 +34,7 @@ class AuditLog extends Model
     }
 
     /**
-     * Record a security audit event.
+     * Record a security audit event safely.
      */
     public static function logEvent(
         string $eventType,
@@ -42,15 +42,25 @@ class AuditLog extends Model
         ?int $userId = null,
         array $payload = [],
         string $severity = 'info'
-    ): self {
-        return static::create([
-            'tenant_id' => $tenantId,
-            'user_id' => $userId,
-            'event_type' => $eventType,
-            'severity' => $severity,
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-            'payload' => $payload,
-        ]);
+    ): ?self {
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('audit_logs')) {
+                \Illuminate\Support\Facades\Log::warning("AuditLog skipped: audit_logs table does not exist.");
+                return null;
+            }
+
+            return static::create([
+                'tenant_id' => $tenantId,
+                'user_id' => $userId,
+                'event_type' => $eventType,
+                'severity' => $severity,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'payload' => $payload,
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("AuditLog creation error: " . $e->getMessage());
+            return null;
+        }
     }
 }
