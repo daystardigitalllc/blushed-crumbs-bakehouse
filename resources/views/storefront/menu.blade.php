@@ -65,6 +65,54 @@
             border: 1px solid rgba(0,0,0,0.08);
             box-shadow: 0 10px 30px rgba(0,0,0,0.04);
         }
+        .menu-text-section h2,
+        .menu-text-section h3 {
+            font-family: var(--theme-heading-font, 'Poppins', sans-serif);
+            color: var(--dark-text, #2c2419);
+            margin-top: 32px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--primary, #e67399);
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .menu-text-section h2:first-child,
+        .menu-text-section h3:first-child {
+            margin-top: 0;
+        }
+        .menu-text-section p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--dark-text, #2c2419);
+            margin-bottom: 16px;
+        }
+        .menu-text-section ul,
+        .menu-text-section ol {
+            margin: 14px 0 24px 0;
+            padding-left: 10px;
+            list-style-type: none;
+        }
+        .menu-text-section li {
+            position: relative;
+            padding-left: 26px;
+            margin-bottom: 10px;
+            font-size: 1.02rem;
+            color: var(--dark-text, #2c2419);
+            line-height: 1.7;
+        }
+        .menu-text-section ul li::before {
+            content: "•";
+            position: absolute;
+            left: 6px;
+            top: 0;
+            color: var(--primary, #e67399);
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+        .menu-text-section strong {
+            color: var(--dark-text, #2c2419);
+            font-weight: 700;
+        }
         .product-menu-grid {
             max-width: 1100px;
             margin: 40px auto 60px auto;
@@ -153,12 +201,11 @@
             </section>
         @endif
 
-        <!-- CUSTOM MENU COPY & PRICING TEXT -->
+        <!-- CUSTOM MENU COPY & PRICING TEXT (WYSIWYG RICH HTML) -->
         @if(($menuType === 'text' || $menuType === 'both' || !$hasImage) && !empty($customText))
             <section class="menu-text-section">
-                <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); margin-bottom:20px; font-size:1.8rem; border-bottom:2px dashed var(--primary); padding-bottom:12px;">📋 Menu &amp; Flavors Breakdown</h2>
-                <div style="font-size:1rem; color:var(--dark-text); line-height:1.8;">
-                    {!! nl2br(e($customText)) !!}
+                <div class="menu-formatted-content">
+                    {!! $customText !!}
                 </div>
             </section>
         @endif

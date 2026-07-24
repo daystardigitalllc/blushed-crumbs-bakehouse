@@ -16,6 +16,9 @@
     window._serverFormSchema = @json($serverFormSchema);
     window._serverBookingSettings = @json($serverBookingSettings);
 </script>
+<!-- Quill.js WYSIWYG Editor -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <!-- PAGE 4: BAKER ADMIN PORTAL VIEW WITH MODERN SIDEBAR -->
 <div id="admin-portal-view">
     <!-- MOBILE TOP BAR WITH HAMBURGER BUTTON -->
@@ -400,17 +403,18 @@
                             </div>
                         </div>
 
-                        <!-- Menu Textarea -->
+                        <!-- Menu WYSIWYG Rich Text Editor -->
                         <div style="margin-bottom:20px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                 <label style="font-weight:700; color:#334155; font-size:0.9rem;">
-                                    Custom Menu Notes, Additional Prices &amp; Dietary Policies (Styled to match your theme)
+                                    ✨ Custom Menu &amp; Pricing Builder (WYSIWYG Rich Text Editor — Bold, Bullets, Headings)
                                 </label>
-                                <button type="button" class="btn btn-sm btn-outline" style="font-size:0.75rem; padding:2px 8px; color:#64748b; border-color:#cbd5e1;" onclick="document.getElementById('admin_menu_text').value = '';">
-                                    🗑️ Clear Text
+                                <button type="button" class="btn btn-sm btn-outline" style="font-size:0.75rem; padding:2px 10px; color:#dc2626; border-color:#fca5a5;" onclick="clearMenuQuillEditor()">
+                                    🗑️ Clear Editor
                                 </button>
                             </div>
-                            <textarea name="menu_text" id="admin_menu_text" rows="6" placeholder="Enter custom menu notes, deposit rules, dietary disclaimers, or full item breakdown..." class="form-input" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1; font-size:0.92rem; font-family:inherit; line-height:1.5;">{{ $menuText }}</textarea>
+                            <input type="hidden" name="menu_text" id="admin_menu_text" value="{{ $menuText }}">
+                            <div id="quill-menu-editor-container" style="background:#ffffff; min-height:240px; border-radius:0 0 10px 10px; font-size:0.95rem;">{!! $menuText !!}</div>
                         </div>
 
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1294,10 +1298,49 @@
                 }
             }
 
+            let quillMenuEditor = null;
+            document.addEventListener('DOMContentLoaded', function() {
+                if (document.getElementById('quill-menu-editor-container')) {
+                    quillMenuEditor = new Quill('#quill-menu-editor-container', {
+                        theme: 'snow',
+                        placeholder: 'Type or paste your custom menu, bullet points, headers, and pricing notes here...',
+                        modules: {
+                            toolbar: [
+                                [{ 'header': [2, 3, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                [{ 'color': [] }, { 'background': [] }],
+                                ['clean']
+                            ]
+                        }
+                    });
+                }
+            });
+
+            function clearMenuQuillEditor() {
+                if (quillMenuEditor) {
+                    quillMenuEditor.setText('');
+                }
+                document.getElementById('admin_menu_text').value = '';
+            }
+
             async function handleSaveMenuSettings(e) {
                 e.preventDefault();
                 const form = e.target;
+
+                // Sync Quill editor content to hidden input
+                if (quillMenuEditor) {
+                    const html = quillMenuEditor.root.innerHTML;
+                    const cleanText = quillMenuEditor.getText().trim();
+                    const finalHtml = cleanText ? html : '';
+                    document.getElementById('admin_menu_text').value = finalHtml;
+                }
+
                 const formData = new FormData(form);
+                if (quillMenuEditor) {
+                    formData.set('menu_text', document.getElementById('admin_menu_text').value);
+                }
+
                 const btn = form.querySelector('button[type="submit"]');
 
                 btn.disabled = true;
