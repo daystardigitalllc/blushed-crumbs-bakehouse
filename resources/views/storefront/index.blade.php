@@ -89,16 +89,30 @@
                 </section>
             @elseif($secId === 'promo_video')
                 <!-- Video Background Promo Banner -->
-                <section class="video-promo-banner">
-                    <video autoplay loop muted playsinline>
-                        <source src="{{ asset($tenant->getSiteContent('promo_video_url', 'images/download (2) (1).mp4')) }}" type="video/mp4">
-                    </video>
-                    <div class="video-overlay-content">
-                        <h2>{{ $tenant->getSiteContent('promo_headline', '$10 Off Your First Order!') }}</h2>
-                        <p>{{ $tenant->getSiteContent('promo_subtext', 'Follow us on social media or join our community for instant discounts.') }}</p>
-                        <button onclick="openOrderModal()" class="btn btn-dark">Order Now</button>
-                    </div>
-                </section>
+                @php
+                    $promoVid = $tenant->getSiteContent('promo_video_url');
+                @endphp
+                @if(!empty($promoVid))
+                    <section class="video-promo-banner">
+                        <video autoplay loop muted playsinline>
+                            <source src="{{ asset($promoVid) }}" type="video/mp4">
+                        </video>
+                        <div class="video-overlay-content">
+                            <h2>{{ $tenant->getSiteContent('promo_headline', 'Special Custom Bakery Orders!') }}</h2>
+                            <p>{{ $tenant->getSiteContent('promo_subtext', 'Order online directly from our kitchen for your upcoming celebration.') }}</p>
+                            <button onclick="openOrderModal()" class="btn btn-dark">Order Now</button>
+                        </div>
+                    </section>
+                @else
+                    <section class="video-promo-banner" style="background: linear-gradient(135deg, var(--dark-text, #2a0818) 0%, #4a1531 100%); padding: 75px 25px; text-align: center;">
+                        <div class="video-overlay-content" style="position:relative; z-index:2; max-width:720px; margin:0 auto;">
+                            <span style="font-size:2.2rem; display:block; margin-bottom:10px;">🎁</span>
+                            <h2 style="font-size:2.4rem; font-weight:800; color:#ffffff; margin-bottom:12px;">{{ $tenant->getSiteContent('promo_headline', 'Special Custom Bakery Orders!') }}</h2>
+                            <p style="font-size:1.05rem; color:rgba(255,255,255,0.9); margin-bottom:24px;">{{ $tenant->getSiteContent('promo_subtext', 'Order online directly from our kitchen for your upcoming celebration.') }}</p>
+                            <button onclick="openOrderModal()" class="btn btn-primary" style="padding:13px 34px; font-size:1.05rem; border-radius:30px; box-shadow:0 4px 15px rgba(0,0,0,0.2);">Order Now</button>
+                        </div>
+                    </section>
+                @endif
             @elseif($secId === 'categories')
                 <!-- Categories Section -->
                 <section id="categories" class="categories-section">

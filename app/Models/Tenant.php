@@ -62,7 +62,7 @@ class Tenant extends Model
                 ['icon' => '📦', 'title' => 'Local Delivery', 'desc' => 'Flexible pickup & delivery options'],
                 ['icon' => '💖', 'title' => 'Baked with Love', 'desc' => 'Cottage bakery crafted with care'],
             ],
-            'promo_video_url' => 'images/download (2) (1).mp4',
+            'promo_video_url' => '',
             'promo_headline' => 'Special Custom Bakery Orders!',
             'promo_subtext' => 'Order online directly from our kitchen for your upcoming celebration.',
             'how_it_works' => [
@@ -88,7 +88,7 @@ class Tenant extends Model
                 ['q' => '💳 What is the deposit requirement?', 'a' => 'A deposit is required at booking to secure your date. Remaining balance is due prior to pickup or delivery.'],
                 ['q' => '⚠️ Allergy Information', 'a' => 'Please disclose all food allergies during checkout so we can accommodate your dietary needs!'],
             ],
-            'cta_banner_url' => 'images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4',
+            'cta_banner_url' => '',
             'cta_headline' => 'Ready For Your Custom Cake?',
             'cta_subtext' => 'Order your custom baking creation now',
             'cta_btn_text' => 'Order Now',

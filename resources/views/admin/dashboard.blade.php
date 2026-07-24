@@ -785,7 +785,7 @@
                                                 <div style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
                                                     <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background Media</label>
                                                     <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
-                                                        <input type="text" id="promo_video_url" name="promo_video_url" value="{{ data_get($siteContent, 'promo_video_url', 'images/download (2) (1).mp4') }}" placeholder="images/download (2) (1).mp4" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
+                                                        <input type="text" id="promo_video_url" name="promo_video_url" value="{{ data_get($siteContent, 'promo_video_url', '') }}" placeholder="Upload custom video or image URL..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
                                                         <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
                                                             📁 Upload File
                                                             <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'promo_video_url')" style="display:none;">
