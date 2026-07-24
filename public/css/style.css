@@ -1975,9 +1975,10 @@ body.theme-clean_minimal {
 
 /* EXACT ABOUT PAGE DESIGN SYSTEM */
 .about-hero-section {
-    background: linear-gradient(rgba(252, 235, 241, 0.85), rgba(252, 235, 241, 0.95)), url('../images/IMG_8117.jpg') center/cover;
+    background: var(--theme-section-bg, var(--pink-bg, #fff7fa));
     text-align: center;
-    padding: 120px 20px 90px 20px;
+    padding: 110px 20px 80px 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .about-hero-subtitle {
@@ -1985,23 +1986,23 @@ body.theme-clean_minimal {
     font-size: 0.85rem;
     letter-spacing: 3px;
     font-weight: 700;
-    color: #7a2b4a;
+    color: var(--primary, #e67399);
     margin-bottom: 15px;
     display: block;
 }
 
 .about-hero-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 3.8rem;
+    font-family: var(--theme-heading-font, 'Poppins', sans-serif);
+    font-size: 3.5rem;
     font-weight: 800;
-    color: #5c1d37;
+    color: var(--dark-text, #2c2419);
     line-height: 1.15;
     max-width: 800px;
     margin: 0 auto;
 }
 
 .meet-founder-section {
-    background-color: #fdeef4;
+    background-color: var(--theme-card-bg, #ffffff);
     padding: 90px 25px;
 }
 
@@ -2019,10 +2020,39 @@ body.theme-clean_minimal {
 
 .meet-founder-img-wrap img {
     width: 100%;
-    height: 420px;
+    height: 400px;
     object-fit: cover;
     border-radius: 20px;
-    box-shadow: 0 12px 35px rgba(92, 29, 55, 0.12);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.founder-placeholder-card {
+    width: 100%;
+    height: 380px;
+    border-radius: 20px;
+    background: var(--pink-bg, #fff7fa);
+    border: 2px dashed var(--primary, #e67399);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+
+.founder-placeholder-card h3 {
+    font-family: var(--theme-heading-font, 'Outfit', sans-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-text, #2c2419);
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+
+.founder-placeholder-card p {
+    font-size: 0.9rem;
+    color: #888;
 }
 
 .meet-founder-content {
@@ -2030,41 +2060,45 @@ body.theme-clean_minimal {
 }
 
 .meet-founder-content h2 {
-    font-size: 3.2rem;
+    font-family: var(--theme-heading-font, 'Poppins', sans-serif);
+    font-size: 3rem;
     font-weight: 800;
-    color: #5c1d37;
+    color: var(--dark-text, #2c2419);
     margin-bottom: 20px;
 }
 
 .meet-founder-content p {
     font-size: 1.05rem;
-    color: #5c1d37;
+    color: var(--dark-text, #2c2419);
+    opacity: 0.88;
     line-height: 1.7;
     margin-bottom: 30px;
 }
 
 .founder-testimonial-quote {
-    border-top: 1px solid rgba(92, 29, 55, 0.15);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding-top: 20px;
 }
 
 .founder-testimonial-quote p {
     font-style: italic;
     font-size: 0.98rem;
-    color: #5c1d37;
+    color: var(--dark-text, #2c2419);
+    opacity: 0.9;
     margin-bottom: 12px;
 }
 
 .founder-author-name {
     font-weight: 700;
-    color: #e67399;
+    color: var(--primary, #e67399);
     font-size: 1rem;
     display: block;
 }
 
 .founder-author-role {
     font-size: 0.85rem;
-    color: #7a2b4a;
+    color: var(--dark-text, #2c2419);
+    opacity: 0.7;
 }
 
 /* Ingredients Section */

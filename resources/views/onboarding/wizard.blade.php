@@ -503,6 +503,38 @@
                         <div id="social-import-notice" style="margin-top:8px; font-size:0.88rem; font-weight:600; display:none;"></div>
                     </div>
 
+                    <!-- PLAN SELECTION CARD -->
+                    <div class="form-group full-width" style="margin-top:10px; background:linear-gradient(135deg, #ffffff, #fff7fa); padding:20px; border-radius:16px; border:2px solid #e67399; box-shadow:0 8px 25px rgba(230,115,153,0.1);">
+                        <label style="font-weight:700; color:#6d28d9; font-size:1.05rem; display:block; margin-bottom:4px;">
+                            ✨ Select Your Bakery Plan
+                        </label>
+                        <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Select a plan to start building. Pro unlocks all 7 themes &amp; custom domain support!</p>
+
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px;">
+                            <label class="selection-card selected" id="card-plan-free" style="padding:14px; border-radius:14px; cursor:pointer;" onclick="selectPlanTier('free')">
+                                <input type="radio" name="plan_tier" value="free" checked>
+                                <div style="font-weight:700; font-size:1.05rem; color:#1f2937;">Starter Plan</div>
+                                <div style="font-size:1.25rem; font-weight:800; color:#e67399; margin:4px 0;">FREE <span style="font-size:0.8rem; font-weight:500; color:#666;">($0/mo)</span></div>
+                                <ul style="font-size:0.8rem; color:#666; margin-top:6px; padding-left:14px; line-height:1.4;">
+                                    <li>3 Starter Themes</li>
+                                    <li>Standard Order Form</li>
+                                    <li>Full Bakery Storefront</li>
+                                </ul>
+                            </label>
+
+                            <label class="selection-card" id="card-plan-pro" style="padding:14px; border-radius:14px; cursor:pointer; border-color:#6d28d9; background:linear-gradient(135deg, #FAF8FF, #f5f3ff);" onclick="selectPlanTier('pro')">
+                                <input type="radio" name="plan_tier" value="pro">
+                                <div style="font-weight:700; font-size:1.05rem; color:#6d28d9;">PRO Plan ⚡</div>
+                                <div style="font-size:1.25rem; font-weight:800; color:#6d28d9; margin:4px 0;">$29 <span style="font-size:0.8rem; font-weight:500; color:#666;">/month</span></div>
+                                <ul style="font-size:0.8rem; color:#555; margin-top:6px; padding-left:14px; line-height:1.4;">
+                                    <li>All 7 Premium Themes Unlocked</li>
+                                    <li>Custom Domain Connection</li>
+                                    <li>Priority Baker Support</li>
+                                </ul>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="form-group full-width">
                         <label for="specialties">Specialties</label>
                         <input type="text" id="specialties" name="specialties" placeholder="e.g. Custom cakes, sourdough, cupcakes, wedding pastries">
@@ -753,6 +785,33 @@
             } else {
                 badge.innerText = '';
             }
+        }
+
+        function selectPlanTier(tier) {
+            document.querySelectorAll('#card-plan-free, #card-plan-pro').forEach(card => card.classList.remove('selected'));
+            const chosenCard = document.getElementById('card-plan-' + tier);
+            if(chosenCard) chosenCard.classList.add('selected');
+            const radio = chosenCard ? chosenCard.querySelector('input[type="radio"]') : null;
+            if(radio) radio.checked = true;
+
+            // Enable/disable pro themes in step 3 dynamically
+            const proThemes = document.querySelectorAll('.theme-card[data-is-pro="true"]');
+            proThemes.forEach(card => {
+                const input = card.querySelector('input[type="radio"]');
+                const badge = card.querySelector('.pro-badge');
+                if (tier === 'pro') {
+                    card.style.opacity = '1';
+                    card.style.filter = 'none';
+                    card.style.cursor = 'pointer';
+                    if(input) input.disabled = false;
+                    if(badge) badge.innerText = '⚡ PRO UNLOCKED';
+                } else {
+                    card.style.opacity = '0.55';
+                    card.style.filter = 'grayscale(25%)';
+                    if(input) { input.disabled = true; input.checked = false; }
+                    if(badge) badge.innerText = '🔒 PRO ONLY ($29/mo)';
+                }
+            });
         }
 
         async function runSocialImport() {

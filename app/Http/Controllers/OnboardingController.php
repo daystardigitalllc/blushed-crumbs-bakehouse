@@ -58,6 +58,9 @@ class OnboardingController extends Controller
         if (!empty($validated['email'])) {
             $tenant->email = $validated['email'];
         }
+        if ($request->has('plan_tier')) {
+            $tenant->plan_tier = $request->input('plan_tier') === 'pro' ? 'pro' : 'free';
+        }
 
         // Handle Logo Upload
         if ($request->hasFile('logo')) {
@@ -239,10 +242,48 @@ class OnboardingController extends Controller
             'onboarding_completed' => true,
         ]);
 
+        $redirectUrl = '/dashboard';
+        if ($tenant->plan_tier === 'pro') {
+            $redirectUrl = 'https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id=' . $tenant->id . '&prefilled_email=' . urlencode($tenant->email ?? '');
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Your bakery website is live! 🎉',
-            'redirect' => '/dashboard',
+            'redirect' => $redirectUrl,
         ]);
+    }
+
+    /**
+     * Handle Stripe payment callback for Pro upgrade.
+     */
+    public function stripeCallback(Request $request)
+    {
+        $tenantId = $request->input('tenant_id') ?? $request->input('client_reference_id');
+        $user = auth()->user();
+
+        $tenant = null;
+        if ($tenantId) {
+            $tenant = Tenant::find($tenantId);
+        }
+        if (!$tenant && $user) {
+            $tenant = $user->tenant;
+        }
+
+        if ($tenant) {
+            $tenant->plan_tier = 'pro';
+            $tenant->onboarding_completed = true;
+            $tenant->save();
+
+            \App\Models\AuditLog::log('billing.upgrade_pro', 'info', "Tenant #{$tenant->id} ({$tenant->name}) upgraded to PRO tier via Stripe.", [
+                'tenant_id' => $tenant->id,
+                'user_id' => $user ? $user->id : null,
+                'session_id' => $request->input('session_id'),
+            ]);
+
+            return redirect('/dashboard')->with('success', '🎉 Welcome to BakeryPro PRO! Your account has been upgraded and all 7 premium themes & features are unlocked.');
+        }
+
+        return redirect('/login')->with('info', 'Please log in to verify your Pro account upgrade.');
     }
 }

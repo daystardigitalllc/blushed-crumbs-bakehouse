@@ -218,16 +218,15 @@
 
                         @elseif($type === 'terms')
                             <div class="terms-scroll-box" style="height:180px; overflow-y:auto; border:1px solid #eee; padding:15px; border-radius:12px; background:#fafafa; font-size:0.85rem; line-height:1.6; margin-bottom:15px;">
-                                <p>Please know I operate under cottage laws in Tennessee. I do not claim to be a nut free or gluten-free environment.</p>
-                                <p><strong>Deposit Requirement:</strong> A 50% non-refundable deposit is required at the time of booking to secure your order date. Orders are not confirmed until the deposit is received.</p>
-                                <p><strong>Final Payment:</strong> The remaining balance must be paid before pickup/delivery.</p>
-                                <p><strong>Cancellations:</strong> Orders must be cancelled at least 48 hours in advance of the scheduled pickup or delivery time.</p>
-                                <p><strong>Refund Policy:</strong> All deposits and payments are non-refundable.</p>
-                                <p><strong>Order Changes:</strong> Any changes to the order must be requested at least 48 hours before the scheduled pickup or delivery time and may not always be guaranteed.</p>
-                                <p><strong>Pickup/Delivery:</strong> Customers are responsible for picking up orders at the agreed time unless delivery has been arranged in advance.</p>
-                                <p><strong>Custom orders:</strong> I welcome custom orders and love working on them. By signing this you understand cakes cannot be perfectly replicated. Each cake is unique and is tailored to the bakers style.</p>
-                                <p><strong>Allergy Notice:</strong> Our cakes may contain or come into contact with common allergens such as dairy, eggs, wheat, soy, and nuts.</p>
-                                <p><strong>Important Responsibility Notice:</strong> Please know once the cake is out of the bakers hands it is your responsibility to keep your cake or any baked goods cold and on a flat surface. This ensures the frosting from melting or the cake layers from sliding off. In the event of melted frosting or damage to any of your baked goods after leaving the hands of the baker, the baker is not at fault and the client will be held responsible.</p>
+                                @if(!empty($description))
+                                    {!! nl2br(e($description)) !!}
+                                @else
+                                    <p>Welcome to <strong>{{ $tenant->name }}</strong>! By submitting your custom order, you agree to our policies:</p>
+                                    <p><strong>1. Deposit Requirement:</strong> A deposit is required at the time of booking to secure your order date on our baking calendar. Orders are confirmed once deposit is received.</p>
+                                    <p><strong>2. Cancellations &amp; Changes:</strong> Please notify us at least 48 hours in advance of your pickup or delivery date for any date or design adjustments.</p>
+                                    <p><strong>3. Allergy Notice:</strong> Please disclose all food allergies or dietary restrictions during checkout.</p>
+                                    <p><strong>4. Product Care:</strong> Once your order is picked up or delivered, keep all baked goods stored in a cool temperature on a flat surface to prevent frosting melting or sliding.</p>
+                                @endif
                             </div>
 
                             <div class="terms-acceptance-wrapper" style="margin-bottom:15px;">
@@ -239,7 +238,7 @@
 
                             <div class="nav-buttons cart-bar">
                                 <button class="back-btn" id="back-step-{{ $prevStepNum }}">Back</button>
-                                <button class="next-btn" id="to-step-{{ $nextStepNum }}" disabled>Continue</button>
+                                <button class="next-btn" id="to-step-{{ $nextStepNum }}" disabled>Accept</button>
                             </div>
 
                         @elseif($type === 'contact_info')

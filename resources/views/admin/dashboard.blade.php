@@ -74,6 +74,11 @@
                 <button class="admin-nav-item" data-tab="tab-subscription-support">
                     <span>💳</span> Subscription &amp; Support
                 </button>
+                @if(($tenant->plan_tier ?? 'free') !== 'pro')
+                    <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
+                        ⚡ Upgrade to PRO ($29/mo)
+                    </a>
+                @endif
             </nav>
 
             <div class="admin-sidebar-footer">
@@ -233,9 +238,9 @@
                             <label>Step Header / Title</label>
                             <input type="text" id="field-label" placeholder="e.g. Choose Your Flavors, Select Crust Type…" required>
                         </div>
-                        <div>
-                            <label>Step Subtext / Directions</label>
-                            <input type="text" id="field-description" placeholder="e.g. Select all options that apply to your order">
+                        <div style="grid-column: 1 / -1;">
+                            <label>Step Subtext / Directions / Policy Text</label>
+                            <textarea id="field-description" placeholder="e.g. Select all options that apply, or enter custom Terms & Conditions text here..." style="width:100%; height:80px; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;"></textarea>
                         </div>
                         <div id="field-options-row" style="grid-column: 1 / -1; margin-top: 10px;">
                             <label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:8px;">
@@ -1078,6 +1083,17 @@
                                 <span style="color:#059669; font-weight:700;">● {{ $tenant->is_active ? 'Active' : 'Suspended/Canceled' }}</span>
                             </div>
                         </div>
+
+                        @if(($tenant->plan_tier ?? 'free') !== 'pro')
+                            <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid #6d28d9; padding:20px; border-radius:14px; margin-bottom:16px;">
+                                <span style="background:#6d28d9; color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Unlock All Features</span>
+                                <h4 style="color:#6d28d9; margin-top:8px; font-size:1.3rem;">Upgrade to BakeryPro PRO ($29/month)</h4>
+                                <p style="font-size:0.9rem; color:#555; margin-top:4px; margin-bottom:16px;">Unlock all 7 premium themes, custom domain support, and priority baker support.</p>
+                                <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="btn" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:white; text-decoration:none; display:inline-block; padding:12px 24px; font-weight:700; border-radius:10px; width:100%; text-align:center;">
+                                    ⚡ Upgrade Now on Stripe
+                                </a>
+                            </div>
+                        @endif
                         <form onsubmit="handleCancelSubscription(event)">
                             <button type="submit" class="btn" style="background:#ef4444; color:#fff; width:100%; padding:12px; font-weight:600; border-radius:10px; border:none; cursor:pointer;">
                                 End Subscription / Cancel Account

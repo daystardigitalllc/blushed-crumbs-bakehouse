@@ -51,17 +51,25 @@
         <div class="meet-founder-container">
             <div class="meet-founder-img-wrap">
                 @php
-                    $founderImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : asset('images/baker_founder_portrait.jpg');
+                    $founderImg = !empty($tenant->logo_path) ? asset($tenant->logo_path) : (!empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : null);
                 @endphp
-                <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}">
+                @if($founderImg)
+                    <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}">
+                @else
+                    <div class="founder-placeholder-card">
+                        <span style="font-size:3.5rem;">🧁</span>
+                        <h3>{{ $tenant->name }}</h3>
+                        <p>Artisanal Bakehouse</p>
+                    </div>
+                @endif
             </div>
             <div class="meet-founder-content">
                 <h2>{{ $tenant->getSiteContent('about_title', 'About Our Bakery') }}</h2>
-                <p>{{ $tenant->getSiteContent('about_bio', 'At Blushed Crumbs Bakehouse, we specialize in homemade custom cakes and treats that are as beautiful as they are delicious. Every single order is made fresh with quality ingredients and attention to every detail, creating unforgettable treats for your sweetest moments.') }}</p>
+                <p>{{ $tenant->getSiteContent('about_bio', 'Welcome to ' . ($tenant->name ?? 'our bakehouse') . '! We specialize in artisanal custom cakes, gourmet treats, and unforgettable dessert experiences. Every order is baked fresh with love and attention to detail.') }}</p>
                 <div class="founder-testimonial-quote">
-                    <p>"She was very friendly & easy to work with. The cake tasted amazing. Everything I was hoping for ❤️"</p>
-                    <span class="founder-author-name">Pamela Cortes</span>
-                    <span class="founder-author-role">Loyal Customer</span>
+                    <p>"Ordering from {{ $tenant->name }} was absolute perfection! The cake was breathtaking and tasted amazing."</p>
+                    <span class="founder-author-name">Happy Client</span>
+                    <span class="founder-author-role">Verified Customer</span>
                 </div>
             </div>
         </div>

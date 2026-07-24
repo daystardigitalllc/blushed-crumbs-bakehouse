@@ -1326,7 +1326,7 @@
                             <li>Priority Support &amp; Faster AI Generations</li>
                         </ul>
                     </div>
-                    <a href="/register" class="btn btn-primary" style="margin-top:24px;">Start Free &rarr; Upgrade Anytime</a>
+                    <a href="/register" class="btn btn-primary" style="margin-top:24px;">Upgrade Anytime</a>
                 </div>
             </div>
 
