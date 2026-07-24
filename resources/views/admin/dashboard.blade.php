@@ -997,7 +997,7 @@
 
                     <div id="theme-status-msg" style="display:none; margin-bottom:14px; background:#d4edda; color:#155724; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c3e6cb;"></div>
 
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px;">
                         @php
                             $themes = $tenant->getAvailableThemesForTenant();
                             $currentTheme = $tenant->theme_id ?? 'sweet_elegant';
@@ -1009,7 +1009,7 @@
                             @endphp
                             <div class="bakery-theme-card" 
                                  onclick="{{ $isLockedTheme ? "alert('Upgrade to Pro ($29/mo) to unlock this premium theme!')" : "selectBakeryTheme('".$t['id']."', this)" }}" 
-                                 style="border:{{ $currentTheme === $t['id'] ? '3px solid #e67399' : '2px solid #ddd' }}; background:white; padding:16px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
+                                 style="border:{{ $currentTheme === $t['id'] ? '3px solid #e67399' : '2px solid #ddd' }}; background:white; padding:22px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
                                 <div style="height:80px; background:{{ $t['preview_bg'] }}; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; border:1px solid #eee;">
                                     <span style="font-weight:800; color:{{ $t['preview_accent'] }}; font-size:1.1rem;">{{ $t['name'] }}</span>
                                 </div>
@@ -1017,6 +1017,8 @@
                                 <p style="font-size:0.8rem; color:#666; line-height:1.4;">{{ $t['subtitle'] }}</p>
                                 @if($currentTheme === $t['id'])
                                     <span class="theme-badge" style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#e67399; color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
+                                @elseif($tenant->plan_tier === 'pro' && !$isStarterTheme)
+                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#c7d2fe; color:#4338ca; padding:3px 10px; border-radius:20px; font-weight:700;">Pro Tier ✨</span>
                                 @elseif($isLockedTheme)
                                     <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#fef3c7; color:#92400e; padding:3px 10px; border-radius:20px; font-weight:700;">🔒 PRO ONLY ($29/mo)</span>
                                 @else
