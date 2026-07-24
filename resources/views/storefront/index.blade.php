@@ -71,7 +71,7 @@
                         <h1>{{ $tenant->getSiteContent('hero_headline', 'Where Every Celebration Gets Its Sweet Ending.') }}</h1>
                         <div class="hero-buttons">
                             <button onclick="openOrderModal()" class="btn btn-primary">{{ $tenant->getSiteContent('hero_cta_primary', 'Custom Order') }}</button>
-                            <a href="{{ route('storefront.gallery') }}" class="btn btn-secondary">{{ $tenant->getSiteContent('hero_cta_secondary', 'Browse Our Sweets') }}</a>
+                            <a href="{{ route('storefront.gallery') }}" class="btn btn-secondary">{{ $tenant->getSiteContent('hero_cta_secondary', 'View Treats') }}</a>
                         </div>
                     </div>
                 </section>
