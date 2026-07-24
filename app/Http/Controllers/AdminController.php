@@ -745,7 +745,16 @@ class AdminController extends Controller
             'custom_domain' => 'nullable|string|max:255',
         ]);
 
-        $domain = $validated['custom_domain'];
+        $domain = strtolower(trim($validated['custom_domain'] ?? ''));
+        $domain = preg_replace('#^https?://#', '', $domain);
+        $domain = trim($domain, '/');
+
+        if ($domain && $tenant->plan_tier !== 'pro') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Custom domains are available on BakeryPro PRO only. Upgrade to connect your own domain.',
+            ], 403);
+        }
 
         // Basic validation: no spaces, has a dot
         if ($domain && (!str_contains($domain, '.') || str_contains($domain, ' '))) {
@@ -768,6 +777,60 @@ class AdminController extends Controller
         return response()->json([
             'success' => true,
             'message' => $domain ? 'Custom domain saved! Point your DNS to our server.' : 'Custom domain removed.',
+        ]);
+    }
+
+    public function verifyCustomDomain(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        if ($tenant->plan_tier !== 'pro') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Custom domain verification is available only for Pro users.',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'custom_domain' => 'nullable|string|max:255',
+        ]);
+
+        $domain = strtolower(trim($validated['custom_domain'] ?? $tenant->custom_domain ?? ''));
+        $domain = preg_replace('#^https?://#', '', $domain);
+        $domain = trim($domain, '/');
+
+        if (!$domain) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please enter a custom domain to verify.',
+            ], 422);
+        }
+
+        if (!str_contains($domain, '.') || str_contains($domain, ' ')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid domain format.',
+            ], 422);
+        }
+
+        if ($domain !== $tenant->custom_domain && Tenant::where('custom_domain', $domain)->where('id', '!=', $tenant->id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This domain is already connected to another account.',
+            ], 422);
+        }
+
+        $resolved = @gethostbynamel($domain);
+        if (!$resolved) {
+            return response()->json([
+                'success' => false,
+                'message' => 'DNS lookup failed. Please point your domain to the platform host and try again after propagation.',
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Domain resolves to: ' . implode(', ', $resolved) . '. Your custom domain should work once DNS propagation completes.',
         ]);
     }
 

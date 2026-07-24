@@ -1266,6 +1266,28 @@
                         </form>
                     </div>
 
+                    <!-- CUSTOM DOMAIN CARD -->
+                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Custom Domain Connection</h4>
+                        <p style="font-size:0.9rem; color:#555; margin-bottom:18px;">If you&rsquo;re on BakeryPro PRO, connect your own domain so your bakery appears on a branded address like <strong>blushedcrumbsbakehouse.com</strong>.</p>
+                        <div style="display:flex; flex-direction:column; gap:14px;">
+                            <input type="text" id="custom-domain-input" value="{{ $tenant->custom_domain ?? '' }}" placeholder="yourbakery.com" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1;">
+                            <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                                <button type="button" class="btn btn-primary" onclick="saveCustomDomain()" style="padding:12px 18px;">Save Domain</button>
+                                <button type="button" class="btn btn-outline" onclick="verifyCustomDomain()" style="padding:12px 18px;">Verify DNS</button>
+                                <span id="custom-domain-status" style="font-size:0.9rem; color:#475569;"></span>
+                            </div>
+                            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px; margin-top:14px;">
+                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">DNS setup guide</p>
+                                <ul style="font-size:0.85rem; color:#475569; line-height:1.6; margin:0; padding-left:18px;">
+                                    <li><strong>www</strong> CNAME → <code>doughmain.pro</code></li>
+                                    <li><strong>@</strong> root A/ALIAS record → point to your platform host or follow registrar instructions for root domains</li>
+                                </ul>
+                                <p style="font-size:0.82rem; color:#64748b; margin:10px 0 0 0;">After saving, allow DNS propagation and then click Verify DNS. If you need the exact A record value, reach out to support.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- SUPPORT TICKET FORM CARD -->
                     <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
                         <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Submit Support Ticket</h4>
@@ -1338,6 +1360,74 @@
                 } catch(err) {
                     console.error(err);
                     alert('Error submitting support ticket.');
+                }
+            }
+
+            async function saveCustomDomain() {
+                const input = document.getElementById('custom-domain-input');
+                const statusEl = document.getElementById('custom-domain-status');
+                const domain = input?.value?.trim();
+                if (!domain) {
+                    alert('Enter a custom domain before saving.');
+                    return;
+                }
+
+                try {
+                    const res = await fetch('/dashboard/settings/domain', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ custom_domain: domain })
+                    });
+
+                    const data = await res.json();
+                    if (data.success) {
+                        statusEl.innerText = data.message;
+                        statusEl.style.color = '#047857';
+                    } else {
+                        statusEl.innerText = data.message || 'Unable to save custom domain.';
+                        statusEl.style.color = '#b91c1c';
+                    }
+                } catch (err) {
+                    console.error(err);
+                    statusEl.innerText = 'Error saving domain.';
+                    statusEl.style.color = '#b91c1c';
+                }
+            }
+
+            async function verifyCustomDomain() {
+                const input = document.getElementById('custom-domain-input');
+                const statusEl = document.getElementById('custom-domain-status');
+                const domain = input?.value?.trim();
+                if (!domain) {
+                    alert('Enter a custom domain before verification.');
+                    return;
+                }
+
+                statusEl.innerText = 'Checking DNS…';
+                statusEl.style.color = '#2563eb';
+
+                try {
+                    const res = await fetch('/dashboard/settings/domain/verify', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ custom_domain: domain })
+                    });
+
+                    const data = await res.json();
+                    statusEl.innerText = data.message || (data.success ? 'Domain verified.' : 'Verification failed.');
+                    statusEl.style.color = data.success ? '#047857' : '#b91c1c';
+                } catch (err) {
+                    console.error(err);
+                    statusEl.innerText = 'Error verifying domain.';
+                    statusEl.style.color = '#b91c1c';
                 }
             }
 

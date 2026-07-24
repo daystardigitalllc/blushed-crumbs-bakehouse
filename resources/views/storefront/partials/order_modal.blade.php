@@ -220,13 +220,65 @@
                             <div class="terms-scroll-box" style="height:180px; overflow-y:auto; border:1px solid #eee; padding:15px; border-radius:12px; background:#fafafa; font-size:0.85rem; line-height:1.6; margin-bottom:15px;">
                                 @if(!empty($description))
                                     {!! nl2br(e($description)) !!}
-                                @else
-                                    <p>Welcome to <strong>{{ $tenant->name }}</strong>! By submitting your custom order, you agree to our policies:</p>
-                                    <p><strong>1. Deposit Requirement:</strong> A deposit is required at the time of booking to secure your order date on our baking calendar. Orders are confirmed once deposit is received.</p>
-                                    <p><strong>2. Cancellations &amp; Changes:</strong> Please notify us at least 48 hours in advance of your pickup or delivery date for any date or design adjustments.</p>
-                                    <p><strong>3. Allergy Notice:</strong> Please disclose all food allergies or dietary restrictions during checkout.</p>
-                                    <p><strong>4. Product Care:</strong> Once your order is picked up or delivered, keep all baked goods stored in a cool temperature on a flat surface to prevent frosting melting or sliding.</p>
-                                @endif
+                               @else
+    <p><strong>Policy:</strong> Please read before placing an order.</p>
+
+    <p><strong>Payment:</strong></p>
+    <ul>
+        <li>A 50% deposit is required upon invoice to secure your order.</li>
+        <li>The remaining balance is due 2 days before pickup or delivery.</li>
+        <li>A 1-day grace period is provided for late final payments. After that, a 10% late fee will be applied.</li>
+        <li>All pricing is base pricing and may change due to sales tax, labor, delivery, decorations, or other customizations.</li>
+    </ul>
+
+    <p><strong>Refunds:</strong></p>
+    <ul>
+        <li>Refunds are not provided for any reason. Every order requires hours of planning and preparation before decorating begins, so all sales are final.</li>
+        <li>Minor variations in color or design are part of the handmade process and are not eligible for refunds.</li>
+        <li>If a major flavor error is discovered after pickup (for example, receiving a completely different flavor than ordered), please contact us immediately. If confirmed, a refund or credit will be issued for the incorrect portion of the order.</li>
+        <li>Refunds are not issued for changes of mind, flavor preferences, or failure to read these policies.</li>
+        <li>If no flavor is selected at the time of booking, vanilla will be used as the default flavor. No refunds will be given for this reason.</li>
+    </ul>
+
+    <p><strong>Delivery:</strong></p>
+    <ul>
+        <li>All orders are pickup by default.</li>
+        <li>Delivery is available starting at $30 plus $2 per mile.</li>
+        <li>Please provide your delivery address when placing your order so the delivery fee can be confirmed.</li>
+        <li>Delivery must be arranged at the time of booking. Changing a pickup order to delivery within 4 days of your event will incur a $15 change fee.</li>
+    </ul>
+
+    <p><strong>Order Changes:</strong></p>
+    <ul>
+        <li>Minor design changes may be accommodated if requested at least 7 days before pickup.</li>
+        <li>Significant changes may require an additional fee.</li>
+        <li>All requested changes are subject to approval and cannot be guaranteed.</li>
+    </ul>
+
+    <p><strong>Design Policy:</strong></p>
+    <ul>
+        <li>Inspiration photos are always welcome.</li>
+        <li>We do not create exact replicas of another baker's work. Every cake is handcrafted and uniquely designed.</li>
+        <li>Colors, decorations, and handmade elements may vary slightly from inspiration photos.</li>
+    </ul>
+
+    <p><strong>Pickup:</strong></p>
+    <ul>
+        <li>Pickup hours are 10:00 AM – 4:00 PM.</li>
+        <li>Your requested pickup date and time must be approved and is not guaranteed until confirmed.</li>
+        <li>Please arrive on time for your scheduled pickup.</li>
+        <li>We are not responsible for any damage once the order has been picked up or delivered.</li>
+        <li>Pickup and delivery are not available on Sundays or Mondays.</li>
+        <li>Orders not picked up within 30 minutes of the scheduled pickup time must be rescheduled. If arrangements are not made, the order may be donated without refund.</li>
+    </ul>
+
+    <p><strong>Cakes &amp; Allergies:</strong></p>
+    <ul>
+        <li>All cakes begin as 2-layer cakes. Additional layers are available for $20 per layer.</li>
+        <li>Tiered and large cakes contain dowels and support straws. Please use caution when serving.</li>
+        <li>It is your responsibility to disclose any food allergies when placing your order. We are not responsible for allergy-related issues if allergies are not communicated during the ordering process.</li>
+    </ul>
+@endif
                             </div>
 
                             <div class="terms-acceptance-wrapper" style="margin-bottom:15px;">

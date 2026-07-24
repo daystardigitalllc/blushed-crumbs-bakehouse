@@ -95,6 +95,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('/invoices/{invoice}/status', [AdminController::class, 'updateInvoiceStatus'])->name('admin.invoice.status');
     Route::post('/invoices/{invoice}/send', [AdminController::class, 'sendInvoice'])->name('admin.invoice.send');
     Route::post('/settings/domain', [AdminController::class, 'saveCustomDomain'])->name('admin.settings.domain');
+    Route::post('/settings/domain/verify', [AdminController::class, 'verifyCustomDomain'])->name('admin.settings.domain.verify');
     Route::post('/settings/reviews', [AdminController::class, 'saveReviewSettings'])->name('admin.settings.reviews');
     Route::post('/settings/menu', [AdminController::class, 'saveMenuSettings'])->name('admin.settings.menu');
     Route::post('/settings/logo', [AdminController::class, 'saveLogo'])->name('admin.settings.logo');
