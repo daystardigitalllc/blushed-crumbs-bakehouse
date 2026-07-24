@@ -390,8 +390,11 @@
                                 <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">Upload Official Menu Image (JPG, PNG, WEBP, PDF)</label>
                                 <input type="file" name="menu_image" id="admin_menu_image" accept="image/*,.pdf" class="form-input" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; background:#fff;">
                                 @if($menuImagePath)
-                                    <div style="margin-top:8px; font-size:0.85rem; color:#059669; font-weight:600;">
-                                        ✓ Current Upload: <a href="{{ asset($menuImagePath) }}" target="_blank" style="text-decoration:underline;">View Uploaded Menu ↗</a>
+                                    <div style="margin-top:8px; font-size:0.85rem; color:#059669; font-weight:600; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                                        <span>✓ Current Upload: <a href="{{ asset($menuImagePath) }}" target="_blank" style="text-decoration:underline;">View Uploaded Menu ↗</a></span>
+                                        <label style="color:#dc2626; font-weight:600; font-size:0.8rem; cursor:pointer;">
+                                            <input type="checkbox" name="remove_menu_image" value="1"> 🗑️ Delete Image
+                                        </label>
                                     </div>
                                 @endif
                             </div>
@@ -399,9 +402,14 @@
 
                         <!-- Menu Textarea -->
                         <div style="margin-bottom:20px;">
-                            <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">
-                                Custom Menu Notes, Additional Prices &amp; Dietary Policies (Styled to match your theme)
-                            </label>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <label style="font-weight:700; color:#334155; font-size:0.9rem;">
+                                    Custom Menu Notes, Additional Prices &amp; Dietary Policies (Styled to match your theme)
+                                </label>
+                                <button type="button" class="btn btn-sm btn-outline" style="font-size:0.75rem; padding:2px 8px; color:#64748b; border-color:#cbd5e1;" onclick="document.getElementById('admin_menu_text').value = '';">
+                                    🗑️ Clear Text
+                                </button>
+                            </div>
                             <textarea name="menu_text" id="admin_menu_text" rows="6" placeholder="Enter custom menu notes, deposit rules, dietary disclaimers, or full item breakdown..." class="form-input" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1; font-size:0.92rem; font-family:inherit; line-height:1.5;">{{ $menuText }}</textarea>
                         </div>
 

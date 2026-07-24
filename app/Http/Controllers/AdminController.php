@@ -847,8 +847,10 @@ class AdminController extends Controller
         $menuContent = $siteContent['menu'] ?? [];
 
         $menuContent['menu_type'] = $request->input('menu_type', 'both');
-        if ($request->has('menu_text')) {
-            $menuContent['menu_text'] = $request->input('menu_text');
+        $menuContent['menu_text'] = $request->input('menu_text', '') ?? '';
+
+        if ($request->boolean('remove_menu_image')) {
+            $menuContent['menu_image_path'] = null;
         }
 
         if ($request->hasFile('menu_image')) {
