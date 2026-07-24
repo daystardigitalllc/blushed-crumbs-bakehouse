@@ -55,7 +55,7 @@ class Tenant extends Model
             'hero_subheading' => 'Order For Any Occasion',
             'hero_headline' => $name,
             'hero_cta_primary' => 'Order Now',
-            'hero_cta_secondary' => 'View Treats',
+            'hero_cta_secondary' => 'Our Treats',
             'highlights' => [
                 ['icon' => '🎂', 'title' => 'Easy Catering', 'desc' => 'Add custom baked goods to any occasion'],
                 ['icon' => '🚚', 'title' => 'Freshly Baked', 'desc' => 'Made to order right before your event'],
