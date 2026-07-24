@@ -137,14 +137,22 @@ class OnboardingController extends Controller
         $content['contact_hours'] = $validated['hours'] ?? $content['contact_hours'] ?? '';
         $content['about_bio'] = $validated['about'] ?? $content['about_bio'] ?? '';
         $content['hero_headline'] = $validated['bakery_name'] ?? $content['hero_headline'] ?? '';
+        if ($tenant->facebook_url) {
+            $content['contact_facebook'] = $tenant->facebook_url;
+        }
+        if ($tenant->instagram_url) {
+            $content['contact_instagram'] = $tenant->instagram_url;
+        }
 
         $tenant->site_content = $content;
 
-        // Set theme if chosen
+        // Set theme if chosen (only Starter themes for Starter plan)
         if (!empty($validated['theme_id'])) {
-            $available = array_keys($tenant->getAvailableThemesForTenant());
-            if (in_array($validated['theme_id'], $available)) {
+            $starterThemeKeys = array_keys(Tenant::getStarterThemes());
+            if ($tenant->plan_tier === 'pro' || in_array($validated['theme_id'], $starterThemeKeys)) {
                 $tenant->theme_id = $validated['theme_id'];
+            } else {
+                $tenant->theme_id = 'rustic_kitchen';
             }
         }
 
