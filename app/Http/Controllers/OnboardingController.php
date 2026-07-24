@@ -242,9 +242,16 @@ class OnboardingController extends Controller
             'onboarding_completed' => true,
         ]);
 
-        $redirectUrl = '/dashboard';
         if ($tenant->plan_tier === 'pro') {
             $redirectUrl = 'https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id=' . $tenant->id . '&prefilled_email=' . urlencode($tenant->email ?? '');
+        } else {
+            if (!empty($tenant->custom_domain)) {
+                $domain = preg_replace('#^https?://#', '', trim($tenant->custom_domain, '/'));
+                $redirectUrl = 'https://' . $domain;
+            } else {
+                $brandDomain = $tenant->brand?->domain ?? 'doughmain.pro';
+                $redirectUrl = 'https://' . $tenant->subdomain . '.' . $brandDomain;
+            }
         }
 
         return response()->json([

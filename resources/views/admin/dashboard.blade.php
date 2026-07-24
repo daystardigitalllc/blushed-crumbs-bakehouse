@@ -595,6 +595,8 @@
                     </form>
                 </div>
             </div>
+
+            <div id="tab-products" class="tab-content">
                 <div class="section-header">
                     <h3>🎂 Product Catalog &amp; Pricing</h3>
                     <p class="subtitle">Add, remove, and update prices for your order form products. Changes reflect immediately on the storefront.</p>
