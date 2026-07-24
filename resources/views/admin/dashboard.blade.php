@@ -135,15 +135,6 @@
                                     @endif
                                 </p>
 
-                                <div class="order-items-summary">
-                                    <strong>Ordered Items:</strong>
-                                    <ul>
-                                        @foreach($order->items as $item)
-                                            <li>{{ $item['name'] }} - ${{ number_format($item['price'], 2) }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-
                                 @if(!empty($order->flavors))
                                     <p><strong>Flavors:</strong> {{ implode(', ', $order->flavors) }}</p>
                                 @endif
