@@ -266,8 +266,12 @@ class OnboardingController extends Controller
      */
     public function stripeCallback(Request $request)
     {
-        $tenantId = $request->input('tenant_id') ?? $request->input('client_reference_id');
+        $tenantId = $request->input('client_reference_id') ?? $request->input('tenant_id');
         $user = auth()->user();
+
+        if ($tenantId !== null && !is_numeric($tenantId)) {
+            $tenantId = null;
+        }
 
         $tenant = null;
         if ($tenantId) {
@@ -282,11 +286,9 @@ class OnboardingController extends Controller
             $tenant->onboarding_completed = true;
             $tenant->save();
 
-            \App\Models\AuditLog::log('billing.upgrade_pro', 'info', "Tenant #{$tenant->id} ({$tenant->name}) upgraded to PRO tier via Stripe.", [
-                'tenant_id' => $tenant->id,
-                'user_id' => $user ? $user->id : null,
+            \App\Models\AuditLog::logEvent('billing.upgrade_pro', $tenant->id, $user ? $user->id : null, [
                 'session_id' => $request->input('session_id'),
-            ]);
+            ], 'info');
 
             return redirect('/dashboard')->with('success', '🎉 Welcome to BakeryPro PRO! Your account has been upgraded and all 7 premium themes & features are unlocked.');
         }

@@ -63,4 +63,16 @@ class AuditLog extends Model
             return null;
         }
     }
+
+    /**
+     * Backward-compatible alias for legacy audit logging.
+     */
+    public static function log(string $eventType, string $severity = 'info', string $message = null, array $payload = []): ?self
+    {
+        if ($message !== null) {
+            $payload['message'] = $message;
+        }
+
+        return static::logEvent($eventType, null, null, $payload, $severity);
+    }
 }
