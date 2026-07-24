@@ -192,7 +192,7 @@
                 </script>
                 <div class="section-header">
                     <h3>⚙️ Form Studio</h3>
-                    <p class="subtitle">Customize step headers, directions, and form fields for your bakery (cakes, cookies, sourdough, etc.). Step 1 is anchored to your Product Catalog.</p>
+                    <p class="subtitle">Customize step headers, directions, and form fields for your bakery (cakes, cookies, sourdough, etc.). Use ↑↓ or drag rows to reorder steps.</p>
                 </div>
 
                 <!-- EMAIL ROUTING SETTINGS CARD -->
@@ -267,7 +267,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
                         <div>
                             <h4 style="margin-bottom:4px;">📋 Configured Form Steps &amp; Fields</h4>
-                            <span style="font-size:0.85rem; color:#888; font-weight:500;">Step 1 is anchored to Product Catalog. Use ↑↓ or drag rows to reorder steps.</span>
+                            <span style="font-size:0.85rem; color:#888; font-weight:500;">Use ↑↓ or drag rows to reorder steps.</span>
                         </div>
                         <button id="save-form-schema-btn" class="btn btn-primary" onclick="saveFormSchemaToServer()">💾 Save Order Form Layout Live</button>
                     </div>
