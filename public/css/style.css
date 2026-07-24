@@ -244,7 +244,7 @@ body.theme-playful_treats .whimsical-col-right h2 {
 }
 body.theme-playful_treats .hero-cloud-elementor-top,
 body.theme-playful_treats .hero-cloud-elementor-bottom {
-    display: block !important;
+    display: none !important;
 }
 body.theme-playful_treats .site-header {
     background-color: #cffaff !important;
@@ -813,7 +813,9 @@ body {
     animation: cakeRain 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards, floatGently 3.5s ease-in-out infinite 1.4s alternate;
 }
 
-/* Hide raining cakes by default on all themes except Sweet & Elegant */
+/* Only show clouds SVG and raining cakes for Sweet & Sassy (sweet_elegant) theme */
+body:not(.theme-sweet_elegant) .hero-cloud-elementor-top,
+body:not(.theme-sweet_elegant) .hero-cloud-elementor-bottom,
 body:not(.theme-sweet_elegant) .raining-cake {
     display: none !important;
 }
