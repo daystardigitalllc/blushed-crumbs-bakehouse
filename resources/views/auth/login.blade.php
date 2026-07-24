@@ -215,7 +215,7 @@
     <div class="auth-container">
         <div class="header">
             <div class="logo" style="display:flex; align-items:center; justify-content:center;">
-                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:65px; width:auto; object-fit:contain;">
+                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:115px; width:auto; object-fit:contain;">
             </div>
             <p class="tagline">Manage your bakery website</p>
         </div>
