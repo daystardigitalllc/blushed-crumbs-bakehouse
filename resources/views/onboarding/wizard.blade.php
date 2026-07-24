@@ -490,7 +490,7 @@
                         <small id="product-photos-badge" style="color:#e67399; font-weight:700; display:block; margin-top:6px;"></small>
                     </div>
 
-                    <!-- SOCIAL IMPORTER FIELD -->
+                    <!-- SOCIAL IMPORTER FIELD
                     <div class="form-group full-width" style="background:#fdf4ff; padding:16px; border-radius:12px; border:1px solid #f5d0fe;">
                         <label for="social_url" style="font-weight:700; color:#701a75;">📸 Import Photos &amp; Bio from Instagram or Facebook (Optional)</label>
                         <p style="font-size:0.85rem; color:#666; margin-bottom:10px;">Paste your public Instagram or Facebook page link. We'll automatically import photos into your gallery!</p>
@@ -501,7 +501,7 @@
                             </button>
                         </div>
                         <div id="social-import-notice" style="margin-top:8px; font-size:0.88rem; font-weight:600; display:none;"></div>
-                    </div>
+                    </div> -->
 
                     <!-- PLAN SELECTION CARD -->
                     <div class="form-group full-width" style="margin-top:10px; background:linear-gradient(135deg, #ffffff, #fff7fa); padding:20px; border-radius:16px; border:2px solid #e67399; box-shadow:0 8px 25px rgba(230,115,153,0.1);">
