@@ -1427,10 +1427,16 @@
             let activeGalleryPickerPreview = null;
 
             function openGalleryPicker(targetInput, previewElId = null) {
-                activeGalleryPickerTarget = targetInput;
+                if (typeof targetInput === 'string') {
+                    activeGalleryPickerTarget = document.getElementById(targetInput);
+                } else {
+                    activeGalleryPickerTarget = targetInput;
+                }
                 activeGalleryPickerPreview = previewElId ? document.getElementById(previewElId) : null;
                 const modal = document.getElementById('gallery-picker-modal');
-                if (modal) modal.style.display = 'flex';
+                if (modal) {
+                    modal.style.display = 'flex';
+                }
             }
 
             function closeGalleryPickerModal() {
@@ -1581,6 +1587,9 @@
                 </div>
             </form>
         </div>
+    </div>
+</div>
+
 <!-- DEVICE GALLERY MEDIA PICKER MODAL -->
 <div id="gallery-picker-modal" class="order-modal-overlay" style="display:none; z-index:99999;">
     <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid #8b5cf6; padding:20px; box-shadow:0 20px 50px rgba(109,40,217,0.2);">
