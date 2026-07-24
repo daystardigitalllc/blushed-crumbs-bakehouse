@@ -1008,15 +1008,15 @@
                             </div>
                             <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;">
                                 <div style="border-radius:8px; overflow:hidden; position:relative; background:#eee;">
-                                    <img src="{{ asset('images/elmo_cake_isolated_1784837218834.jpg') }}" alt="Elmo Cake" style="width:100%; height:75px; object-fit:cover;">
+                                    <img src="{{ asset('images/IMG_8042.jpg') }}" alt="Custom Cake" style="width:100%; height:75px; object-fit:cover;">
                                     <span style="position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.6); color:#fff; font-size:0.65rem; padding:1px 4px; border-radius:4px;">Custom</span>
                                 </div>
                                 <div style="border-radius:8px; overflow:hidden; position:relative; background:#eee;">
-                                    <img src="{{ asset('images/cherry_cake_isolated_1784837230270.jpg') }}" alt="Cherry Cake" style="width:100%; height:75px; object-fit:cover;">
+                                    <img src="{{ asset('images/IMG_8084.jpg') }}" alt="Artisanal Baking" style="width:100%; height:75px; object-fit:cover;">
                                     <span style="position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.6); color:#fff; font-size:0.65rem; padding:1px 4px; border-radius:4px;">Cakes</span>
                                 </div>
                                 <div style="border-radius:8px; overflow:hidden; position:relative; background:#eee;">
-                                    <img src="{{ asset('images/sample_cake_inspiration_1784655186840.jpg') }}" alt="Pastry" style="width:100%; height:75px; object-fit:cover;">
+                                    <img src="{{ asset('images/IMG_8117.jpg') }}" alt="Pastry Treat" style="width:100%; height:75px; object-fit:cover;">
                                     <span style="position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.6); color:#fff; font-size:0.65rem; padding:1px 4px; border-radius:4px;">Treats</span>
                                 </div>
                             </div>
