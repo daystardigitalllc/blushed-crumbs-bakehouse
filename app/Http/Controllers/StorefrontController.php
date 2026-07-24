@@ -88,6 +88,17 @@ class StorefrontController extends Controller
         return view('storefront.about', compact('tenant'));
     }
 
+    public function previewMenu(Request $request, $subdomain)
+    {
+        $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
+        if (!$tenant) { abort(404, 'Bakery website not found.'); }
+        $request->attributes->set('tenant', $tenant);
+        app()->instance('tenant', $tenant);
+
+        $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
+        return view('storefront.menu', compact('tenant', 'products'));
+    }
+
     public function previewGallery(Request $request, $subdomain)
     {
         $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
@@ -127,6 +138,17 @@ class StorefrontController extends Controller
         }
 
         return view('storefront.about', compact('tenant'));
+    }
+
+    public function menu(Request $request)
+    {
+        $tenant = $request->attributes->get('tenant');
+        if (!$tenant) {
+            abort(404, 'Bakery not found.');
+        }
+
+        $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
+        return view('storefront.menu', compact('tenant', 'products'));
     }
 
     public function gallery(Request $request)

@@ -35,10 +35,12 @@ Route::get('/site/{subdomain}', [StorefrontController::class, 'preview'])->name(
 Route::get('/site/{subdomain}/dashboard', [AdminController::class, 'dashboard'])->name('storefront.preview.dashboard');
 Route::get('/site/{subdomain}/admin', [AdminController::class, 'dashboard']);
 Route::get('/site/{subdomain}/about', [StorefrontController::class, 'previewAbout'])->name('storefront.preview.about');
+Route::get('/site/{subdomain}/menu', [StorefrontController::class, 'previewMenu'])->name('storefront.preview.menu');
 Route::get('/site/{subdomain}/gallery', [StorefrontController::class, 'previewGallery'])->name('storefront.preview.gallery');
 Route::get('/site/{subdomain}/privacy', [StorefrontController::class, 'previewPrivacy'])->name('storefront.preview.privacy');
 Route::get('/site/{subdomain}/terms', [StorefrontController::class, 'previewTerms'])->name('storefront.preview.terms');
 Route::get('/about', [StorefrontController::class, 'about'])->name('storefront.about');
+Route::get('/menu', [StorefrontController::class, 'menu'])->name('storefront.menu');
 Route::get('/gallery', [StorefrontController::class, 'gallery'])->name('storefront.gallery');
 Route::get('/privacy', [StorefrontController::class, 'privacy'])->name('storefront.privacy');
 Route::get('/terms', [StorefrontController::class, 'terms'])->name('storefront.terms');
@@ -92,6 +94,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('/invoices/{invoice}/send', [AdminController::class, 'sendInvoice'])->name('admin.invoice.send');
     Route::post('/settings/domain', [AdminController::class, 'saveCustomDomain'])->name('admin.settings.domain');
     Route::post('/settings/reviews', [AdminController::class, 'saveReviewSettings'])->name('admin.settings.reviews');
+    Route::post('/settings/menu', [AdminController::class, 'saveMenuSettings'])->name('admin.settings.menu');
     Route::post('/settings/logo', [AdminController::class, 'saveLogo'])->name('admin.settings.logo');
     Route::post('/settings/password', [AdminController::class, 'updatePassword'])->name('admin.settings.password');
     Route::post('/subscription/cancel', [AdminController::class, 'cancelSubscription'])->name('admin.subscription.cancel');

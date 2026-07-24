@@ -840,8 +840,7 @@
     <nav class="navbar">
         <div class="container">
             <a href="/" class="nav-logo">
-                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo" style="height: 90px; width: auto; object-fit: contain;">
-                <span>Doughmain.pro</span>
+                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo" style="height: 75px; width: auto; object-fit: contain;">
             </a>
             <div class="nav-links">
                 <a href="/login" class="nav-login">Login</a>

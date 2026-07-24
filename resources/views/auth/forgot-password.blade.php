@@ -214,9 +214,8 @@
 <body>
     <div class="auth-container">
         <div class="header">
-            <div class="logo" style="display:flex; align-items:center; justify-content:center; gap:10px;">
-                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:52px; width:auto;">
-                <span>Doughmain.pro</span>
+            <div class="logo" style="display:flex; align-items:center; justify-content:center;">
+                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:65px; width:auto; object-fit:contain;">
             </div>
             <p class="tagline">Enter your email to reset your password</p>
         </div>

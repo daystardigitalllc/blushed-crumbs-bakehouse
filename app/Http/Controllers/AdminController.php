@@ -832,4 +832,44 @@ class AdminController extends Controller
             'message' => 'No image file selected.',
         ], 400);
     }
+
+    public function saveMenuSettings(Request $request)
+    {
+        $tenant = auth()->user()->tenant;
+
+        $request->validate([
+            'menu_type' => 'nullable|string|in:text,image,both',
+            'menu_text' => 'nullable|string',
+            'menu_image' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf|max:10240',
+        ]);
+
+        $siteContent = $tenant->site_content ?? [];
+        $menuContent = $siteContent['menu'] ?? [];
+
+        $menuContent['menu_type'] = $request->input('menu_type', 'both');
+        if ($request->has('menu_text')) {
+            $menuContent['menu_text'] = $request->input('menu_text');
+        }
+
+        if ($request->hasFile('menu_image')) {
+            $file = $request->file('menu_image');
+            $filename = 'menu_' . $tenant->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $destPath = public_path('uploads/tenants/' . $tenant->id . '/menu');
+            if (!file_exists($destPath)) {
+                mkdir($destPath, 0755, true);
+            }
+            $file->move($destPath, $filename);
+            $menuContent['menu_image_path'] = 'uploads/tenants/' . $tenant->id . '/menu/' . $filename;
+        }
+
+        $siteContent['menu'] = $menuContent;
+        $tenant->site_content = $siteContent;
+        $tenant->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bakery menu and pricing settings saved successfully!',
+            'menu' => $menuContent,
+        ]);
+    }
 }

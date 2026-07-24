@@ -221,9 +221,8 @@
 <body>
     <div class="auth-container">
         <div class="header">
-            <div class="logo" style="display:flex; align-items:center; justify-content:center; gap:10px;">
-                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:52px; width:auto;">
-                <span>Doughmain.pro</span>
+            <div class="logo" style="display:flex; align-items:center; justify-content:center;">
+                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain Logo" style="height:65px; width:auto; object-fit:contain;">
             </div>
             <p class="tagline">Build, host, and manage your bakery website completely free</p>
             <div style="text-align:center; font-size:0.82rem; color:#065f46; background:#d1fae5; border-radius:20px; padding:6px 14px; margin: 10px auto 0; font-weight:600; display:inline-block;">✨ Starter Plan (Free Forever) &middot; 0% Sales Commission</div>

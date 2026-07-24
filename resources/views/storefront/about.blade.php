@@ -33,6 +33,7 @@
         <nav class="nav-links">
             <a href="{{ route('storefront.index') }}">Home</a>
             <a href="{{ route('storefront.about') }}" class="active">About</a>
+            <a href="{{ route('storefront.menu') }}">Menu</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
         </nav>
@@ -149,6 +150,7 @@
     <div class="about-footer-nav">
         <a href="{{ route('storefront.index') }}">Home</a>
         <a href="{{ route('storefront.about') }}" class="active">About</a>
+        <a href="{{ route('storefront.menu') }}">Menu</a>
         <a href="{{ route('storefront.gallery') }}">Gallery</a>
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;

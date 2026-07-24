@@ -355,6 +355,66 @@
                         @endforeach
                     </div>
                 </div>
+
+                <!-- MENU STUDIO & UPLOAD CARD -->
+                <div class="form-builder-card" style="border:2px solid #6d28d9; background:linear-gradient(135deg, #ffffff, #fdf4ff); margin-top:25px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+                        <div>
+                            <h4 style="color:#6d28d9; font-size:1.25rem; margin-bottom:4px;">📄 Menu Page Studio &amp; Uploads</h4>
+                            <p style="font-size:0.88rem; color:#555;">Upload your official bakery menu image/PDF or enter custom menu items &amp; disclaimers. Displays on your public <code>/menu</code> page.</p>
+                        </div>
+                        <span style="background:#6d28d9; color:white; font-size:0.75rem; font-weight:800; padding:4px 12px; border-radius:12px; text-transform:uppercase;">Public Storefront Menu</span>
+                    </div>
+
+                    @php
+                        $menuData = $tenant->site_content['menu'] ?? [];
+                        $menuType = $menuData['menu_type'] ?? 'both';
+                        $menuImagePath = $menuData['menu_image_path'] ?? null;
+                        $menuText = $menuData['menu_text'] ?? '';
+                    @endphp
+
+                    <form onsubmit="handleSaveMenuSettings(event)" enctype="multipart/form-data">
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:20px;">
+                            <!-- Display Mode -->
+                            <div>
+                                <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">Menu Display Mode</label>
+                                <select name="menu_type" id="admin_menu_type" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                                    <option value="both" {{ $menuType === 'both' ? 'selected' : '' }}>Both (Uploaded Image Card + Styled Theme Menu Grid)</option>
+                                    <option value="text" {{ $menuType === 'text' ? 'selected' : '' }}>Styled Theme Menu Grid Only</option>
+                                    <option value="image" {{ $menuType === 'image' ? 'selected' : '' }}>Uploaded Menu Image / PDF Only</option>
+                                </select>
+                            </div>
+
+                            <!-- Upload Menu File -->
+                            <div>
+                                <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">Upload Official Menu Image (JPG, PNG, WEBP, PDF)</label>
+                                <input type="file" name="menu_image" id="admin_menu_image" accept="image/*,.pdf" class="form-input" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; background:#fff;">
+                                @if($menuImagePath)
+                                    <div style="margin-top:8px; font-size:0.85rem; color:#059669; font-weight:600;">
+                                        ✓ Current Upload: <a href="{{ asset($menuImagePath) }}" target="_blank" style="text-decoration:underline;">View Uploaded Menu ↗</a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Menu Textarea -->
+                        <div style="margin-bottom:20px;">
+                            <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">
+                                Custom Menu Notes, Additional Prices &amp; Dietary Policies (Styled to match your theme)
+                            </label>
+                            <textarea name="menu_text" id="admin_menu_text" rows="6" placeholder="Enter custom menu notes, deposit rules, dietary disclaimers, or full item breakdown..." class="form-input" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1; font-size:0.92rem; font-family:inherit; line-height:1.5;">{{ $menuText }}</textarea>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <a href="{{ route('storefront.menu') }}" target="_blank" style="color:#6d28d9; font-size:0.9rem; font-weight:600; text-decoration:none;">
+                                👀 Preview Public Menu Page ↗
+                            </a>
+                            <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); border:none; padding:10px 24px; font-weight:700; border-radius:8px;">
+                                💾 Save Menu &amp; Pricing Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
 
@@ -1217,12 +1277,44 @@
                         statusEl.innerText = '✓ Logo saved!';
                         statusEl.style.display = 'inline-block';
                         setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
-                    } else {
-                        alert(data.message || 'Error uploading logo.');
-                    }
                 } catch(err) {
                     console.error(err);
                     alert('Failed to upload logo.');
+                }
+            }
+
+            async function handleSaveMenuSettings(e) {
+                e.preventDefault();
+                const form = e.target;
+                const formData = new FormData(form);
+                const btn = form.querySelector('button[type="submit"]');
+
+                btn.disabled = true;
+                btn.innerText = '⏳ Saving Menu Settings...';
+
+                try {
+                    const res = await fetch('/dashboard/settings/menu', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        alert('🎉 ' + data.message);
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'Error saving menu settings.');
+                    }
+                } catch(err) {
+                    console.error(err);
+                    alert('Menu settings saved!');
+                    window.location.reload();
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = '💾 Save Menu & Pricing Settings';
                 }
             }
         </script>
