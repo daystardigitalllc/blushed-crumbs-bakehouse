@@ -835,7 +835,7 @@ class AdminController extends Controller
 
     public function saveMenuSettings(Request $request)
     {
-        $tenant = auth()->user()->tenant;
+        $tenant = $this->tenant($request);
 
         $request->validate([
             'menu_type' => 'nullable|string|in:text,image,both',
@@ -866,7 +866,7 @@ class AdminController extends Controller
 
         $siteContent['menu'] = $menuContent;
         $tenant->site_content = $siteContent;
-        $tenant->save();
+        $tenant->update(['site_content' => $siteContent]);
 
         return response()->json([
             'success' => true,

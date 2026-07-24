@@ -1299,8 +1299,9 @@
             }
 
             let quillMenuEditor = null;
-            document.addEventListener('DOMContentLoaded', function() {
-                if (document.getElementById('quill-menu-editor-container')) {
+            function initQuillMenuEditor() {
+                const el = document.getElementById('quill-menu-editor-container');
+                if (el && !quillMenuEditor) {
                     quillMenuEditor = new Quill('#quill-menu-editor-container', {
                         theme: 'snow',
                         placeholder: 'Type or paste your custom menu, bullet points, headers, and pricing notes here...',
@@ -1314,8 +1315,19 @@
                             ]
                         }
                     });
+                    quillMenuEditor.on('text-change', function() {
+                        const html = quillMenuEditor.root.innerHTML;
+                        const cleanText = quillMenuEditor.getText().trim();
+                        document.getElementById('admin_menu_text').value = cleanText ? html : '';
+                    });
                 }
-            });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initQuillMenuEditor);
+            } else {
+                initQuillMenuEditor();
+            }
 
             function clearMenuQuillEditor() {
                 if (quillMenuEditor) {
@@ -1337,8 +1349,9 @@
                 }
 
                 const formData = new FormData(form);
-                if (quillMenuEditor) {
-                    formData.set('menu_text', document.getElementById('admin_menu_text').value);
+                const menuTextInput = document.getElementById('admin_menu_text');
+                if (menuTextInput) {
+                    formData.set('menu_text', menuTextInput.value);
                 }
 
                 const btn = form.querySelector('button[type="submit"]');
