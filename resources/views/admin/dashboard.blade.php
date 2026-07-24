@@ -1285,6 +1285,9 @@
                         statusEl.innerText = '✓ Logo saved!';
                         statusEl.style.display = 'inline-block';
                         setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+                    } else {
+                        alert(data.message || 'Error uploading logo.');
+                    }
                 } catch(err) {
                     console.error(err);
                     alert('Failed to upload logo.');
