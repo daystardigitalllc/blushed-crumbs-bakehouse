@@ -110,6 +110,16 @@ class StorefrontController extends Controller
         return view('storefront.gallery', compact('tenant', 'gallery'));
     }
 
+    public function previewPolicy(Request $request, $subdomain)
+    {
+        $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
+        if (!$tenant) { abort(404, 'Bakery website not found.'); }
+        $request->attributes->set('tenant', $tenant);
+        app()->instance('tenant', $tenant);
+
+        return view('storefront.policy', compact('tenant'));
+    }
+
     public function previewPrivacy(Request $request, $subdomain)
     {
         $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
@@ -160,6 +170,16 @@ class StorefrontController extends Controller
 
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
         return view('storefront.gallery', compact('tenant', 'gallery'));
+    }
+
+    public function policy(Request $request)
+    {
+        $tenant = $request->attributes->get('tenant');
+        if (!$tenant) {
+            abort(404, 'Bakery not found.');
+        }
+
+        return view('storefront.policy', compact('tenant'));
     }
 
     public function privacy(Request $request)

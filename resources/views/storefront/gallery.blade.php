@@ -34,6 +34,7 @@
             <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.menu') }}">Menu</a>
             <a href="{{ route('storefront.gallery') }}" class="active">Gallery</a>
+            <a href="{{ route('storefront.policy') }}">Policy</a>
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
         </nav>
     </div>
@@ -102,6 +103,7 @@
         <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
         <a href="{{ route('storefront.menu') }}" class="footer-link">Menu</a>
         <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
+        <a href="{{ route('storefront.policy') }}" class="footer-link">Policy</a>
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
             $bakerPortalUrl = request()->is('site/*') 
