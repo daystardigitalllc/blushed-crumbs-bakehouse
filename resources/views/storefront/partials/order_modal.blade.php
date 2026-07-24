@@ -25,6 +25,15 @@
                     $totalSteps = count($steps);
                 @endphp
 
+                @if($totalSteps === 0)
+                    <div style="text-align:center; padding:40px 20px;">
+                        <span style="font-size:3rem; display:block; margin-bottom:10px;">📋</span>
+                        <h3 style="color:#5c1d37; margin-bottom:8px; font-size:1.3rem;">Order Form Building In Progress</h3>
+                        <p style="color:#666; font-size:0.95rem; margin-bottom:20px;">This bakery is currently setting up their custom order form. Check back soon or contact them directly!</p>
+                        <button onclick="closeOrderModal()" class="btn btn-primary" style="padding:10px 24px;">Close</button>
+                    </div>
+                @endif
+
                 @foreach($steps as $index => $step)
                     @php
                         $stepNum = $index + 1;
