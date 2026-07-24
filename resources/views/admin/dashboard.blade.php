@@ -81,8 +81,13 @@
                     <span>💳</span> Subscription &amp; Support
                 </button>
                 @if(($tenant->plan_tier ?? 'free') !== 'pro')
+                    <!-- Upgrade to PRO 
                     <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
                         ⚡ Upgrade to PRO ($29/mo)
+                    </a> -->
+                    <
+                     <a href="https://buy.stripe.com/8x28wP93Z8qR76UgMk2Ry0l?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
+                        ⚡ Upgrade to PRO(test) ($29/mo)
                     </a>
                 @endif
             </nav>
@@ -1248,9 +1253,14 @@
                                 <span style="background:#6d28d9; color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Unlock All Features</span>
                                 <h4 style="color:#6d28d9; margin-top:8px; font-size:1.3rem;">Upgrade to BakeryPro PRO ($29/month)</h4>
                                 <p style="font-size:0.9rem; color:#555; margin-top:4px; margin-bottom:16px;">Unlock all 7 premium themes, custom domain support, and priority baker support.</p>
-                                <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="btn" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:white; text-decoration:none; display:inline-block; padding:12px 24px; font-weight:700; border-radius:10px; width:100%; text-align:center;">
-                                    ⚡ Upgrade Now on Stripe
-                                </a>
+                                 <!-- Upgrade to PRO 
+                    <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
+                        ⚡ Upgrade to PRO ($29/mo)
+                    </a> -->
+                    <
+                     <a href="https://buy.stripe.com/8x28wP93Z8qR76UgMk2Ry0l?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
+                        ⚡ Upgrade to PRO(test) ($29/mo)
+                    </a>
                             </div>
                         @endif
                         <form onsubmit="handleCancelSubscription(event)">
