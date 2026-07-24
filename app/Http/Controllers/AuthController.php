@@ -97,55 +97,71 @@ class AuthController extends Controller
             'bakery_name' => 'required|string|max:255',
         ]);
 
-        // Generate a unique slug/subdomain from the bakery name
-        $slug = Str::slug($validated['bakery_name'], '');
-        $subdomain = Str::slug($validated['bakery_name'], '');
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($validated) {
+            // Generate a unique slug/subdomain from the bakery name
+            $slug = Str::slug($validated['bakery_name'], '');
+            $subdomain = Str::slug($validated['bakery_name'], '');
 
-        // Ensure uniqueness
-        $baseSlug = $slug;
-        $counter = 1;
-        while (Tenant::where('slug', $slug)->orWhere('subdomain', $subdomain)->exists()) {
-            $slug = $baseSlug . $counter;
-            $subdomain = $baseSlug . $counter;
-            $counter++;
-        }
+            // Ensure uniqueness
+            $baseSlug = $slug ?: 'bakery';
+            $counter = 1;
+            while (Tenant::where('slug', $slug)->orWhere('subdomain', $subdomain)->exists()) {
+                $slug = $baseSlug . $counter;
+                $subdomain = $baseSlug . $counter;
+                $counter++;
+            }
 
-        // Find the doughmain brand (default for now)
-        $brand = Brand::where('slug', 'doughmain')->first();
+            // Dynamically ensure default Brand exists (zero-seeder clean DB requirement)
+            $brand = Brand::firstOrCreate(
+                ['slug' => 'doughmain'],
+                [
+                    'name' => 'Doughmain',
+                    'domain' => 'doughmain.pro',
+                    'is_active' => true,
+                ]
+            );
 
-        // Create the tenant
-        $tenant = Tenant::create([
-            'brand_id' => $brand?->id,
-            'name' => strip_tags($validated['bakery_name']),
-            'slug' => $slug,
-            'subdomain' => $subdomain,
-            'owner_name' => strip_tags($validated['owner_name']),
-            'email' => filter_var($validated['email'], FILTER_SANITIZE_EMAIL),
-            'plan_tier' => 'standard',
-            'theme_id' => 'rustic_kitchen',
-            'is_active' => true,
-            'onboarding_completed' => false,
-            'max_reviews_display' => 3,
-        ]);
+            // Create the tenant workspace
+            $tenant = Tenant::create([
+                'brand_id' => $brand->id,
+                'name' => strip_tags($validated['bakery_name']),
+                'slug' => $slug,
+                'subdomain' => $subdomain,
+                'owner_name' => strip_tags($validated['owner_name']),
+                'email' => filter_var($validated['email'], FILTER_SANITIZE_EMAIL),
+                'plan_tier' => 'standard',
+                'theme_id' => 'rustic_kitchen',
+                'is_active' => true,
+                'onboarding_completed' => false,
+                'max_reviews_display' => 3,
+                'form_schema' => Tenant::getDefaultFormSchema(),
+                'booking_settings' => [
+                    'lead_time_enabled' => true,
+                    'lead_time_days' => 3,
+                    'recurring_closed_days' => [0, 1],
+                    'blocked_dates' => [],
+                ],
+            ]);
 
-        // Create the owner user
-        $user = User::create([
-            'tenant_id' => $tenant->id,
-            'name' => strip_tags($validated['owner_name']),
-            'email' => filter_var($validated['email'], FILTER_SANITIZE_EMAIL),
-            'password' => Hash::make($validated['password']),
-            'role' => 'owner',
-        ]);
+            // Create the owner user
+            $user = User::create([
+                'tenant_id' => $tenant->id,
+                'name' => strip_tags($validated['owner_name']),
+                'email' => filter_var($validated['email'], FILTER_SANITIZE_EMAIL),
+                'password' => Hash::make($validated['password']),
+                'role' => 'owner',
+            ]);
 
-        AuditLog::logEvent('auth.register', $tenant->id, $user->id, [
-            'bakery_name' => $tenant->name,
-            'subdomain' => $tenant->subdomain,
-        ]);
+            AuditLog::logEvent('auth.register', $tenant->id, $user->id, [
+                'bakery_name' => $tenant->name,
+                'subdomain' => $tenant->subdomain,
+            ]);
 
-        // Auto-login
-        Auth::login($user);
+            // Auto-login newly registered owner
+            Auth::login($user);
 
-        return $this->redirectUserAfterAuth();
+            return $this->redirectUserAfterAuth();
+        });
     }
 
     public function logout(Request $request)

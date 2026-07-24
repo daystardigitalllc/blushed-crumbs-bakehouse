@@ -48,11 +48,12 @@ class Tenant extends Model
         'is_active' => 'boolean',
     ];
 
-    public static function getDefaultSiteContent()
+    public static function getDefaultSiteContent(?string $bakeryName = null)
     {
+        $name = $bakeryName ?? 'Artisanal Bakehouse';
         return [
             'hero_subheading' => 'Order For Any Occasion',
-            'hero_headline' => 'Blushed Crumbs Bakehouse',
+            'hero_headline' => $name,
             'hero_cta_primary' => 'Order Now',
             'hero_cta_secondary' => 'Our Flavors',
             'highlights' => [
@@ -62,11 +63,11 @@ class Tenant extends Model
                 ['icon' => '💖', 'title' => 'Baked with Love', 'desc' => 'Cottage bakery crafted with care'],
             ],
             'promo_video_url' => 'images/download (2) (1).mp4',
-            'promo_headline' => '$10 Off Your First Order!',
-            'promo_subtext' => 'Follow us on social media or join our community for instant discounts.',
+            'promo_headline' => 'Special Custom Bakery Orders!',
+            'promo_subtext' => 'Order online directly from our kitchen for your upcoming celebration.',
             'how_it_works' => [
-                ['title' => 'Pick Your Date & Flavors', 'desc' => 'Use our 12-step form to choose your size, cake flavor, frosting, and upload your inspiration images.'],
-                ['title' => 'Approve Design & Deposit', 'desc' => 'Receive your custom invoice & quote via email. Place a 50% deposit to lock in your date on our calendar.'],
+                ['title' => 'Pick Your Date & Flavors', 'desc' => 'Use our custom ordering form to choose your size, cake flavor, frosting, and upload your inspiration images.'],
+                ['title' => 'Approve Design & Deposit', 'desc' => 'Receive your custom invoice & quote via email. Place a deposit to lock in your date on our calendar.'],
                 ['title' => 'Fresh Pickup or Delivery', 'desc' => 'We bake your creation fresh right before your event. Pick up at our kitchen or get venue delivery!'],
             ],
             'whimsical_title' => 'Whimsical Creations for Every Milestone',
@@ -75,40 +76,40 @@ class Tenant extends Model
                 'Birthday & Party Cakes: From whimsical children\'s themes to sleek, modern adult designs.',
                 'Anniversary Cakes: Recommence your vows with a beautiful, nostalgic dessert.',
                 'Signature Sheet Cakes: Perfect for larger crowds, school events, or casual get-togethers.',
-                'Gourmet Chocolate-Covered Strawberries: Ripe, juicy berries hand-dipped in chocolate.'
+                'Gourmet Treats: Custom cupcakes, cake pops, and party dessert boxes.'
             ],
             'reviews' => [
-                ['name' => 'Kristen Ramirez', 'quote' => 'Absolutely breathtaking work!! The detail put into this cake was insane and it tasted unbelievable!! You made me look like the best sister ever, thank you so much for your talent and hard work!!', 'stars' => 5],
-                ['name' => 'Lynne Escue', 'quote' => 'I ordered a strawberry smash cake for my 1 year old, with strawberries on top and custom icing and she devoured it ✨ The cake was so moist & icing wasn’t too sweet! Pick up process was super easy.', 'stars' => 5],
-                ['name' => 'Alexis', 'quote' => 'Not only was I extremely shocked at how cute this cake was, I was truly SO surprised with how delicious it was! I tried to get a slice and having trouble cutting the back, I was SO CONFUSED.', 'stars' => 5],
-                ['name' => 'Pamela Cortes', 'quote' => 'She was super friendly and easy to work with! The cake looked awesome, everything I was hoping for! ❤️', 'stars' => 5],
+                ['name' => 'Sarah M.', 'quote' => 'Absolutely breathtaking work!! The detail put into this cake was insane and it tasted unbelievable!', 'stars' => 5],
+                ['name' => 'Emily R.', 'quote' => 'Ordered a custom cake for my child\'s birthday. The cake was so moist & icing wasn\'t too sweet! Pick up was super easy.', 'stars' => 5],
+                ['name' => 'Jessica K.', 'quote' => 'Not only was I extremely shocked at how cute this cake was, I was truly SO surprised with how delicious it was!', 'stars' => 5],
             ],
             'faqs' => [
-                ['q' => '📅 How far in advance should I order?', 'a' => 'We require at least 3 days advance notice for custom orders. For weddings and large multi-tier events, we recommend booking 2-4 weeks in advance to reserve your date.'],
-                ['q' => '💳 What is the deposit requirement?', 'a' => 'A 50% non-refundable deposit is required at booking to secure your date. Remaining balance is due prior to pickup or delivery.'],
-                ['q' => '⚠️ Allergy Information', 'a' => 'We operate under Tennessee cottage food laws. Our kitchen processes wheat, eggs, dairy, and nuts. Please disclose all food allergies during checkout!'],
+                ['q' => '📅 How far in advance should I order?', 'a' => 'We require at least 3 days advance notice for custom orders. For weddings and large multi-tier events, we recommend booking 2-4 weeks in advance.'],
+                ['q' => '💳 What is the deposit requirement?', 'a' => 'A deposit is required at booking to secure your date. Remaining balance is due prior to pickup or delivery.'],
+                ['q' => '⚠️ Allergy Information', 'a' => 'Please disclose all food allergies during checkout so we can accommodate your dietary needs!'],
             ],
             'cta_banner_url' => 'images/34d48b27-1dd9-4784-8c8d-b378c3388060.mp4',
-            'cta_headline' => 'Ready For Your Perfect Cake?',
-            'cta_subtext' => 'Order your plan or custom order now',
+            'cta_headline' => 'Ready For Your Custom Cake?',
+            'cta_subtext' => 'Order your custom baking creation now',
             'cta_btn_text' => 'Order Now',
             'about_title' => 'About Our Bakery',
-            'about_bio' => 'Welcome to our bakehouse! We specialize in custom artisanal cakes, gourmet treats, and unforgettable dessert experiences crafted with premium ingredients and passion.',
+            'about_bio' => 'Welcome to ' . $name . '! We specialize in custom artisanal cakes, gourmet treats, and unforgettable dessert experiences crafted with premium ingredients and passion.',
             'contact_hours' => 'Mon-Sat: 8:00 AM - 6:00 PM | Sun: Closed',
-            'contact_location' => 'Nashville, TN & Surrounding Areas',
-            'contact_instagram' => '@Blushed_Crumbs',
-            'contact_facebook' => 'Blushed Crumbs',
+            'contact_location' => 'Local Delivery & Pickup Available',
+            'contact_instagram' => '',
+            'contact_facebook' => '',
         ];
     }
 
     public function getSiteContent($key, $default = null)
     {
-        $content = $this->site_content ?? self::getDefaultSiteContent();
+        $defaults = self::getDefaultSiteContent($this->name);
+        $content = $this->site_content ?? $defaults;
         $val = data_get($content, $key);
         if ($val !== null && $val !== '') {
             return $val;
         }
-        return data_get(self::getDefaultSiteContent(), $key, $default);
+        return data_get($defaults, $key, $default);
     }
 
     public static function getDefaultSectionSettings()

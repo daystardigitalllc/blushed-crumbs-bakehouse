@@ -14,9 +14,9 @@ class OnboardingController extends Controller
     {
         $tenant = auth()->user()->tenant;
 
-        // If already completed, redirect to admin
-        if ($tenant->onboarding_completed) {
-            return redirect('/admin');
+        // If already completed, redirect to baker dashboard
+        if ($tenant && $tenant->onboarding_completed) {
+            return redirect('/dashboard');
         }
 
         $themes = $tenant->getAvailableThemesForTenant();
@@ -234,7 +234,7 @@ class OnboardingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Your bakery website is live! 🎉',
-            'redirect' => '/admin',
+            'redirect' => '/dashboard',
         ]);
     }
 }

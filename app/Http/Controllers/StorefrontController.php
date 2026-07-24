@@ -258,7 +258,7 @@ class StorefrontController extends Controller
         $customer->recordOrder($totalPrice);
 
         // Send Email Notification via SMTP to baker
-        $routingEmail = $tenant->email ?? 'orders@blushedcrumbsbakehouse.com';
+        $routingEmail = $tenant->email ?? $tenant->owner?->email ?? config('mail.from.address', 'orders@doughmain.pro');
         $emailSent = false;
         $emailError = null;
 

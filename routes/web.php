@@ -75,10 +75,7 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('/form-builder', [AdminController::class, 'saveFormSchema'])->name('admin.form.schema.save');
     Route::post('/settings/booking', [AdminController::class, 'saveBookingSettings'])->name('admin.settings.booking.save');
     Route::post('/settings/email', [AdminController::class, 'saveEmailRouting'])->name('admin.settings.email.save');
-    Route::post('/theme', function(\Illuminate\Http\Request $request) {
-        \Log::info('THEME ROUTE HIT DIRECTLY', ['theme' => $request->theme_id]);
-        return app(\App\Http\Controllers\AdminController::class)->saveTheme($request);
-    })->name('admin.theme.save');
+    Route::post('/theme', [AdminController::class, 'saveTheme'])->name('admin.theme.save');
     Route::post('/content', [AdminController::class, 'saveContent'])->name('admin.content.save');
     Route::post('/sections', [AdminController::class, 'saveSectionSettings'])->name('admin.sections.save');
     Route::post('/upload-media', [AdminController::class, 'uploadMedia'])->name('admin.media.upload');
