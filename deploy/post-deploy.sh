@@ -3,6 +3,8 @@ set -e
 
 cd "$(dirname "$0")/.."
 
+rm -f bootstrap/cache/*.php
+
 composer install --no-dev --optimize-autoloader
 php artisan migrate --force
 php artisan config:cache
