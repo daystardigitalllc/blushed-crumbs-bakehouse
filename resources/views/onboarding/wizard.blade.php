@@ -971,6 +971,10 @@
             }
             statusNotice.innerText = '✨ We are building your website for you...';
 
+            const selectedPlan = document.querySelector('input[name="plan_tier"]:checked')?.value || 'free';
+            const selectedStyle = document.querySelector('input[name="style"]:checked')?.value || 'modern';
+            const selectedTheme = document.querySelector('input[name="theme_id"]:checked')?.value || 'rustic_kitchen';
+
             try {
                 const res = await fetch('/onboarding/generate', {
                     method: 'POST',
@@ -980,8 +984,9 @@
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        style: document.querySelector('input[name="style"]:checked').value,
-                        theme_id: document.querySelector('input[name="theme_id"]:checked').value
+                        style: selectedStyle,
+                        theme_id: selectedTheme,
+                        plan_tier: selectedPlan
                     })
                 });
 
@@ -989,7 +994,14 @@
                 document.getElementById('success-message').classList.remove('hidden');
                 btn.classList.add('hidden');
                 document.getElementById('btn-back-final').classList.add('hidden');
-                document.getElementById('btn-publish').classList.remove('hidden');
+
+                const publishBtn = document.getElementById('btn-publish');
+                publishBtn.classList.remove('hidden');
+                if (selectedPlan === 'pro') {
+                    publishBtn.querySelector('.text').innerText = 'Upgrade to PRO & Publish ⚡';
+                } else {
+                    publishBtn.querySelector('.text').innerText = 'Publish My Doughmain 🚀';
+                }
 
             } catch(e) {
                 console.error(e);
@@ -1006,7 +1018,9 @@
         async function publishSite() {
             const btn = document.getElementById('btn-publish');
             setLoading(btn, true);
-            
+
+            const selectedPlan = document.querySelector('input[name="plan_tier"]:checked')?.value || 'free';
+
             try {
                 const res = await fetch('/onboarding/publish', {
                     method: 'POST',
@@ -1014,7 +1028,10 @@
                         'X-CSRF-TOKEN': csrfToken,
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
-                    }
+                    },
+                    body: JSON.stringify({
+                        plan_tier: selectedPlan
+                    })
                 });
 
                 const data = await res.json().catch(() => ({}));

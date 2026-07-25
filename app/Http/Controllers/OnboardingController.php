@@ -58,8 +58,10 @@ class OnboardingController extends Controller
         if (!empty($validated['email'])) {
             $tenant->email = $validated['email'];
         }
+        // Save selected plan preference in site_content, but DO NOT upgrade plan_tier to 'pro' until Stripe payment callback!
+        $content = $tenant->site_content ?? Tenant::getDefaultSiteContent();
         if ($request->has('plan_tier')) {
-            $tenant->plan_tier = $request->input('plan_tier') === 'pro' ? 'pro' : 'free';
+            $content['selected_plan'] = $request->input('plan_tier') === 'pro' ? 'pro' : 'free';
         }
 
         // Handle Logo Upload
@@ -135,7 +137,6 @@ class OnboardingController extends Controller
         $tenant->gallery_images = array_values(array_unique($galleryImages));
 
         // Store business info in site_content
-        $content = $tenant->site_content ?? Tenant::getDefaultSiteContent();
         $content['contact_location'] = $validated['location'] ?? $content['contact_location'] ?? '';
         $content['contact_hours'] = $validated['hours'] ?? $content['contact_hours'] ?? '';
         $content['about_bio'] = $validated['about'] ?? $content['about_bio'] ?? '';
@@ -149,10 +150,11 @@ class OnboardingController extends Controller
 
         $tenant->site_content = $content;
 
-        // Set theme if chosen (only Starter themes for Starter plan)
+        // Set theme if chosen
         if (!empty($validated['theme_id'])) {
             $starterThemeKeys = array_keys(Tenant::getStarterThemes());
-            if ($tenant->plan_tier === 'pro' || in_array($validated['theme_id'], $starterThemeKeys)) {
+            $selectedPlan = $content['selected_plan'] ?? 'free';
+            if ($selectedPlan === 'pro' || $tenant->plan_tier === 'pro' || in_array($validated['theme_id'], $starterThemeKeys)) {
                 $tenant->theme_id = $validated['theme_id'];
             } else {
                 $tenant->theme_id = 'rustic_kitchen';
@@ -200,6 +202,10 @@ class OnboardingController extends Controller
             $tenant->theme_id = $themeId;
         }
 
+        if ($request->has('plan_tier')) {
+            $content['selected_plan'] = $request->input('plan_tier') === 'pro' ? 'pro' : 'free';
+        }
+
         $style = $request->input('style', 'modern');
 
         // Generate tailored website copy using AiContentService (Gemini API with rich smart fallback)
@@ -237,21 +243,32 @@ class OnboardingController extends Controller
     public function publish(Request $request)
     {
         $tenant = auth()->user()->tenant;
+        $siteContent = $tenant->site_content ?? [];
+        $selectedPlan = $request->input('plan_tier') ?? ($siteContent['selected_plan'] ?? 'free');
 
+        // If user chose PRO plan but has not completed Stripe payment yet
+        if ($selectedPlan === 'pro' && $tenant->plan_tier !== 'pro') {
+            // DO NOT set onboarding_completed = true or plan_tier = 'pro'!
+            $redirectUrl = 'https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id=' . $tenant->id . '&prefilled_email=' . urlencode($tenant->email ?? '');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Redirecting to Stripe payment to activate Pro Plan...',
+                'redirect' => $redirectUrl,
+            ]);
+        }
+
+        // For Free plan (or already confirmed Pro plan)
         $tenant->update([
             'onboarding_completed' => true,
         ]);
 
-        if ($tenant->plan_tier === 'pro') {
-            $redirectUrl = 'https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id=' . $tenant->id . '&prefilled_email=' . urlencode($tenant->email ?? '');
+        if (!empty($tenant->custom_domain)) {
+            $domain = preg_replace('#^https?://#', '', trim($tenant->custom_domain, '/'));
+            $redirectUrl = 'https://' . $domain;
         } else {
-            if (!empty($tenant->custom_domain)) {
-                $domain = preg_replace('#^https?://#', '', trim($tenant->custom_domain, '/'));
-                $redirectUrl = 'https://' . $domain;
-            } else {
-                $brandDomain = $tenant->brand?->domain ?? 'doughmain.pro';
-                $redirectUrl = 'https://' . $tenant->subdomain . '.' . $brandDomain;
-            }
+            $brandDomain = $tenant->brand?->domain ?? 'doughmain.pro';
+            $redirectUrl = 'https://' . $tenant->subdomain . '.' . $brandDomain;
         }
 
         return response()->json([
@@ -290,7 +307,11 @@ class OnboardingController extends Controller
                 'session_id' => $request->input('session_id'),
             ], 'info');
 
-            return redirect('/dashboard')->with('success', '🎉 Welcome to BakeryPro PRO! Your account has been upgraded and all 7 premium themes & features are unlocked.');
+            if (auth()->check()) {
+                return redirect('/dashboard')->with('success', '🎉 Welcome to BakeryPro PRO! Your account has been upgraded and all 7 premium themes & features are unlocked.');
+            }
+
+            return redirect('/login')->with('success', '🎉 Payment received! Your BakeryPro PRO account is active. Please log in to view your dashboard.');
         }
 
         return redirect('/login')->with('info', 'Please log in to verify your Pro account upgrade.');

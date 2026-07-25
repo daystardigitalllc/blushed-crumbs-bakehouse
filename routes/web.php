@@ -49,6 +49,8 @@ Route::get('/terms', [StorefrontController::class, 'terms'])->name('storefront.t
 Route::post('/order', [StorefrontController::class, 'submitOrder'])->name('storefront.order.submit');
 Route::get('/invoices/{invoiceNumber}', [StorefrontController::class, 'showInvoice'])->name('invoices.show');
 
+Route::get('/stripe/callback', [OnboardingController::class, 'stripeCallback'])->name('stripe.callback');
+
 // ─── Onboarding Wizard (Authenticated, Post-Signup) ───
 Route::middleware('auth')->group(function () {
     Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding.show');
@@ -56,7 +58,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/onboarding/import-social', [OnboardingController::class, 'importSocial'])->name('onboarding.social.import');
     Route::post('/onboarding/generate', [OnboardingController::class, 'generate'])->name('onboarding.generate');
     Route::post('/onboarding/publish', [OnboardingController::class, 'publish'])->name('onboarding.publish');
-    Route::get('/stripe/callback', [OnboardingController::class, 'stripeCallback'])->name('stripe.callback');
 
     // Data Privacy & Compliance Endpoints (GDPR/CCPA Data Export & Deletion)
     Route::get('/account/data-export', [LegalController::class, 'exportData'])->name('account.data.export');
