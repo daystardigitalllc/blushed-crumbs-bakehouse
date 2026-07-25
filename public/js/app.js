@@ -1557,61 +1557,161 @@ function initAdminPortal() {
     }
 
 
-    // Add Product Form
+    // Add Product Form (DB AJAX Save)
     const prodForm = document.getElementById('add-product-form');
     if (prodForm) {
-        prodForm.addEventListener('submit', (e) => {
+        prodForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('new-prod-name').value;
-            const price = parseFloat(document.getElementById('new-prod-price').value);
-            let category = document.getElementById('new-prod-category').value;
+            const nameInput = document.getElementById('new-prod-name');
+            const priceInput = document.getElementById('new-prod-price');
+            const categorySelect = document.getElementById('new-prod-category');
+            const categoryCustomInput = document.getElementById('new-prod-category-custom');
+
+            const name = nameInput.value.trim();
+            const price = parseFloat(priceInput.value);
+            let category = categorySelect.value;
             if (category === 'custom_new') {
-                category = document.getElementById('new-prod-category-custom').value;
+                category = categoryCustomInput.value.trim();
                 if (!category) {
                     alert('Please enter a custom category name.');
                     return;
                 }
             }
 
-            // Dynamically add to product grid in Order Form Step 1
-            const step1Grid = document.getElementById('product-grid');
-            if (step1Grid) {
-                const prodCard = document.createElement('div');
-                prodCard.className = 'product';
-                prodCard.dataset.name = name;
-                prodCard.dataset.price = price;
-                prodCard.innerHTML = `<strong>${name}</strong><br>$${price.toFixed(0)}`;
-                step1Grid.prepend(prodCard);
-            }
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const response = await fetch('/dashboard/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ name, price, category })
+                });
 
-            const adminGrid = document.getElementById('products-admin-grid');
-            if (adminGrid) {
-                const row = document.createElement('div');
-                row.className = 'product-item-row';
-                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid #f0e4ea;';
-                row.innerHTML = `
-                    <div>
-                        <strong style="color:#5c1d37;">${name}</strong>
-                        <span style="background:#f9e0eb; color:#7a2b4a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-left:8px;">${category}</span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-size:0.85rem; color:#999;">$</span>
-                        <input type="number" class="price-input" value="${price.toFixed(2)}" style="width:80px;">
-                        <button class="btn btn-sm btn-secondary" onclick="showToast('Price updated successfully!')">Save</button>
-                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.closest('.product-item-row').remove()">✕</button>
-                    </div>
-                `;
-                adminGrid.prepend(row);
-            }
+                const data = await response.json();
+                if (data.success && data.product) {
+                    const prod = data.product;
 
-            alert(`Product "${name}" added to order builder & live storefront!`);
-            
-            // Reset the form
-            prodForm.reset();
-            document.getElementById('new-prod-category-custom').style.display = 'none';
-            document.getElementById('new-prod-category-custom').removeAttribute('required');
+                    // Dynamically add to product grid in Order Form Step 1 if on page
+                    const step1Grid = document.getElementById('product-grid');
+                    if (step1Grid) {
+                        const prodCard = document.createElement('div');
+                        prodCard.className = 'product';
+                        prodCard.dataset.name = prod.name;
+                        prodCard.dataset.price = prod.price;
+                        prodCard.innerHTML = `<strong>${prod.name}</strong><br>$${parseFloat(prod.price).toFixed(0)}`;
+                        step1Grid.prepend(prodCard);
+                    }
+
+                    // Prepend to Admin Grid
+                    const adminGrid = document.getElementById('products-admin-grid');
+                    if (adminGrid) {
+                        const row = document.createElement('div');
+                        row.className = 'product-item-row';
+                        row.dataset.id = prod.id;
+                        row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid #f0e4ea;';
+                        row.innerHTML = `
+                            <div>
+                                <strong style="color:#5c1d37;">${prod.name}</strong>
+                                <span style="background:#f9e0eb; color:#7a2b4a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-left:8px;">${prod.category}</span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span style="font-size:0.85rem; color:#999;">$</span>
+                                <input type="number" step="0.01" class="prod-price-input" value="${parseFloat(prod.price).toFixed(2)}" style="width:80px;">
+                                <button class="btn btn-sm btn-secondary" onclick="updateProductPrice(${prod.id}, this)">Save</button>
+                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteProduct(${prod.id}, this)">✕</button>
+                            </div>
+                        `;
+                        adminGrid.prepend(row);
+                    }
+
+                    prodForm.reset();
+                    if (categoryCustomInput) {
+                        categoryCustomInput.style.display = 'none';
+                        categoryCustomInput.removeAttribute('required');
+                    }
+
+                    if (typeof showToast === 'function') {
+                        showToast(`Product "${name}" saved to database successfully!`);
+                    } else {
+                        alert(`Product "${name}" saved to database successfully!`);
+                    }
+                } else {
+                    alert(data.message || 'Error saving product to database.');
+                }
+            } catch (err) {
+                console.error('Add product error:', err);
+                alert('An error occurred while saving the product.');
+            }
         });
     }
+
+window.updateProductPrice = async function(productId, btnElement) {
+    const row = btnElement.closest('.product-item-row');
+    if (!row) return;
+    const priceInput = row.querySelector('.prod-price-input');
+    if (!priceInput) return;
+    const newPrice = parseFloat(priceInput.value);
+
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        const response = await fetch(`/dashboard/products/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ price: newPrice })
+        });
+        const data = await response.json();
+        if (data.success) {
+            if (typeof showToast === 'function') {
+                showToast('Product price updated successfully in database!');
+            } else {
+                alert('Product price updated successfully!');
+            }
+        } else {
+            alert(data.message || 'Error updating product price.');
+        }
+    } catch (err) {
+        console.error('Update price error:', err);
+        alert('An error occurred while updating product price.');
+    }
+};
+
+window.deleteProduct = async function(productId, btnElement) {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+    const row = btnElement.closest('.product-item-row');
+
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        const response = await fetch(`/dashboard/products/${productId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        });
+        const data = await response.json();
+        if (data.success) {
+            if (row) row.remove();
+            if (typeof showToast === 'function') {
+                showToast('Product deleted from database!');
+            } else {
+                alert('Product deleted!');
+            }
+        } else {
+            alert(data.message || 'Error deleting product.');
+        }
+    } catch (err) {
+        console.error('Delete product error:', err);
+        alert('An error occurred while deleting product.');
+    }
+};
 
     // Add Gallery Image Form (Device Upload Supported via AJAX!)
     const galleryForm = document.getElementById('add-gallery-form');

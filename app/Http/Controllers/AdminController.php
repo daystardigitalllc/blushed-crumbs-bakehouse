@@ -971,4 +971,77 @@ class AdminController extends Controller
             'menu' => $menuContent,
         ]);
     }
+
+    public function storeProduct(Request $request, $subdomain = null)
+    {
+        $tenant = $this->tenant($request, $subdomain);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'category' => 'nullable|string|max:255',
+        ]);
+
+        $maxSort = Product::where('tenant_id', $tenant->id)->max('sort_order') ?? 0;
+
+        $product = Product::create([
+            'tenant_id' => $tenant->id,
+            'name' => $validated['name'],
+            'price' => $validated['price'],
+            'category' => !empty($validated['category']) ? $validated['category'] : 'General',
+            'is_active' => true,
+            'sort_order' => $maxSort + 1,
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Product added successfully!',
+                'product' => $product,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Product added successfully!');
+    }
+
+    public function updateProduct(Request $request, $id, $subdomain = null)
+    {
+        $tenant = $this->tenant($request, $subdomain);
+        $product = Product::where('tenant_id', $tenant->id)->where('id', $id)->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'price' => 'sometimes|required|numeric|min:0',
+            'category' => 'sometimes|nullable|string|max:255',
+            'is_active' => 'sometimes|boolean',
+        ]);
+
+        $product->update($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Product updated successfully!',
+                'product' => $product,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Product updated successfully!');
+    }
+
+    public function destroyProduct(Request $request, $id, $subdomain = null)
+    {
+        $tenant = $this->tenant($request, $subdomain);
+        $product = Product::where('tenant_id', $tenant->id)->where('id', $id)->firstOrFail();
+        $product->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Product deleted successfully!',
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Product deleted successfully!');
+    }
 }

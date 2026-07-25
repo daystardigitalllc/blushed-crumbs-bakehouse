@@ -636,16 +636,16 @@
                     <h4>📋 Current Product Catalog</h4>
                     <div id="products-admin-grid">
                         @foreach($products as $prod)
-                            <div class="product-item-row" style="display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid #f0e4ea;">
+                            <div class="product-item-row" data-id="{{ $prod->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid #f0e4ea;">
                                 <div>
                                     <strong style="color:#5c1d37;">{{ $prod->name }}</strong>
                                     <span style="background:#f9e0eb; color:#7a2b4a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-left:8px;">{{ $prod->category }}</span>
                                 </div>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <span style="font-size:0.85rem; color:#999;">$</span>
-                                    <input type="number" value="{{ number_format($prod->price, 2) }}" style="width:80px;">
-                                    <button class="btn btn-sm btn-secondary" onclick="showToast('Price updated successfully!')">Save</button>
-                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.closest('.product-item-row').remove()">✕</button>
+                                    <input type="number" step="0.01" value="{{ number_format($prod->price, 2, '.', '') }}" class="prod-price-input" style="width:80px;">
+                                    <button class="btn btn-sm btn-secondary" onclick="updateProductPrice({{ $prod->id }}, this)">Save</button>
+                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteProduct({{ $prod->id }}, this)">✕</button>
                                 </div>
                             </div>
                         @endforeach
