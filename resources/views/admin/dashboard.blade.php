@@ -1250,7 +1250,7 @@
                         @if(($tenant->plan_tier ?? 'free') !== 'pro')
                             <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid #6d28d9; padding:20px; border-radius:14px; margin-bottom:16px;">
                                 <span style="background:#6d28d9; color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Unlock All Features</span>
-                                <h4 style="color:#6d28d9; margin-top:8px; font-size:1.3rem;">Upgrade to BakeryPro PRO ($29/month)</h4>
+                                <h4 style="color:#6d28d9; margin-top:8px; font-size:1.3rem;">Upgrade to Doughmain Pro ($29/month)</h4>
                                 <p style="font-size:0.9rem; color:#555; margin-top:4px; margin-bottom:16px;">Unlock all 7 premium themes, custom domain support, and priority baker support.</p>
                                  
                     <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
@@ -1270,7 +1270,7 @@
                     <!-- CUSTOM DOMAIN CARD -->
                     <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
                         <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Custom Domain Connection</h4>
-                        <p style="font-size:0.9rem; color:#555; margin-bottom:18px;">If you&rsquo;re on BakeryPro PRO, connect your own domain so your bakery appears on a branded address like <strong>blushedcrumbsbakehouse.com</strong>.</p>
+                        <p style="font-size:0.9rem; color:#555; margin-bottom:18px;">If you&rsquo;re on Doughmain Pro, connect your own domain so your bakery appears on a branded address like <strong>blushedcrumbsbakehouse.com</strong>.</p>
                         <div style="display:flex; flex-direction:column; gap:14px;">
                             <input type="text" id="custom-domain-input" value="{{ $tenant->custom_domain ?? '' }}" placeholder="yourbakery.com" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1;">
                             <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">

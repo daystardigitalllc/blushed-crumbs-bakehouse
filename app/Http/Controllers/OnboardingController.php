@@ -308,10 +308,10 @@ class OnboardingController extends Controller
             ], 'info');
 
             if (auth()->check()) {
-                return redirect('/dashboard')->with('success', '🎉 Welcome to BakeryPro PRO! Your account has been upgraded and all 7 premium themes & features are unlocked.');
+                return redirect('/dashboard')->with('success', '🎉 Welcome to Doughmain Pro! Your account has been upgraded and all 7 premium themes & features are unlocked.');
             }
 
-            return redirect('/login')->with('success', '🎉 Payment received! Your BakeryPro PRO account is active. Please log in to view your dashboard.');
+            return redirect('/login')->with('success', '🎉 Payment received! Your Doughmain Pro account is active. Please log in to view your dashboard.');
         }
 
         return redirect('/login')->with('info', 'Please log in to verify your Pro account upgrade.');

@@ -748,7 +748,7 @@ class AdminController extends Controller
         if ($domain && $tenant->plan_tier !== 'pro') {
             return response()->json([
                 'success' => false,
-                'message' => 'Custom domains are available on BakeryPro PRO only. Upgrade to connect your own domain.',
+                'message' => 'Custom domains are available on Doughmain Pro only. Upgrade to connect your own domain.',
             ], 403);
         }
 

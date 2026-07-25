@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms & Conditions - {{ isset($tenant) ? $tenant->name : 'BakeryPro' }}</title>
+    <title>Terms & Conditions - {{ isset($tenant) ? $tenant->name : 'Doughmain Pro' }}</title>
     @if(isset($tenant) && $tenant->logo_path)
         <link rel="icon" href="{{ asset($tenant->logo_path) }}">
     @else
@@ -118,7 +118,7 @@
             @else
                 🧁
             @endif
-            <span>{{ isset($tenant) ? $tenant->name : 'BakeryPro' }}</span>
+            <span>{{ isset($tenant) ? $tenant->name : 'Doughmain Pro' }}</span>
         </a>
         <a href="{{ url('/') }}" class="back-link">← Return to Website</a>
     </header>
@@ -127,7 +127,7 @@
         <h1>Terms & Conditions</h1>
         <div class="updated-date">Last Updated: July 24, 2026</div>
 
-        <p>Welcome to <strong>{{ isset($tenant) ? $tenant->name : 'BakeryPro' }}</strong>. By accessing or submitting custom order requests on our website, you agree to comply with and be bound by the following Terms and Conditions.</p>
+        <p>Welcome to <strong>{{ isset($tenant) ? $tenant->name : 'Doughmain Pro' }}</strong>. By accessing or submitting custom order requests on our website, you agree to comply with and be bound by the following Terms and Conditions.</p>
 
         <h2>1. Custom Orders & Booking Lead Times</h2>
         <p>All custom cake and bakery inquiries submitted through our online builder represent booking requests. Orders are confirmed only after review, date verification, and invoice deposit payment.</p>
@@ -157,10 +157,10 @@
 
         <h2>7. Contact Information</h2>
         <p>For questions regarding custom orders or these terms, please contact:</p>
-        <p><strong>Email:</strong> {{ isset($tenant) && $tenant->email ? $tenant->email : 'support@bakerypro.com' }}</p>
+        <p><strong>Email:</strong> {{ isset($tenant) && $tenant->email ? $tenant->email : 'support@doughmain.pro' }}</p>
 
         <div class="footer-text">
-            © 2026 {{ isset($tenant) ? $tenant->name : 'BakeryPro' }}. All rights reserved. Terms of Service.
+            © 2026 {{ isset($tenant) ? $tenant->name : 'Doughmain Pro' }}. All rights reserved. Terms of Service.
         </div>
     </div>
 

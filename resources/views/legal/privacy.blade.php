@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - {{ isset($tenant) ? $tenant->name : 'BakeryPro' }}</title>
+    <title>Privacy Policy - {{ isset($tenant) ? $tenant->name : 'Doughmain Pro' }}</title>
     @if(isset($tenant) && $tenant->logo_path)
         <link rel="icon" href="{{ asset($tenant->logo_path) }}">
     @else
@@ -118,7 +118,7 @@
             @else
                 🧁
             @endif
-            <span>{{ isset($tenant) ? $tenant->name : 'BakeryPro' }}</span>
+            <span>{{ isset($tenant) ? $tenant->name : 'Doughmain Pro' }}</span>
         </a>
         <a href="{{ url('/') }}" class="back-link">← Return to Website</a>
     </header>
@@ -127,7 +127,7 @@
         <h1>Privacy Policy</h1>
         <div class="updated-date">Last Updated: July 24, 2026</div>
 
-        <p>At <strong>{{ isset($tenant) ? $tenant->name : 'BakeryPro' }}</strong>, we are committed to protecting your privacy and ensuring your personal information is handled with care and high security standards.</p>
+        <p>At <strong>{{ isset($tenant) ? $tenant->name : 'Doughmain Pro' }}</strong>, we are committed to protecting your privacy and ensuring your personal information is handled with care and high security standards.</p>
 
         <h2>1. Information We Collect</h2>
         <p>When you place custom baking orders, create an account, or contact us through our website, we may collect personal information including:</p>
@@ -162,10 +162,10 @@
 
         <h2>7. Contact Us</h2>
         <p>If you have questions regarding this Privacy Policy or data handling practices, please contact us at:</p>
-        <p><strong>Email:</strong> {{ isset($tenant) && $tenant->email ? $tenant->email : 'privacy@bakerypro.com' }}</p>
+        <p><strong>Email:</strong> {{ isset($tenant) && $tenant->email ? $tenant->email : 'privacy@doughmain.pro' }}</p>
 
         <div class="footer-text">
-            © 2026 {{ isset($tenant) ? $tenant->name : 'BakeryPro' }}. All rights reserved. Security & Privacy Compliant.
+            © 2026 {{ isset($tenant) ? $tenant->name : 'Doughmain Pro' }}. All rights reserved. Security & Privacy Compliant.
         </div>
     </div>
 
