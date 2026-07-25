@@ -16,17 +16,17 @@
 </header>
 
 <section class="hero-section" style="background: linear-gradient(135deg, #6f42c1 0%, #b35978 100%); color: white;">
-    <div class="hero-content">
+    <div class="hero-wrapper">
         <span class="subheading" style="color: #ffd6e0;">Powered by Daystar Digital</span>
-        <h1 style="color: white; font-family: 'Poppins', sans-serif; font-size: 3rem;">The Bakesy Competitor Built for Artisanal Bakers</h1>
-        <p style="font-size: 1.2rem; max-width: 700px; margin: 20px auto;">Everything in one place: custom order builders, due-date priority order queues, mobile invoicing with Venmo/CashApp, product management, and reviews.</p>
+        <h1 style="color: white; font-family: 'Poppins', sans-serif;">The Bakesy Competitor Built for Artisanal Bakers</h1>
+        <p style="font-size: 1.1rem; max-width: 700px; margin: 20px auto; padding: 0 15px;">Everything in one place: custom order builders, due-date priority order queues, mobile invoicing with Venmo/CashApp, product management, and reviews.</p>
         <div class="hero-buttons">
             <a href="#pricing" class="btn btn-primary" style="background: white; color: #6f42c1;">Start 14-Day Free Trial</a>
         </div>
     </div>
 </section>
 
-<section id="pricing" class="categories-section" style="max-width: 1000px; margin: 60px auto;">
+<section id="pricing" class="categories-section" style="max-width: 1000px; margin: 40px auto; padding: 0 15px;">
     <h2 class="section-title">Simple Subscription Pricing</h2>
     <div class="categories-grid">
         <div class="category-card" style="padding: 30px; text-align: left;">

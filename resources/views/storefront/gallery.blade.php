@@ -44,9 +44,9 @@
 
 <div id="gallery-page-view">
     <section class="gallery-page-section">
-        <div style="text-align:center; margin-bottom:40px;">
-            <h1 class="section-title-script" style="font-size:4.5rem; margin-bottom:10px;">Our Gallery</h1>
-            <p style="font-size:1.1rem; color:#4a2133; max-width:600px; margin:0 auto;">Explore our latest custom creations uploaded directly from our kitchen!</p>
+        <div style="text-align:center; margin-bottom:30px;">
+            <h1 class="section-title-script" style="margin-bottom:10px;">Our Gallery</h1>
+            <p style="font-size:1.05rem; color:#4a2133; max-width:600px; margin:0 auto; padding:0 15px;">Explore our latest custom creations uploaded directly from our kitchen!</p>
         </div>
 
         <div class="gallery-filter-bar">

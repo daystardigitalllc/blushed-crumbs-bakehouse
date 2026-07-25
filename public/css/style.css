@@ -3970,88 +3970,237 @@ body.theme-clean_minimal {
         padding: 24px 14px !important;
     }
 
-    /* Storefront Global Responsive Enhancements */
+    /* Storefront & Global Mobile Responsive Enhancements */
+    .site-header {
+        padding: 6px 0 !important;
+        position: relative !important;
+        z-index: 100 !important;
+    }
+
     .header-container {
         flex-direction: column !important;
-        gap: 15px !important;
-        padding: 10px 15px !important;
+        gap: 6px !important;
+        padding: 0 12px !important;
+        text-align: center !important;
+    }
+
+    .logo img {
+        height: 42px !important;
+        max-height: 42px !important;
+        width: auto !important;
+        margin: 0 auto !important;
     }
 
     .nav-links {
         flex-wrap: wrap !important;
         justify-content: center !important;
-        gap: 15px !important;
+        gap: 5px 10px !important;
+        width: 100% !important;
+    }
+
+    .nav-links a {
+        font-size: 0.82rem !important;
+        padding: 3px 6px !important;
+    }
+
+    .nav-order-btn {
+        padding: 5px 14px !important;
+        font-size: 0.8rem !important;
+        border-radius: 20px !important;
+        box-shadow: 0 2px 8px rgba(230, 115, 153, 0.4) !important;
+        margin: 2px 0 !important;
+        display: inline-block !important;
+    }
+
+    .admin-btn {
+        padding: 5px 12px !important;
+        font-size: 0.8rem !important;
+        border-radius: 20px !important;
+        margin: 2px 0 !important;
+        display: inline-block !important;
     }
 
     .hero-section {
-        padding: 40px 15px 60px 15px !important;
+        padding: 30px 15px 50px 15px !important;
         min-height: auto !important;
     }
 
     .hero-wrapper h1 {
-        font-size: 2.4rem !important;
-        margin-bottom: 25px !important;
+        font-size: 2.2rem !important;
+        margin-bottom: 16px !important;
         word-wrap: break-word !important;
+    }
+
+    .subheading {
+        font-size: 1.4rem !important;
+        margin-bottom: 4px !important;
     }
 
     .hero-buttons {
         flex-direction: column !important;
-        gap: 12px !important;
+        gap: 10px !important;
+        max-width: 260px !important;
+        margin: 0 auto !important;
     }
 
     .hero-buttons .btn {
         width: 100% !important;
         text-align: center !important;
+        padding: 10px 20px !important;
+        font-size: 0.9rem !important;
     }
 
     .raining-cake {
         display: none !important;
     }
 
-    .hero-cloud-elementor-top,
-    .hero-cloud-elementor-bottom {
+    .hero-cloud-elementor-top {
+        position: absolute !important;
+        top: 0 !important;
         left: 0 !important;
-        transform: none !important;
+        height: 60px !important;
         width: 100% !important;
         max-width: 100vw !important;
+        pointer-events: none !important;
+        object-fit: cover !important;
+        z-index: 1 !important;
     }
 
     .hero-cloud-elementor-bottom {
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        height: 65px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        pointer-events: none !important;
+        object-fit: cover !important;
+        z-index: 1 !important;
         transform: rotate(180deg) !important;
         transform-origin: center center !important;
     }
 
+    .about-hero-section,
+    .menu-hero-section,
+    .gallery-hero-section,
+    .policy-hero-section {
+        padding: 35px 15px 25px 15px !important;
+    }
+
+    .about-hero-title,
+    .menu-hero-section h1,
+    .policy-hero-title {
+        font-size: 2.2rem !important;
+    }
+
+    .section-title-script {
+        font-size: 2.8rem !important;
+        margin-bottom: 25px !important;
+    }
+
+    .gallery-page-section {
+        padding: 25px 15px !important;
+    }
+
+    .specialties-cards-container,
+    .categories-grid,
     .categories-grid-exact,
     .how-it-works-grid,
     .reviews-grid,
-    .gallery-masonry-grid {
+    .gallery-masonry-grid,
+    .product-menu-grid,
+    .policy-container {
         grid-template-columns: 1fr !important;
-        gap: 20px !important;
+        gap: 16px !important;
+    }
+
+    .ingredients-grid-6 {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .meet-founder-container {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 25px !important;
+    }
+
+    .meet-founder-img-wrap {
+        flex: 1 1 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .meet-founder-img-wrap img {
+        height: auto !important;
+        max-height: 300px !important;
+        width: 100% !important;
     }
 
     .whimsical-two-column {
         flex-direction: column !important;
+        gap: 20px !important;
     }
 
     .whimsical-col-right h2 {
-        font-size: 2.2rem !important;
+        font-size: 2rem !important;
     }
 
     .highlights-bar {
         flex-wrap: wrap !important;
-        gap: 20px !important;
-        padding: 30px 15px !important;
+        gap: 15px !important;
+        padding: 25px 15px !important;
     }
 
     .highlight-item {
-        flex: 1 1 45% !important;
-        min-width: 140px !important;
+        flex: 1 1 100% !important;
+        min-width: 0 !important;
     }
 
     .footer-content {
         flex-direction: column !important;
-        gap: 30px !important;
+        gap: 20px !important;
         text-align: center !important;
+    }
+}
+
+/* Extra Small Phones (<= 480px) */
+@media (max-width: 480px) {
+    .site-header {
+        padding: 4px 0 !important;
+    }
+
+    .header-container {
+        gap: 4px !important;
+        padding: 0 8px !important;
+    }
+
+    .logo img {
+        height: 36px !important;
+        max-height: 36px !important;
+    }
+
+    .nav-links {
+        gap: 3px 6px !important;
+    }
+
+    .nav-links a {
+        font-size: 0.76rem !important;
+        padding: 2px 4px !important;
+    }
+
+    .nav-order-btn,
+    .admin-btn {
+        padding: 4px 10px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .hero-wrapper h1 {
+        font-size: 1.85rem !important;
+    }
+
+    .subheading {
+        font-size: 1.2rem !important;
     }
 }
 
