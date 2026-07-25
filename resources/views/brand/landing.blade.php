@@ -836,7 +836,7 @@
                 padding: 0 !important;
             }
             .nav-logo img {
-                height: 50px !important;
+                height: 65px !important;
             }
             .nav-links {
                 gap: 10px;

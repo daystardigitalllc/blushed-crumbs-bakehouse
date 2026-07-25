@@ -4,33 +4,35 @@
         <button class="modal-close-btn" onclick="closeOrderModal()">✕</button>
 
         <div id="cake-order-builder">
-            <!-- STICKY ORDER ESTIMATE BAR & PROGRESS INDICATOR -->
-            <div class="sticky-order-summary-bar" style="background: linear-gradient(135deg, #fff5f8, #fdeef4); border: 2px solid #f8c6d7; padding: 12px 20px; border-radius: 14px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(92, 29, 55, 0.05);">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <span style="font-size:1.4rem;">🛍️</span>
-                    <div>
-                        <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#7a2b4a; font-weight:700; display:block;">Selected Items</span>
-                        <span id="global-cart-items-summary" style="font-size:0.9rem; font-weight:600; color:#5c1d37;">No items selected</span>
+            @php
+                $steps = $tenant->form_schema ?? [];
+                $totalSteps = count($steps);
+            @endphp
+
+            @if($totalSteps > 0)
+                <!-- STICKY ORDER ESTIMATE BAR & PROGRESS INDICATOR -->
+                <div class="sticky-order-summary-bar" style="background: linear-gradient(135deg, #fff5f8, #fdeef4); border: 2px solid #f8c6d7; padding: 12px 20px; border-radius: 14px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(92, 29, 55, 0.05);">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:1.4rem;">🛍️</span>
+                        <div>
+                            <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#7a2b4a; font-weight:700; display:block;">Selected Items</span>
+                            <span id="global-cart-items-summary" style="font-size:0.9rem; font-weight:600; color:#5c1d37;">No items selected</span>
+                        </div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#7a2b4a; font-weight:700; display:block;">Estimated Total</span>
+                        <strong id="global-cart-total-estimate" style="font-size:1.35rem; color:#e67399; font-weight:800;">$0</strong>
                     </div>
                 </div>
-                <div style="text-align:right;">
-                    <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#7a2b4a; font-weight:700; display:block;">Estimated Total</span>
-                    <strong id="global-cart-total-estimate" style="font-size:1.35rem; color:#e67399; font-weight:800;">$0</strong>
-                </div>
-            </div>
+            @endif
 
             <div class="order-content" id="form-container-toggle">
-                @php
-                    $steps = $tenant->form_schema ?? \App\Models\Tenant::getDefaultFormSchema();
-                    $totalSteps = count($steps);
-                @endphp
-
                 @if($totalSteps === 0)
-                    <div style="text-align:center; padding:40px 20px;">
-                        <span style="font-size:3rem; display:block; margin-bottom:10px;">📋</span>
-                        <h3 style="color:#5c1d37; margin-bottom:8px; font-size:1.3rem;">Order Form Building In Progress</h3>
-                        <p style="color:#666; font-size:0.95rem; margin-bottom:20px;">This bakery is currently setting up their custom order form. Check back soon or contact them directly!</p>
-                        <button onclick="closeOrderModal()" class="btn btn-primary" style="padding:10px 24px;">Close</button>
+                    <div style="text-align:center; padding:50px 20px;">
+                        <span style="font-size:3.5rem; display:block; margin-bottom:12px;">📋</span>
+                        <h3 style="color:#5c1d37; margin-bottom:8px; font-size:1.4rem; font-weight:700;">Order Form Not Configured Yet</h3>
+                        <p style="color:#666; font-size:0.95rem; max-width:420px; margin:0 auto 24px;">This bakery has not configured their custom order form steps yet. Please check back later or contact the baker directly!</p>
+                        <button onclick="closeOrderModal()" class="btn btn-primary" style="padding:10px 26px; border-radius:20px;">Close</button>
                     </div>
                 @endif
 
@@ -64,35 +66,11 @@
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="product" data-name="4” Cake" data-price="45"><strong>4” Cake</strong><br>$45</div>
-                                    <div class="product" data-name="6” Cake" data-price="65"><strong>6” Cake</strong><br>$65</div>
-                                    <div class="product" data-name="7” Cake" data-price="75"><strong>7” Cake</strong><br>$75</div>
-                                    <div class="product" data-name="8” Cake" data-price="85"><strong>8” Cake</strong><br>$85</div>
-                                    <div class="product" data-name="9” Cake" data-price="95"><strong>9” Cake</strong><br>$95</div>
-                                    <div class="product" data-name="10” Cake" data-price="115"><strong>10” Cake</strong><br>$115</div>
-                                    <div class="product" data-name="Bento Box" data-price="45"><strong>Bento Box</strong><br>$45</div>
-                                    <div class="product" data-name="Smash Cake" data-price="35"><strong>Smash Cake</strong><br>$35</div>
-                                    <div class="product" data-name="Quarter-Sheet Cake" data-price="75"><strong>Quarter-Sheet Cake</strong><br>$75</div>
-                                    <div class="product" data-name="Baddie On a Budget 🎀" data-price="45"><strong>Baddie On a Budget 🎀</strong><br>$45</div>
-                                    <div class="product" data-name="1/2 Dozen Cupcakes" data-price="18"><strong>1/2 Dozen Cupcakes</strong><br>$18</div>
-                                    <div class="product" data-name="Dozen Cupcakes" data-price="35"><strong>Dozen Cupcakes</strong><br>$35</div>
-                                    <div class="product" data-name="Dozen Cake Shooters" data-price="50"><strong>Dozen Cake Shooters</strong><br>$50</div>
-                                    <div class="product" data-name="Dozen Chocolate Covered Strawberries" data-price="30"><strong>Dozen Chocolate Covered Strawberries</strong><br>$30</div>
-                                    <div class="product" data-name="Dozen Chocolate Covered Oreo" data-price="35"><strong>Dozen Chocolate Covered Oreo</strong><br>$35</div>
-                                    <div class="product" data-name="Dozen Chocolate Covered Marshmallows" data-price="20"><strong>Dozen Chocolate Covered Marshmallows</strong><br>$20</div>
-                                    <div class="product" data-name="Cakesickles" data-price="40"><strong>Cakesickles</strong><br>$40</div>
-                                    <div class="product" data-name="Chocolate Rice Krispies" data-price="35"><strong>Chocolate Rice Krispies</strong><br>$35</div>
-                                    <div class="product" data-name="Small Party Pack" data-price="100"><strong>Small Party Pack</strong><br>$100</div>
-                                    <div class="product" data-name="Medium Party Pack" data-price="165"><strong>Medium Party Pack</strong><br>$165</div>
-                                    <div class="product" data-name="Large Party Pack" data-price="220"><strong>Large Party Pack</strong><br>$220</div>
-                                    <div class="product" data-name="Extra Large Party Pack" data-price="335"><strong>Extra Large Party Pack</strong><br>$335</div>
-                                    <div class="product" data-name="Small 2 Tiered Cake" data-price="120"><strong>Small 2 Tiered Cake</strong><br>$120</div>
-                                    <div class="product" data-name="Medium 2 Tiered Cake" data-price="175"><strong>Medium 2 Tiered Cake</strong><br>$175</div>
-                                    <div class="product" data-name="Large 2 Tiered Cake" data-price="245"><strong>Large 2 Tiered Cake</strong><br>$245</div>
-                                    <div class="product" data-name="2 Tiered Heart Cake" data-price="145"><strong>2 Tiered Heart Cake</strong><br>$145</div>
-                                    <div class="product" data-name="Small 3 Tiered Cake" data-price="325"><strong>Small 3 Tiered Cake</strong><br>$325</div>
-                                    <div class="product" data-name="Wedding Consultation" data-price="0"><strong>Wedding Consultation</strong><br>$0</div>
-                                    <div class="product" data-name="Wedding Tasting Pack" data-price="50"><strong>Wedding Tasting Pack</strong><br>$50</div>
+                                    <div style="grid-column: 1 / -1; text-align:center; padding:35px 15px; color:#666;">
+                                        <span style="font-size:2.2rem; display:block; margin-bottom:8px;">🧁</span>
+                                        <strong style="font-size:1.05rem; color:#5c1d37; display:block;">No Products Available</strong>
+                                        <p style="font-size:0.9rem; margin-top:4px;">This bakery has not added any products to their order form yet.</p>
+                                    </div>
                                 @endif
                             </div>
                             
@@ -220,65 +198,9 @@
                             <div class="terms-scroll-box" style="height:180px; overflow-y:auto; border:1px solid #eee; padding:15px; border-radius:12px; background:#fafafa; font-size:0.85rem; line-height:1.6; margin-bottom:15px;">
                                 @if(!empty($description))
                                     {!! nl2br(e($description)) !!}
-                               @else
-    <p><strong>Policy:</strong> Please read before placing an order.</p>
-
-    <p><strong>Payment:</strong></p>
-    <ul>
-        <li>A 50% deposit is required upon invoice to secure your order.</li>
-        <li>The remaining balance is due 2 days before pickup or delivery.</li>
-        <li>A 1-day grace period is provided for late final payments. After that, a 10% late fee will be applied.</li>
-        <li>All pricing is base pricing and may change due to sales tax, labor, delivery, decorations, or other customizations.</li>
-    </ul>
-
-    <p><strong>Refunds:</strong></p>
-    <ul>
-        <li>Refunds are not provided for any reason. Every order requires hours of planning and preparation before decorating begins, so all sales are final.</li>
-        <li>Minor variations in color or design are part of the handmade process and are not eligible for refunds.</li>
-        <li>If a major flavor error is discovered after pickup (for example, receiving a completely different flavor than ordered), please contact us immediately. If confirmed, a refund or credit will be issued for the incorrect portion of the order.</li>
-        <li>Refunds are not issued for changes of mind, flavor preferences, or failure to read these policies.</li>
-        <li>If no flavor is selected at the time of booking, vanilla will be used as the default flavor. No refunds will be given for this reason.</li>
-    </ul>
-
-    <p><strong>Delivery:</strong></p>
-    <ul>
-        <li>All orders are pickup by default.</li>
-        <li>Delivery is available starting at $30 plus $2 per mile.</li>
-        <li>Please provide your delivery address when placing your order so the delivery fee can be confirmed.</li>
-        <li>Delivery must be arranged at the time of booking. Changing a pickup order to delivery within 4 days of your event will incur a $15 change fee.</li>
-    </ul>
-
-    <p><strong>Order Changes:</strong></p>
-    <ul>
-        <li>Minor design changes may be accommodated if requested at least 7 days before pickup.</li>
-        <li>Significant changes may require an additional fee.</li>
-        <li>All requested changes are subject to approval and cannot be guaranteed.</li>
-    </ul>
-
-    <p><strong>Design Policy:</strong></p>
-    <ul>
-        <li>Inspiration photos are always welcome.</li>
-        <li>We do not create exact replicas of another baker's work. Every cake is handcrafted and uniquely designed.</li>
-        <li>Colors, decorations, and handmade elements may vary slightly from inspiration photos.</li>
-    </ul>
-
-    <p><strong>Pickup:</strong></p>
-    <ul>
-        <li>Pickup hours are 10:00 AM – 4:00 PM.</li>
-        <li>Your requested pickup date and time must be approved and is not guaranteed until confirmed.</li>
-        <li>Please arrive on time for your scheduled pickup.</li>
-        <li>We are not responsible for any damage once the order has been picked up or delivered.</li>
-        <li>Pickup and delivery are not available on Sundays or Mondays.</li>
-        <li>Orders not picked up within 30 minutes of the scheduled pickup time must be rescheduled. If arrangements are not made, the order may be donated without refund.</li>
-    </ul>
-
-    <p><strong>Cakes &amp; Allergies:</strong></p>
-    <ul>
-        <li>All cakes begin as 2-layer cakes. Additional layers are available for $20 per layer.</li>
-        <li>Tiered and large cakes contain dowels and support straws. Please use caution when serving.</li>
-        <li>It is your responsibility to disclose any food allergies when placing your order. We are not responsible for allergy-related issues if allergies are not communicated during the ordering process.</li>
-    </ul>
-@endif
+                                @else
+                                    <p style="color:#666; font-style:italic;">Please consult the bakery directly for their order policies and terms.</p>
+                                @endif
                             </div>
 
                             <div class="terms-acceptance-wrapper" style="margin-bottom:15px;">

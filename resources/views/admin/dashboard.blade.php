@@ -4,7 +4,7 @@
 
 @section('content')
 @php
-    $serverFormSchema = $tenant->form_schema ?? \App\Models\Tenant::getDefaultFormSchema();
+    $serverFormSchema = $tenant->form_schema ?? [];
     $serverBookingSettings = $tenant->booking_settings ?? [
         'lead_time_enabled' => true,
         'lead_time_days' => 3,
@@ -179,7 +179,7 @@
             <!-- TAB 2: Form Studio -->
             <div id="tab-form-builder" class="tab-content">
                 @php
-                    $serverFormSchema = $tenant->form_schema ?? \App\Models\Tenant::getDefaultFormSchema();
+                    $serverFormSchema = $tenant->form_schema ?? [];
                     $serverBookingSettings = $tenant->booking_settings ?? [
                         'lead_time_enabled' => true,
                         'lead_time_days' => 3,

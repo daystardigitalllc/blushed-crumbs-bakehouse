@@ -51,11 +51,7 @@ class AdminController extends Controller
 
         $tenant = $this->tenant($request, $subdomain);
 
-        // Fallback default form schema & booking settings if empty
-        if (empty($tenant->form_schema)) {
-            $tenant->form_schema = Tenant::getDefaultFormSchema();
-            $tenant->save();
-        }
+        // Fallback default booking settings if empty
         if (empty($tenant->booking_settings)) {
             $tenant->booking_settings = [
                 'lead_time_enabled' => true,

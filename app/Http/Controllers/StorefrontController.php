@@ -35,11 +35,7 @@ class StorefrontController extends Controller
             ]);
         }
 
-        // Ensure form schema and booking settings are populated
-        if (empty($tenant->form_schema)) {
-            $tenant->form_schema = Tenant::getDefaultFormSchema();
-            $tenant->save();
-        }
+        // Ensure booking settings are populated
         if (empty($tenant->booking_settings)) {
             $tenant->booking_settings = [
                 'lead_time_enabled' => true,
