@@ -103,6 +103,9 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
     Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
     Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
     Route::delete('/products/{id}', [AdminController::class, 'destroyProduct'])->name('admin.products.destroy');
+    Route::post('/site/{subdomain}/products', [AdminController::class, 'storeProduct']);
+    Route::put('/site/{subdomain}/products/{id}', [AdminController::class, 'updateProduct']);
+    Route::delete('/site/{subdomain}/products/{id}', [AdminController::class, 'destroyProduct']);
     Route::post('/subscription/cancel', [AdminController::class, 'cancelSubscription'])->name('admin.subscription.cancel');
     Route::post('/support/ticket', [AdminController::class, 'submitSupportTicket'])->name('admin.support.ticket');
 });

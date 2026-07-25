@@ -1557,7 +1557,7 @@ function initAdminPortal() {
     }
 
 
-    // Add Product Form (DB AJAX Save)
+    // Add Product Form (DB AJAX Save with Fallback)
     const prodForm = document.getElementById('add-product-form');
     if (prodForm) {
         prodForm.addEventListener('submit', async (e) => {
@@ -1567,10 +1567,10 @@ function initAdminPortal() {
             const categorySelect = document.getElementById('new-prod-category');
             const categoryCustomInput = document.getElementById('new-prod-category-custom');
 
-            const name = nameInput.value.trim();
-            const price = parseFloat(priceInput.value);
-            let category = categorySelect.value;
-            if (category === 'custom_new') {
+            const name = nameInput ? nameInput.value.trim() : '';
+            const price = priceInput ? parseFloat(priceInput.value) : 0;
+            let category = categorySelect ? categorySelect.value : 'General';
+            if (category === 'custom_new' && categoryCustomInput) {
                 category = categoryCustomInput.value.trim();
                 if (!category) {
                     alert('Please enter a custom category name.');
@@ -1578,9 +1578,15 @@ function initAdminPortal() {
                 }
             }
 
+            const targetUrl = prodForm.getAttribute('action') || (
+                window.location.pathname.includes('/site/')
+                    ? window.location.pathname.replace(/\/dashboard|\/admin/, '') + '/products'
+                    : '/dashboard/products'
+            );
+
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                const response = await fetch('/dashboard/products', {
+                const response = await fetch(targetUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1589,6 +1595,12 @@ function initAdminPortal() {
                     },
                     body: JSON.stringify({ name, price, category })
                 });
+
+                if (!response.ok) {
+                    // Fallback to standard HTTP POST submission
+                    prodForm.submit();
+                    return;
+                }
 
                 const data = await response.json();
                 if (data.success && data.product) {
@@ -1639,11 +1651,11 @@ function initAdminPortal() {
                         alert(`Product "${name}" saved to database successfully!`);
                     }
                 } else {
-                    alert(data.message || 'Error saving product to database.');
+                    prodForm.submit();
                 }
             } catch (err) {
                 console.error('Add product error:', err);
-                alert('An error occurred while saving the product.');
+                prodForm.submit();
             }
         });
     }
@@ -1655,9 +1667,14 @@ window.updateProductPrice = async function(productId, btnElement) {
     if (!priceInput) return;
     const newPrice = parseFloat(priceInput.value);
 
+    const baseUrl = window.location.pathname.includes('/site/')
+        ? window.location.pathname.replace(/\/dashboard|\/admin/, '') + '/products'
+        : '/dashboard/products';
+    const targetUrl = `${baseUrl}/${productId}`;
+
     try {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        const response = await fetch(`/dashboard/products/${productId}`, {
+        const response = await fetch(targetUrl, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -1686,9 +1703,14 @@ window.deleteProduct = async function(productId, btnElement) {
     if (!confirm('Are you sure you want to delete this product?')) return;
     const row = btnElement.closest('.product-item-row');
 
+    const baseUrl = window.location.pathname.includes('/site/')
+        ? window.location.pathname.replace(/\/dashboard|\/admin/, '') + '/products'
+        : '/dashboard/products';
+    const targetUrl = `${baseUrl}/${productId}`;
+
     try {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        const response = await fetch(`/dashboard/products/${productId}`, {
+        const response = await fetch(targetUrl, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

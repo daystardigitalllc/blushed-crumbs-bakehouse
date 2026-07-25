@@ -983,17 +983,18 @@ class AdminController extends Controller
         ]);
 
         $maxSort = Product::where('tenant_id', $tenant->id)->max('sort_order') ?? 0;
+        $category = !empty($validated['category']) && $validated['category'] !== 'custom_new' ? $validated['category'] : 'General';
 
         $product = Product::create([
             'tenant_id' => $tenant->id,
             'name' => $validated['name'],
             'price' => $validated['price'],
-            'category' => !empty($validated['category']) ? $validated['category'] : 'General',
+            'category' => $category,
             'is_active' => true,
             'sort_order' => $maxSort + 1,
         ]);
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Product added successfully!',

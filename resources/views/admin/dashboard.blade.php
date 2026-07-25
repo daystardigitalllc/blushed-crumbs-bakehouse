@@ -605,18 +605,19 @@
 
                 <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
                     <h4>➕ Add New Product</h4>
-                    <form id="add-product-form" class="form-builder-grid">
+                    <form id="add-product-form" class="form-builder-grid" action="{{ route('admin.products.store') }}" method="POST">
+                        @csrf
                         <div>
                             <label>Product Name</label>
-                            <input type="text" id="new-prod-name" placeholder="e.g. 6″ Heart Cake" required>
+                            <input type="text" id="new-prod-name" name="name" placeholder="e.g. 6″ Heart Cake" required>
                         </div>
                         <div>
                             <label>Price ($)</label>
-                            <input type="number" id="new-prod-price" placeholder="45.00" step="0.01" required>
+                            <input type="number" id="new-prod-price" name="price" placeholder="45.00" step="0.01" required>
                         </div>
                         <div>
                             <label>Category</label>
-                            <select id="new-prod-category" onchange="if(this.value === 'custom_new'){ document.getElementById('new-prod-category-custom').style.display='block'; document.getElementById('new-prod-category-custom').setAttribute('required', 'true'); } else { document.getElementById('new-prod-category-custom').style.display='none'; document.getElementById('new-prod-category-custom').removeAttribute('required'); }">
+                            <select id="new-prod-category" name="category" onchange="if(this.value === 'custom_new'){ document.getElementById('new-prod-category-custom').style.display='block'; document.getElementById('new-prod-category-custom').setAttribute('required', 'true'); } else { document.getElementById('new-prod-category-custom').style.display='none'; document.getElementById('new-prod-category-custom').removeAttribute('required'); }">
                                 <option value="Single Tier">Single Tier</option>
                                 <option value="Multi-Tier">Multi-Tier</option>
                                 <option value="By The Dozen">By The Dozen</option>
