@@ -1773,8 +1773,15 @@
 </div>
 
 <!-- TERMS & POLICY TEXT WYSIWYG EDIT MODAL -->
+<style>
+    #terms-edit-modal .ql-editor {
+        min-height: 220px;
+        max-height: 42vh;
+        overflow-y: auto;
+    }
+</style>
 <div id="terms-edit-modal" class="order-modal-overlay" style="display:none; z-index:99999;">
-    <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid #e67399; padding:20px; box-shadow:0 20px 50px rgba(230,115,153,0.2);">
+    <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; overflow-y:auto; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid #e67399; padding:20px; box-shadow:0 20px 50px rgba(230,115,153,0.2);">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f8c6d7; padding-bottom:12px; margin-bottom:16px;">
             <div>
                 <h3 style="margin:0; color:#5c1d37; font-size:1.2rem; font-family:'Outfit',sans-serif;">📜 Edit Terms &amp; Policy Text</h3>
@@ -1783,9 +1790,9 @@
             <button type="button" class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeTermsEditModal()">✕</button>
         </div>
 
-        <div id="quill-terms-modal-editor" style="background:#ffffff; min-height:220px; border-radius:0 0 8px 8px; font-size:0.95rem;"></div>
+        <div id="quill-terms-modal-editor" style="background:#ffffff; border-radius:0 0 8px 8px; font-size:0.95rem;"></div>
 
-        <div style="margin-top:16px; border-top:1px solid #f8c6d7; padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="margin-top:16px; border-top:1px solid #f8c6d7; padding-top:12px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
             <button type="button" class="btn btn-outline" onclick="clearTermsEditModal()" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">🗑️ Clear (Use Default)</button>
             <div style="display:flex; gap:10px;">
                 <button type="button" class="btn btn-outline" onclick="closeTermsEditModal()">Cancel</button>

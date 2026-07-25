@@ -1016,7 +1016,7 @@ body:not(.theme-sweet_elegant) .raining-cake {
 /* Video Promo Banner */
 .video-promo-banner {
     position: relative;
-    height: 320px;
+    min-height: 320px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -1212,7 +1212,7 @@ body:not(.theme-sweet_elegant) .raining-cake {
 /* Footer Video CTA */
 .cta-video-banner {
     position: relative;
-    height: 300px;
+    min-height: 300px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -2129,7 +2129,7 @@ body.theme-clean_minimal {
     /* Banners */
     .video-promo-banner,
     .cta-video-banner {
-        height: 260px;
+        min-height: 260px;
         padding: 15px;
     }
 
