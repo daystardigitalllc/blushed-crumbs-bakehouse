@@ -115,7 +115,7 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 16px 0;
+            padding: 0;
         }
 
         .navbar .container {
@@ -813,14 +813,43 @@
             .hero h1 {
                 font-size: 2.8rem;
             }
+            .slider-stage-wrapper {
+                min-height: auto;
+            }
+            .feature-slide-card {
+                grid-template-columns: 1fr;
+                gap: 28px;
+                padding: 32px 24px;
+            }
+            .feature-slide-card.active {
+                display: flex;
+                flex-direction: column;
+            }
+            .mockup-preview-container {
+                width: 100%;
+                max-width: 100%;
+            }
         }
 
         @media (max-width: 768px) {
+            .navbar {
+                padding: 0 !important;
+            }
+            .nav-logo img {
+                height: 50px !important;
+            }
+            .nav-links {
+                gap: 10px;
+            }
+            .nav-links .btn {
+                padding: 8px 16px;
+                font-size: 0.88rem;
+            }
             .features-grid {
                 grid-template-columns: 1fr;
             }
             .hero {
-                padding: 140px 0 80px;
+                padding: 110px 0 60px;
             }
             .hero h1 {
                 font-size: 2.2rem;
@@ -831,6 +860,40 @@
             .footer-cta h2 {
                 font-size: 2rem;
             }
+            .slider-tabs-nav {
+                gap: 8px;
+                margin-bottom: 24px;
+            }
+            .slider-tab-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+            .feature-slide-card {
+                padding: 24px 16px;
+                gap: 20px;
+            }
+            .slide-info h3 {
+                font-size: 1.6rem;
+                margin-bottom: 10px;
+            }
+            .slide-info p {
+                font-size: 0.95rem;
+                margin-bottom: 16px;
+            }
+            .slide-badge-list {
+                margin-bottom: 20px;
+                gap: 6px;
+            }
+            .slide-pill {
+                font-size: 0.78rem;
+                padding: 4px 10px;
+            }
+            .mockup-preview-container {
+                padding: 16px;
+            }
+            .mockup-body {
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -840,7 +903,7 @@
     <nav class="navbar">
         <div class="container">
             <a href="/" class="nav-logo">
-                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo" style="height: 115px; width: auto; object-fit: contain;">
+                <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo" style="height: 65px; width: auto; object-fit: contain;">
             </a>
             <div class="nav-links">
                 <a href="/login" class="nav-login">Login</a>
