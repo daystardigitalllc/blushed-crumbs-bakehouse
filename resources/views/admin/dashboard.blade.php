@@ -237,8 +237,8 @@
                             <input type="text" id="field-label" placeholder="e.g. Choose Your Flavors, Select Crust Type…" required>
                         </div>
                         <div style="grid-column: 1 / -1;">
-                            <label>Step Subtext / Directions / Policy Text</label>
-                            <textarea id="field-description" placeholder="e.g. Select all options that apply, or enter custom Terms & Conditions text here..." style="width:100%; height:80px; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;"></textarea>
+                            <label>Step Subtext / Directions</label>
+                            <textarea id="field-description" placeholder="e.g. Select all options that apply... (for Terms & Conditions steps, add the actual policy text afterward using the Edit Policy Text button below)" style="width:100%; height:80px; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;"></textarea>
                         </div>
                         <div id="field-options-row" style="grid-column: 1 / -1; margin-top: 10px;">
                             <label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:8px;">
@@ -1594,6 +1594,62 @@
                 document.getElementById('admin_menu_text').value = '';
             }
 
+            // Terms & Policy Text WYSIWYG Edit Modal
+            let quillTermsModalEditor = null;
+            let quillTermsEditingIdx = null;
+
+            function initQuillTermsModalEditor() {
+                const el = document.getElementById('quill-terms-modal-editor');
+                if (el && !quillTermsModalEditor) {
+                    quillTermsModalEditor = new Quill('#quill-terms-modal-editor', {
+                        theme: 'snow',
+                        placeholder: 'Enter your custom terms, deposit rules, cancellation policy, etc...',
+                        modules: {
+                            toolbar: [
+                                [{ 'header': [2, 3, false] }],
+                                ['bold', 'italic', 'underline'],
+                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                ['link'],
+                                ['clean']
+                            ]
+                        }
+                    });
+                }
+            }
+
+            window.openTermsEditModal = function(idx) {
+                initQuillTermsModalEditor();
+                quillTermsEditingIdx = idx;
+                quillTermsModalEditor.root.innerHTML = window._customFields[idx]?.description || '';
+                const modal = document.getElementById('terms-edit-modal');
+                if (modal) modal.style.display = 'flex';
+            };
+
+            window.closeTermsEditModal = function() {
+                const modal = document.getElementById('terms-edit-modal');
+                if (modal) modal.style.display = 'none';
+                quillTermsEditingIdx = null;
+            };
+
+            window.clearTermsEditModal = function() {
+                if (quillTermsModalEditor) {
+                    quillTermsModalEditor.setText('');
+                }
+            };
+
+            window.saveTermsEditModal = function() {
+                if (quillTermsEditingIdx === null || !quillTermsModalEditor) return;
+                const cleanText = quillTermsModalEditor.getText().trim();
+                const html = quillTermsModalEditor.root.innerHTML;
+                window._customFields[quillTermsEditingIdx].description = cleanText ? html : '';
+                if (typeof renderFieldsTable === 'function') {
+                    renderFieldsTable();
+                } else if (typeof window.renderFieldsTable === 'function') {
+                    window.renderFieldsTable();
+                }
+                closeTermsEditModal();
+            };
+
             async function handleSaveMenuSettings(e) {
                 e.preventDefault();
                 const form = e.target;
@@ -1712,6 +1768,29 @@
         <div style="margin-top:16px; border-top:1px solid #e9d5ff; pt:12px; display:flex; justify-content:space-between; align-items:center;">
             <button type="button" class="btn btn-outline" onclick="selectGalleryPickerImage('', '')" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">❌ Clear Selection (Theme Default)</button>
             <button type="button" class="btn btn-outline" onclick="closeGalleryPickerModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- TERMS & POLICY TEXT WYSIWYG EDIT MODAL -->
+<div id="terms-edit-modal" class="order-modal-overlay" style="display:none; z-index:99999;">
+    <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid #e67399; padding:20px; box-shadow:0 20px 50px rgba(230,115,153,0.2);">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f8c6d7; padding-bottom:12px; margin-bottom:16px;">
+            <div>
+                <h3 style="margin:0; color:#5c1d37; font-size:1.2rem; font-family:'Outfit',sans-serif;">📜 Edit Terms &amp; Policy Text</h3>
+                <p style="margin:2px 0 0 0; font-size:0.82rem; color:#666;">Leave blank to show the default message: <em>"Please consult the bakery directly for their order policies and terms."</em></p>
+            </div>
+            <button type="button" class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeTermsEditModal()">✕</button>
+        </div>
+
+        <div id="quill-terms-modal-editor" style="background:#ffffff; min-height:220px; border-radius:0 0 8px 8px; font-size:0.95rem;"></div>
+
+        <div style="margin-top:16px; border-top:1px solid #f8c6d7; padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+            <button type="button" class="btn btn-outline" onclick="clearTermsEditModal()" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">🗑️ Clear (Use Default)</button>
+            <div style="display:flex; gap:10px;">
+                <button type="button" class="btn btn-outline" onclick="closeTermsEditModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveTermsEditModal()">💾 Save Text</button>
+            </div>
         </div>
     </div>
 </div>

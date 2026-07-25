@@ -1219,10 +1219,13 @@ function initAdminPortal() {
                 <td style="color:#666; font-size:0.85rem; max-width:260px; word-wrap:break-word;">
                     ${['flavors', 'frosting', 'fillings', 'fulfillment', 'social_discount', 'select', 'chips'].includes(f.type) ?
                         `<span style="border-bottom:1px dashed #ccc; cursor:text; padding:2px; display:inline-block; min-width:50px;" contenteditable="true" onblur="updateField(${i}, 'options', this.innerText)" title="Edit Options (comma separated)">${f.options || '—'}</span>` :
+                      (f.type === 'terms' ?
+                        `<button type="button" class="btn btn-sm btn-outline" onclick="openTermsEditModal(${i})" style="border-color:#f8c6d7; color:#e67399; font-size:0.8rem; font-weight:700;">✏️ Edit Policy Text</button>
+                         ${f.description ? '<div style="color:#15803d; font-size:0.75rem; margin-top:4px;">✅ Custom text set</div>' : '<div style="color:#aaa; font-size:0.75rem; margin-top:4px;">Using default message</div>'}` :
                       (['textarea', 'allergies', 'file_upload', 'text', 'toggle'].includes(f.type) ?
                         `<span style="border-bottom:1px dashed #ccc; cursor:text; padding:2px; display:inline-block; min-width:50px;" contenteditable="true" onblur="updateField(${i}, 'description', this.innerText)" title="Edit Placeholder/Description">${f.description || '—'}</span>` :
                         `<span style="color:#aaa;">—</span>`
-                      )
+                      ))
                     }
                 </td>
                 <td>
