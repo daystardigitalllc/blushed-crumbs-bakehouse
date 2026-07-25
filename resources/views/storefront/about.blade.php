@@ -35,7 +35,9 @@
             <a href="{{ route('storefront.about') }}" class="active">About</a>
             <a href="{{ route('storefront.menu') }}">Menu</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
-            <a href="{{ route('storefront.policy') }}">Policy</a>
+            @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
+                <a href="{{ route('storefront.policy') }}">Policy</a>
+            @endif
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
         </nav>
     </div>
@@ -145,7 +147,7 @@
         @if(!empty($tenant->logo_path))
             <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
         @else
-            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:#ffffff;">🧁 {{ $tenant->name }}</span>
+            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);">🧁 {{ $tenant->name }}</span>
         @endif
     </div>
     <div class="footer-nav">
@@ -153,7 +155,9 @@
         <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
         <a href="{{ route('storefront.menu') }}" class="footer-link">Menu</a>
         <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
-        <a href="{{ route('storefront.policy') }}" class="footer-link">Policy</a>
+        @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
+            <a href="{{ route('storefront.policy') }}" class="footer-link">Policy</a>
+        @endif
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
             $bakerPortalUrl = request()->is('site/*') 
