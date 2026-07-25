@@ -1266,6 +1266,7 @@
                             </button>
                         </form>
                     </div>
+                        @if(($tenant->plan_tier ?? 'free') == 'pro')
 
                     <!-- CUSTOM DOMAIN CARD -->
                     <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
@@ -1288,7 +1289,7 @@
                             </div>
                         </div>
                     </div>
-
+@endif
                     <!-- SUPPORT TICKET FORM CARD -->
                     <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
                         <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Submit Support Ticket</h4>
