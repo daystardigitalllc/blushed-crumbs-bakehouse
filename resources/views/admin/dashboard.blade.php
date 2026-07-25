@@ -201,7 +201,7 @@
                     <h4 style="color:#5c1d37;">✉️ Order Email Routing</h4>
                     <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">All completed order form entries will be sent to this address:</p>
                     <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                        <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? 'orders@blushedcrumbsbakehouse.com' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:220px;">
+                        <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? '' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:220px;">
                         <button type="submit" class="btn btn-primary">💾 Save</button>
                     </form>
                     <div id="email-save-status" style="margin-top:10px; font-weight:700; color:#28a745; font-size:0.88rem; display:none;"></div>
@@ -893,14 +893,14 @@
                     <div id="payment-methods-list">
                         <div class="payment-method-row" style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;">
                             <div>
-                                <strong style="color:#5c1d37; font-size:1.05rem;">🟣 Venmo</strong>: <code>{{ $tenant->payment_settings['venmo'] ?? '@Blushed_Crumbs' }}</code>
+                                <strong style="color:#5c1d37; font-size:1.05rem;">🟣 Venmo</strong>: <code>{{ !empty($tenant->payment_settings['venmo']) ? $tenant->payment_settings['venmo'] : 'Not Configured' }}</code>
                                 <p style="font-size:0.85rem; color:#666; margin-top:2px;">Include Order # in payment memo</p>
                             </div>
                             <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Remove</button>
                         </div>
                         <div class="payment-method-row" style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;">
                             <div>
-                                <strong style="color:#5c1d37; font-size:1.05rem;">🟢 CashApp</strong>: <code>{{ $tenant->payment_settings['cashapp'] ?? '$BlushedCrumbs' }}</code>
+                                <strong style="color:#5c1d37; font-size:1.05rem;">🟢 CashApp</strong>: <code>{{ !empty($tenant->payment_settings['cashapp']) ? $tenant->payment_settings['cashapp'] : 'Not Configured' }}</code>
                                 <p style="font-size:0.85rem; color:#666; margin-top:2px;">Include Order # in payment memo</p>
                             </div>
                             <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Remove</button>

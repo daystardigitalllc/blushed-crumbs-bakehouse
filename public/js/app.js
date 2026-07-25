@@ -1165,24 +1165,11 @@ function initAdminPortal() {
     };
     setTimeout(() => toggleOptionsRow(document.getElementById('field-type')?.value || 'products'), 100);
 
-    // Initialize Schema from Server Data
-    if (window._serverFormSchema && Array.isArray(window._serverFormSchema) && window._serverFormSchema.length > 0) {
+    // Initialize Schema from Server Data (Blank by default for new tenants)
+    if (window._serverFormSchema && Array.isArray(window._serverFormSchema)) {
         window._customFields = window._serverFormSchema;
     } else {
-        window._customFields = [
-            { id: 'step_1', type: 'products', title: 'Build Your Order', subtext: 'Select items from our product catalog below', options: '', description: '' },
-            { id: 'step_2', type: 'calendar', title: 'Select Your Date', subtext: 'Custom Order Booking', options: '', description: '' },
-            { id: 'step_3', type: 'flavors', title: 'Choose Your Flavors', subtext: 'Select all that apply (Luxury flavors +$10)', options: 'Strawberry Bliss, Vanilla Bean, Chocolate Dream, Creamy Hazelnut, Confetti Explosion, Red Velvet, Swirly Marble, Lemon Drop, Golden Carrot, Raspberry Swirl', description: '' },
-            { id: 'step_4', type: 'frosting', title: 'Select Frosting', subtext: 'Select your preferred frosting type', options: 'Vanilla buttercream, Cream Cheese, Strawberry buttercream, Oreo buttercream, Chocolate buttercream, Confetti buttercream, Whip Cream', description: '' },
-            { id: 'step_5', type: 'fillings', title: 'Choice of Fillings?', subtext: 'Select all that apply', options: 'Fudge, Cookies and cream, Strawberries and cream, Peanut Butter, Nutella, Edible cookie dough, Lemon curd, Plain buttercream/frosting', description: '' },
-            { id: 'step_6', type: 'textarea', title: 'Special Requests', subtext: 'Is there anything specific you want me to add or know about your order?', options: '', description: 'Type your notes here...' },
-            { id: 'step_7', type: 'fulfillment', title: 'Fulfillment Options', subtext: 'Select pickup or delivery and your preferred time frame', options: '8:30 AM, 9:00 AM, 9:30 AM, 10:00 AM, 10:30 AM', description: '' },
-            { id: 'step_8', type: 'allergies', title: 'Any Allergies?', subtext: 'By answering this question you understand any allergies not listed I will not be at fault for.', options: '', description: 'List any allergies here...' },
-            { id: 'step_9', type: 'social_discount', title: 'Social Media Follows', subtext: '$5 off for social media you follow or join!', options: 'Instagram: (@Blushed_Crumbs), Facebook group: (Blushed Crumbs), TikTok: (@Blushed_Crumbs), Facebook page: (Blushed Crumbs)', description: '' },
-            { id: 'step_10', type: 'file_upload', title: 'Inspiration Files', subtext: 'Have any pictures or designs you\'d like us to use for inspiration?', options: '', description: 'Supports PNG, JPG, JPEG' },
-            { id: 'step_11', type: 'terms', title: 'Terms & Conditions', subtext: 'PLEASE READ BEFORE ACCEPTING ‼️‼️‼️', options: '', description: '' },
-            { id: 'step_12', type: 'contact_info', title: 'Contact Information', subtext: 'Enter your details to finalize your order request', options: '', description: '' }
-        ];
+        window._customFields = [];
     }
 
     // Render Form Studio Fields Table

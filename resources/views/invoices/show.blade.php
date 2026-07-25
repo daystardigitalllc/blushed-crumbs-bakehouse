@@ -387,20 +387,28 @@
                     </div>
                 @empty
                     <!-- FALLBACK DEMO HANDLES IF BAKER HASN'T CUSTOMIZED YET -->
-                    <div class="payment-card">
-                        <div>
-                            <div class="method-name">Venmo</div>
-                            <div class="method-handle">@BlushedCrumbs</div>
+                    @php
+                        $venmoHandle = $tenant->payment_settings['venmo'] ?? '';
+                        $cashappHandle = $tenant->payment_settings['cashapp'] ?? '';
+                    @endphp
+                    @if(!empty($venmoHandle))
+                        <div class="payment-card">
+                            <div>
+                                <div class="method-name">Venmo</div>
+                                <div class="method-handle">{{ $venmoHandle }}</div>
+                            </div>
+                            <button class="btn-copy" onclick="copyHandle('{{ $venmoHandle }}', 'Venmo')">📋 Copy Venmo Handle</button>
                         </div>
-                        <button class="btn-copy" onclick="copyHandle('@BlushedCrumbs', 'Venmo')">📋 Copy Venmo Handle</button>
-                    </div>
-                    <div class="payment-card">
-                        <div>
-                            <div class="method-name">CashApp</div>
-                            <div class="method-handle">$BlushedCrumbs</div>
+                    @endif
+                    @if(!empty($cashappHandle))
+                        <div class="payment-card">
+                            <div>
+                                <div class="method-name">CashApp</div>
+                                <div class="method-handle">{{ $cashappHandle }}</div>
+                            </div>
+                            <button class="btn-copy" onclick="copyHandle('{{ $cashappHandle }}', 'CashApp')">📋 Copy CashApp Handle</button>
                         </div>
-                        <button class="btn-copy" onclick="copyHandle('$BlushedCrumbs', 'CashApp')">📋 Copy CashApp Handle</button>
-                    </div>
+                    @endif
                     <div class="payment-card">
                         <div>
                             <div class="method-name">Zelle</div>
