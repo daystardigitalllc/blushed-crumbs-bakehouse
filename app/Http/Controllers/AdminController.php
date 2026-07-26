@@ -464,16 +464,17 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('file')) {
+            $tenant = $this->tenant($request);
             $file = $request->file('file');
             $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-            $destinationPath = public_path('uploads');
-            
+            $destinationPath = public_path('uploads/tenants/' . $tenant->id . '/media');
+
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0755, true);
             }
-            
+
             $file->move($destinationPath, $filename);
-            $url = 'uploads/' . $filename;
+            $url = 'uploads/tenants/' . $tenant->id . '/media/' . $filename;
 
             return response()->json([
                 'success' => true,

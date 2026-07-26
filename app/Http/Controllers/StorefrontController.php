@@ -243,7 +243,7 @@ class StorefrontController extends Controller
         // Process file uploads with strict extension checks
         $inspirationFiles = [];
         if ($request->hasFile('inspiration_files')) {
-            $destinationPath = public_path('uploads/inspiration');
+            $destinationPath = public_path('uploads/tenants/' . $tenant->id . '/inspiration');
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0777, true);
             }
@@ -255,7 +255,7 @@ class StorefrontController extends Controller
                     if (in_array($ext, $allowedExtensions)) {
                         $filename = time() . '_' . uniqid() . '.' . $ext;
                         $file->move($destinationPath, $filename);
-                        $inspirationFiles[] = 'uploads/inspiration/' . $filename;
+                        $inspirationFiles[] = 'uploads/tenants/' . $tenant->id . '/inspiration/' . $filename;
                     }
                 }
             }
