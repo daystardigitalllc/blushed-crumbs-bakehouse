@@ -11,6 +11,20 @@ return [
     'domain_model' => Domain::class,
 
     /**
+     * PHASE 2: which tenant resolution path is authoritative for live requests.
+     *
+     * - 'legacy': the original host-parsing logic in ResolveTenant drives resolution
+     *   (default; matches pre-Phase-2 behavior exactly).
+     * - 'stancl': the domains-table lookup (Stancl\Tenancy\Database\Models\Domain)
+     *   drives resolution instead, falling back to the legacy result if it finds nothing.
+     *
+     * Both paths are always computed and compared every request; a mismatch is logged
+     * regardless of which one is authoritative, so switching this flag is safe to do
+     * without a code deploy and safe to revert instantly.
+     */
+    'resolution_strategy' => env('TENANT_RESOLUTION_STRATEGY', 'legacy'),
+
+    /**
      * The list of domains hosting your central app.
      *
      * Only relevant if you're using the domain or subdomain identification middleware.
