@@ -9,21 +9,33 @@ class DeployWatch extends Command
 {
     protected $signature = 'deploy:watch';
 
-    protected $description = 'Run post-deploy steps only when new code has been pulled since the last run';
+    protected $description = 'Pull the latest code via git and run post-deploy steps if anything new landed';
 
     public function handle(): int
     {
         $basePath = base_path();
-        $stateFile = storage_path('.last_deployed_sha');
 
-        $current = trim((new Process(['git', 'rev-parse', 'HEAD'], $basePath))->mustRun()->getOutput());
-        $last = is_file($stateFile) ? trim(file_get_contents($stateFile)) : '';
+        $before = trim((new Process(['git', 'rev-parse', 'HEAD'], $basePath))->mustRun()->getOutput());
 
-        if ($current === $last) {
+        $pull = new Process(['git', 'pull', 'origin', 'main'], $basePath);
+        $pull->setTimeout(120);
+        $pull->run(function ($type, $buffer) {
+            $this->getOutput()->write($buffer);
+        });
+
+        if (!$pull->isSuccessful()) {
+            $this->error('git pull failed — likely a conflict on the server that needs manual attention. Not running post-deploy steps.');
+
+            return self::FAILURE;
+        }
+
+        $after = trim((new Process(['git', 'rev-parse', 'HEAD'], $basePath))->mustRun()->getOutput());
+
+        if ($before === $after) {
             return self::SUCCESS;
         }
 
-        $this->info("Deploying {$last} -> {$current}");
+        $this->info("Deploying {$before} -> {$after}");
 
         $process = new Process(['bash', 'deploy/post-deploy.sh'], $basePath);
         $process->setTimeout(300);
@@ -32,12 +44,11 @@ class DeployWatch extends Command
         });
 
         if (!$process->isSuccessful()) {
-            $this->error('Deploy script failed, leaving state file untouched so it retries next run.');
+            $this->error('Deploy script failed.');
 
             return self::FAILURE;
         }
 
-        file_put_contents($stateFile, $current);
         $this->info('Deploy finished successfully.');
 
         return self::SUCCESS;
