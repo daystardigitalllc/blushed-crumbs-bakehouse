@@ -89,6 +89,7 @@
             </nav>
 
             <div class="admin-sidebar-footer">
+                <button type="button" onclick="openAdminTour()" class="btn btn-outline" style="display:block; width:100%; text-align:center; border-color:rgba(255,255,255,0.3); color:white; margin-bottom:10px;">🎓 Take the Tour</button>
                 <a href="/" target="_blank" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white; text-decoration:none; margin-bottom:10px;">← Exit to Storefront</a>
                 <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                     @csrf
@@ -1656,6 +1657,90 @@
                 }
             };
 
+            // Guided Admin Tour (5 steps: Form Builder, Products, Gallery, Invoices, Settings)
+            const ADMIN_TOUR_STORAGE_KEY = 'doughmain_admin_tour_seen_{{ $tenant->id }}';
+            const ADMIN_TOUR_STEPS = [
+                {
+                    icon: '📋',
+                    title: 'Form Studio',
+                    body: "This is where you build your custom order form. Add steps for cake sizes, flavors, frosting, terms &amp; conditions, and more — drag rows to reorder, then click \"Save Order Form Layout Live\" to publish instantly to your storefront."
+                },
+                {
+                    icon: '🎂',
+                    title: 'Products',
+                    body: 'Add every cake, cookie, or treat you sell here with pricing and categories. These show up in your order form\'s product catalog step for customers to choose from.'
+                },
+                {
+                    icon: '📷',
+                    title: 'Device Gallery',
+                    body: 'Upload photos of your best work straight from your phone or computer. They publish live to your public Gallery page and can be reused as category or section images elsewhere on your site.'
+                },
+                {
+                    icon: '💳',
+                    title: 'Invoices &amp; Payments',
+                    body: 'Every order automatically generates an invoice here. Track deposits, send reminders, and manage the payment methods (Venmo, CashApp, Stripe, etc.) your customers can pay with.'
+                },
+                {
+                    icon: '🔧',
+                    title: 'Settings',
+                    body: 'Your control room: business info, email routing, custom domain setup, and subscription plan. Come back here anytime to update how your bakery site runs.'
+                }
+            ];
+            let tourStepIndex = 0;
+
+            function renderAdminTourStep() {
+                const step = ADMIN_TOUR_STEPS[tourStepIndex];
+                document.getElementById('tour-step-icon').innerText = step.icon;
+                document.getElementById('tour-step-title').innerHTML = step.title;
+                document.getElementById('tour-step-body').innerHTML = step.body;
+
+                const dotsEl = document.getElementById('tour-step-dots');
+                dotsEl.innerHTML = ADMIN_TOUR_STEPS.map((_, i) =>
+                    `<span style="width:8px; height:8px; border-radius:50%; background:${i === tourStepIndex ? '#8b5cf6' : '#e9d5ff'}; display:inline-block; transition:background 0.2s;"></span>`
+                ).join('');
+
+                document.getElementById('tour-back-btn').style.visibility = tourStepIndex === 0 ? 'hidden' : 'visible';
+                document.getElementById('tour-next-btn').innerText = (tourStepIndex === ADMIN_TOUR_STEPS.length - 1) ? "Got it!" : 'Next →';
+            }
+
+            window.openAdminTour = function() {
+                tourStepIndex = 0;
+                renderAdminTourStep();
+                document.getElementById('admin-tour-modal').style.display = 'flex';
+            };
+
+            window.nextAdminTourStep = function() {
+                if (tourStepIndex < ADMIN_TOUR_STEPS.length - 1) {
+                    tourStepIndex++;
+                    renderAdminTourStep();
+                } else {
+                    finishAdminTour();
+                }
+            };
+
+            window.prevAdminTourStep = function() {
+                if (tourStepIndex > 0) {
+                    tourStepIndex--;
+                    renderAdminTourStep();
+                }
+            };
+
+            function finishAdminTour() {
+                document.getElementById('admin-tour-modal').style.display = 'none';
+                try { localStorage.setItem(ADMIN_TOUR_STORAGE_KEY, '1'); } catch (e) {}
+            }
+
+            window.skipAdminTour = finishAdminTour;
+
+            // Auto-launch once per baker on first visit
+            (function autoLaunchAdminTour() {
+                let alreadySeen = false;
+                try { alreadySeen = !!localStorage.getItem(ADMIN_TOUR_STORAGE_KEY); } catch (e) {}
+                if (!alreadySeen) {
+                    setTimeout(() => window.openAdminTour(), 700);
+                }
+            })();
+
             async function handleSaveMenuSettings(e) {
                 e.preventDefault();
                 const form = e.target;
@@ -1803,6 +1888,25 @@
             <div style="display:flex; gap:10px;">
                 <button type="button" class="btn btn-outline" onclick="closeTermsEditModal()">Cancel</button>
                 <button type="button" class="btn btn-primary" onclick="saveTermsEditModal()">💾 Save Text</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GUIDED ADMIN TOUR MODAL -->
+<div id="admin-tour-modal" class="order-modal-overlay" style="display:none; z-index:100000;">
+    <div class="order-modal-card" style="max-width: 480px; width:92%; background:#ffffff; border-radius:18px; border:2px solid #8b5cf6; padding:26px; box-shadow:0 20px 50px rgba(109,40,217,0.25); text-align:center;">
+        <div id="tour-step-icon" style="font-size:2.6rem; margin-bottom:10px;"></div>
+        <h3 id="tour-step-title" style="margin:0 0 12px 0; color:#4c1d95; font-family:'Outfit',sans-serif; font-size:1.3rem;"></h3>
+        <p id="tour-step-body" style="color:#555; font-size:0.95rem; line-height:1.6; margin-bottom:20px;"></p>
+
+        <div id="tour-step-dots" style="display:flex; justify-content:center; gap:8px; margin-bottom:22px;"></div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <button type="button" class="btn btn-outline" onclick="skipAdminTour()" style="font-size:0.82rem; color:#888; border-color:#ddd;">Skip Tour</button>
+            <div style="display:flex; gap:10px;">
+                <button type="button" class="btn btn-outline" id="tour-back-btn" onclick="prevAdminTourStep()">← Back</button>
+                <button type="button" class="btn btn-primary" id="tour-next-btn" onclick="nextAdminTourStep()" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); border:none;">Next →</button>
             </div>
         </div>
     </div>
