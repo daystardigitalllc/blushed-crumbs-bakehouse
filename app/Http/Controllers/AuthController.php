@@ -150,6 +150,13 @@ class AuthController extends Controller
                 ],
             ]);
 
+            // Without this, the subdomain would never resolve — ResolveTenant
+            // only reads the domains table, it doesn't derive subdomains from
+            // the brand's domain at request time.
+            $tenant->domains()->create([
+                'domain' => strtolower($subdomain . '.' . $brand->domain),
+            ]);
+
             // Create the owner user
             $user = User::create([
                 'tenant_id' => $tenant->id,
