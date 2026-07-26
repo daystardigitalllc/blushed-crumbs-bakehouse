@@ -164,12 +164,8 @@ class AdminController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $fileName = time() . '_' . Str::slug($request->title) . '.' . $file->getClientOriginalExtension();
-            $destPath = public_path('uploads/tenants/' . $tenant->id . '/gallery');
-            if (!file_exists($destPath)) {
-                mkdir($destPath, 0755, true);
-            }
-            $file->move($destPath, $fileName);
-            $imageUrl = 'uploads/tenants/' . $tenant->id . '/gallery/' . $fileName;
+            $file->storeAs('tenants/' . $tenant->id . '/gallery', $fileName, 'public');
+            $imageUrl = 'storage/tenants/' . $tenant->id . '/gallery/' . $fileName;
 
             $galleryItem = GalleryItem::create([
                 'tenant_id' => $tenant->id,
@@ -206,6 +202,11 @@ class AdminController extends Controller
         if ($item->image_url && str_starts_with($item->image_url, 'storage/')) {
             $relativePath = str_replace('storage/', '', $item->image_url);
             Storage::disk('public')->delete($relativePath);
+        } elseif ($item->image_url && str_starts_with($item->image_url, 'uploads/')) {
+            $legacyFullPath = public_path($item->image_url);
+            if (file_exists($legacyFullPath)) {
+                @unlink($legacyFullPath);
+            }
         }
 
         $item->delete();
@@ -404,12 +405,8 @@ class AdminController extends Controller
                     $cFile = $request->file("category_image_$cIdx");
                     if ($cFile->isValid()) {
                         $cFilename = 'cat_' . $tenant->id . '_' . time() . '_' . $cIdx . '.' . $cFile->getClientOriginalExtension();
-                        $cDest = public_path('uploads/tenants/' . $tenant->id . '/categories');
-                        if (!file_exists($cDest)) {
-                            mkdir($cDest, 0755, true);
-                        }
-                        $cFile->move($cDest, $cFilename);
-                        $imgUrl = 'uploads/tenants/' . $tenant->id . '/categories/' . $cFilename;
+                        $cFile->storeAs('tenants/' . $tenant->id . '/categories', $cFilename, 'public');
+                        $imgUrl = 'storage/tenants/' . $tenant->id . '/categories/' . $cFilename;
                     }
                 }
 
@@ -467,14 +464,8 @@ class AdminController extends Controller
             $tenant = $this->tenant($request);
             $file = $request->file('file');
             $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-            $destinationPath = public_path('uploads/tenants/' . $tenant->id . '/media');
-
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
-            $file->move($destinationPath, $filename);
-            $url = 'uploads/tenants/' . $tenant->id . '/media/' . $filename;
+            $file->storeAs('tenants/' . $tenant->id . '/media', $filename, 'public');
+            $url = 'storage/tenants/' . $tenant->id . '/media/' . $filename;
 
             return response()->json([
                 'success' => true,
@@ -909,13 +900,9 @@ class AdminController extends Controller
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $filename = 'logo_' . time() . '_' . Str::random(6) . '.' . $file->getClientOriginalExtension();
-            $destPath = public_path('uploads/tenants/' . $tenant->id . '/logos');
-            if (!file_exists($destPath)) {
-                mkdir($destPath, 0755, true);
-            }
-            $file->move($destPath, $filename);
-            
-            $logoPath = 'uploads/tenants/' . $tenant->id . '/logos/' . $filename;
+            $file->storeAs('tenants/' . $tenant->id . '/logos', $filename, 'public');
+
+            $logoPath = 'storage/tenants/' . $tenant->id . '/logos/' . $filename;
             $tenant->update(['logo_path' => $logoPath]);
 
             return response()->json([
@@ -954,12 +941,8 @@ class AdminController extends Controller
         if ($request->hasFile('menu_image')) {
             $file = $request->file('menu_image');
             $filename = 'menu_' . $tenant->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $destPath = public_path('uploads/tenants/' . $tenant->id . '/menu');
-            if (!file_exists($destPath)) {
-                mkdir($destPath, 0755, true);
-            }
-            $file->move($destPath, $filename);
-            $menuContent['menu_image_path'] = 'uploads/tenants/' . $tenant->id . '/menu/' . $filename;
+            $file->storeAs('tenants/' . $tenant->id . '/menu', $filename, 'public');
+            $menuContent['menu_image_path'] = 'storage/tenants/' . $tenant->id . '/menu/' . $filename;
         }
 
         $siteContent['menu'] = $menuContent;
