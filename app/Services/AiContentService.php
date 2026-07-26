@@ -8,11 +8,13 @@ class AiContentService
 {
     protected string $apiKey;
     protected string $model;
+    protected UnsplashService $unsplash;
 
-    public function __construct()
+    public function __construct(UnsplashService $unsplash)
     {
         $this->apiKey = config('services.gemini.key', env('GEMINI_API_KEY', ''));
         $this->model = config('services.gemini.model', env('GEMINI_MODEL', 'gemini-3.5-flash-lite'));
+        $this->unsplash = $unsplash;
     }
 
     /**
@@ -24,6 +26,9 @@ class AiContentService
      */
     public function generateWebsiteContent(array $businessInfo, array $preferences): array
     {
+        $content = null;
+        $searchQueries = null;
+
         if (!empty($this->apiKey)) {
             $prompt = $this->buildPrompt($businessInfo, $preferences);
             $url = "https://generativelanguage.googleapis.com/v1beta/models/{$this->model}:generateContent?key={$this->apiKey}";
@@ -54,7 +59,12 @@ class AiContentService
                         $cleanJson = preg_replace('/\s*```$/', '', $cleanJson);
                         $parsed = json_decode($cleanJson, true);
                         if (is_array($parsed)) {
-                            return $this->mapToSiteContent($parsed, $businessInfo);
+                            $content = $this->mapToSiteContent($parsed, $businessInfo);
+                            $searchQueries = [
+                                'hero' => $parsed['hero_bg_search'] ?? null,
+                                'promo' => $parsed['promo_bg_search'] ?? null,
+                                'cta' => $parsed['cta_bg_search'] ?? null,
+                            ];
                         }
                     }
                 } else {
@@ -66,7 +76,73 @@ class AiContentService
         }
 
         // Return rich, tailored fallback copy if API fails or credit depleted
-        return $this->generateRichFallbackContent($businessInfo, $preferences);
+        if ($content === null) {
+            $content = $this->generateRichFallbackContent($businessInfo, $preferences);
+        }
+
+        return $this->attachStockBackgrounds($content, $searchQueries, $preferences);
+    }
+
+    /**
+     * Fetches a real stock photo for each background spot (hero, promo
+     * banner, CTA banner) using either Gemini's suggested search phrase or a
+     * sensible per-style default, and merges the result into the content.
+     * Any spot Unsplash can't fill just stays empty — the templates already
+     * fall back to a gradient when a background URL is blank.
+     */
+    protected function attachStockBackgrounds(array $content, ?array $searchQueries, array $prefs): array
+    {
+        $style = $prefs['style'] ?? 'modern';
+        $defaults = $this->defaultBackgroundSearches($style);
+
+        $spots = [
+            'hero' => ['field' => 'hero_bg_url', 'credit' => 'hero_bg_credit'],
+            'promo' => ['field' => 'promo_bg_image_url', 'credit' => 'promo_bg_credit'],
+            'cta' => ['field' => 'cta_bg_image_url', 'credit' => 'cta_bg_credit'],
+        ];
+
+        foreach ($spots as $key => $target) {
+            $query = trim((string) ($searchQueries[$key] ?? '')) ?: $defaults[$key];
+            $photo = $this->unsplash->searchPhoto($query);
+
+            if ($photo) {
+                $content[$target['field']] = $photo['url'];
+                $content[$target['credit']] = [
+                    'name' => $photo['credit_name'],
+                    'url' => $photo['credit_url'],
+                ];
+            }
+        }
+
+        return $content;
+    }
+
+    protected function defaultBackgroundSearches(string $style): array
+    {
+        $byStyle = [
+            'rustic' => [
+                'hero' => 'rustic bakery bread wood table',
+                'promo' => 'artisan sourdough bread bakery',
+                'cta' => 'fresh baked bread rustic kitchen',
+            ],
+            'luxury' => [
+                'hero' => 'elegant wedding cake dessert table',
+                'promo' => 'luxury french pastry patisserie',
+                'cta' => 'elegant celebration cake dessert',
+            ],
+            'fun' => [
+                'hero' => 'colorful cupcakes bakery display',
+                'promo' => 'birthday cake celebration colorful',
+                'cta' => 'sprinkles cupcakes colorful dessert',
+            ],
+            'modern' => [
+                'hero' => 'modern bakery pastry display',
+                'promo' => 'artisan pastry bakery counter',
+                'cta' => 'fresh baked pastries bakery',
+            ],
+        ];
+
+        return $byStyle[$style] ?? $byStyle['modern'];
     }
 
     protected function generateRichFallbackContent(array $business, array $prefs): array
@@ -187,8 +263,13 @@ Return JSON with these exact keys:
   "cta_subtext": "footer CTA subtext",
   "cta_btn_text": "footer CTA button text",
   "seo_title": "page title for SEO",
-  "seo_description": "meta description for SEO"
+  "seo_description": "meta description for SEO",
+  "hero_bg_search": "2-4 word Unsplash search phrase for a photo that fits this bakery's hero banner (e.g. 'rustic sourdough bread bakery')",
+  "promo_bg_search": "2-4 word Unsplash search phrase for a photo behind the promotional banner, distinct from the hero photo",
+  "cta_bg_search": "2-4 word Unsplash search phrase for a photo behind the closing call-to-action banner, distinct from the other two"
 }
+
+The three search phrases must describe real, photographable bakery/food/dessert scenes that match "{$name}"'s style ({$style}) and location/vibe — not abstract concepts, and not identical to each other.
 PROMPT;
     }
 

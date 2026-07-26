@@ -42,4 +42,9 @@ return [
         'site_id' => env('FORGE_SITE_ID'),
     ],
 
+    // ─── Unsplash API (AI-curated stock photo backgrounds) ───
+    'unsplash' => [
+        'access_key' => env('UNSPLASH_ACCESS_KEY'),
+    ],
+
 ];

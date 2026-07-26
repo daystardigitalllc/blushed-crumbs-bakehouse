@@ -332,7 +332,7 @@
                                 <tr>
                                     <td>
                                         <strong style="color:#fff;">{{ $tenant->name }}</strong><br>
-                                        <small style="color:#64748b;">{{ $tenant->subdomain ?? $tenant->slug }}.doughmain.pro.test</small>
+                                        <small style="color:#64748b;">{{ $tenant->subdomain ?? $tenant->slug }}.{{ $tenant->brand->domain ?? 'doughmain.pro' }}</small>
                                     </td>
                                     <td>
                                         <div>{{ $tenant->owner_name }}</div>
@@ -351,7 +351,7 @@
                                     <td>{{ $tenant->created_at ? $tenant->created_at->format('M d, Y') : 'N/A' }}</td>
                                     <td>
                                         <div style="display:flex; gap:8px;">
-                                            <a href="http://{{ $tenant->subdomain ?? $tenant->slug }}.doughmain.pro.test" target="_blank" class="btn-action btn-link">Visit Site ↗</a>
+                                            <a href="https://{{ $tenant->subdomain ?? $tenant->slug }}.{{ $tenant->brand->domain ?? 'doughmain.pro' }}" target="_blank" class="btn-action btn-link">Visit Site ↗</a>
                                             <a href="/site/{{ $tenant->subdomain ?? $tenant->slug }}/dashboard" target="_blank" class="btn-action btn-toggle" style="background:#475569;">Baker CMS ↗</a>
                                             <form method="POST" action="{{ route('superadmin.tenant.toggle', $tenant->id) }}" style="display:inline;">
                                                 @csrf
