@@ -38,6 +38,11 @@ class Tenant extends Model implements TenancyContract
         'domain',
         'subdomain',
         'custom_domain',
+        'custom_domain_status',
+        'custom_domain_token',
+        'custom_domain_verified_at',
+        'custom_domain_last_checked_at',
+        'custom_domain_last_error',
         'brand_id',
         'owner_name',
         'email',
@@ -69,6 +74,8 @@ class Tenant extends Model implements TenancyContract
         'gallery_images' => 'array',
         'onboarding_completed' => 'boolean',
         'is_active' => 'boolean',
+        'custom_domain_verified_at' => 'datetime',
+        'custom_domain_last_checked_at' => 'datetime',
     ];
 
     public static function getDefaultSiteContent(?string $bakeryName = null)

@@ -774,11 +774,29 @@ class AdminController extends Controller
             ], 422);
         }
 
-        $tenant->update(['custom_domain' => $domain ?: null]);
+        $previousDomain = $tenant->custom_domain;
+
+        if ($domain !== $previousDomain) {
+            // A changed or removed domain means the old routing entry (if any) is stale.
+            if ($previousDomain) {
+                $tenant->domains()->where('domain', strtolower($previousDomain))->delete();
+            }
+
+            $tenant->update([
+                'custom_domain' => $domain ?: null,
+                'custom_domain_status' => $domain ? 'pending' : 'unverified',
+                'custom_domain_token' => $domain ? Str::random(32) : null,
+                'custom_domain_verified_at' => null,
+                'custom_domain_last_checked_at' => null,
+                'custom_domain_last_error' => null,
+            ]);
+        }
 
         return response()->json([
             'success' => true,
-            'message' => $domain ? 'Custom domain saved! Point your DNS to our server.' : 'Custom domain removed.',
+            'message' => $domain ? 'Custom domain saved. Add the TXT record shown below, then click Verify DNS.' : 'Custom domain removed.',
+            'status' => $tenant->custom_domain_status,
+            'verification_token' => $tenant->custom_domain_token,
         ]);
     }
 
@@ -793,46 +811,36 @@ class AdminController extends Controller
             ], 403);
         }
 
-        $validated = $request->validate([
-            'custom_domain' => 'nullable|string|max:255',
-        ]);
-
-        $domain = strtolower(trim($validated['custom_domain'] ?? $tenant->custom_domain ?? ''));
-        $domain = preg_replace('#^https?://#', '', $domain);
-        $domain = trim($domain, '/');
-
-        if (!$domain) {
+        if (!$tenant->custom_domain) {
             return response()->json([
                 'success' => false,
-                'message' => 'Please enter a custom domain to verify.',
+                'message' => 'Save a custom domain first, then verify it.',
             ], 422);
         }
 
-        if (!str_contains($domain, '.') || str_contains($domain, ' ')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid domain format.',
-            ], 422);
-        }
+        $tenant->update(['custom_domain_status' => 'pending']);
 
-        if ($domain !== $tenant->custom_domain && Tenant::where('custom_domain', $domain)->where('id', '!=', $tenant->id)->exists()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This domain is already connected to another account.',
-            ], 422);
-        }
-
-        $resolved = @gethostbynamel($domain);
-        if (!$resolved) {
-            return response()->json([
-                'success' => false,
-                'message' => 'DNS lookup failed. Please point your domain to the platform host and try again after propagation.',
-            ], 422);
-        }
+        \App\Jobs\VerifyCustomDomainJob::dispatch($tenant->id, $tenant->custom_domain);
 
         return response()->json([
             'success' => true,
-            'message' => 'Domain resolves to: ' . implode(', ', $resolved) . '. Your custom domain should work once DNS propagation completes.',
+            'message' => 'Verification queued — this checks in the background and usually finishes within a few minutes. Refresh the status below.',
+            'status' => 'pending',
+        ]);
+    }
+
+    public function customDomainStatus(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        return response()->json([
+            'success' => true,
+            'custom_domain' => $tenant->custom_domain,
+            'status' => $tenant->custom_domain_status,
+            'verification_token' => $tenant->custom_domain_token,
+            'verified_at' => $tenant->custom_domain_verified_at,
+            'last_checked_at' => $tenant->custom_domain_last_checked_at,
+            'last_error' => $tenant->custom_domain_last_error,
         ]);
     }
 

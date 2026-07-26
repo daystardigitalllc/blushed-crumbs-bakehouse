@@ -1273,20 +1273,28 @@
                     <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
                         <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Custom Domain Connection</h4>
                         <p style="font-size:0.9rem; color:#555; margin-bottom:18px;">If you&rsquo;re on Doughmain Pro, connect your own domain so your bakery appears on a branded address like <strong>blushedcrumbsbakehouse.com</strong>.</p>
-                        <div style="display:flex; flex-direction:column; gap:14px;">
+                        <div style="display:flex; flex-direction:column; gap:14px;"
+                             data-custom-domain-status="{{ $tenant->custom_domain_status ?? 'unverified' }}"
+                             data-custom-domain-token="{{ $tenant->custom_domain_token ?? '' }}">
                             <input type="text" id="custom-domain-input" value="{{ $tenant->custom_domain ?? '' }}" placeholder="yourbakery.com" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1;">
                             <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
                                 <button type="button" class="btn btn-primary" onclick="saveCustomDomain()" style="padding:12px 18px;">Save Domain</button>
                                 <button type="button" class="btn btn-outline" onclick="verifyCustomDomain()" style="padding:12px 18px;">Verify DNS</button>
                                 <span id="custom-domain-status" style="font-size:0.9rem; color:#475569;"></span>
                             </div>
-                            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px; margin-top:14px;">
-                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">DNS setup guide</p>
+                            <div id="custom-domain-txt-instructions" style="background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:14px; {{ $tenant->custom_domain_token ? '' : 'display:none;' }}">
+                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 1 — Prove you own this domain</p>
+                                <p style="font-size:0.82rem; color:#475569; margin:0 0 8px 0;">Add this TXT record at your domain registrar (GoDaddy, Namecheap, etc.):</p>
+                                <p style="font-size:0.8rem; color:#334155; margin:0;">Host: <code>_doughmain-verify</code></p>
+                                <p style="font-size:0.8rem; color:#334155; margin:4px 0 0 0;">Value: <code id="custom-domain-txt-value">doughmain-verify={{ $tenant->custom_domain_token }}</code></p>
+                            </div>
+                            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
+                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 2 — Point the domain at us</p>
                                 <ul style="font-size:0.85rem; color:#475569; line-height:1.6; margin:0; padding-left:18px;">
-                                    <li><strong>www</strong> CNAME → <code>doughmain.pro</code></li>
-                                    <li><strong>@</strong> root A/ALIAS record → point to your platform host or follow registrar instructions for root domains</li>
+                                    <li><strong>www</strong> CNAME → <code>{{ $tenant->subdomain }}.doughmain.pro</code></li>
+                                    <li><strong>@</strong> root A record → follow your registrar's instructions for root domains, or use their "ALIAS"/"ANAME" option pointed at the same address</li>
                                 </ul>
-                                <p style="font-size:0.82rem; color:#64748b; margin:10px 0 0 0;">After saving, allow DNS propagation and then click Verify DNS. If you need the exact A record value, reach out to support.</p>
+                                <p style="font-size:0.82rem; color:#64748b; margin:10px 0 0 0;">After adding both records, click Verify DNS. This checks in the background and can take a few minutes — DNS changes aren't always instant.</p>
                             </div>
                         </div>
                     </div>
@@ -1366,6 +1374,19 @@
                 }
             }
 
+            let customDomainPollTimer = null;
+
+            function showCustomDomainTxtRecord(token) {
+                const box = document.getElementById('custom-domain-txt-instructions');
+                const valueEl = document.getElementById('custom-domain-txt-value');
+                if (token) {
+                    valueEl.innerText = 'doughmain-verify=' + token;
+                    box.style.display = '';
+                } else {
+                    box.style.display = 'none';
+                }
+            }
+
             async function saveCustomDomain() {
                 const input = document.getElementById('custom-domain-input');
                 const statusEl = document.getElementById('custom-domain-status');
@@ -1390,6 +1411,7 @@
                     if (data.success) {
                         statusEl.innerText = data.message;
                         statusEl.style.color = '#047857';
+                        showCustomDomainTxtRecord(data.verification_token);
                     } else {
                         statusEl.innerText = data.message || 'Unable to save custom domain.';
                         statusEl.style.color = '#b91c1c';
@@ -1402,15 +1424,9 @@
             }
 
             async function verifyCustomDomain() {
-                const input = document.getElementById('custom-domain-input');
                 const statusEl = document.getElementById('custom-domain-status');
-                const domain = input?.value?.trim();
-                if (!domain) {
-                    alert('Enter a custom domain before verification.');
-                    return;
-                }
 
-                statusEl.innerText = 'Checking DNS…';
+                statusEl.innerText = 'Verification queued…';
                 statusEl.style.color = '#2563eb';
 
                 try {
@@ -1420,19 +1436,58 @@
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({ custom_domain: domain })
+                        }
                     });
 
                     const data = await res.json();
-                    statusEl.innerText = data.message || (data.success ? 'Domain verified.' : 'Verification failed.');
-                    statusEl.style.color = data.success ? '#047857' : '#b91c1c';
+                    statusEl.innerText = data.message || (data.success ? 'Verification queued.' : 'Could not queue verification.');
+                    statusEl.style.color = data.success ? '#2563eb' : '#b91c1c';
+
+                    if (data.success) {
+                        pollCustomDomainStatus();
+                    }
                 } catch (err) {
                     console.error(err);
-                    statusEl.innerText = 'Error verifying domain.';
+                    statusEl.innerText = 'Error queuing verification.';
                     statusEl.style.color = '#b91c1c';
                 }
             }
+
+            async function pollCustomDomainStatus() {
+                const statusEl = document.getElementById('custom-domain-status');
+                if (customDomainPollTimer) {
+                    clearInterval(customDomainPollTimer);
+                }
+
+                customDomainPollTimer = setInterval(async () => {
+                    try {
+                        const res = await fetch('/dashboard/settings/domain/status', {
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        const data = await res.json();
+
+                        if (data.status === 'verified') {
+                            statusEl.innerText = 'Domain verified and live! 🎉';
+                            statusEl.style.color = '#047857';
+                            clearInterval(customDomainPollTimer);
+                        } else if (data.status === 'failed') {
+                            statusEl.innerText = data.last_error || 'Verification failed — check your DNS settings.';
+                            statusEl.style.color = '#b91c1c';
+                            clearInterval(customDomainPollTimer);
+                        }
+                        // still 'pending' -> keep polling
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }, 15000);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const domainCard = document.querySelector('[data-custom-domain-status]');
+                if (domainCard && domainCard.dataset.customDomainStatus === 'pending') {
+                    pollCustomDomainStatus();
+                }
+            });
 
             function previewBakeryLogoFile(input) {
                 if (input.files && input.files[0]) {
