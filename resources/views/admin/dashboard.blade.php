@@ -1648,6 +1648,12 @@
                     window.renderFieldsTable();
                 }
                 closeTermsEditModal();
+
+                // Persist immediately — editing text in this modal should not
+                // require a separate click on "Save Order Form Layout Live".
+                if (typeof window.saveFormSchemaToServer === 'function') {
+                    window.saveFormSchemaToServer();
+                }
             };
 
             async function handleSaveMenuSettings(e) {
