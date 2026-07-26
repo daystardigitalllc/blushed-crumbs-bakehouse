@@ -243,14 +243,19 @@ class StorefrontController extends Controller
         // Process file uploads with strict extension checks
         $inspirationFiles = [];
         if ($request->hasFile('inspiration_files')) {
+            $destinationPath = public_path('uploads/tenants/' . $tenant->id . '/inspiration');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic'];
             foreach ($request->file('inspiration_files') as $file) {
                 if ($file->isValid()) {
                     $ext = strtolower($file->getClientOriginalExtension());
                     if (in_array($ext, $allowedExtensions)) {
                         $filename = time() . '_' . uniqid() . '.' . $ext;
-                        $file->storeAs('tenants/' . $tenant->id . '/inspiration', $filename, 'public');
-                        $inspirationFiles[] = 'storage/tenants/' . $tenant->id . '/inspiration/' . $filename;
+                        $file->move($destinationPath, $filename);
+                        $inspirationFiles[] = 'uploads/tenants/' . $tenant->id . '/inspiration/' . $filename;
                     }
                 }
             }

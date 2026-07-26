@@ -12,18 +12,27 @@ use Illuminate\Support\Facades\Storage;
 
 class MigrateUploadsToStorageDisk extends Command
 {
-    protected $signature = 'tenants:migrate-uploads-to-storage {--dry-run : Report what would change without touching any files or records}';
+    protected $signature = 'tenants:migrate-uploads-to-storage
+        {--dry-run : Report what would change without touching any files or records}
+        {--rollback : Reverse a previous run — point DB records back at public/uploads/tenants/... (no files are touched; both copies already exist on disk)}';
 
-    protected $description = 'Copy tenant uploads from public/uploads/tenants into the storage/app/public disk and update DB records to the new "storage/tenants/..." path prefix, so uploads survive future zero-downtime deploys. Originals are left in place, not deleted.';
+    protected $description = 'Copy tenant uploads from public/uploads/tenants into the storage/app/public disk and update DB records to the new "storage/tenants/..." path prefix. Originals are left in place, not deleted, so --rollback can flip the DB paths back at any time.';
 
     private bool $dryRun = true;
+    private bool $rollback = false;
     private int $copied = 0;
     private int $skippedMissing = 0;
 
     public function handle(): int
     {
         $this->dryRun = (bool) $this->option('dry-run');
-        $this->info($this->dryRun ? 'DRY RUN — no files or records will be changed.' : 'LIVE RUN — files will be copied and records updated.');
+        $this->rollback = (bool) $this->option('rollback');
+
+        if ($this->rollback) {
+            $this->info($this->dryRun ? 'DRY RUN (rollback) — no records will be changed.' : 'LIVE RUN (rollback) — DB records will be pointed back at uploads/tenants/...');
+        } else {
+            $this->info($this->dryRun ? 'DRY RUN — no files or records will be changed.' : 'LIVE RUN — files will be copied and records updated.');
+        }
 
         $this->migrateTenantLogos();
         $this->migrateTenantJsonMediaPaths();
@@ -32,22 +41,33 @@ class MigrateUploadsToStorageDisk extends Command
         $this->migrateReviewPhotos();
         $this->migrateBrandLogos();
 
-        $this->info("Done. Files copied: {$this->copied}. Skipped (source missing): {$this->skippedMissing}.");
-
-        if (!$this->dryRun && $this->copied > 0) {
-            $this->info('Original files under public/uploads/tenants were left in place, not deleted.');
+        if ($this->rollback) {
+            $this->info("Done. Records reverted: {$this->copied}.");
+        } else {
+            $this->info("Done. Files copied: {$this->copied}. Skipped (source missing): {$this->skippedMissing}.");
+            if (!$this->dryRun && $this->copied > 0) {
+                $this->info('Original files under public/uploads/tenants were left in place, not deleted.');
+            }
         }
 
         return self::SUCCESS;
     }
 
     /**
-     * Given "uploads/tenants/{id}/{rest}", return "storage/tenants/{id}/{rest}",
-     * or null if the path doesn't match that pattern (already migrated, an
-     * external URL, or some other shape this migration shouldn't touch).
+     * Forward: "uploads/tenants/{id}/{rest}" -> "storage/tenants/{id}/{rest}".
+     * Rollback: "storage/tenants/{id}/{rest}" -> "uploads/tenants/{id}/{rest}".
+     * Returns null if the path doesn't match the expected source pattern.
      */
     private function resolveNewPath(string $path): ?string
     {
+        if ($this->rollback) {
+            if (!preg_match('#^storage/tenants/(\d+)/(.+)$#', $path, $m)) {
+                return null;
+            }
+
+            return "uploads/tenants/{$m[1]}/{$m[2]}";
+        }
+
         if (!preg_match('#^uploads/tenants/(\d+)/(.+)$#', $path, $m)) {
             return null;
         }
@@ -55,8 +75,20 @@ class MigrateUploadsToStorageDisk extends Command
         return "storage/tenants/{$m[1]}/{$m[2]}";
     }
 
+    /**
+     * Forward mode: copies the file from public/uploads to the storage disk.
+     * Rollback mode: doesn't touch any file — both copies already exist on
+     * disk from the original forward run, this only flips the DB string.
+     */
     private function copyFile(string $oldRelative, string $newRelative): bool
     {
+        if ($this->rollback) {
+            $this->line("  {$oldRelative} -> {$newRelative}");
+            $this->copied++;
+
+            return true;
+        }
+
         $oldFull = public_path($oldRelative);
         $newFull = Storage::disk('public')->path(substr($newRelative, strlen('storage/')));
 
