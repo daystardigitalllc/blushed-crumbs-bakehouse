@@ -57,12 +57,18 @@
         @if(!empty($sec['enabled']))
             @if($secId === 'hero')
                 <!-- Hero Section -->
-                @php $heroBg = $tenant->getSiteContent('hero_bg_url'); @endphp
-                <section class="hero-section" style="{{ !empty($heroBg) && !str_ends_with(strtolower($heroBg), '.mp4') ? 'background: linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)), url(' . asset($heroBg) . ') center/cover no-repeat;' : '' }}">
+                @php
+                    $heroBg = $tenant->getSiteContent('hero_bg_url');
+                    $heroCredit = $tenant->getSiteContent('hero_bg_credit');
+                @endphp
+                <section class="hero-section" style="{{ !empty($heroBg) && !str_ends_with(strtolower($heroBg), '.mp4') ? 'background: linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.7)), url(' . asset($heroBg) . ') center/cover no-repeat;' : '' }}">
                     @if(!empty($heroBg) && str_ends_with(strtolower($heroBg), '.mp4'))
                         <video autoplay loop muted playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.35; z-index:0;">
                             <source src="{{ asset($heroBg) }}" type="video/mp4">
                         </video>
+                    @endif
+                    @if(!empty($heroCredit['url']))
+                        <a href="{{ $heroCredit['url'] }}" target="_blank" rel="noopener" style="position:absolute; bottom:8px; right:12px; z-index:5; font-size:0.7rem; color:rgba(74,33,51,0.55); text-decoration:none;">Photo: {{ $heroCredit['name'] }} / Unsplash</a>
                     @endif
                     <img src="{{ asset('images/cherry_cake-removebg-preview.png') }}" class="raining-cake hero-cake-top-right" alt="Top Right Cherry Cake">
                     <img src="{{ asset('images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png') }}" class="raining-cake hero-cake-middle-left" alt="Middle Left Pink Crown Heart Cake">
@@ -95,6 +101,8 @@
                 <!-- Video Background Promo Banner -->
                 @php
                     $promoVid = $tenant->getSiteContent('promo_video_url');
+                    $promoBg = $tenant->getSiteContent('promo_bg_image_url');
+                    $promoCredit = $tenant->getSiteContent('promo_bg_credit');
                 @endphp
                 @if(!empty($promoVid))
                     <section class="video-promo-banner">
@@ -108,7 +116,10 @@
                         </div>
                     </section>
                 @else
-                    <section class="video-promo-banner" style="background: linear-gradient(135deg, var(--dark-text, #2a0818) 0%, #4a1531 100%); padding: 75px 25px; text-align: center;">
+                    <section class="video-promo-banner" style="position:relative; background: {{ !empty($promoBg) ? 'linear-gradient(135deg, rgba(42,8,24,0.82) 0%, rgba(74,21,49,0.82) 100%), url(' . asset($promoBg) . ') center/cover no-repeat' : 'linear-gradient(135deg, var(--dark-text, #2a0818) 0%, #4a1531 100%)' }}; padding: 75px 25px; text-align: center;">
+                        @if(!empty($promoCredit['url']))
+                            <a href="{{ $promoCredit['url'] }}" target="_blank" rel="noopener" style="position:absolute; bottom:8px; right:12px; z-index:5; font-size:0.7rem; color:rgba(255,255,255,0.55); text-decoration:none;">Photo: {{ $promoCredit['name'] }} / Unsplash</a>
+                        @endif
                         <div class="video-overlay-content" style="position:relative; z-index:2; max-width:720px; margin:0 auto;">
                             <span style="font-size:2.2rem; display:block; margin-bottom:10px;">🎁</span>
                             <h2 style="font-size:2.4rem; font-weight:800; color:#ffffff; margin-bottom:12px;">{{ $tenant->getSiteContent('promo_headline', 'Special Custom Bakery Orders!') }}</h2>
@@ -246,8 +257,15 @@
                 </section>
             @elseif($secId === 'cta_banner')
                 <!-- Footer Call to Action Banner -->
-                <section class="cta-video-banner" style="background: linear-gradient(135deg, var(--primary, #e67399) 0%, var(--pink-bg, #fff7fa) 100%); padding: 65px 25px; text-align: center; border-top: 1px solid rgba(0,0,0,0.04);">
-                    <div class="cta-content" style="max-width:750px; margin:0 auto;">
+                @php
+                    $ctaBg = $tenant->getSiteContent('cta_bg_image_url');
+                    $ctaCredit = $tenant->getSiteContent('cta_bg_credit');
+                @endphp
+                <section class="cta-video-banner" style="position:relative; background: {{ !empty($ctaBg) ? 'linear-gradient(135deg, rgba(230,115,153,0.78) 0%, rgba(255,247,250,0.82) 100%), url(' . asset($ctaBg) . ') center/cover no-repeat' : 'linear-gradient(135deg, var(--primary, #e67399) 0%, var(--pink-bg, #fff7fa) 100%)' }}; padding: 65px 25px; text-align: center; border-top: 1px solid rgba(0,0,0,0.04);">
+                    @if(!empty($ctaCredit['url']))
+                        <a href="{{ $ctaCredit['url'] }}" target="_blank" rel="noopener" style="position:absolute; bottom:8px; right:12px; z-index:5; font-size:0.7rem; color:rgba(44,36,25,0.5); text-decoration:none;">Photo: {{ $ctaCredit['name'] }} / Unsplash</a>
+                    @endif
+                    <div class="cta-content" style="max-width:750px; margin:0 auto; position:relative; z-index:2;">
                         <h2 style="font-family: 'Great Vibes', cursive; font-size: 3.8rem; color: var(--dark-text, #2c2419); margin-bottom: 10px;">{{ $tenant->getSiteContent('cta_headline', 'Ready For Your Perfect Cake?') }}</h2>
                         <p style="font-size: 1.1rem; color: var(--dark-text, #2c2419); opacity: 0.9; margin-bottom: 24px;">{{ $tenant->getSiteContent('cta_subtext', 'Order your plan or custom order now') }}</p>
                         <button onclick="openOrderModal()" class="btn btn-primary" style="padding: 14px 34px; font-size: 1.1rem; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">{{ $tenant->getSiteContent('cta_btn_text', 'Order Now') }}</button>
