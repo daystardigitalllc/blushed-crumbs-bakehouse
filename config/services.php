@@ -35,4 +35,11 @@ return [
         'model' => env('GEMINI_MODEL', 'gemini-3.5-flash-lite'),
     ],
 
+    // ─── Laravel Forge API (auto-provisioning SSL for verified custom domains) ───
+    'forge' => [
+        'token' => env('FORGE_API_TOKEN'),
+        'server_id' => env('FORGE_SERVER_ID'),
+        'site_id' => env('FORGE_SITE_ID'),
+    ],
+
 ];

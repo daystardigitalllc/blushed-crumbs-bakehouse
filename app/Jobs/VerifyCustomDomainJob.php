@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Tenant;
+use App\Services\ForgeService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,7 +21,7 @@ class VerifyCustomDomainJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 1;
-    public int $timeout = 20;
+    public int $timeout = 45;
 
     public function __construct(private int $tenantId, private string $domainAtQueueTime)
     {
@@ -67,6 +68,12 @@ class VerifyCustomDomainJob implements ShouldQueue
 
         // Make the domain actually routable: this is what ResolveTenant reads.
         $tenant->domains()->firstOrCreate(['domain' => strtolower($domain)]);
+
+        // Provision SSL automatically — no manual Forge dashboard clicks needed.
+        // If this fails (e.g. Forge API not configured, or rate-limited), the
+        // domain is still verified and routable; it just won't have HTTPS
+        // until this succeeds on a later attempt.
+        app(ForgeService::class)->requestCertificateFor($domain);
     }
 
     private function ownershipTokenPresent(string $domain, string $token): bool
