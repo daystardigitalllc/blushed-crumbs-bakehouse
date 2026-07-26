@@ -197,7 +197,7 @@
                         @elseif($type === 'terms')
                             <div class="terms-scroll-box" style="height:180px; overflow-y:auto; border:1px solid #eee; padding:15px; border-radius:12px; background:#fafafa; font-size:0.85rem; line-height:1.6; margin-bottom:15px;">
                                 @if(!empty($description))
-                                    {!! nl2br(e($description)) !!}
+                                    {!! $description !!}
                                 @else
                                     <p style="color:#666; font-style:italic;">Please consult the bakery directly for their order policies and terms.</p>
                                 @endif
