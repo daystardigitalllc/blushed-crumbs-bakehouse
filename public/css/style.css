@@ -1263,9 +1263,12 @@ body:not(.theme-sweet_elegant) .raining-cake {
 
 .footer-nav {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 30px;
+    gap: 16px 30px;
     margin-bottom: 20px;
+    max-width: 100%;
+    padding: 0 15px;
 }
 
 .footer-nav a,
@@ -2299,6 +2302,15 @@ body.theme-clean_minimal {
 
     .order-card {
         padding: 16px;
+    }
+
+    .footer-nav {
+        gap: 12px 20px;
+    }
+
+    .footer-nav a,
+    .footer-link {
+        font-size: 1.4rem;
     }
 
     .order-card-header {
