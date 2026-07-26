@@ -13,9 +13,9 @@ class AiContentService
 
     public function __construct()
     {
-        $this->apiKey = config('services.gemini.key', env('GEMINI_API_KEY', ''));
-        $this->model = config('services.gemini.model', env('GEMINI_MODEL', 'gemini-3.5-flash-lite'));
-        $this->imageModel = config('services.gemini.image_model', env('GEMINI_IMAGE_MODEL', 'gemini-2.5-flash-image'));
+        $this->apiKey = (string) (config('services.gemini.key') ?: '');
+        $this->model = (string) (config('services.gemini.model') ?: 'gemini-3.5-flash-lite');
+        $this->imageModel = (string) (config('services.gemini.image_model') ?: 'gemini-2.5-flash-image');
     }
 
     /**
