@@ -4,10 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Stancl\Tenancy\Contracts\Tenant as TenancyContract;
+use Stancl\Tenancy\Database\Concerns\HasDomains;
+use Stancl\Tenancy\Database\Concerns\HasInternalKeys;
+use Stancl\Tenancy\Database\Concerns\InvalidatesResolverCache;
+use Stancl\Tenancy\Database\Concerns\TenantRun;
 
-class Tenant extends Model
+class Tenant extends Model implements TenancyContract
 {
     use HasFactory;
+    use HasDomains;
+    use HasInternalKeys;
+    use InvalidatesResolverCache;
+    use TenantRun;
+
+    /**
+     * stancl/tenancy support — this app uses its own auto-increment integer
+     * primary key (not the package's default UUID), single database mode.
+     */
+    public function getTenantKeyName(): string
+    {
+        return 'id';
+    }
+
+    public function getTenantKey()
+    {
+        return $this->getAttribute($this->getTenantKeyName());
+    }
 
     protected $fillable = [
         'name',
