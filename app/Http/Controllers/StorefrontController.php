@@ -81,7 +81,8 @@ class StorefrontController extends Controller
         if (!$tenant) { abort(404, 'Bakery website not found.'); }
         $request->attributes->set('tenant', $tenant);
         app()->instance('tenant', $tenant);
-        return view('storefront.about', compact('tenant'));
+        $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
+        return view('storefront.about', compact('tenant', 'products'));
     }
 
     public function previewMenu(Request $request, $subdomain)
@@ -103,7 +104,8 @@ class StorefrontController extends Controller
         app()->instance('tenant', $tenant);
 
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
-        return view('storefront.gallery', compact('tenant', 'gallery'));
+        $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
+        return view('storefront.gallery', compact('tenant', 'gallery', 'products'));
     }
 
     public function previewPolicy(Request $request, $subdomain)
@@ -113,7 +115,8 @@ class StorefrontController extends Controller
         $request->attributes->set('tenant', $tenant);
         app()->instance('tenant', $tenant);
 
-        return view('storefront.policy', compact('tenant'));
+        $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
+        return view('storefront.policy', compact('tenant', 'products'));
     }
 
     public function previewPrivacy(Request $request, $subdomain)
@@ -143,7 +146,8 @@ class StorefrontController extends Controller
             abort(404, 'Bakery not found.');
         }
 
-        return view('storefront.about', compact('tenant'));
+        $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
+        return view('storefront.about', compact('tenant', 'products'));
     }
 
     public function menu(Request $request)
@@ -165,7 +169,8 @@ class StorefrontController extends Controller
         }
 
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
-        return view('storefront.gallery', compact('tenant', 'gallery'));
+        $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
+        return view('storefront.gallery', compact('tenant', 'gallery', 'products'));
     }
 
     public function policy(Request $request)
@@ -175,7 +180,8 @@ class StorefrontController extends Controller
             abort(404, 'Bakery not found.');
         }
 
-        return view('storefront.policy', compact('tenant'));
+        $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
+        return view('storefront.policy', compact('tenant', 'products'));
     }
 
     public function privacy(Request $request)
