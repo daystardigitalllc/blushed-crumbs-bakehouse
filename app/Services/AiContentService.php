@@ -3,31 +3,32 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AiContentService
 {
     protected string $apiKey;
     protected string $model;
-    protected UnsplashService $unsplash;
+    protected string $imageModel;
 
-    public function __construct(UnsplashService $unsplash)
+    public function __construct()
     {
         $this->apiKey = config('services.gemini.key', env('GEMINI_API_KEY', ''));
         $this->model = config('services.gemini.model', env('GEMINI_MODEL', 'gemini-3.5-flash-lite'));
-        $this->unsplash = $unsplash;
+        $this->imageModel = config('services.gemini.image_model', env('GEMINI_IMAGE_MODEL', 'gemini-2.5-flash-image'));
     }
 
     /**
      * Generate website content using Google Gemini API.
      *
-     * @param array $businessInfo  Name, location, hours, about, specialties
+     * @param array $businessInfo  Name, location, hours, about, specialties, tenant_id
      * @param array $preferences   Style, colors, personality
      * @return array
      */
     public function generateWebsiteContent(array $businessInfo, array $preferences): array
     {
         $content = null;
-        $searchQueries = null;
+        $imagePrompts = null;
 
         if (!empty($this->apiKey)) {
             $prompt = $this->buildPrompt($businessInfo, $preferences);
@@ -60,18 +61,18 @@ class AiContentService
                         $parsed = json_decode($cleanJson, true);
                         if (is_array($parsed)) {
                             $content = $this->mapToSiteContent($parsed, $businessInfo);
-                            $searchQueries = [
-                                'hero' => $parsed['hero_bg_search'] ?? null,
-                                'promo' => $parsed['promo_bg_search'] ?? null,
-                                'cta' => $parsed['cta_bg_search'] ?? null,
+                            $imagePrompts = [
+                                'hero' => $parsed['hero_bg_prompt'] ?? null,
+                                'promo' => $parsed['promo_bg_prompt'] ?? null,
+                                'cta' => $parsed['cta_bg_prompt'] ?? null,
                             ];
                         }
                     }
                 } else {
-                    \Illuminate\Support\Facades\Log::warning('Gemini API status ' . $response->status() . ': ' . $response->body());
+                    Log::warning('Gemini API status ' . $response->status() . ': ' . $response->body());
                 }
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error('Gemini API Error: ' . $e->getMessage());
+                Log::error('Gemini API Error: ' . $e->getMessage());
             }
         }
 
@@ -80,65 +81,140 @@ class AiContentService
             $content = $this->generateRichFallbackContent($businessInfo, $preferences);
         }
 
-        return $this->attachStockBackgrounds($content, $searchQueries, $preferences);
+        return $this->attachGeneratedBackgrounds($content, $imagePrompts, $preferences, $businessInfo['tenant_id'] ?? null);
     }
 
     /**
-     * Fetches a real stock photo for each background spot (hero, promo
-     * banner, CTA banner) using either Gemini's suggested search phrase or a
-     * sensible per-style default, and merges the result into the content.
-     * Any spot Unsplash can't fill just stays empty — the templates already
+     * Generates an actual background image per spot (hero, promo banner, CTA
+     * banner) with Gemini's image generation, using either the descriptive
+     * prompt Gemini itself suggested or a sensible per-style default. Any
+     * spot that fails to generate just stays empty — the templates already
      * fall back to a gradient when a background URL is blank.
      */
-    protected function attachStockBackgrounds(array $content, ?array $searchQueries, array $prefs): array
+    protected function attachGeneratedBackgrounds(array $content, ?array $imagePrompts, array $prefs, ?int $tenantId): array
     {
+        if (!$tenantId || empty($this->apiKey)) {
+            return $content;
+        }
+
         $style = $prefs['style'] ?? 'modern';
-        $defaults = $this->defaultBackgroundSearches($style);
+        $defaults = $this->defaultBackgroundPrompts($style);
 
         $spots = [
-            'hero' => ['field' => 'hero_bg_url', 'credit' => 'hero_bg_credit'],
-            'promo' => ['field' => 'promo_bg_image_url', 'credit' => 'promo_bg_credit'],
-            'cta' => ['field' => 'cta_bg_image_url', 'credit' => 'cta_bg_credit'],
+            'hero' => 'hero_bg_url',
+            'promo' => 'promo_bg_image_url',
+            'cta' => 'cta_bg_image_url',
         ];
 
-        foreach ($spots as $key => $target) {
-            $query = trim((string) ($searchQueries[$key] ?? '')) ?: $defaults[$key];
-            $photo = $this->unsplash->searchPhoto($query);
+        foreach ($spots as $key => $field) {
+            $prompt = trim((string) ($imagePrompts[$key] ?? '')) ?: $defaults[$key];
+            $path = $this->generateImage($prompt, $tenantId, $key);
 
-            if ($photo) {
-                $content[$target['field']] = $photo['url'];
-                $content[$target['credit']] = [
-                    'name' => $photo['credit_name'],
-                    'url' => $photo['credit_url'],
-                ];
+            if ($path) {
+                $content[$field] = $path;
             }
         }
 
         return $content;
     }
 
-    protected function defaultBackgroundSearches(string $style): array
+    /**
+     * Calls Gemini's image generation model and saves the result as an
+     * actual file under this tenant's uploads folder, same convention as
+     * every other tenant image in this app. Returns the relative path to
+     * store in site_content, or null if generation failed for any reason.
+     */
+    protected function generateImage(string $prompt, int $tenantId, string $slot): ?string
+    {
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/{$this->imageModel}:generateContent?key={$this->apiKey}";
+
+        try {
+            $response = Http::withoutVerifying()->withHeaders([
+                'Content-Type' => 'application/json',
+            ])->timeout(30)->post($url, [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt],
+                        ],
+                    ],
+                ],
+                'generationConfig' => [
+                    'responseModalities' => ['TEXT', 'IMAGE'],
+                ],
+            ]);
+
+            if (!$response->successful()) {
+                Log::warning('Gemini image generation failed.', [
+                    'slot' => $slot,
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+                return null;
+            }
+
+            $parts = $response->json('candidates.0.content.parts', []);
+            $base64 = null;
+            $mime = 'image/png';
+
+            foreach ($parts as $part) {
+                if (!empty($part['inlineData']['data'])) {
+                    $base64 = $part['inlineData']['data'];
+                    $mime = $part['inlineData']['mimeType'] ?? $mime;
+                    break;
+                }
+            }
+
+            if (!$base64) {
+                Log::warning('Gemini image generation returned no image data.', ['slot' => $slot]);
+
+                return null;
+            }
+
+            $extension = str_contains($mime, 'jpeg') ? 'jpg' : 'png';
+            $filename = $slot . '_' . time() . '.' . $extension;
+            $destPath = public_path("uploads/tenants/{$tenantId}/ai-backgrounds");
+
+            if (!file_exists($destPath)) {
+                mkdir($destPath, 0755, true);
+            }
+
+            file_put_contents($destPath . '/' . $filename, base64_decode($base64));
+
+            return "uploads/tenants/{$tenantId}/ai-backgrounds/{$filename}";
+        } catch (\Throwable $e) {
+            Log::error('Gemini image generation threw an exception.', [
+                'slot' => $slot,
+                'message' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    protected function defaultBackgroundPrompts(string $style): array
     {
         $byStyle = [
             'rustic' => [
-                'hero' => 'rustic bakery bread wood table',
-                'promo' => 'artisan sourdough bread bakery',
-                'cta' => 'fresh baked bread rustic kitchen',
+                'hero' => 'Professional food photography of warm, rustic sourdough bread loaves on a wooden table, soft natural window light, cozy bakery interior, shallow depth of field, no text or watermarks.',
+                'promo' => 'Professional food photography of an artisan bakery counter with fresh bread and pastries, warm rustic lighting, wood tones, no text or watermarks.',
+                'cta' => 'Professional food photography, close-up of fresh baked bread cooling on a rustic wooden surface, warm golden light, no text or watermarks.',
             ],
             'luxury' => [
-                'hero' => 'elegant wedding cake dessert table',
-                'promo' => 'luxury french pastry patisserie',
-                'cta' => 'elegant celebration cake dessert',
+                'hero' => 'Professional food photography of an elegant multi-tier wedding cake with delicate sugar flowers, soft romantic lighting, luxurious dessert table, no text or watermarks.',
+                'promo' => 'Professional food photography of refined French pastries and macarons on a marble surface, elegant soft lighting, no text or watermarks.',
+                'cta' => 'Professional food photography, elegant celebration cake with gold accents, soft romantic lighting, luxurious atmosphere, no text or watermarks.',
             ],
             'fun' => [
-                'hero' => 'colorful cupcakes bakery display',
-                'promo' => 'birthday cake celebration colorful',
-                'cta' => 'sprinkles cupcakes colorful dessert',
+                'hero' => 'Bright, colorful professional food photography of playful decorated cupcakes with rainbow sprinkles, cheerful natural lighting, no text or watermarks.',
+                'promo' => 'Bright, colorful professional food photography of a fun birthday cake with festive decorations, cheerful lighting, no text or watermarks.',
+                'cta' => 'Bright, colorful professional food photography, playful dessert display with sprinkles and bright colors, cheerful lighting, no text or watermarks.',
             ],
             'modern' => [
-                'hero' => 'modern bakery pastry display',
-                'promo' => 'artisan pastry bakery counter',
-                'cta' => 'fresh baked pastries bakery',
+                'hero' => 'Professional food photography of a modern minimalist bakery display case with artisan pastries, clean bright lighting, no text or watermarks.',
+                'promo' => 'Professional food photography of a modern bakery counter with fresh pastries, clean contemporary styling, bright lighting, no text or watermarks.',
+                'cta' => 'Professional food photography, close-up of freshly baked modern pastries, clean bright lighting, minimalist styling, no text or watermarks.',
             ],
         ];
 
@@ -264,12 +340,12 @@ Return JSON with these exact keys:
   "cta_btn_text": "footer CTA button text",
   "seo_title": "page title for SEO",
   "seo_description": "meta description for SEO",
-  "hero_bg_search": "2-4 word Unsplash search phrase for a photo that fits this bakery's hero banner (e.g. 'rustic sourdough bread bakery')",
-  "promo_bg_search": "2-4 word Unsplash search phrase for a photo behind the promotional banner, distinct from the hero photo",
-  "cta_bg_search": "2-4 word Unsplash search phrase for a photo behind the closing call-to-action banner, distinct from the other two"
+  "hero_bg_prompt": "a detailed image-generation prompt (one sentence) describing a professional food-photography background image for this bakery's hero banner — style, lighting, composition, matching \\"{$name}\\"'s {$style} vibe",
+  "promo_bg_prompt": "a detailed image-generation prompt for the promotional banner background, distinct scene from the hero image",
+  "cta_bg_prompt": "a detailed image-generation prompt for the closing call-to-action banner background, distinct scene from the other two"
 }
 
-The three search phrases must describe real, photographable bakery/food/dessert scenes that match "{$name}"'s style ({$style}) and location/vibe — not abstract concepts, and not identical to each other.
+The three image prompts must describe real, photographable bakery/food/dessert scenes — not abstract concepts, not identical to each other — and must always end with "no text or watermarks".
 PROMPT;
     }
 

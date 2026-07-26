@@ -29,10 +29,11 @@ return [
         ],
     ],
 
-    // ─── Google Gemini API (for AI website generation) ───
+    // ─── Google Gemini API (for AI website generation, copy + background images) ───
     'gemini' => [
         'key' => env('GEMINI_API_KEY'),
         'model' => env('GEMINI_MODEL', 'gemini-3.5-flash-lite'),
+        'image_model' => env('GEMINI_IMAGE_MODEL', 'gemini-2.5-flash-image'),
     ],
 
     // ─── Laravel Forge API (auto-provisioning SSL for verified custom domains) ───
@@ -40,11 +41,6 @@ return [
         'token' => env('FORGE_API_TOKEN'),
         'server_id' => env('FORGE_SERVER_ID'),
         'site_id' => env('FORGE_SITE_ID'),
-    ],
-
-    // ─── Unsplash API (AI-curated stock photo backgrounds) ───
-    'unsplash' => [
-        'access_key' => env('UNSPLASH_ACCESS_KEY'),
     ],
 
 ];

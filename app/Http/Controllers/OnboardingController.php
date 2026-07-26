@@ -211,6 +211,7 @@ class OnboardingController extends Controller
         // Generate tailored website copy using AiContentService (Gemini API with rich smart fallback)
         $aiService = app(\App\Services\AiContentService::class);
         $generated = $aiService->generateWebsiteContent([
+            'tenant_id' => $tenant->id,
             'name' => $tenant->name,
             'location' => $content['contact_location'] ?? '',
             'hours' => $content['contact_hours'] ?? '',
