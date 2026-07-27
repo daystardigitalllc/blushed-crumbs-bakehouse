@@ -100,18 +100,19 @@ class OnboardingDoctor extends Command
             }
 
             foreach (glob($root . '/*', GLOB_ONLYDIR) ?: [] as $tenantDir) {
-                $rows->push([
-                    basename($label, '/*'),
-                    basename($tenantDir),
-                    $this->formatBytes($this->directorySize($tenantDir)),
-                ]);
+                $bytes = $this->directorySize($tenantDir);
+                $rows->push([$label, basename($tenantDir), $bytes]);
             }
         }
 
         if ($rows->isEmpty()) {
             $this->line('No per-tenant upload directories found under public/uploads/tenants or storage/app/public/tenants.');
         } else {
-            $this->table(['Location', 'Tenant ID', 'Size on disk'], $rows->sortByDesc(fn ($row) => $row[2])->values());
+            $sorted = $rows->sortByDesc(fn ($row) => $row[2])->values();
+            $this->table(
+                ['Location', 'Tenant ID', 'Size on disk'],
+                $sorted->map(fn ($row) => [$row[0], $row[1], $this->formatBytes($row[2])])
+            );
         }
 
         $flatUploads = public_path('uploads');
@@ -137,7 +138,7 @@ class OnboardingDoctor extends Command
         $unrecognized = 0;
         $total = 0;
 
-        GalleryItem::query()->select('image_url')->chunkById(500, function ($items) use (&$counts, &$unrecognized, &$total, $buckets) {
+        GalleryItem::query()->select('id', 'image_url')->chunkById(500, function ($items) use (&$counts, &$unrecognized, &$total, $buckets) {
             foreach ($items as $item) {
                 $total++;
                 $matched = false;
