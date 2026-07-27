@@ -47,6 +47,15 @@ class Tenant extends Model implements TenancyContract
         'owner_name',
         'email',
         'phone',
+        'address_line1',
+        'address_line2',
+        'city',
+        'state',
+        'postal_code',
+        'country_code',
+        'business_type',
+        'website_url',
+        'timezone',
         'plan_tier',
         'theme_id',
         'logo_path',
@@ -60,6 +69,10 @@ class Tenant extends Model implements TenancyContract
         'booking_settings',
         'ai_generated_content',
         'onboarding_completed',
+        'onboarding_flow_version',
+        'onboarding_started_at',
+        'onboarding_completed_at',
+        'active_onboarding_draft_id',
         'max_reviews_display',
         'is_active',
     ];
@@ -73,10 +86,56 @@ class Tenant extends Model implements TenancyContract
         'ai_generated_content' => 'array',
         'gallery_images' => 'array',
         'onboarding_completed' => 'boolean',
+        'onboarding_started_at' => 'datetime',
+        'onboarding_completed_at' => 'datetime',
         'is_active' => 'boolean',
         'custom_domain_verified_at' => 'datetime',
         'custom_domain_last_checked_at' => 'datetime',
     ];
+
+    /**
+     * The canonical set of site_content keys in real use across the app —
+     * codified so it stops being tribal knowledge. Not all keys have a
+     * default in getDefaultSiteContent() yet (e.g. seo_title/seo_description
+     * are written by the AI prompt but currently dropped before persisting —
+     * a known bug, fixed in a later phase, not here).
+     */
+    public static function siteContentSchema(): array
+    {
+        return [
+            'hero_subheading',
+            'hero_headline',
+            'hero_cta_primary',
+            'hero_cta_secondary',
+            'hero_bg_url',
+            'highlights',
+            'promo_video_url',
+            'promo_headline',
+            'promo_subtext',
+            'promo_bg_image_url',
+            'how_it_works',
+            'categories',
+            'whimsical_title',
+            'whimsical_bullets',
+            'whimsical_image_url',
+            'reviews',
+            'faqs',
+            'menu',
+            'cta_banner_url',
+            'cta_bg_image_url',
+            'cta_headline',
+            'cta_subtext',
+            'cta_btn_text',
+            'about_title',
+            'about_bio',
+            'contact_hours',
+            'contact_location',
+            'contact_instagram',
+            'contact_facebook',
+            'seo_title',
+            'seo_description',
+        ];
+    }
 
     public static function getDefaultSiteContent(?string $bakeryName = null)
     {
@@ -315,5 +374,15 @@ class Tenant extends Model implements TenancyContract
     public function supportTickets()
     {
         return $this->hasMany(SupportTicket::class);
+    }
+
+    public function onboardingDrafts()
+    {
+        return $this->hasMany(\App\Models\Onboarding\OnboardingDraft::class);
+    }
+
+    public function activeOnboardingDraft()
+    {
+        return $this->belongsTo(\App\Models\Onboarding\OnboardingDraft::class, 'active_onboarding_draft_id');
     }
 }

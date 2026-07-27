@@ -18,10 +18,37 @@ class GalleryItem extends Model
         'title',
         'category',
         'image_url',
+        'alt_text',
+        'quality_score',
+        'caption',
+        'ai_labels',
+        'sort_order',
+        'is_hero',
+        'is_visible',
+        'image_hash',
+        'width',
+        'height',
+        'source',
+        'onboarding_file_id',
+    ];
+
+    protected $casts = [
+        'quality_score' => 'decimal:2',
+        'ai_labels' => 'array',
+        'sort_order' => 'integer',
+        'is_hero' => 'boolean',
+        'is_visible' => 'boolean',
+        'width' => 'integer',
+        'height' => 'integer',
     ];
 
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    public function onboardingFile()
+    {
+        return $this->belongsTo(\App\Models\Onboarding\OnboardingFile::class, 'onboarding_file_id');
     }
 }
