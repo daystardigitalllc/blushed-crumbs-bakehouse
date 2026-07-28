@@ -817,6 +817,7 @@ body {
     background-color: var(--pink-bg);
     text-align: center;
     padding: 100px 20px;
+    height: 90vh;
     position: relative;
     display: flex;
     align-items: center;
