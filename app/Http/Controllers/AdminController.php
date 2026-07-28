@@ -45,6 +45,10 @@ class AdminController extends Controller
                 return redirect('/admin');
             }
             if ($user && $user->tenant) {
+                $domain = $user->tenant->domains()->first()?->domain;
+                if ($domain) {
+                    return redirect('https://' . $domain . '/dashboard');
+                }
                 $sub = $user->tenant->subdomain ?? $user->tenant->slug;
                 return redirect('/site/' . $sub . '/dashboard');
             }
