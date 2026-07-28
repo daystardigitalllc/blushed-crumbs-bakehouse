@@ -777,6 +777,13 @@ body {
     z-index: 100;
 }
 
+.site-header:has(+ #storefront-view .hero-section) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
 .header-container {
     max-width: 1200px;
     margin: 0 auto;
