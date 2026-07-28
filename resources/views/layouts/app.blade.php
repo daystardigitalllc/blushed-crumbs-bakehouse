@@ -10,6 +10,17 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     <meta name="description" content="Custom artisanal cakes, cupcakes, treat boxes & wedding baking in Tennessee. Order custom cakes online with ease.">
     <meta name="csrf-token" content="{{ csrf_token() ?? '' }}">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="@yield('title', 'Blushed Crumbs Bakehouse | Where Every Celebration Gets Its Sweet Ending')">
+    <meta property="og:description" content="@yield('og_description', 'Custom artisanal cakes, cupcakes, treat boxes & wedding baking in Tennessee. Order custom cakes online with ease.')">
+    <meta property="og:image" content="@yield('og_image', asset('images/og_image.jpg'))">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', 'Blushed Crumbs Bakehouse | Where Every Celebration Gets Its Sweet Ending')">
+    <meta name="twitter:description" content="@yield('og_description', 'Custom artisanal cakes, cupcakes, treat boxes & wedding baking in Tennessee. Order custom cakes online with ease.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/og_image.jpg'))">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
