@@ -1017,7 +1017,7 @@ body:not(.theme-sweet_elegant) .raining-cake {
     gap: 20px;
     max-width: 100%;
     margin: 0 auto;
-    padding: 10px 25px 40px 25px;
+    padding: 40px 25px;
     position: relative;
     z-index: 10;
 }
