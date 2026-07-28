@@ -13,6 +13,8 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\Customer;
 use App\Models\GalleryItem;
+use Stripe\StripeClient;
+use Stripe\Exception\ApiErrorException;
 use App\Models\SupportTicket;
 
 class AdminController extends Controller
@@ -43,6 +45,10 @@ class AdminController extends Controller
                 return redirect('/admin');
             }
             if ($user && $user->tenant) {
+                $domain = $user->tenant->domains()->first()?->domain;
+                if ($domain) {
+                    return redirect('https://' . $domain . '/dashboard');
+                }
                 $sub = $user->tenant->subdomain ?? $user->tenant->slug;
                 return redirect('/site/' . $sub . '/dashboard');
             }
@@ -862,10 +868,36 @@ class AdminController extends Controller
     public function cancelSubscription(Request $request)
     {
         $tenant = $this->tenant($request);
+
+        if ($tenant->stripe_subscription_id) {
+            try {
+                $stripe = new StripeClient(config('services.stripe.secret'));
+                $subscription = $stripe->subscriptions->retrieve($tenant->stripe_subscription_id);
+                if ($subscription->status !== 'canceled') {
+                    $stripe->subscriptions->cancel($tenant->stripe_subscription_id);
+                }
+            } catch (ApiErrorException $e) {
+                \Illuminate\Support\Facades\Log::error('Stripe subscription cancel failed', [
+                    'tenant_id' => $tenant->id,
+                    'stripe_subscription_id' => $tenant->stripe_subscription_id,
+                    'error' => $e->getMessage(),
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'We could not cancel your subscription with our payment provider. Please contact support.',
+                ], 502);
+            }
+        }
+
         $tenant->update([
             'is_active' => false,
             'plan_tier' => 'canceled',
         ]);
+
+        \App\Models\AuditLog::logEvent('billing.cancel_subscription', $tenant->id, $request->user()?->id, [
+            'stripe_subscription_id' => $tenant->stripe_subscription_id,
+        ], 'info');
 
         return response()->json([
             'success' => true,

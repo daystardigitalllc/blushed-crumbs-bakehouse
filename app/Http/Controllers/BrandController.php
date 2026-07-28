@@ -86,7 +86,21 @@ class BrandController extends Controller
             return redirect()->back()->with('error', 'You cannot delete your own active superadmin account.');
         }
 
-        $user->delete();
+        $tenant = $user->tenant;
+        $isSoleTenantUser = $tenant && $tenant->users()->count() === 1;
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($user, $tenant, $isSoleTenantUser) {
+            $user->delete();
+
+            if ($isSoleTenantUser) {
+                $tenant->delete();
+            }
+        });
+
+        if ($isSoleTenantUser) {
+            return redirect()->back()->with('success', "User account deleted, and their bakery \"{$tenant->name}\" was removed since they were its only user.");
+        }
+
         return redirect()->back()->with('success', 'User account deleted.');
     }
 

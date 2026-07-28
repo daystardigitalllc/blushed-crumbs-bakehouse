@@ -53,4 +53,9 @@ return [
         'site_id' => env('FORGE_SITE_ID'),
     ],
 
+    // ─── Stripe (Pro plan billing) ───
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET'),
+    ],
+
 ];

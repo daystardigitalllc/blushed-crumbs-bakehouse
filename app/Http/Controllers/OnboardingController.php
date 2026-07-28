@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tenant;
+use Stripe\StripeClient;
 
 class OnboardingController extends Controller
 {
@@ -302,10 +303,35 @@ class OnboardingController extends Controller
         if ($tenant) {
             $tenant->plan_tier = 'pro';
             $tenant->onboarding_completed = true;
+
+            // If Stripe gave us a checkout session_id, look it up to capture the
+            // customer/subscription IDs so we can cancel the subscription via the
+            // API later (Payment Links don't otherwise hand us these).
+            $sessionId = $request->input('session_id');
+            if ($sessionId && config('services.stripe.secret')) {
+                try {
+                    $stripe = new StripeClient(config('services.stripe.secret'));
+                    $session = $stripe->checkout->sessions->retrieve($sessionId, ['expand' => ['subscription']]);
+
+                    if ($session->customer) {
+                        $tenant->stripe_customer_id = is_string($session->customer) ? $session->customer : $session->customer->id;
+                    }
+                    if ($session->subscription) {
+                        $tenant->stripe_subscription_id = is_string($session->subscription) ? $session->subscription : $session->subscription->id;
+                    }
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::warning('Stripe checkout session lookup failed', [
+                        'tenant_id' => $tenant->id,
+                        'session_id' => $sessionId,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+
             $tenant->save();
 
             \App\Models\AuditLog::logEvent('billing.upgrade_pro', $tenant->id, $user ? $user->id : null, [
-                'session_id' => $request->input('session_id'),
+                'session_id' => $sessionId,
             ], 'info');
 
             if (auth()->check()) {
