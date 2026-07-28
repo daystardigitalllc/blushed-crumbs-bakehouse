@@ -58,9 +58,7 @@ body.theme-rustic_kitchen .raining-cake {
 }
 
 body.theme-rustic_kitchen .site-header {
-    background: #f6ecd9 !important;
-    border-bottom: 3px solid #8a5a2e;
-    box-shadow: 0 2px 14px rgba(59, 42, 26, 0.08);
+    background: transparent !important;
 }
 
 body.theme-rustic_kitchen .hero-section {
@@ -184,11 +182,7 @@ body.theme-modern_bakery .raining-cake {
 }
 
 body.theme-modern_bakery .site-header {
-    background: rgba(255, 255, 255, 0.55) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 30px rgba(30, 27, 75, 0.08);
+    background: transparent !important;
 }
 
 body.theme-modern_bakery .hero-section {
@@ -320,7 +314,7 @@ body.theme-playful_treats .hero-cloud-elementor-bottom {
 }
 
 body.theme-playful_treats .site-header {
-    background-color: #cffaff !important;
+    background: transparent !important;
 }
 
 body.theme-playful_treats .hero-section {
@@ -436,8 +430,7 @@ body.theme-country_farmhouse .raining-cake {
 }
 
 body.theme-country_farmhouse .site-header {
-    background-color: #f5efe7 !important;
-    border-bottom: 2px solid #d4c4b0;
+    background: transparent !important;
 }
 
 body.theme-country_farmhouse .hero-section {
@@ -553,8 +546,7 @@ body.theme-artisan_sourdough .raining-cake {
 }
 
 body.theme-artisan_sourdough .site-header {
-    background-color: #f7f0e3 !important;
-    border-bottom: 2px solid #e0d3c1;
+    background: transparent !important;
 }
 
 body.theme-artisan_sourdough .hero-section {
@@ -670,8 +662,7 @@ body.theme-clean_minimal .raining-cake {
 }
 
 body.theme-clean_minimal .site-header {
-    background-color: #ffffff !important;
-    border-bottom: 1px solid #e5e5e5;
+    background: transparent !important;
 }
 
 body.theme-clean_minimal .hero-section {
@@ -809,14 +800,14 @@ body {
 
 .nav-links a {
     text-decoration: none;
-    color: #4a2133;
+    color: var(--dark-text, #4a2133);
     font-weight: 600;
     font-size: 1.05rem;
     cursor: pointer;
 }
 
 .nav-links a:hover {
-    color: white;
+    color: var(--primary);
 }
 
 .admin-btn {
