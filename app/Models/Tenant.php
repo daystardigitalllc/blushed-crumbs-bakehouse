@@ -57,6 +57,8 @@ class Tenant extends Model implements TenancyContract
         'website_url',
         'timezone',
         'plan_tier',
+        'stripe_customer_id',
+        'stripe_subscription_id',
         'theme_id',
         'logo_path',
         'gallery_images',
