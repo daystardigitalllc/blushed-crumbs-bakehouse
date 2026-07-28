@@ -58,4 +58,12 @@ return [
     // Gemini's own per-request inline-data cap — a batch (or a single large PDF)
     // that would exceed this falls back to a local-only result instead of erroring.
     'ai_max_request_bytes' => env('ONBOARDING_AI_MAX_REQUEST_BYTES', 18 * 1024 * 1024),
+
+    // ─── Synthesis (Phase 5) ───
+    'synthesis_max_categories' => env('ONBOARDING_SYNTHESIS_MAX_CATEGORIES', 6),
+    // 85% per the plan ("fuzzy collapse at 85%") — how similar two raw category
+    // names need to be (via similar_text()) to merge into the same canonical bucket.
+    'synthesis_category_similarity_threshold' => env('ONBOARDING_SYNTHESIS_CATEGORY_SIMILARITY_THRESHOLD', 85.0),
+    // Copywriting needs some creativity, unlike extraction's 0.2 (transcription).
+    'synthesis_temperature' => env('ONBOARDING_SYNTHESIS_TEMPERATURE', 0.7),
 ];

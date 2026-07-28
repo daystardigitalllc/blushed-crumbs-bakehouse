@@ -6,7 +6,6 @@ use App\Models\Onboarding\AiExtractionCache;
 use App\Models\Onboarding\OnboardingFile;
 use App\Services\Onboarding\TenantMediaPath;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 /**
  * The real extractor. Never throws and never leaves a file unresolved —
@@ -186,59 +185,7 @@ class GeminiExtractionService implements ExtractorInterface
      */
     private function callGemini(array $contents, string $systemInstruction, array $schema, ?int $expectedCount): ?array
     {
-        try {
-            $raw = $this->client->generateJson($contents, $systemInstruction, $schema);
-        } catch (\Throwable $e) {
-            Log::warning('Gemini extraction call failed.', ['message' => $e->getMessage()]);
-
-            return null;
-        }
-
-        $decoded = $this->tryDecode($raw['text'] ?? null, $expectedCount);
-        if ($decoded !== null) {
-            return $decoded;
-        }
-
-        // One repair retry: ask Gemini to fix its own malformed output rather
-        // than silently discarding a whole batch's worth of real analysis.
-        try {
-            $repairPrompt = 'The following was supposed to be valid JSON matching the required schema but failed to '
-                . "parse or didn't match the expected shape. Return ONLY corrected valid JSON, nothing else.\n\n"
-                . ($raw['text'] ?? '(empty response)');
-
-            $repaired = $this->client->generateJson(
-                [['role' => 'user', 'parts' => [['text' => $repairPrompt]]]],
-                $systemInstruction,
-                $schema
-            );
-
-            return $this->tryDecode($repaired['text'] ?? null, $expectedCount);
-        } catch (\Throwable $e) {
-            Log::warning('Gemini extraction repair retry failed.', ['message' => $e->getMessage()]);
-
-            return null;
-        }
-    }
-
-    private function tryDecode(?string $text, ?int $expectedCount): ?array
-    {
-        if (!$text) {
-            return null;
-        }
-
-        $clean = preg_replace('/^```(?:json)?\s*/i', '', trim($text));
-        $clean = preg_replace('/\s*```$/', '', $clean ?? '');
-        $decoded = json_decode($clean ?? '', true);
-
-        if (!is_array($decoded)) {
-            return null;
-        }
-
-        if ($expectedCount !== null && count($decoded) !== $expectedCount) {
-            return null;
-        }
-
-        return $decoded;
+        return $this->client->generateJsonWithRepair($contents, $systemInstruction, $schema, $expectedCount, temperature: 0.2);
     }
 
     // ─── Prompts / schemas ───

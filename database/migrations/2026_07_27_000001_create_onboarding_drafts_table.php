@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
             $table->foreignId('parent_draft_id')->nullable()->constrained('onboarding_drafts')->nullOnDelete();
             $table->unsignedInteger('version')->default(1);
-            $table->string('status')->default('collecting'); // collecting, extracting, ready_for_review, importing, imported, failed
+            $table->string('status')->default('collecting'); // collecting, extracting, synthesizing, ready_for_review, importing, imported, failed
             $table->json('basics')->nullable(); // step 1 form data
             $table->json('proposed_content')->nullable(); // synthesized site_content + theme + categories
             $table->string('theme_id')->nullable();

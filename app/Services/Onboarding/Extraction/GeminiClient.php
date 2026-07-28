@@ -62,6 +62,72 @@ class GeminiClient
         return ['text' => $text, 'usage' => $usage ?? []];
     }
 
+    /**
+     * generateJson() plus the "one repair retry" JSON-safety layer: if the
+     * response can't be parsed (or its top-level array length doesn't match
+     * $expectedCount, when given), asks Gemini once to fix its own broken
+     * output before giving up. Shared by every extraction/synthesis caller
+     * so this policy lives in exactly one place.
+     *
+     * @return array|null decoded JSON array, or null if unrecoverable after the repair attempt
+     */
+    public function generateJsonWithRepair(array $contents, string $systemInstruction, array $responseSchema, ?int $expectedCount = null, ?string $model = null, float $temperature = 0.2): ?array
+    {
+        try {
+            $raw = $this->generateJson($contents, $systemInstruction, $responseSchema, $model, $temperature);
+        } catch (\Throwable $e) {
+            Log::warning('Gemini call failed.', ['message' => $e->getMessage()]);
+
+            return null;
+        }
+
+        $decoded = $this->tryDecode($raw['text'] ?? null, $expectedCount);
+        if ($decoded !== null) {
+            return $decoded;
+        }
+
+        try {
+            $repairPrompt = 'The following was supposed to be valid JSON matching the required schema but failed to '
+                . "parse or didn't match the expected shape. Return ONLY corrected valid JSON, nothing else.\n\n"
+                . ($raw['text'] ?? '(empty response)');
+
+            $repaired = $this->generateJson(
+                [['role' => 'user', 'parts' => [['text' => $repairPrompt]]]],
+                $systemInstruction,
+                $responseSchema,
+                $model,
+                $temperature
+            );
+
+            return $this->tryDecode($repaired['text'] ?? null, $expectedCount);
+        } catch (\Throwable $e) {
+            Log::warning('Gemini repair retry failed.', ['message' => $e->getMessage()]);
+
+            return null;
+        }
+    }
+
+    private function tryDecode(?string $text, ?int $expectedCount): ?array
+    {
+        if (!$text) {
+            return null;
+        }
+
+        $clean = preg_replace('/^```(?:json)?\s*/i', '', trim($text));
+        $clean = preg_replace('/\s*```$/', '', $clean ?? '');
+        $decoded = json_decode($clean ?? '', true);
+
+        if (!is_array($decoded)) {
+            return null;
+        }
+
+        if ($expectedCount !== null && count($decoded) !== $expectedCount) {
+            return null;
+        }
+
+        return $decoded;
+    }
+
     private function postWithRetry(string $url, array $payload, int $attempts = 3): Response
     {
         $lastResponse = null;

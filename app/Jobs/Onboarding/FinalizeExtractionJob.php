@@ -50,27 +50,31 @@ class FinalizeExtractionJob implements ShouldQueue
             return; // recovered files are non-terminal again — not done yet
         }
 
-        if (in_array($draft->status, ['importing', 'imported'], true)) {
-            return; // extraction outcome no longer relevant once import has started
+        if (in_array($draft->status, ['synthesizing', 'ready_for_review', 'importing', 'imported'], true)) {
+            return; // extraction outcome no longer relevant once synthesis or import has started
         }
 
         if (!OnboardingProgress::isExtractionComplete($draft->id)) {
             return;
         }
 
-        if ($draft->status !== 'ready_for_review') {
-            $draft->status = 'ready_for_review';
-            $draft->extraction_completed_at = now();
-            $draft->save();
+        // Extraction's done — hand off to synthesis (Phase 5). 'ready_for_review'
+        // means the full proposal (site content, theme, products) is ready for
+        // the baker, not just that extraction finished — that's what
+        // 'synthesizing' is for in between.
+        $draft->status = 'synthesizing';
+        $draft->extraction_completed_at = now();
+        $draft->save();
 
-            OnboardingEvent::create([
-                'draft_id' => $draft->id,
-                'tenant_id' => $draft->tenant_id,
-                'type' => 'draft_extraction_completed',
-                'message' => 'All files reached a terminal state.',
-                'payload' => OnboardingProgress::statusCounts($draft->id),
-            ]);
-        }
+        OnboardingEvent::create([
+            'draft_id' => $draft->id,
+            'tenant_id' => $draft->tenant_id,
+            'type' => 'draft_extraction_completed',
+            'message' => 'All files reached a terminal state.',
+            'payload' => OnboardingProgress::statusCounts($draft->id),
+        ]);
+
+        SynthesizeDraftJob::dispatch($draft->id);
     }
 
     private function sweepStuckFiles(OnboardingDraft $draft): int

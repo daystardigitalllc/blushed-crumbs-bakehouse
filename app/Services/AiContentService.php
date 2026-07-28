@@ -370,6 +370,8 @@ PROMPT;
             'cta_headline' => $ai['cta_headline'] ?? '',
             'cta_subtext' => $ai['cta_subtext'] ?? '',
             'cta_btn_text' => $ai['cta_btn_text'] ?? 'Order Now',
+            'seo_title' => $ai['seo_title'] ?? '',
+            'seo_description' => $ai['seo_description'] ?? '',
         ];
     }
 }

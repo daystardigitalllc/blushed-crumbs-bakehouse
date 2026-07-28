@@ -95,10 +95,10 @@ class Tenant extends Model implements TenancyContract
 
     /**
      * The canonical set of site_content keys in real use across the app —
-     * codified so it stops being tribal knowledge. Not all keys have a
-     * default in getDefaultSiteContent() yet (e.g. seo_title/seo_description
-     * are written by the AI prompt but currently dropped before persisting —
-     * a known bug, fixed in a later phase, not here).
+     * codified so it stops being tribal knowledge. Not every key has a
+     * default in getDefaultSiteContent() (the image/video URL keys and
+     * `menu` are intentionally left unset there — they're resolved from
+     * actual uploaded/generated media, not invented as text).
      */
     public static function siteContentSchema(): array
     {
