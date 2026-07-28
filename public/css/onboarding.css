@@ -194,3 +194,346 @@ body.ob-shell {
     border-radius: var(--ob-radius-md);
   }
 }
+
+/* ─── Phase 8: wizard-specific components ─── */
+
+.ob-card--wide {
+  max-width: 720px;
+}
+
+.ob-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ob-space-2);
+}
+
+.ob-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ob-color-fg);
+}
+
+.ob-input {
+  min-height: 44px;
+  padding: 0 var(--ob-space-2);
+  border: 1px solid var(--ob-color-border);
+  border-radius: var(--ob-radius-sm);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--ob-color-fg);
+  background: var(--ob-color-bg-elevated);
+}
+
+.ob-input:focus-visible {
+  outline: 2px solid var(--ob-color-ring);
+  outline-offset: 1px;
+}
+
+.ob-field-error {
+  color: var(--ob-color-destructive);
+  font-weight: 400;
+}
+
+.ob-form > .ob-btn {
+  align-self: flex-start;
+  margin-top: var(--ob-space-1);
+}
+
+/* Dropzone + per-file upload rows */
+
+.ob-dropzone {
+  border: 2px dashed var(--ob-color-border);
+  border-radius: var(--ob-radius-md);
+  padding: var(--ob-space-4);
+  text-align: center;
+  margin-bottom: var(--ob-space-3);
+  transition: border-color var(--ob-transition), background var(--ob-transition);
+}
+
+.ob-dropzone--active {
+  border-color: var(--ob-color-primary);
+  background: var(--ob-color-muted);
+}
+
+.ob-dropzone-input {
+  display: none;
+}
+
+.ob-dropzone-uploads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ob-space-1);
+  margin-top: var(--ob-space-3);
+  text-align: left;
+}
+
+.ob-upload-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 100px auto;
+  align-items: center;
+  gap: var(--ob-space-2);
+  font-size: 0.8125rem;
+}
+
+.ob-upload-row--failed .ob-upload-status {
+  color: var(--ob-color-destructive);
+}
+
+.ob-upload-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ob-upload-progress-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ob-color-muted);
+  overflow: hidden;
+}
+
+.ob-upload-progress-fill {
+  height: 100%;
+  background: var(--ob-color-primary);
+  transition: width 150ms linear;
+}
+
+.ob-upload-retry {
+  min-height: 32px;
+  padding: 0 var(--ob-space-2);
+  border: 1px solid var(--ob-color-border);
+  border-radius: var(--ob-radius-sm);
+  background: transparent;
+  color: var(--ob-color-primary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+/* File grid (upload step) */
+
+.ob-file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: var(--ob-space-2);
+  margin-bottom: var(--ob-space-3);
+}
+
+.ob-file-tile {
+  border: 1px solid var(--ob-color-border);
+  border-radius: var(--ob-radius-sm);
+  padding: var(--ob-space-2);
+  text-align: center;
+  background: var(--ob-color-bg-elevated);
+}
+
+.ob-file-tile-icon {
+  font-size: 1.5rem;
+}
+
+.ob-file-tile-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+
+.ob-file-tile-status {
+  font-size: 0.6875rem;
+  color: var(--ob-color-fg-muted);
+}
+
+.ob-file-tile--failed .ob-file-tile-status {
+  color: var(--ob-color-destructive);
+}
+
+.ob-file-grid-empty,
+.ob-review-empty {
+  color: var(--ob-color-fg-muted);
+  font-size: 0.875rem;
+}
+
+/* Progress widget + activity feed (analyzing step) */
+
+.ob-progress-widget {
+  margin-bottom: var(--ob-space-3);
+}
+
+.ob-progress-label {
+  margin: var(--ob-space-1) 0 0;
+  font-size: 0.8125rem;
+  color: var(--ob-color-fg-muted);
+}
+
+.ob-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--ob-color-border);
+  border-radius: var(--ob-radius-sm);
+}
+
+.ob-activity-item {
+  display: flex;
+  gap: var(--ob-space-2);
+  padding: var(--ob-space-1) var(--ob-space-2);
+  font-size: 0.8125rem;
+  border-bottom: 1px solid var(--ob-color-border);
+}
+
+.ob-activity-item:last-child {
+  border-bottom: none;
+}
+
+.ob-activity-time {
+  color: var(--ob-color-fg-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.ob-activity-empty {
+  padding: var(--ob-space-2);
+  color: var(--ob-color-fg-muted);
+  font-size: 0.8125rem;
+}
+
+/* Review step */
+
+.ob-review-section {
+  margin-bottom: var(--ob-space-4);
+}
+
+.ob-review-section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 var(--ob-space-2);
+}
+
+.ob-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--ob-space-2);
+}
+
+.ob-theme-swatch {
+  border: 2px solid var(--ob-color-border);
+  border-radius: var(--ob-radius-sm);
+  padding: var(--ob-space-2);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.ob-theme-swatch--selected {
+  box-shadow: 0 0 0 3px var(--ob-color-primary);
+}
+
+.ob-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ob-space-1);
+}
+
+.ob-chip {
+  background: var(--ob-color-muted);
+  color: var(--ob-color-fg);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.ob-product-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ob-space-1);
+}
+
+.ob-product-row {
+  display: grid;
+  grid-template-columns: 1fr 120px auto;
+  gap: var(--ob-space-1);
+  align-items: center;
+}
+
+.ob-input--price {
+  text-align: right;
+}
+
+.ob-btn-icon {
+  min-width: 44px;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  color: var(--ob-color-fg-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  border-radius: var(--ob-radius-sm);
+}
+
+.ob-btn-icon:hover {
+  background: var(--ob-color-muted);
+  color: var(--ob-color-destructive);
+}
+
+.ob-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--ob-space-2);
+}
+
+.ob-gallery-tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--ob-radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--ob-color-border);
+}
+
+.ob-gallery-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ob-gallery-hero-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: var(--ob-color-primary);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.ob-gallery-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  min-width: 28px;
+  min-height: 28px;
+}
+
+@media (max-width: 640px) {
+  .ob-upload-row,
+  .ob-product-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .ob-upload-progress-track {
+    display: none;
+  }
+}

@@ -1,0 +1,193 @@
+<?php
+
+namespace App\Livewire\Onboarding;
+
+use App\Jobs\Onboarding\ImportDraftJob;
+use App\Models\Onboarding\OnboardingDraft;
+use App\Models\Tenant;
+use Illuminate\Support\Facades\URL;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
+use Livewire\Component;
+
+/**
+ * The full-page wizard at /onboarding/v2/{draft?}. Real URLs (not query
+ * params or session state) so a resume email is a plain deep link, and it
+ * stays under /onboarding/* so ResolveTenant's tenant binding still fires.
+ *
+ * $draftId is #[Locked] — an unlocked Livewire property is client-writable
+ * on every request, and an unlocked draft ID here would be a straight IDOR
+ * into another tenant's draft. Every child component re-derives and
+ * re-verifies tenant ownership independently rather than trusting the
+ * parent passed a safe value.
+ *
+ * Steps only ever advance on a verified backend state (a saved model, a
+ * draft status read fresh from the DB), never optimistically — this is
+ * what fixes the legacy wizard's silent data loss on a failed request.
+ */
+class Wizard extends Component
+{
+    #[Locked]
+    public int $draftId;
+
+    public string $step = 'basics';
+
+    public array $basicsForm = [
+        'business_name' => '',
+        'hours' => '',
+        'location' => '',
+        'instagram' => '',
+        'facebook' => '',
+        'selected_plan' => 'free',
+    ];
+
+    public function mount(?OnboardingDraft $draft = null): void
+    {
+        $tenantId = auth()->user()->tenant_id;
+
+        if ($draft) {
+            abort_unless($draft->tenant_id === $tenantId, 403);
+            $this->draftId = $draft->id;
+        } else {
+            $existing = OnboardingDraft::where('tenant_id', $tenantId)
+                ->where('status', '!=', 'imported')
+                ->orderByDesc('version')
+                ->first();
+
+            $draft = $existing ?? OnboardingDraft::create([
+                'tenant_id' => $tenantId,
+                'version' => (int) (OnboardingDraft::where('tenant_id', $tenantId)->max('version') ?? 0) + 1,
+                'status' => 'collecting',
+                'last_activity_at' => now(),
+            ]);
+
+            $this->redirect(route('onboarding.v2.wizard', ['draft' => $draft->id]), navigate: false);
+
+            return;
+        }
+
+        $this->basicsForm = array_merge($this->basicsForm, $draft->basics ?? []);
+        $this->step = $this->stepForStatus($draft->status);
+    }
+
+    #[Computed]
+    public function draft(): OnboardingDraft
+    {
+        $draft = OnboardingDraft::findOrFail($this->draftId);
+        abort_unless($draft->tenant_id === auth()->user()->tenant_id, 403);
+
+        return $draft;
+    }
+
+    #[Computed]
+    public function tenant(): Tenant
+    {
+        return Tenant::findOrFail(auth()->user()->tenant_id);
+    }
+
+    /** Signed URL the hand-written uploader JS posts each file to (see Phase 2's OnboardingUploadController). */
+    #[Computed]
+    public function uploadUrl(): string
+    {
+        return URL::temporarySignedRoute(
+            'onboarding.upload.store',
+            now()->addMinutes((int) config('onboarding.upload_url_ttl_minutes', 180)),
+            ['draft' => $this->draftId]
+        );
+    }
+
+    public function saveBasics(): void
+    {
+        $validated = $this->validate([
+            'basicsForm.business_name' => 'required|string|max:255',
+            'basicsForm.hours' => 'nullable|string|max:255',
+            'basicsForm.location' => 'nullable|string|max:255',
+            'basicsForm.instagram' => 'nullable|string|max:255',
+            'basicsForm.facebook' => 'nullable|string|max:255',
+            'basicsForm.selected_plan' => 'in:free,pro',
+        ]);
+
+        $draft = $this->draft();
+        $draft->basics = $validated['basicsForm'];
+        $draft->last_activity_at = now();
+        $draft->save();
+
+        $this->step = 'upload';
+    }
+
+    public function continueToAnalysis(): void
+    {
+        if ($this->draft()->status === 'ready_for_review') {
+            $this->step = 'review';
+
+            return;
+        }
+
+        $this->step = 'analyzing';
+    }
+
+    /** Polled while step === 'analyzing' — the extraction/synthesis pipeline (Phases 3-5) runs entirely in the background. */
+    public function checkProgress(): void
+    {
+        $status = $this->draft()->status;
+
+        if ($status === 'ready_for_review') {
+            $this->step = 'review';
+        } elseif ($status === 'failed') {
+            $this->step = 'analyzing_failed';
+        }
+    }
+
+    public function buildSite(): void
+    {
+        $draft = $this->draft();
+        abort_unless($draft->status === 'ready_for_review', 403);
+
+        ImportDraftJob::dispatch($draft->id);
+        $this->step = 'building';
+    }
+
+    /** Polled while step === 'building'. */
+    public function checkImport(): void
+    {
+        $status = $this->draft()->status;
+
+        if ($status === 'imported') {
+            $this->step = 'done';
+        } elseif ($status === 'failed') {
+            $this->step = 'building_failed';
+        }
+    }
+
+    private function stepForStatus(string $status): string
+    {
+        return match ($status) {
+            'collecting' => empty($this->basicsForm['business_name']) ? 'basics' : 'upload',
+            'extracting', 'synthesizing' => 'analyzing',
+            'ready_for_review' => 'review',
+            'importing' => 'building',
+            'imported' => 'done',
+            'failed' => 'analyzing_failed',
+            default => 'basics',
+        };
+    }
+
+    public function render()
+    {
+        return view('livewire.onboarding.wizard')
+            ->layout('components.layouts.onboarding', ['title' => 'Build Your Bakery Website', 'progress' => $this->stepProgressPercent()]);
+    }
+
+    private function stepProgressPercent(): int
+    {
+        return match ($this->step) {
+            'basics' => 10,
+            'upload' => 25,
+            'analyzing', 'analyzing_failed' => 55,
+            'review' => 75,
+            'building', 'building_failed' => 90,
+            'done' => 100,
+            default => 0,
+        };
+    }
+}

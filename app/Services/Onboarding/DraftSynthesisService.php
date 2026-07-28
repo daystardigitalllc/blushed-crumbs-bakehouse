@@ -174,24 +174,14 @@ class DraftSynthesisService
     // ─── Theme gating ───
 
     /**
-     * Mirrors the legacy OnboardingController's starter-vs-pro gating (it
-     * enforces this at validation time rather than inside
-     * getAvailableThemesForTenant(), which other callers like AdminController
-     * rely on returning the unfiltered set) — sweet_elegant stays excluded
-     * for every non-Blushed-Crumbs tenant either way.
+     * Tenant::onboardingAvailableThemes() holds the actual gating rule
+     * (starter-vs-pro, mirroring the legacy OnboardingController's own
+     * validation-time gating) — shared with the Phase 8 review UI so the
+     * picker there can't offer a theme synthesis was never allowed to choose.
      */
     private function availableThemeChoices(OnboardingDraft $draft, Tenant $tenant): array
     {
-        $all = $tenant->getAvailableThemesForTenant();
-
-        $isPro = $tenant->plan_tier === 'pro' || ($draft->basics['selected_plan'] ?? null) === 'pro';
-        if ($isPro) {
-            return array_keys($all);
-        }
-
-        $starterKeys = array_keys(Tenant::getStarterThemes());
-
-        return array_values(array_intersect($starterKeys, array_keys($all)));
+        return array_keys($tenant->onboardingAvailableThemes($draft->basics['selected_plan'] ?? null));
     }
 
     private function resolveTheme(?string $proposed, array $choices): string

@@ -65,6 +65,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/onboarding/v2/files/{file}/preview/{derivative?}', [OnboardingUploadController::class, 'preview'])
         ->name('onboarding.v2.file.preview');
 
+    // Phase 8 — the real wizard. Real URL (not query params/session state)
+    // so a resume email is a plain deep link; {draft?} lets a fresh visit
+    // resume/create automatically (see Wizard::mount()).
+    Route::get('/onboarding/v2/{draft?}', \App\Livewire\Onboarding\Wizard::class)
+        ->name('onboarding.v2.wizard');
+
     // Data Privacy & Compliance Endpoints (GDPR/CCPA Data Export & Deletion)
     Route::get('/account/data-export', [LegalController::class, 'exportData'])->name('account.data.export');
     Route::post('/account/delete-request', [LegalController::class, 'requestDeletion'])->name('account.delete.request');

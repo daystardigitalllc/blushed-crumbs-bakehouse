@@ -258,6 +258,25 @@ class Tenant extends Model implements TenancyContract
     }
 
     /**
+     * The onboarding flow's own theme gating (starter-only unless pro),
+     * layered on top of getAvailableThemesForTenant()'s sweet_elegant
+     * exclusivity. Shared by DraftSynthesisService (Phase 5, picks the
+     * enum Gemini is constrained to) and the review UI (Phase 8, so the
+     * picker can't offer a theme synthesis was never allowed to choose)
+     * — kept in one place rather than duplicated in both.
+     */
+    public function onboardingAvailableThemes(?string $selectedPlan = null): array
+    {
+        $all = $this->getAvailableThemesForTenant();
+
+        if ($this->plan_tier === 'pro' || $selectedPlan === 'pro') {
+            return $all;
+        }
+
+        return array_intersect_key($all, array_flip(array_keys(static::getStarterThemes())));
+    }
+
+    /**
      * Master theme registry — all themes across the platform.
      */
     public static function getAllThemes(): array
