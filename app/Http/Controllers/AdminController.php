@@ -203,15 +203,7 @@ class AdminController extends Controller
         $tenant = $this->tenant($request);
         $item = GalleryItem::where('tenant_id', $tenant->id)->findOrFail($id);
 
-        if ($item->image_url && str_starts_with($item->image_url, 'storage/')) {
-            $relativePath = str_replace('storage/', '', $item->image_url);
-            Storage::disk('public')->delete($relativePath);
-        } elseif ($item->image_url && str_starts_with($item->image_url, 'uploads/')) {
-            $legacyFullPath = public_path($item->image_url);
-            if (file_exists($legacyFullPath)) {
-                @unlink($legacyFullPath);
-            }
-        }
+        \App\Services\Onboarding\TenantMediaPath::deleteLegacy($item->image_url);
 
         $item->delete();
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\OnboardingUploadController;
 
 use App\Http\Controllers\LegalController;
 
@@ -58,6 +59,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/onboarding/import-social', [OnboardingController::class, 'importSocial'])->name('onboarding.social.import');
     Route::post('/onboarding/generate', [OnboardingController::class, 'generate'])->name('onboarding.generate');
     Route::post('/onboarding/publish', [OnboardingController::class, 'publish'])->name('onboarding.publish');
+
+    // v2 rebuild — authenticated preview streaming for private draft files.
+    // Stays under /onboarding/* so ResolveTenant's tenant binding still fires.
+    Route::get('/onboarding/v2/files/{file}/preview/{derivative?}', [OnboardingUploadController::class, 'preview'])
+        ->name('onboarding.v2.file.preview');
 
     // Data Privacy & Compliance Endpoints (GDPR/CCPA Data Export & Deletion)
     Route::get('/account/data-export', [LegalController::class, 'exportData'])->name('account.data.export');
