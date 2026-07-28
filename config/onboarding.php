@@ -66,4 +66,9 @@ return [
     'synthesis_category_similarity_threshold' => env('ONBOARDING_SYNTHESIS_CATEGORY_SIMILARITY_THRESHOLD', 85.0),
     // Copywriting needs some creativity, unlike extraction's 0.2 (transcription).
     'synthesis_temperature' => env('ONBOARDING_SYNTHESIS_TEMPERATURE', 0.7),
+
+    // ─── Import (Phase 6) ───
+    // A draft stuck in 'importing' longer than this means its worker died
+    // mid-copy — onboarding:sweep-stuck-imports cleans up and resets it.
+    'import_stuck_minutes' => env('ONBOARDING_IMPORT_STUCK_MINUTES', 15),
 ];
