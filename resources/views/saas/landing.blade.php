@@ -2,6 +2,8 @@
 
 @section('title', 'BakeBox SaaS | All-in-One Bakery Management & Custom Storefront Platform')
 
+@section('og_image', asset('images/og_image.jpg'))
+
 @section('content')
 <header class="site-header">
     <div class="header-container">
