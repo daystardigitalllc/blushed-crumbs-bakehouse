@@ -10,12 +10,16 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 /**
- * Runs the configured extractor (config('onboarding.extractor') — a
- * deterministic stub until Phase 4 swaps in Gemini) over every file in one
- * claimed batch. Each file is wrapped in its own try/catch: one bad file
- * must not sink the rest of its batch or block the draft's finalize check.
+ * Runs the configured extractor (config('onboarding.extractor') —
+ * GeminiExtractionService, or StubExtractor in tests) over one claimed
+ * batch in a single call. The extractor is expected to never throw and to
+ * return a result for every file it was given; the try/catch here is a
+ * defensive backstop so a bug in a future extractor implementation degrades
+ * to "this batch's files go back through the pipeline" rather than crashing
+ * the job and leaving them wedged in 'extracting' until the stuck sweep.
  */
 class ExtractBatchJob implements ShouldQueue
 {
@@ -50,22 +54,34 @@ class ExtractBatchJob implements ShouldQueue
             throw new \RuntimeException('config(onboarding.extractor) must implement ExtractorInterface.');
         }
 
+        try {
+            $results = $extractor->extractBatch($files);
+        } catch (\Throwable $e) {
+            Log::warning('Extractor threw for a whole batch — marking every file in it failed.', [
+                'batch_id' => $this->batchId,
+                'message' => $e->getMessage(),
+            ]);
+
+            $results = [];
+            foreach ($files as $file) {
+                $results[$file->id] = ['ok' => false, 'error' => $e->getMessage()];
+            }
+        }
+
         foreach ($files as $file) {
-            $this->extractOne($extractor, $file);
+            $this->applyResult($file, $results[$file->id] ?? ['ok' => false, 'error' => 'No result returned for this file.']);
         }
 
         FinalizeExtractionJob::dispatch($this->draftId);
     }
 
-    private function extractOne(ExtractorInterface $extractor, OnboardingFile $file): void
+    private function applyResult(OnboardingFile $file, array $result): void
     {
-        try {
-            $extracted = $extractor->extract($file);
-
+        if ($result['ok'] ?? false) {
             $file->status = 'extracted';
-            $file->alt_text = $extracted['alt_text'] ?? $file->alt_text;
-            $file->ai_labels = $extracted['labels'] ?? [];
-            $file->ai_result = $extracted['result'] ?? [];
+            $file->alt_text = $result['alt_text'] ?? $file->alt_text;
+            $file->ai_labels = $result['labels'] ?? [];
+            $file->ai_result = $result['result'] ?? [];
             $file->extracted_at = now();
             $file->save();
 
@@ -76,18 +92,20 @@ class ExtractBatchJob implements ShouldQueue
                 'message' => $file->original_filename,
                 'payload' => ['file_id' => $file->id, 'batch_id' => $this->batchId],
             ]);
-        } catch (\Throwable $e) {
-            $file->status = 'failed';
-            $file->error_message = $e->getMessage();
-            $file->save();
 
-            OnboardingEvent::create([
-                'draft_id' => $file->draft_id,
-                'tenant_id' => $file->tenant_id,
-                'type' => 'file_extraction_failed',
-                'message' => $file->original_filename,
-                'payload' => ['file_id' => $file->id, 'batch_id' => $this->batchId, 'error' => $e->getMessage()],
-            ]);
+            return;
         }
+
+        $file->status = 'failed';
+        $file->error_message = $result['error'] ?? 'Extraction failed.';
+        $file->save();
+
+        OnboardingEvent::create([
+            'draft_id' => $file->draft_id,
+            'tenant_id' => $file->tenant_id,
+            'type' => 'file_extraction_failed',
+            'message' => $file->original_filename,
+            'payload' => ['file_id' => $file->id, 'batch_id' => $this->batchId, 'error' => $file->error_message],
+        ]);
     }
 }

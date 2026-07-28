@@ -105,18 +105,27 @@ class DispatchPendingExtractionsJob implements ShouldQueue, ShouldBeUnique
 
         $batchId = (string) Str::uuid();
 
-        $claimed = DB::table('onboarding_files')
+        $query = DB::table('onboarding_files')
             ->where('draft_id', $draftId)
             ->where('kind', $kind)
-            ->where('status', 'pending')
-            ->orderBy('id')
-            ->limit($limit)
-            ->update([
-                'status' => 'extracting',
-                'batch_id' => $batchId,
-                'claimed_at' => now(),
-                'updated_at' => now(),
-            ]);
+            ->where('status', 'pending');
+
+        // Best-first for images: local quality score decides which images get
+        // semantic analysis first (Phase 4's AI budget cap spends on the best
+        // photos, not just whichever uploaded first). Nulls sort last in both
+        // MySQL and SQLite's DESC ordering, so unscored images fall to the back.
+        if ($kind === 'image') {
+            $query->orderByDesc('quality_score')->orderBy('id');
+        } else {
+            $query->orderBy('id');
+        }
+
+        $claimed = $query->limit($limit)->update([
+            'status' => 'extracting',
+            'batch_id' => $batchId,
+            'claimed_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return $claimed > 0 ? $batchId : null;
     }

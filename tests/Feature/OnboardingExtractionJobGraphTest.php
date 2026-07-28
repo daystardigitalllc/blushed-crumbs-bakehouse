@@ -8,6 +8,7 @@ use App\Models\Onboarding\OnboardingDraft;
 use App\Models\Onboarding\OnboardingEvent;
 use App\Models\Onboarding\OnboardingFile;
 use App\Models\Tenant;
+use App\Services\Onboarding\Extraction\StubExtractor;
 use App\Services\Onboarding\OnboardingProgress;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -39,6 +40,12 @@ class OnboardingExtractionJobGraphTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Pin the deterministic stub explicitly — this suite tests the job
+        // graph's mechanics (claiming, batching, sweep), not Gemini, and
+        // must stay decoupled from whatever config('onboarding.extractor')
+        // defaults to.
+        config(['onboarding.extractor' => StubExtractor::class]);
 
         $this->tenant = Tenant::create([
             'name' => 'Test Bakery',

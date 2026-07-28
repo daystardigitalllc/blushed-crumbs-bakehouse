@@ -32,9 +32,11 @@ return [
     'upload_url_ttl_minutes' => env('ONBOARDING_UPLOAD_URL_TTL_MINUTES', 180),
 
     // ─── Extraction job graph (Phase 3) ───
-    // Swapped to a real GeminiExtractionService class-string in Phase 4 — ExtractBatchJob
-    // only knows it gets something implementing ExtractorInterface.
-    'extractor' => env('ONBOARDING_EXTRACTOR_CLASS', \App\Services\Onboarding\Extraction\StubExtractor::class),
+    // Phase 4: points at the real Gemini extractor now that it exists. Falls
+    // back to local-only results per file whenever no API key is configured,
+    // so tests and any environment without GEMINI_API_KEY never make a real
+    // network call — see GeminiExtractionService::hasApiKey().
+    'extractor' => env('ONBOARDING_EXTRACTOR_CLASS', \App\Services\Onboarding\Extraction\GeminiExtractionService::class),
     'extraction_batch_size_images' => env('ONBOARDING_EXTRACTION_BATCH_SIZE_IMAGES', 6),
     'extraction_batch_size_pdfs' => env('ONBOARDING_EXTRACTION_BATCH_SIZE_PDFS', 1),
     // How long IngestOnboardingFileJob waits before triggering a dispatch pass — lets a
@@ -43,4 +45,17 @@ return [
     // A file still 'extracting' longer than this means its worker died mid-batch —
     // FinalizeExtractionJob's stuck sweep resets it to 'pending' for reclaiming.
     'extraction_stuck_minutes' => env('ONBOARDING_EXTRACTION_STUCK_MINUTES', 10),
+
+    // ─── Gemini extraction (Phase 4) ───
+    // "~50 vision calls per 300-image onboarding" per the plan's Risks section —
+    // local quality score decides which images get semantic analysis, best-first
+    // (see DispatchPendingExtractionsJob's claim ordering); beyond this cap,
+    // images still import with local score + a filename-derived alt text.
+    'ai_max_images_per_draft' => env('ONBOARDING_AI_MAX_IMAGES_PER_DRAFT', 50),
+    // Bump this to invalidate ai_extraction_cache after a prompt/schema change
+    // without touching content_hash or the model name.
+    'ai_prompt_version' => env('ONBOARDING_AI_PROMPT_VERSION', 'v1'),
+    // Gemini's own per-request inline-data cap — a batch (or a single large PDF)
+    // that would exceed this falls back to a local-only result instead of erroring.
+    'ai_max_request_bytes' => env('ONBOARDING_AI_MAX_REQUEST_BYTES', 18 * 1024 * 1024),
 ];

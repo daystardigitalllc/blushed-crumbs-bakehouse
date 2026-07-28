@@ -3,28 +3,36 @@
 namespace App\Services\Onboarding\Extraction;
 
 use App\Models\Onboarding\OnboardingFile;
+use Illuminate\Support\Collection;
 
 /**
- * Deterministic stand-in for the real Gemini extractor (Phase 4) — same
- * input always produces the same output, no network call, no randomness.
- * Lets Phase 3's job graph (claiming, batching, failure recovery) be built
- * and verified without depending on AI output or spending API budget.
+ * Deterministic stand-in for GeminiExtractionService — same input always
+ * produces the same output, no network call, no randomness. Tests pin this
+ * explicitly via config('onboarding.extractor') so the job-graph mechanics
+ * (claiming, batching, failure recovery) stay decoupled from Gemini.
  */
 class StubExtractor implements ExtractorInterface
 {
-    public function extract(OnboardingFile $file): array
+    public function extractBatch(Collection $files): array
     {
-        $label = $this->deriveLabel($file);
+        $results = [];
 
-        return [
-            'alt_text' => $label,
-            'labels' => [$label, $file->kind ?? 'file'],
-            'result' => [
-                'stub' => true,
-                'source_content_hash' => $file->content_hash,
-                'label' => $label,
-            ],
-        ];
+        foreach ($files as $file) {
+            $label = $this->deriveLabel($file);
+
+            $results[$file->id] = [
+                'ok' => true,
+                'alt_text' => $label,
+                'labels' => [$label, $file->kind ?? 'file'],
+                'result' => [
+                    'stub' => true,
+                    'source_content_hash' => $file->content_hash,
+                    'label' => $label,
+                ],
+            ];
+        }
+
+        return $results;
     }
 
     private function deriveLabel(OnboardingFile $file): string
