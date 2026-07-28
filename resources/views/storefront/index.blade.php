@@ -60,7 +60,7 @@
                 @php
                     $heroBg = $tenant->getSiteContent('hero_bg_url');
                 @endphp
-                <section class="hero-section" style="{{ !empty($heroBg) && !str_ends_with(strtolower($heroBg), '.mp4') ? 'background: linear-gradient(rgba(255,255,255,0.65), rgba(255,255,255,0.7)), url(' . asset($heroBg) . ') center/cover no-repeat;' : '' }}">
+                <section class="hero-section" style="{{ !empty($heroBg) && !str_ends_with(strtolower($heroBg), '.mp4') ? 'background: linear-gradient(rgba(255,255,255,0.32), rgba(255,255,255,0.4)), url(' . asset($heroBg) . ') center/cover no-repeat;' : '' }}">
                     @if(!empty($heroBg) && str_ends_with(strtolower($heroBg), '.mp4'))
                         <video autoplay loop muted playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; opacity:0.35; z-index:0;">
                             <source src="{{ asset($heroBg) }}" type="video/mp4">

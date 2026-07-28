@@ -64,7 +64,7 @@ body.theme-rustic_kitchen .site-header {
 }
 
 body.theme-rustic_kitchen .hero-section {
-    background: linear-gradient(160deg, #f6ecd9 0%, #e6d2ac 100%) !important;
+    background-color: #f0e0c2 !important;
 }
 
 body.theme-rustic_kitchen .categories-section,
@@ -192,7 +192,7 @@ body.theme-modern_bakery .site-header {
 }
 
 body.theme-modern_bakery .hero-section {
-    background: rgba(255, 255, 255, 0.35) !important;
+    background-color: rgba(255, 255, 255, 0.35) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
@@ -1054,7 +1054,7 @@ body:not(.theme-sweet_elegant) .raining-cake {
 .highlight-item .icon-circle {
     width: 48px;
     height: 48px;
-    background: #401829;
+    background: rgba(255, 255, 255, 0.22);
     color: white;
     border-radius: 50%;
     display: flex;
@@ -1087,6 +1087,15 @@ body:not(.theme-sweet_elegant) .raining-cake {
     text-align: center;
 }
 
+.video-promo-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 65%, transparent) 0%, color-mix(in srgb, var(--primary-hover, var(--primary)) 70%, transparent) 100%);
+    z-index: 2;
+    pointer-events: none;
+}
+
 .video-promo-banner video {
     position: absolute;
     top: 50%;
@@ -1103,7 +1112,7 @@ body:not(.theme-sweet_elegant) .raining-cake {
 
 .video-overlay-content {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     max-width: 700px;
     padding: 20px;
 }
@@ -1283,6 +1292,15 @@ body:not(.theme-sweet_elegant) .raining-cake {
     color: white;
 }
 
+.cta-video-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.32) 0%, rgba(0, 0, 0, 0.18) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
 .cta-video-banner video {
     position: absolute;
     top: 50%;
@@ -1305,7 +1323,11 @@ body:not(.theme-sweet_elegant) .raining-cake {
 .cta-content h2 {
     font-family: 'Great Vibes', cursive;
     font-size: 4rem;
-    color: white;
+    color: #ffffff !important;
+}
+
+.cta-content p {
+    color: rgba(255, 255, 255, 0.92) !important;
 }
 
 /* Site Footer */
@@ -3147,18 +3169,19 @@ body.theme-clean_minimal {
 }
 
 .btn-secondary {
-    background: #5c1d37 !important;
-    color: #ffffff !important;
+    background: transparent !important;
+    color: var(--primary) !important;
     border-radius: 14px !important;
     padding: 11px 22px !important;
     font-weight: 700 !important;
-    border: none !important;
+    border: 2px solid var(--primary) !important;
     cursor: pointer;
     transition: all 0.25s ease !important;
 }
 
 .btn-secondary:hover {
-    background: #401829 !important;
+    background: var(--primary) !important;
+    color: #ffffff !important;
     transform: translateY(-2px) !important;
 }
 
