@@ -43,16 +43,16 @@
   --ob-transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ob-color-bg: #1a1520;
-    --ob-color-bg-elevated: #241d2b;
-    --ob-color-fg: #f3f4f6;
-    --ob-color-fg-muted: #b8b3c4;
-    --ob-color-muted: #322a3b;
-    --ob-color-border: #423a4d;
-  }
-}
+/*
+ * Deliberately no dark-mode override: the legacy wizard this page matches
+ * has none either (always the light pink/purple look), and a previous
+ * attempt at one here caused unreadable near-white text on the card's
+ * still-hardcoded white/rgba background for anyone on a dark-mode
+ * OS/browser. Cards and inputs use light, non-token colors intentionally
+ * (rgba(255,255,255,...)) to match the legacy glassmorphism exactly — if
+ * dark mode is ever wanted here, the cards need their own dark background
+ * token too, not just the text color.
+ */
 
 * {
   box-sizing: border-box;
@@ -70,12 +70,6 @@ body.ob-shell {
   background-attachment: fixed;
   color: var(--ob-color-fg);
   -webkit-font-smoothing: antialiased;
-}
-
-@media (prefers-color-scheme: dark) {
-  body.ob-shell {
-    background-image: none;
-  }
 }
 
 .ob-page {
