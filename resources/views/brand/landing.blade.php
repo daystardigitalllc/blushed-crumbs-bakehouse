@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doughmain.pro — Build, Host, &amp; Manage Your Bakery Website Completely Free</title>
     <meta name="description" content="Build, host, and manage your bakery website completely free. AI website builder, 0% commissions, custom cake order forms, and instant payment requests for custom bakers.">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="Doughmain.pro — Build, Host, &amp; Manage Your Bakery Website Completely Free">
+    <meta property="og:description" content="Build, host, and manage your bakery website completely free. AI website builder, 0% commissions, custom cake order forms, and instant payment requests for custom bakers.">
+    <meta property="og:image" content="{{ asset('images/og_image.jpg') }}">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Doughmain.pro — Build, Host, &amp; Manage Your Bakery Website Completely Free">
+    <meta name="twitter:description" content="Build, host, and manage your bakery website completely free. AI website builder, 0% commissions, custom cake order forms, and instant payment requests for custom bakers.">
+    <meta name="twitter:image" content="{{ asset('images/og_image.jpg') }}">
     @if(isset($tenant) && $tenant->logo_path)
         <link rel="icon" href="{{ asset($tenant->logo_path) }}">
     @else
