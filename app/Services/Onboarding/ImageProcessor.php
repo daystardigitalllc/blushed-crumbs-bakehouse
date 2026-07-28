@@ -61,7 +61,7 @@ class ImageProcessor
         $image = new \Imagick($sourcePath);
         $image = $image->coalesceImages() ?: $image; // first frame if animated
         $image->setIteratorIndex(0);
-        $image->autoOrientImage();
+        $this->imagickAutoOrient($image);
         $image->stripImage();
 
         $width = $image->getImageWidth();
@@ -107,6 +107,40 @@ class ImageProcessor
             'backend' => 'imagick',
             'derivatives' => $derivatives,
         ];
+    }
+
+    /**
+     * Imagick::autoOrientImage() doesn't exist on every Imagick build —
+     * missing on production's here (older pecl-imagick/ImageMagick 6
+     * combos predate it). Every real photo was throwing
+     * "Call to undefined method Imagick::autoOrientImage()" and getting
+     * marked unsupported until this was caught live. Falls back to reading
+     * the EXIF orientation tag directly and rotating manually — the same
+     * information autoOrientImage() itself reads under the hood.
+     */
+    private function imagickAutoOrient(\Imagick $image): void
+    {
+        if (method_exists($image, 'autoOrientImage')) {
+            $image->autoOrientImage();
+
+            return;
+        }
+
+        $orientation = $image->getImageOrientation();
+
+        switch ($orientation) {
+            case \Imagick::ORIENTATION_BOTTOMRIGHT:
+                $image->rotateImage(new \ImagickPixel(), 180);
+                break;
+            case \Imagick::ORIENTATION_RIGHTTOP:
+                $image->rotateImage(new \ImagickPixel(), 90);
+                break;
+            case \Imagick::ORIENTATION_LEFTBOTTOM:
+                $image->rotateImage(new \ImagickPixel(), -90);
+                break;
+        }
+
+        $image->setImageOrientation(\Imagick::ORIENTATION_TOPLEFT);
     }
 
     private function imagickSharpness(\Imagick $source): float
