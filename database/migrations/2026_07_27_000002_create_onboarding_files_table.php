@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('alt_text')->nullable();
             $table->json('ai_labels')->nullable();
             $table->json('ai_result')->nullable(); // full Gemini extraction result for this file
-            $table->string('status')->default('pending'); // pending, processing, extracted, failed, unsupported, duplicate
+            $table->string('status')->default('pending'); // pending, extracting, extracted, failed, unsupported, duplicate
             $table->text('error_message')->nullable();
             $table->timestamp('extracted_at')->nullable();
             $table->timestamps();

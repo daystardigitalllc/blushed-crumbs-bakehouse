@@ -2,6 +2,7 @@
 
 namespace App\Services\Onboarding;
 
+use App\Jobs\Onboarding\IngestOnboardingFileJob;
 use App\Models\Onboarding\OnboardingDraft;
 use App\Models\Onboarding\OnboardingEvent;
 use App\Models\Onboarding\OnboardingFile;
@@ -101,6 +102,10 @@ class OnboardingFileStore
         }
 
         $this->logEvent($draft, 'file_uploaded', $attributes['original_filename'], ['file_id' => $file->id, 'status' => $file->status]);
+
+        if ($file->status === 'pending') {
+            IngestOnboardingFileJob::dispatch($file->id);
+        }
 
         return ['outcome' => self::OUTCOME_CREATED, 'file' => $file];
     }

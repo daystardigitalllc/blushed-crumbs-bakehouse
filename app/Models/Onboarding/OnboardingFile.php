@@ -34,6 +34,8 @@ class OnboardingFile extends Model
         'status',
         'error_message',
         'extracted_at',
+        'batch_id',
+        'claimed_at',
     ];
 
     protected $casts = [
@@ -45,6 +47,7 @@ class OnboardingFile extends Model
         'ai_labels' => 'array',
         'ai_result' => 'array',
         'extracted_at' => 'datetime',
+        'claimed_at' => 'datetime',
     ];
 
     public function draft()

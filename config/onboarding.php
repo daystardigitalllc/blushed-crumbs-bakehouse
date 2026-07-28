@@ -30,4 +30,17 @@ return [
 
     // ─── Upload signed-URL lifetime ───
     'upload_url_ttl_minutes' => env('ONBOARDING_UPLOAD_URL_TTL_MINUTES', 180),
+
+    // ─── Extraction job graph (Phase 3) ───
+    // Swapped to a real GeminiExtractionService class-string in Phase 4 — ExtractBatchJob
+    // only knows it gets something implementing ExtractorInterface.
+    'extractor' => env('ONBOARDING_EXTRACTOR_CLASS', \App\Services\Onboarding\Extraction\StubExtractor::class),
+    'extraction_batch_size_images' => env('ONBOARDING_EXTRACTION_BATCH_SIZE_IMAGES', 6),
+    'extraction_batch_size_pdfs' => env('ONBOARDING_EXTRACTION_BATCH_SIZE_PDFS', 1),
+    // How long IngestOnboardingFileJob waits before triggering a dispatch pass — lets a
+    // burst of uploads land together so batches actually fill up rather than claiming 1 at a time.
+    'extraction_dispatch_debounce_seconds' => env('ONBOARDING_EXTRACTION_DISPATCH_DEBOUNCE_SECONDS', 5),
+    // A file still 'extracting' longer than this means its worker died mid-batch —
+    // FinalizeExtractionJob's stuck sweep resets it to 'pending' for reclaiming.
+    'extraction_stuck_minutes' => env('ONBOARDING_EXTRACTION_STUCK_MINUTES', 10),
 ];
