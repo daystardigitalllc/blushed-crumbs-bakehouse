@@ -77,6 +77,14 @@ Route::middleware(['auth', \App\Http\Middleware\SuperAdminMiddleware::class])->p
     Route::post('/users/{user}/role', [BrandController::class, 'updateUserRole'])->name('superadmin.user.role');
     Route::delete('/users/{user}', [BrandController::class, 'deleteUser'])->name('superadmin.user.delete');
     Route::post('/tickets/{ticket}/status', [BrandController::class, 'updateTicketStatus'])->name('superadmin.ticket.status');
+
+    // Phase 7 of the onboarding rebuild — de-risks the Livewire dependency
+    // (composer install, package discovery, an actual live component)
+    // before Phase 8 builds the real /onboarding/v2 wizard on top of it.
+    // Not meant to survive past that; super-admin-only, not linked from
+    // anywhere a baker would see.
+    Route::get('/onboarding-livewire-check', \App\Livewire\OnboardingLivewireCheck::class)
+        ->name('superadmin.onboarding-livewire-check');
 });
 
 // ─── Baker Portal Dashboard (Authenticated Bakery Owner) ───
