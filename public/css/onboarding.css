@@ -1,25 +1,31 @@
 /*
  * Visual chrome for the /onboarding/v2 wizard shell (Phase 7+). New file,
  * not an edit to style.css — that file is 4,284 lines and load-bearing for
- * all 7 live storefronts. Design tokens sourced via the ui-ux-pro-max skill
- * (warm bakery SaaS palette, WCAG-AA adjusted for 4.5:1 text contrast).
+ * all 7 live storefronts. Restyled (Phase 8 follow-up) to match the
+ * existing legacy wizard's look (resources/views/onboarding/wizard.blade.php)
+ * rather than the original bakery-brown palette, so v2 doesn't introduce a
+ * second, inconsistent visual language — same pink/purple, Inter + Outfit,
+ * glassmorphism cards. Every class name below is unchanged from Phase 8,
+ * only the token values and a few component rules moved to match.
  */
 
 :root {
-  --ob-color-primary: #92400e;
-  --ob-color-primary-hover: #7c350b;
-  --ob-color-secondary: #b45309;
-  --ob-color-accent: #92400e;
-  --ob-color-bg: #fef3c7;
+  --ob-color-primary: #e67399;
+  --ob-color-primary-hover: #d55c82;
+  --ob-color-secondary: #6d28d9;
+  --ob-color-secondary-hover: #5b21b6;
+  --ob-color-accent: #e67399;
+  --ob-color-bg: #fff7fa;
   --ob-color-bg-elevated: #ffffff;
-  --ob-color-fg: #78350f;
-  --ob-color-fg-muted: #92714f;
-  --ob-color-muted: #edeef0;
-  --ob-color-border: #fde68a;
+  --ob-color-fg: #1f2937;
+  --ob-color-fg-muted: #6b7280;
+  --ob-color-muted: #f3f4f6;
+  --ob-color-border: #e5e7eb;
   --ob-color-destructive: #dc2626;
-  --ob-color-ring: #92400e;
+  --ob-color-ring: #e67399;
 
-  --ob-font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ob-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --ob-font-heading: 'Outfit', var(--ob-font-sans);
 
   --ob-space-1: 8px;
   --ob-space-2: 16px;
@@ -28,23 +34,23 @@
   --ob-space-6: 48px;
   --ob-space-8: 64px;
 
-  --ob-radius-sm: 8px;
-  --ob-radius-md: 12px;
-  --ob-radius-lg: 20px;
+  --ob-radius-sm: 12px;
+  --ob-radius-md: 16px;
+  --ob-radius-lg: 24px;
 
-  --ob-shadow-sm: 0 1px 2px rgba(120, 53, 15, 0.06);
-  --ob-shadow-md: 0 4px 16px rgba(120, 53, 15, 0.12);
-  --ob-transition: 200ms ease;
+  --ob-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ob-shadow-md: 0 20px 40px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --ob-transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ob-color-bg: #1c1410;
-    --ob-color-bg-elevated: #2a1f18;
-    --ob-color-fg: #fde68a;
-    --ob-color-fg-muted: #d1a76a;
-    --ob-color-muted: #3a2c22;
-    --ob-color-border: #4a3626;
+    --ob-color-bg: #1a1520;
+    --ob-color-bg-elevated: #241d2b;
+    --ob-color-fg: #f3f4f6;
+    --ob-color-fg-muted: #b8b3c4;
+    --ob-color-muted: #322a3b;
+    --ob-color-border: #423a4d;
   }
 }
 
@@ -55,9 +61,21 @@
 body.ob-shell {
   margin: 0;
   font-family: var(--ob-font-sans);
-  background: var(--ob-color-bg);
+  background-color: var(--ob-color-bg);
+  background-image:
+    radial-gradient(at 0% 0%, hsla(341, 71%, 88%, 0.5) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(264, 70%, 88%, 0.4) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, hsla(341, 71%, 88%, 0.5) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, hsla(264, 70%, 88%, 0.4) 0px, transparent 50%);
+  background-attachment: fixed;
   color: var(--ob-color-fg);
   -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.ob-shell {
+    background-image: none;
+  }
 }
 
 .ob-page {
@@ -71,37 +89,42 @@ body.ob-shell {
   align-items: center;
   justify-content: space-between;
   padding: var(--ob-space-2) var(--ob-space-4);
-  background: var(--ob-color-bg-elevated);
-  border-bottom: 1px solid var(--ob-color-border);
+  background: transparent;
 }
 
 .ob-logo {
-  font-weight: 800;
-  font-size: 1.125rem;
-  color: var(--ob-color-primary);
+  font-family: var(--ob-font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  background: linear-gradient(135deg, var(--ob-color-secondary), var(--ob-color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   text-decoration: none;
   letter-spacing: -0.01em;
 }
 
 .ob-progress {
   padding: var(--ob-space-3) var(--ob-space-4) 0;
-  max-width: 720px;
+  max-width: 800px;
   margin: 0 auto;
   width: 100%;
 }
 
 .ob-progress-track {
-  height: 6px;
+  height: 8px;
   border-radius: 999px;
-  background: var(--ob-color-muted);
+  background: rgba(255, 255, 255, 0.5);
   overflow: hidden;
+  backdrop-filter: blur(4px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .ob-progress-fill {
   height: 100%;
-  background: var(--ob-color-primary);
+  background: linear-gradient(90deg, var(--ob-color-primary), var(--ob-color-secondary));
   border-radius: 999px;
-  transition: width 300ms ease;
+  transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ob-main {
@@ -113,8 +136,9 @@ body.ob-shell {
 }
 
 .ob-card {
-  background: var(--ob-color-bg-elevated);
-  border: 1px solid var(--ob-color-border);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--ob-radius-lg);
   box-shadow: var(--ob-shadow-md);
   padding: var(--ob-space-6);
@@ -123,15 +147,20 @@ body.ob-shell {
 }
 
 .ob-card h1 {
-  font-size: 1.5rem;
+  font-family: var(--ob-font-heading);
+  font-size: 2rem;
   font-weight: 700;
   margin: 0 0 var(--ob-space-1);
-  color: var(--ob-color-fg);
+  background: linear-gradient(135deg, var(--ob-color-secondary), var(--ob-color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .ob-card p.ob-subtitle {
   margin: 0 0 var(--ob-space-4);
   color: var(--ob-color-fg-muted);
+  font-size: 1.05rem;
   line-height: 1.5;
 }
 
@@ -144,11 +173,11 @@ body.ob-shell {
   padding: 0 var(--ob-space-3);
   border-radius: var(--ob-radius-sm);
   border: none;
-  font-family: inherit;
-  font-size: 0.9375rem;
+  font-family: var(--ob-font-sans);
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background var(--ob-transition), transform var(--ob-transition);
+  transition: background var(--ob-transition), transform var(--ob-transition), box-shadow var(--ob-transition);
 }
 
 .ob-btn:focus-visible {
@@ -159,19 +188,25 @@ body.ob-shell {
 .ob-btn-primary {
   background: var(--ob-color-primary);
   color: #ffffff;
+  box-shadow: 0 4px 12px rgba(230, 115, 153, 0.3);
 }
 
 .ob-btn-primary:hover {
-  background: #7a3409;
+  background: var(--ob-color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(230, 115, 153, 0.4);
 }
 
 .ob-btn-secondary {
-  background: var(--ob-color-muted);
-  color: var(--ob-color-fg);
+  background: transparent;
+  color: var(--ob-color-fg-muted);
+  border: 2px solid var(--ob-color-border);
 }
 
 .ob-btn-secondary:hover {
-  background: var(--ob-color-border);
+  background: var(--ob-color-bg-elevated);
+  color: var(--ob-color-fg);
+  border-color: #d1d5db;
 }
 
 .ob-footer {
@@ -183,8 +218,11 @@ body.ob-shell {
 
 @media (prefers-reduced-motion: reduce) {
   .ob-progress-fill,
-  .ob-btn {
+  .ob-btn,
+  .ob-btn-primary:hover,
+  .ob-btn-secondary:hover {
     transition: none;
+    transform: none;
   }
 }
 
@@ -211,26 +249,28 @@ body.ob-shell {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--ob-color-fg);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ob-color-secondary);
 }
 
 .ob-input {
   min-height: 44px;
   padding: 0 var(--ob-space-2);
-  border: 1px solid var(--ob-color-border);
+  border: 2px solid var(--ob-color-border);
   border-radius: var(--ob-radius-sm);
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 400;
   color: var(--ob-color-fg);
-  background: var(--ob-color-bg-elevated);
+  background: rgba(255, 255, 255, 0.9);
+  transition: var(--ob-transition);
 }
 
 .ob-input:focus-visible {
-  outline: 2px solid var(--ob-color-ring);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--ob-color-primary);
+  box-shadow: 0 0 0 4px rgba(230, 115, 153, 0.1);
 }
 
 .ob-field-error {
@@ -412,8 +452,10 @@ body.ob-shell {
 }
 
 .ob-review-section h2 {
-  font-size: 1rem;
-  font-weight: 700;
+  font-family: var(--ob-font-heading);
+  color: var(--ob-color-secondary);
+  font-size: 1.1rem;
+  font-weight: 600;
   margin: 0 0 var(--ob-space-2);
 }
 
