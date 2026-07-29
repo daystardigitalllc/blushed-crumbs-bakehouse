@@ -351,7 +351,11 @@ class DraftSynthesisService
         return 'You are writing website copy for a bakery based on their uploaded photos, menu, and business basics '
             . '(all given to you as JSON). Write warm, specific, non-generic marketing copy — reference real details '
             . 'from what was detected when possible. Never invent contact information, hours, or prices not present '
-            . 'in the input. Pick the single best-fitting theme_id from exactly this list: ' . implode(', ', $themeChoices) . '.';
+            . 'in the input. Pick the single best-fitting theme_id from exactly this list: ' . implode(', ', $themeChoices) . '. '
+            . 'Keep hero_headline short and punchy — 6 words or fewer, like a business name or tagline, never a full '
+            . 'sentence, since it renders in very large text on top of a photo and will overflow if long. For every '
+            . 'item in highlights, the icon field must be exactly one emoji character (e.g. 🎂, 🚚, 📦, 💖, ✨, 📍, ⏰) '
+            . '— never an icon-library name like "sparkles", "map-pin", or "clock".';
     }
 
     private function responseSchema(array $themeChoices): array

@@ -59,7 +59,7 @@ class ImportDraftJob implements ShouldQueue
 
         $manifest = $this->buildManifest($draft, $tenant);
 
-        if (empty($manifest['gallery']) && empty($manifest['products']) && empty($draft->proposed_content)) {
+        if (empty($manifest['gallery']) && empty($manifest['products']) && empty($draft->proposed_content) && !$manifest['logo']) {
             $this->markFailed($draft, 'Nothing to import — no approved gallery images, products, or site content on this draft.');
 
             return;
@@ -94,6 +94,7 @@ class ImportDraftJob implements ShouldQueue
                 $this->applyGallery($tenant, $manifest['gallery']);
                 $this->applySiteContent($tenant, $draft);
                 $this->applyBackgroundImages($tenant, $manifest['gallery']);
+                $this->applyLogo($tenant, $manifest['logo']);
 
                 $tenant->onboarding_completed = true;
                 $tenant->onboarding_completed_at = now();
@@ -147,6 +148,25 @@ class ImportDraftJob implements ShouldQueue
             'built_at' => now()->toISOString(),
             'gallery' => $this->planGallery($tenant, $galleryItems),
             'products' => $this->planProducts($tenant, $productItems),
+            'logo' => $this->planLogo($draft, $tenant),
+        ];
+    }
+
+    private function planLogo(OnboardingDraft $draft, Tenant $tenant): ?array
+    {
+        if (!$draft->logo_path || !is_file($draft->logo_path)) {
+            return null;
+        }
+
+        $extension = pathinfo($draft->logo_path, PATHINFO_EXTENSION) ?: 'png';
+        $destFilename = 'logo_' . $tenant->id . '_' . time() . '.' . $extension;
+        $destDir = TenantMediaPath::logoUploadDir($tenant->id);
+
+        return [
+            'action' => 'copy',
+            'source_path' => $draft->logo_path,
+            'dest_path' => "{$destDir}/{$destFilename}",
+            'public_path' => "uploads/tenants/{$tenant->id}/logos/{$destFilename}",
         ];
     }
 
@@ -254,6 +274,17 @@ class ImportDraftJob implements ShouldQueue
                 continue;
             }
 
+            TenantMediaPath::ensureDir(dirname($entry['dest_path']));
+
+            if (!@copy($entry['source_path'], $entry['dest_path'])) {
+                throw new \RuntimeException("Failed to copy {$entry['source_path']} to {$entry['dest_path']}.");
+            }
+
+            $created[] = $entry['dest_path'];
+        }
+
+        if ($manifest['logo']) {
+            $entry = $manifest['logo'];
             TenantMediaPath::ensureDir(dirname($entry['dest_path']));
 
             if (!@copy($entry['source_path'], $entry['dest_path'])) {
@@ -404,6 +435,15 @@ class ImportDraftJob implements ShouldQueue
         $content['cta_banner_url'] = $next();
 
         $tenant->site_content = $content;
+    }
+
+    private function applyLogo(Tenant $tenant, ?array $logoEntry): void
+    {
+        if (!$logoEntry) {
+            return;
+        }
+
+        $tenant->logo_path = $logoEntry['public_path'];
     }
 
     /**

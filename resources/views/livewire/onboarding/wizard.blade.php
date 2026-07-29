@@ -25,6 +25,15 @@
                 <span>Facebook</span>
                 <input type="text" class="ob-input" wire:model="basicsForm.facebook">
             </label>
+            <label class="ob-field">
+                <span>Logo <span class="ob-field-optional">(optional, but recommended)</span></span>
+                <input type="file" class="ob-input" wire:model="logo" accept="image/*">
+                @error('logo') <small class="ob-field-error">{{ $message }}</small> @enderror
+                <div wire:loading wire:target="logo" class="ob-field-hint">Uploading&hellip;</div>
+                @if ($logo)
+                    <img src="{{ $logo->temporaryUrl() }}" alt="Logo preview" class="ob-logo-preview">
+                @endif
+            </label>
 
             <button type="submit" class="ob-btn ob-btn-primary" wire:loading.attr="disabled" wire:target="saveBasics">
                 Continue

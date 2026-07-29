@@ -56,6 +56,10 @@ class OnboardingSweepStuckImports extends Command
             ->pluck('dest_path')
             ->filter();
 
+        if (!empty($manifest['logo']['dest_path'])) {
+            $destPaths->push($manifest['logo']['dest_path']);
+        }
+
         $existing = $destPaths->filter(fn ($path) => is_file($path));
 
         $this->line("Draft {$draft->id}: {$existing->count()} orphaned file(s) to clean up.");

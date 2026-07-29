@@ -293,6 +293,29 @@ body.ob-shell {
   font-weight: 400;
 }
 
+.ob-field-optional {
+  font-weight: 400;
+  color: var(--ob-color-fg-muted);
+  font-size: 0.85em;
+}
+
+.ob-field-hint {
+  color: var(--ob-color-fg-muted);
+  font-weight: 400;
+  font-size: 0.85em;
+}
+
+.ob-logo-preview {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: var(--ob-radius-sm);
+  border: 2px solid var(--ob-color-border);
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  margin-top: 6px;
+}
+
 .ob-form > .ob-btn {
   align-self: flex-start;
   margin-top: var(--ob-space-1);

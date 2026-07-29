@@ -57,6 +57,18 @@ class TenantMediaPath
         return public_path("uploads/tenants/{$tenantId}/gallery");
     }
 
+    /** Same convention as galleryUploadDir(), for the tenant's logo. */
+    public static function logoUploadDir(int $tenantId): string
+    {
+        return public_path("uploads/tenants/{$tenantId}/logos");
+    }
+
+    /** Private root for a draft's uploaded-but-unapproved logo file. */
+    public static function draftLogoDir(int $tenantId, int $draftId): string
+    {
+        return self::draftRoot($tenantId, $draftId) . '/logo';
+    }
+
     /**
      * Public URL that reaches the served gallery/display copy for a tenant,
      * once an onboarding import has copied a file out of the private draft

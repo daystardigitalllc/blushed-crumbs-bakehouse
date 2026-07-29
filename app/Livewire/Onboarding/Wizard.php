@@ -5,10 +5,12 @@ namespace App\Livewire\Onboarding;
 use App\Jobs\Onboarding\ImportDraftJob;
 use App\Models\Onboarding\OnboardingDraft;
 use App\Models\Tenant;
+use App\Services\Onboarding\TenantMediaPath;
 use Illuminate\Support\Facades\URL;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 /**
  * The full-page wizard at /onboarding/v2/{draft?}. Real URLs (not query
@@ -27,6 +29,8 @@ use Livewire\Component;
  */
 class Wizard extends Component
 {
+    use WithFileUploads;
+
     #[Locked]
     public int $draftId;
 
@@ -40,6 +44,9 @@ class Wizard extends Component
         'facebook' => '',
         'selected_plan' => 'free',
     ];
+
+    /** A single logo image — Livewire's own uploader is fine here (unlike the bulk uploader, one file has no 20-file/session-lock concerns). */
+    public $logo = null;
 
     public function mount(?OnboardingDraft $draft = null): void
     {
@@ -128,14 +135,42 @@ class Wizard extends Component
             'basicsForm.instagram' => 'nullable|string|max:255',
             'basicsForm.facebook' => 'nullable|string|max:255',
             'basicsForm.selected_plan' => 'in:free,pro',
+            'logo' => 'nullable|image|max:5120',
         ]);
 
         $draft = $this->draft();
         $draft->basics = $validated['basicsForm'];
         $draft->last_activity_at = now();
+
+        if ($this->logo) {
+            $draft->logo_path = $this->storeLogo($draft);
+            $this->logo = null;
+        }
+
         $draft->save();
 
         $this->step = 'upload';
+    }
+
+    /**
+     * Stored in the draft's own private storage — not public/uploads — so it
+     * follows the same "nothing public until approved" rule as every other
+     * onboarding upload. ImportDraftJob copies it into public/uploads and
+     * sets tenant.logo_path once the baker actually approves the draft.
+     */
+    private function storeLogo(OnboardingDraft $draft): string
+    {
+        $dir = TenantMediaPath::draftLogoDir($draft->tenant_id, $draft->id);
+        TenantMediaPath::ensureDir($dir);
+
+        foreach (glob($dir . '/*') ?: [] as $existing) {
+            @unlink($existing);
+        }
+
+        $filename = 'logo.' . $this->logo->getClientOriginalExtension();
+        $this->logo->move($dir, $filename);
+
+        return "{$dir}/{$filename}";
     }
 
     public function continueToAnalysis(): void

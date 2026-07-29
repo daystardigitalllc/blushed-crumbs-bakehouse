@@ -902,10 +902,15 @@ body {
 
 .hero-wrapper h1 {
     font-family: 'Great Vibes', cursive;
-    font-size: 5rem;
+    /* clamp() instead of a fixed 5rem — a manually-typed headline was always
+       short (business name), but an AI-generated one can run to a full
+       tagline-length sentence, which at a flat 5rem was overflowing into
+       6-7 wrapped lines on top of the hero photo. Scales down on its own
+       for longer text/narrower viewports without needing per-length logic. */
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
     font-weight: 500;
     color: #4a2133;
-    line-height: 1.1;
+    line-height: 1.15;
     margin-bottom: 35px;
 }
 

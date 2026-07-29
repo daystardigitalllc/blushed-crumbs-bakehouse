@@ -26,6 +26,7 @@ class OnboardingDraft extends Model
         'basics',
         'proposed_content',
         'theme_id',
+        'logo_path',
         'model_versions',
         'confidence_overall',
         'resume_token',

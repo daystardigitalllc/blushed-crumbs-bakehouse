@@ -120,6 +120,25 @@ class ImportDraftJobTest extends TestCase
         $this->assertFileExists(public_path($gallery->image_url));
     }
 
+    public function test_import_copies_the_uploaded_logo_and_sets_tenant_logo_path()
+    {
+        $tenant = $this->makeTenant();
+        $draft = $this->makeReadyDraft($tenant);
+
+        $logoDir = TenantMediaPath::draftLogoDir($tenant->id, $draft->id);
+        TenantMediaPath::ensureDir($logoDir);
+        file_put_contents("{$logoDir}/logo.png", 'fake-logo-bytes');
+        $draft->logo_path = "{$logoDir}/logo.png";
+        $draft->save();
+
+        ImportDraftJob::dispatch($draft->id);
+
+        $tenant->refresh();
+        $this->assertNotNull($tenant->logo_path);
+        $this->assertStringStartsWith("uploads/tenants/{$tenant->id}/logos/", $tenant->logo_path);
+        $this->assertFileExists(public_path($tenant->logo_path));
+    }
+
     /**
      * Regression: synthesis deliberately never sets hero_bg_url/promo_bg_image_url/
      * etc (Phase 5) — nothing resolved them to a real imported photo until now,
