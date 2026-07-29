@@ -44,6 +44,14 @@ class ExtractBatchJob implements ShouldQueue
             ->where('status', 'extracting')
             ->get();
 
+        Log::info('ExtractBatchJob starting.', [
+            'draft_id' => $this->draftId,
+            'batch_id' => $this->batchId,
+            'attempt' => $this->attempts(),
+            'claimed_file_count' => $files->count(),
+            'file_ids' => $files->pluck('id')->all(),
+        ]);
+
         if ($files->isEmpty()) {
             // Already swept back to 'pending' by the stuck sweep, or the
             // draft was pruned mid-flight. Still recheck the draft in case

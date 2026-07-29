@@ -94,6 +94,8 @@ class GeminiClient
             return $decoded;
         }
 
+        Log::warning('Gemini primary response failed to decode — attempting one repair call.', ['expected_count' => $expectedCount]);
+
         try {
             $repairPrompt = 'The following was supposed to be valid JSON matching the required schema but failed to '
                 . "parse or didn't match the expected shape. Return ONLY corrected valid JSON, nothing else.\n\n"
@@ -118,6 +120,8 @@ class GeminiClient
     private function tryDecode(?string $text, ?int $expectedCount): ?array
     {
         if (!$text) {
+            Log::warning('Gemini call returned no text to decode.');
+
             return null;
         }
 
@@ -126,10 +130,26 @@ class GeminiClient
         $decoded = json_decode($clean ?? '', true);
 
         if (!is_array($decoded)) {
+            // Deliberately logs the raw text — this is the one place that can
+            // actually explain a "couldn't be parsed" fallback after the fact,
+            // since GeminiExtractionService's local_only reason string alone
+            // doesn't say WHY (empty response? malformed JSON? wrong shape?).
+            Log::warning('Gemini response was not valid JSON.', [
+                'json_error' => json_last_error_msg(),
+                'expected_count' => $expectedCount,
+                'text' => $text,
+            ]);
+
             return null;
         }
 
         if ($expectedCount !== null && count($decoded) !== $expectedCount) {
+            Log::warning('Gemini response array length did not match the number of items sent.', [
+                'expected_count' => $expectedCount,
+                'actual_count' => count($decoded),
+                'text' => $text,
+            ]);
+
             return null;
         }
 
