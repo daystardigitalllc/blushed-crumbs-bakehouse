@@ -26,41 +26,52 @@ body.theme-sweet_elegant {
     background-color: #fcebf1;
 }
 
-/* 2. 🪵 RUSTIC KITCHEN THEME (Walnut, Tan & Beige Woodshop Warmth) */
+/* 2. 🪵 RUSTIC KITCHEN THEME — "Rimberio" brand board
+   (cream #F8F3EA / tan #CFBBA2 / terracotta #BF895C / warm brown #9D7052 /
+   deep chocolate #723F18) */
 body.theme-rustic_kitchen {
-    --primary: #8a5a2e;
-    --primary-hover: #6b4423;
-    --pink-bg: #f3e9d8;
-    --dark-text: #3b2a1a;
-    --theme-heading-font: 'Georgia', serif;
+    --primary: #9D7052;
+    --primary-hover: #723F18;
+    --pink-bg: #F8F3EA;
+    --dark-text: #723F18;
+    --theme-heading-font: 'Great Vibes', cursive;
     --theme-card-bg: #fffaf2;
-    --theme-section-bg: #ede0c8;
-    --theme-accent-bg: #3d2817;
+    --theme-section-bg: #F8F3EA;
+    --theme-accent-bg: #723F18;
     font-family: 'Georgia', 'Times New Roman', serif;
     background:
-        repeating-linear-gradient(115deg, rgba(59, 42, 26, 0.025) 0px, transparent 3px, transparent 7px),
-        linear-gradient(180deg, #f6ecd9 0%, #efe0c4 100%);
+        repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.025) 0px, transparent 3px, transparent 7px),
+        linear-gradient(180deg, #F8F3EA 0%, #F1E4D3 100%);
 }
 
+/* Big display headings match the brand board's script "Large Heading"
+   sample. h3 is deliberately excluded below — a calligraphy face at
+   card-title size (category names, step titles) reads poorly. */
 body.theme-rustic_kitchen h1,
 body.theme-rustic_kitchen h2,
-body.theme-rustic_kitchen h3,
 body.theme-rustic_kitchen .section-title-script,
 body.theme-rustic_kitchen .whimsical-col-right h2 {
-    font-family: 'Georgia', serif !important;
-    color: #3b2a1a !important;
+    font-family: 'Great Vibes', cursive !important;
+    color: #723F18 !important;
     letter-spacing: 0.5px;
 }
 
-/* Keep a hand-lettered accent on the small eyebrow text (echoes the
-   Great Vibes signatures on testimonial cards) instead of forcing every
-   scrap of text into the same serif — a rustic/craft feel needs at least
-   one hand-written touch, not just "everything brown". */
+body.theme-rustic_kitchen h3 {
+    font-family: 'Georgia', serif !important;
+    color: #723F18 !important;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+/* Small eyebrow/kicker text matches the board's "SUBHEADING" sample —
+   bold, uppercase, tracked sans — not script. */
 body.theme-rustic_kitchen .subheading {
-    font-family: 'Great Vibes', cursive !important;
-    color: #6b4423 !important;
-    font-size: 1.9rem;
-    letter-spacing: 0.5px;
+    font-family: 'Poppins', sans-serif !important;
+    color: #9D7052 !important;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
 }
 
 body.theme-rustic_kitchen .hero-cloud-elementor-top,
@@ -74,7 +85,7 @@ body.theme-rustic_kitchen .site-header {
 }
 
 body.theme-rustic_kitchen .hero-section {
-    background-color: #f0e0c2 !important;
+    background-color: #CFBBA2 !important;
     position: relative;
 }
 
@@ -86,27 +97,30 @@ body.theme-rustic_kitchen .hero-section::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(61, 40, 23, 0.12) 0%, rgba(61, 40, 23, 0.38) 100%);
+    background: linear-gradient(180deg, rgba(114, 63, 24, 0.12) 0%, rgba(114, 63, 24, 0.38) 100%);
     z-index: 1;
     pointer-events: none;
 }
 
-body.theme-rustic_kitchen .btn-secondary {
-    background: rgba(61, 40, 23, 0.55) !important;
+/* Scoped to the hero specifically — .btn-secondary is reused inside the
+   admin dashboard (transparent outline cancel/secondary buttons) and
+   shouldn't inherit this photo-legibility treatment. */
+body.theme-rustic_kitchen .hero-buttons .btn-secondary {
+    background: rgba(114, 63, 24, 0.55) !important;
     color: #fff8ec !important;
     border: 2px solid #fff8ec !important;
     box-shadow: none !important;
 }
 
-body.theme-rustic_kitchen .btn-secondary:hover {
-    background: rgba(61, 40, 23, 0.8) !important;
+body.theme-rustic_kitchen .hero-buttons .btn-secondary:hover {
+    background: rgba(114, 63, 24, 0.8) !important;
 }
 
 body.theme-rustic_kitchen .categories-section,
 body.theme-rustic_kitchen .reviews-section {
     background:
-        repeating-linear-gradient(115deg, rgba(59, 42, 26, 0.03) 0px, transparent 3px, transparent 7px),
-        #ede0c8 !important;
+        repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.03) 0px, transparent 3px, transparent 7px),
+        #F8F3EA !important;
 }
 
 /* "How Custom Ordering Works" step numbers are hard-coded 1️⃣2️⃣3️⃣ emoji in
@@ -116,7 +130,7 @@ body.theme-rustic_kitchen .reviews-section {
    using a CSS counter so it isn't tied to exactly 3 steps. */
 body.theme-rustic_kitchen .how-it-works-section {
     counter-reset: rustic-step;
-    background-image: repeating-linear-gradient(115deg, rgba(59, 42, 26, 0.035) 0px, transparent 3px, transparent 7px) !important;
+    background-image: repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.035) 0px, transparent 3px, transparent 7px) !important;
 }
 
 body.theme-rustic_kitchen .how-it-works-section .category-card-exact {
@@ -131,9 +145,9 @@ body.theme-rustic_kitchen .how-it-works-section .category-card-exact > span:firs
     width: 46px;
     height: 46px;
     border-radius: 50%;
-    background: linear-gradient(160deg, #8a5a2e 0%, #6b4423 100%) !important;
+    background: linear-gradient(160deg, #9D7052 0%, #723F18 100%) !important;
     margin: 0 auto 14px auto !important;
-    box-shadow: 0 6px 16px rgba(107, 68, 35, 0.35);
+    box-shadow: 0 6px 16px rgba(114, 63, 24, 0.35);
 }
 
 body.theme-rustic_kitchen .how-it-works-section .category-card-exact > span:first-child::before {
@@ -146,8 +160,8 @@ body.theme-rustic_kitchen .how-it-works-section .category-card-exact > span:firs
 
 body.theme-rustic_kitchen .faq-policies-section {
     background:
-        repeating-linear-gradient(115deg, rgba(59, 42, 26, 0.03) 0px, transparent 3px, transparent 7px),
-        #f3e9d8 !important;
+        repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.03) 0px, transparent 3px, transparent 7px),
+        #F8F3EA !important;
 }
 
 /* cta-video-banner already has a themeable ::before scrim (see base rule
@@ -155,7 +169,7 @@ body.theme-rustic_kitchen .faq-policies-section {
    the sweet_elegant-pink gradient baked into the section's own inline
    background, rather than replacing the tenant's approved photo outright. */
 body.theme-rustic_kitchen .cta-video-banner::before {
-    background: linear-gradient(135deg, rgba(61, 40, 23, 0.68) 0%, rgba(138, 90, 46, 0.62) 100%) !important;
+    background: linear-gradient(135deg, rgba(114, 63, 24, 0.68) 0%, rgba(157, 112, 82, 0.62) 100%) !important;
 }
 
 body.theme-rustic_kitchen .cta-video-banner h2,
@@ -164,7 +178,7 @@ body.theme-rustic_kitchen .cta-video-banner p {
 }
 
 body.theme-rustic_kitchen .highlights-bar {
-    background: linear-gradient(90deg, #6b4423 0%, #8a5a2e 100%) !important;
+    background: linear-gradient(90deg, #723F18 0%, #9D7052 100%) !important;
 }
 
 body.theme-rustic_kitchen .video-promo-banner h2,
@@ -175,66 +189,136 @@ body.theme-rustic_kitchen .video-overlay-content h2 {
 body.theme-rustic_kitchen .whimsical-section {
     background:
         repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.025) 0px, transparent 3px, transparent 7px),
-        #3d2817 !important;
-    color: #f3e9d8 !important;
+        #723F18 !important;
+    color: #F8F3EA !important;
 }
 
 body.theme-rustic_kitchen .whimsical-section h2 {
-    color: #f3e9d8 !important;
+    color: #F8F3EA !important;
 }
 
 body.theme-rustic_kitchen .btn-primary,
 body.theme-rustic_kitchen .nav-order-btn {
-    background: linear-gradient(160deg, #8a5a2e 0%, #6b4423 100%) !important;
+    background: linear-gradient(160deg, #9D7052 0%, #723F18 100%) !important;
     color: #fff8ec !important;
-    border-color: #5a3a1e !important;
+    border-color: #723F18 !important;
     border-radius: 8px !important;
-    box-shadow: 0 6px 18px rgba(107, 68, 35, 0.35) !important;
+    box-shadow: 0 6px 18px rgba(114, 63, 24, 0.35) !important;
 }
 
 body.theme-rustic_kitchen .category-card-exact,
 body.theme-rustic_kitchen .cloud-review-card,
 body.theme-rustic_kitchen .category-image-frame {
     border-radius: 10px !important;
-    border: 1px solid #d9c4a0 !important;
+    border: 1px solid #CFBBA2 !important;
     background: #fffaf2 !important;
-    box-shadow: 0 8px 22px rgba(59, 42, 26, 0.1) !important;
+    box-shadow: 0 8px 22px rgba(114, 63, 24, 0.1) !important;
 }
 
 /* Order Form Modal Theme Rules - Rustic Kitchen */
 body.theme-rustic_kitchen .order-modal-card {
     border-radius: 14px !important;
-    border: 2px solid #8a5a2e !important;
+    border: 2px solid #9D7052 !important;
     background: #fffaf2 !important;
-    box-shadow: 0 16px 40px rgba(59, 42, 26, 0.2) !important;
+    box-shadow: 0 16px 40px rgba(114, 63, 24, 0.2) !important;
 }
 
 body.theme-rustic_kitchen .sticky-order-summary-bar {
-    background: #ede0c8 !important;
-    border: 2px solid #d9c4a0 !important;
+    background: #F8F3EA !important;
+    border: 2px solid #CFBBA2 !important;
 }
 
 body.theme-rustic_kitchen .product,
 body.theme-rustic_kitchen .option-chip {
     border-radius: 8px !important;
-    border: 1px solid #c9ac7c !important;
+    border: 1px solid #CFBBA2 !important;
     background: #fffaf2 !important;
-    color: #3b2a1a !important;
+    color: #723F18 !important;
 }
 
 body.theme-rustic_kitchen .product.selected,
 body.theme-rustic_kitchen .option-chip.selected {
-    background: #8a5a2e !important;
+    background: #9D7052 !important;
     color: #fff8ec !important;
-    border-color: #6b4423 !important;
-    box-shadow: 0 6px 16px rgba(107, 68, 35, 0.4) !important;
+    border-color: #723F18 !important;
+    box-shadow: 0 6px 16px rgba(114, 63, 24, 0.4) !important;
 }
 
 body.theme-rustic_kitchen .next-btn {
-    background: linear-gradient(160deg, #8a5a2e 0%, #6b4423 100%) !important;
+    background: linear-gradient(160deg, #9D7052 0%, #723F18 100%) !important;
     color: #fff8ec !important;
     border-radius: 8px !important;
-    box-shadow: 0 6px 18px rgba(107, 68, 35, 0.35) !important;
+    box-shadow: 0 6px 18px rgba(114, 63, 24, 0.35) !important;
+}
+
+/* ── Admin dashboard, themed to match ──
+   .admin-sidebar / .admin-nav-item.active / .admin-main-content already
+   read --theme-accent-bg / --primary / --theme-section-bg (set above), so
+   the sidebar, active nav tab, and page background re-skin automatically
+   for every tab. What's left is the form controls and cards each tab's
+   content actually uses, which are hard-coded pink/plum in the base admin
+   styles regardless of theme. */
+body.theme-rustic_kitchen .admin-mobile-header {
+    background: #723F18 !important;
+}
+
+body.theme-rustic_kitchen .admin-main-content input[type="text"],
+body.theme-rustic_kitchen .admin-main-content input[type="number"],
+body.theme-rustic_kitchen .admin-main-content input[type="email"],
+body.theme-rustic_kitchen .admin-main-content input[type="tel"],
+body.theme-rustic_kitchen .admin-main-content input[type="url"],
+body.theme-rustic_kitchen .admin-main-content select,
+body.theme-rustic_kitchen .admin-main-content textarea {
+    border: 1.5px solid #CFBBA2 !important;
+    background-color: #fffaf2 !important;
+    color: #723F18 !important;
+}
+
+body.theme-rustic_kitchen .admin-main-content input:focus,
+body.theme-rustic_kitchen .admin-main-content select:focus,
+body.theme-rustic_kitchen .admin-main-content textarea:focus {
+    border-color: #9D7052 !important;
+    box-shadow: 0 0 0 4px rgba(157, 112, 82, 0.25) !important;
+    background-color: #fffaf2 !important;
+}
+
+body.theme-rustic_kitchen .admin-main-content label {
+    color: #723F18 !important;
+}
+
+body.theme-rustic_kitchen .status-select:focus {
+    border-color: #9D7052;
+    box-shadow: 0 0 0 3px rgba(157, 112, 82, 0.25);
+}
+
+body.theme-rustic_kitchen .btn-outline {
+    background: transparent !important;
+    border: 2px solid #9D7052 !important;
+    color: #9D7052 !important;
+}
+
+body.theme-rustic_kitchen .btn-outline:hover {
+    background: #F8F3EA !important;
+}
+
+body.theme-rustic_kitchen .reorder-btn {
+    background: #F8F3EA !important;
+    border: 1px solid #CFBBA2 !important;
+    color: #723F18 !important;
+}
+
+body.theme-rustic_kitchen .reorder-btn:hover:not(:disabled) {
+    background: #9D7052 !important;
+    border-color: #9D7052 !important;
+    color: #fff !important;
+}
+
+body.theme-rustic_kitchen .form-builder-card,
+body.theme-rustic_kitchen .order-card,
+body.theme-rustic_kitchen .add-review-box,
+body.theme-rustic_kitchen .payment-methods-card {
+    background: #fffaf2 !important;
+    border: 1px solid #CFBBA2;
 }
 
 /* 3. ✨ MODERN BAKERY THEME (Glassmorphism — Frosted Panels Over an Indigo Mesh) */
@@ -1529,12 +1613,12 @@ body.theme-sweet_elegant {
     --footer-link-weight: 400;
 }
 
-/* ─── Rustic Kitchen (warm dark walnut) ─── */
+/* ─── Rustic Kitchen ("Rimberio" board — deep chocolate) ─── */
 body.theme-rustic_kitchen {
-    --footer-bg: #3d2817;
-    --footer-text: #f3e9d8;
-    --footer-border-top: 4px solid #8a5a2e;
-    --footer-link-color: #d9a765;
+    --footer-bg: #723F18;
+    --footer-text: #F8F3EA;
+    --footer-border-top: 4px solid #9D7052;
+    --footer-link-color: #CFBBA2;
     --footer-link-font: 'Georgia', serif;
     --footer-link-size: 1.2rem;
     --footer-link-weight: 700;
