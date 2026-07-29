@@ -324,6 +324,10 @@ function initEntranceAnimations() {
     if (targets.length === 0) return;
 
     // Stagger items that share a parent (e.g. cards in a grid) instead of the whole page.
+    // will-change is set now (while idle, well before scroll) so the browser promotes each
+    // element to its own compositor layer ahead of time — without this, that promotion cost
+    // gets paid synchronously the moment the reveal fires, which is what caused scrolling to
+    // hitch right as each section animated in.
     const staggerIndex = new Map();
     targets.forEach(el => {
         const parent = el.parentElement;
@@ -331,16 +335,24 @@ function initEntranceAnimations() {
         el.style.setProperty('--reveal-i', Math.min(i, 6));
         staggerIndex.set(parent, i + 1);
         el.classList.add('js-reveal');
+        el.style.willChange = 'opacity, transform';
     });
 
+    // Positive bottom rootMargin fires the reveal ~200px before an element actually reaches
+    // the viewport, so the fade/slide finishes ahead of the user's scroll position instead of
+    // racing it — nothing should still be animating by the time it's actually on screen.
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                observer.unobserve(entry.target);
+                const el = entry.target;
+                el.classList.add('is-visible');
+                el.addEventListener('transitionend', () => {
+                    el.style.willChange = 'auto';
+                }, { once: true });
+                observer.unobserve(el);
             }
         });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0, rootMargin: '0px 0px 200px 0px' });
 
     targets.forEach(el => observer.observe(el));
 }
