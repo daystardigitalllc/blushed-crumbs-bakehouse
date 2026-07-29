@@ -24,7 +24,13 @@ class AuthController extends Controller
         }
 
         if ($user->tenant && !$user->tenant->onboarding_completed) {
-            return redirect('/onboarding');
+            // Phase 10 cutover: v2 is the default for new signups
+            // (onboarding_flow_version set at registration below); existing
+            // tenants who started on the legacy wizard keep their 'v1' value
+            // and finish there rather than being switched mid-flow.
+            return $user->tenant->onboarding_flow_version === 'v2'
+                ? redirect()->route('onboarding.v2.wizard')
+                : redirect('/onboarding');
         }
 
         return redirect('/dashboard');
@@ -133,6 +139,8 @@ class AuthController extends Controller
                 'theme_id' => 'rustic_kitchen',
                 'is_active' => true,
                 'onboarding_completed' => false,
+                'onboarding_flow_version' => 'v2', // Phase 10 cutover — v2 for every new signup
+                'onboarding_started_at' => now(),
                 'max_reviews_display' => 3,
                 'form_schema' => Tenant::getDefaultFormSchema(),
                 'section_settings' => Tenant::getDefaultSectionSettings(),
