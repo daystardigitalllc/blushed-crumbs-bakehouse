@@ -26,6 +26,21 @@ class ProgressBar extends Component
         $this->draftId = $draftId;
     }
 
+    /**
+     * File extraction reaching 100% is NOT the same as the draft being done —
+     * synthesis (writing site copy, picking categories, choosing the hero
+     * photo) is a separate step that runs after, driven by the draft's own
+     * status rather than file counts. Without reading this, the progress bar
+     * has no way to know the difference between "actually finished" and
+     * "files done, still building the site" — which is exactly what made the
+     * synthesizing step look like a frozen page.
+     */
+    #[Computed]
+    public function draftStatus(): string
+    {
+        return OnboardingDraft::where('id', $this->draftId)->value('status') ?? 'collecting';
+    }
+
     #[Computed]
     public function counts(): array
     {

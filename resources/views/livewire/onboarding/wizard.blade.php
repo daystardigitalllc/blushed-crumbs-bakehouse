@@ -55,8 +55,13 @@
         </button>
     @elseif ($step === 'analyzing')
         <div wire:poll.visible.2s="checkProgress">
-            <h1>Reading your photos and menu&hellip;</h1>
-            <p class="ob-subtitle">This runs in the background — feel free to leave this open while it works.</p>
+            @if ($this->draft->status === 'synthesizing')
+                <h1>Putting your website together&hellip;</h1>
+                <p class="ob-subtitle">Your photos and menu are read — now writing your site copy and picking categories. Almost there.</p>
+            @else
+                <h1>Reading your photos and menu&hellip;</h1>
+                <p class="ob-subtitle">This runs in the background — feel free to leave this open while it works.</p>
+            @endif
 
             <livewire:onboarding.progress-bar :draft-id="$draftId" wire:key="progress-{{ $draftId }}" />
             <livewire:onboarding.activity-feed :draft-id="$draftId" wire:key="activity-{{ $draftId }}" />
@@ -86,7 +91,7 @@
     @elseif ($step === 'done')
         <h1>Your website is live! 🎉</h1>
         <p class="ob-subtitle">Congratulations — {{ $this->tenant->name }} is ready for customers.</p>
-        <a href="{{ url('/site/' . $this->tenant->subdomain) }}" class="ob-btn ob-btn-primary">View my site</a>
+        <a href="{{ $this->liveSiteUrl }}" class="ob-btn ob-btn-primary">View my site</a>
     @endif
 </div>
 

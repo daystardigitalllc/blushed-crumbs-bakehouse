@@ -74,6 +74,13 @@ class FinalizeExtractionJob implements ShouldQueue
             'payload' => OnboardingProgress::statusCounts($draft->id),
         ]);
 
+        OnboardingEvent::create([
+            'draft_id' => $draft->id,
+            'tenant_id' => $draft->tenant_id,
+            'type' => 'draft_synthesis_started',
+            'message' => 'Writing your site copy and picking categories — this can take up to a minute.',
+        ]);
+
         SynthesizeDraftJob::dispatch($draft->id);
     }
 

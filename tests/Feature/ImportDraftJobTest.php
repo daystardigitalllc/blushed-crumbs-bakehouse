@@ -120,6 +120,34 @@ class ImportDraftJobTest extends TestCase
         $this->assertFileExists(public_path($gallery->image_url));
     }
 
+    /**
+     * Regression: synthesis deliberately never sets hero_bg_url/promo_bg_image_url/
+     * etc (Phase 5) — nothing resolved them to a real imported photo until now,
+     * so every storefront background slot silently stayed blank even though
+     * the baker uploaded plenty of usable images. Import must resolve them
+     * from the actually-copied gallery files.
+     */
+    public function test_import_resolves_background_image_slots_from_real_gallery_photos()
+    {
+        $tenant = $this->makeTenant();
+        $draft = $this->makeReadyDraft($tenant);
+        $hero = $this->seedGalleryItem($draft, $tenant, ['is_hero' => true]);
+        $this->seedGalleryItem($draft, $tenant, ['is_hero' => false]);
+
+        ImportDraftJob::dispatch($draft->id);
+
+        $tenant->refresh();
+        $content = $tenant->site_content;
+
+        $heroGallery = GalleryItem::withoutGlobalScopes()->where('tenant_id', $tenant->id)->where('is_hero', true)->first();
+        $this->assertNotNull($heroGallery);
+        $this->assertSame($heroGallery->image_url, $content['hero_bg_url']);
+
+        foreach (['promo_bg_image_url', 'cta_bg_image_url', 'whimsical_image_url', 'cta_banner_url'] as $key) {
+            $this->assertNotEmpty($content[$key] ?? null);
+        }
+    }
+
     public function test_exception_mid_transaction_leaves_zero_rows_and_zero_orphan_files()
     {
         $tenant = $this->makeTenant();

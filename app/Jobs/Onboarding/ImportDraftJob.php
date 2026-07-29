@@ -93,6 +93,7 @@ class ImportDraftJob implements ShouldQueue
                 $this->applyProducts($tenant, $manifest['products']);
                 $this->applyGallery($tenant, $manifest['gallery']);
                 $this->applySiteContent($tenant, $draft);
+                $this->applyBackgroundImages($tenant, $manifest['gallery']);
 
                 $tenant->onboarding_completed = true;
                 $tenant->onboarding_completed_at = now();
@@ -360,6 +361,49 @@ class ImportDraftJob implements ShouldQueue
         if (!empty($draft->theme_id)) {
             $this->applyThemeChoice($tenant, $draft->theme_id);
         }
+    }
+
+    /**
+     * Resolves the storefront's real background-image slots (hero, promo,
+     * CTA, whimsical section) to actual imported photos. Synthesis
+     * deliberately never invents these (Phase 5) — nothing in `proposed_content`
+     * ever has them — so without this step every one of them stays blank and
+     * the storefront renders a plain color/gradient instead of a real photo,
+     * even though the baker uploaded plenty of usable images. Must run after
+     * applySiteContent(), which overwrites `site_content` wholesale from the
+     * draft's proposed_content and would otherwise clobber these.
+     */
+    private function applyBackgroundImages(Tenant $tenant, array $galleryPlan): void
+    {
+        $copied = collect($galleryPlan)->where('action', 'copy')->values();
+        if ($copied->isEmpty()) {
+            return;
+        }
+
+        $hero = $copied->first(fn ($entry) => (bool) ($entry['payload']['is_hero'] ?? false)) ?? $copied->first();
+
+        // Cycle through the remaining images (falling back to reusing them,
+        // including the hero) rather than leaving a slot blank just because
+        // fewer than 5 distinct photos were approved.
+        $rotation = $copied->reject(fn ($entry) => $entry === $hero)->values();
+        if ($rotation->isEmpty()) {
+            $rotation = $copied;
+        }
+
+        $next = function () use ($rotation) {
+            static $i = 0;
+
+            return $rotation[$i++ % $rotation->count()]['public_path'];
+        };
+
+        $content = $tenant->site_content ?? [];
+        $content['hero_bg_url'] = $hero['public_path'];
+        $content['promo_bg_image_url'] = $next();
+        $content['cta_bg_image_url'] = $next();
+        $content['whimsical_image_url'] = $next();
+        $content['cta_banner_url'] = $next();
+
+        $tenant->site_content = $content;
     }
 
     /**

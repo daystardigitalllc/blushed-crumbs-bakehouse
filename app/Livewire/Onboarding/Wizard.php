@@ -97,6 +97,28 @@ class Wizard extends Component
         );
     }
 
+    /**
+     * The tenant's real live site — same URL scheme OnboardingController::
+     * publish() uses for the legacy wizard. `/site/{subdomain}` (what the
+     * 'done' step used to link to) is the internal storefront *preview*
+     * route, not the actual public site the baker's subdomain resolves to.
+     */
+    #[Computed]
+    public function liveSiteUrl(): string
+    {
+        $tenant = $this->tenant();
+
+        if (!empty($tenant->custom_domain)) {
+            $domain = preg_replace('#^https?://#', '', trim($tenant->custom_domain, '/'));
+
+            return 'https://' . $domain;
+        }
+
+        $brandDomain = $tenant->brand?->domain ?? 'doughmain.pro';
+
+        return 'https://' . $tenant->subdomain . '.' . $brandDomain;
+    }
+
     public function saveBasics(): void
     {
         $validated = $this->validate([
