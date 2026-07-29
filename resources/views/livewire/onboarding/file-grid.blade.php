@@ -2,7 +2,15 @@
     @forelse ($this->files as $file)
         <div wire:key="file-{{ $file->id }}" class="ob-file-tile ob-file-tile--{{ $file->status }}">
             <div class="ob-file-tile-icon">
-                @if ($file->kind === 'pdf')
+                @if ($file->kind === 'image' && !in_array($file->status, ['unsupported'], true))
+                    <img
+                        src="{{ route('onboarding.v2.file.preview', ['file' => $file->id, 'derivative' => 'thumb']) }}"
+                        alt="{{ $file->original_filename }}"
+                        class="ob-file-tile-thumb"
+                        loading="lazy"
+                        onerror="this.replaceWith(Object.assign(document.createElement('span'), {textContent: '🖼️'}))"
+                    >
+                @elseif ($file->kind === 'pdf')
                     📄
                 @else
                     🖼️
