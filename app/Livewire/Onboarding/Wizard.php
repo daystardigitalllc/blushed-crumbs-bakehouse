@@ -59,6 +59,7 @@ class Wizard extends Component
                 'version' => (int) (OnboardingDraft::where('tenant_id', $tenantId)->max('version') ?? 0) + 1,
                 'status' => 'collecting',
                 'last_activity_at' => now(),
+                'resume_token' => \Illuminate\Support\Str::random(48),
             ]);
 
             $this->redirect(route('onboarding.v2.wizard', ['draft' => $draft->id]), navigate: false);
@@ -126,14 +127,22 @@ class Wizard extends Component
         $this->step = 'analyzing';
     }
 
-    /** Polled while step === 'analyzing' — the extraction/synthesis pipeline (Phases 3-5) runs entirely in the background. */
+    /**
+     * Polled while step === 'analyzing' — the extraction/synthesis pipeline
+     * (Phases 3-5) runs entirely in the background. Only fires while the tab
+     * is open and visible (wire:poll.visible), which is exactly what makes
+     * touching last_activity_at here a reliable "are they still watching"
+     * signal for SynthesizeDraftJob's resume-email decision — see Phase 9.
+     */
     public function checkProgress(): void
     {
-        $status = $this->draft()->status;
+        $draft = $this->draft();
+        $draft->last_activity_at = now();
+        $draft->save();
 
-        if ($status === 'ready_for_review') {
+        if ($draft->status === 'ready_for_review') {
             $this->step = 'review';
-        } elseif ($status === 'failed') {
+        } elseif ($draft->status === 'failed') {
             $this->step = 'analyzing_failed';
         }
     }

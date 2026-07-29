@@ -52,6 +52,12 @@ Route::get('/invoices/{invoiceNumber}', [StorefrontController::class, 'showInvoi
 
 Route::get('/stripe/callback', [OnboardingController::class, 'stripeCallback'])->name('stripe.callback');
 
+// Signature-verified — the only thing that can actually grant Pro (Phase 9).
+// CSRF-exempt (see bootstrap/app.php): Stripe calls this server-to-server
+// with no session/CSRF token, and the Stripe-Signature header is the real
+// authenticity check here.
+Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::class, 'handle'])->name('stripe.webhook');
+
 // ─── Onboarding Wizard (Authenticated, Post-Signup) ───
 Route::middleware('auth')->group(function () {
     Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding.show');
@@ -59,6 +65,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/onboarding/import-social', [OnboardingController::class, 'importSocial'])->name('onboarding.social.import');
     Route::post('/onboarding/generate', [OnboardingController::class, 'generate'])->name('onboarding.generate');
     Route::post('/onboarding/publish', [OnboardingController::class, 'publish'])->name('onboarding.publish');
+
+    // Phase 9 — resume-from-email link. Token AND auth both required (the
+    // email could be forwarded); an expired/foreign/missing draft all render
+    // the same friendly page rather than a 500 — see OnboardingController::resume().
+    Route::get('/onboarding/resume/{token}', [OnboardingController::class, 'resume'])->name('onboarding.resume');
 
     // v2 rebuild — authenticated preview streaming for private draft files.
     // Stays under /onboarding/* so ResolveTenant's tenant binding still fires.

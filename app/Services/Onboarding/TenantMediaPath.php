@@ -107,6 +107,20 @@ class TenantMediaPath
         return self::deleteDirectoryRecursive($root);
     }
 
+    /**
+     * Delete an arbitrary directory this class resolved (e.g. just a draft's
+     * originals subdirectory, for onboarding:prune-drafts' imported-file TTL,
+     * which purges originals but keeps the rest of the draft's metadata).
+     */
+    public static function deleteDirectory(string $path): bool
+    {
+        if (!is_dir($path)) {
+            return false;
+        }
+
+        return self::deleteDirectoryRecursive($path);
+    }
+
     private static function deleteDirectoryRecursive(string $dir): bool
     {
         $items = scandir($dir);

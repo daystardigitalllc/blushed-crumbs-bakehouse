@@ -20,6 +20,13 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\ResolveTenant::class,
         ]);
+
+        // Stripe calls this server-to-server with no session/CSRF token —
+        // the Stripe-Signature header (verified in StripeWebhookController)
+        // is the real authenticity check for this one route.
+        $middleware->validateCsrfTokens(except: [
+            'stripe/webhook',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

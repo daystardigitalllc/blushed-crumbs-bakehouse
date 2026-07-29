@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Onboarding\OnboardingDraft;
 use App\Models\Tenant;
-use Stripe\StripeClient;
 
 class OnboardingController extends Controller
 {
@@ -153,13 +153,7 @@ class OnboardingController extends Controller
 
         // Set theme if chosen
         if (!empty($validated['theme_id'])) {
-            $starterThemeKeys = array_keys(Tenant::getStarterThemes());
-            $selectedPlan = $content['selected_plan'] ?? 'free';
-            if ($selectedPlan === 'pro' || $tenant->plan_tier === 'pro' || in_array($validated['theme_id'], $starterThemeKeys)) {
-                $tenant->theme_id = $validated['theme_id'];
-            } else {
-                $tenant->theme_id = 'rustic_kitchen';
-            }
+            $this->applyThemeChoice($tenant, $validated['theme_id']);
         }
 
         $tenant->save();
@@ -170,6 +164,32 @@ class OnboardingController extends Controller
             'logo_path' => $tenant->logo_path,
             'gallery_images' => $tenant->gallery_images,
         ]);
+    }
+
+    /**
+     * The single gate for every theme selection in the legacy wizard.
+     * Deliberately checks ONLY the tenant's real, paid plan_tier — never the
+     * self-reported `selected_plan` in site_content, which a baker fully
+     * controls client-side and previously granted a Pro theme for free (the
+     * Phase 9 "Stripe fix" bug: save() and generate() both had their own
+     * copy of this same trust-the-client bypass). An unpaid Pro pick is
+     * stashed on `pending_pro_theme_id` instead of discarded, so paying
+     * later applies it automatically (see StripeWebhookController).
+     */
+    private function applyThemeChoice(Tenant $tenant, string $themeId): void
+    {
+        $starterThemeKeys = array_keys(Tenant::getStarterThemes());
+
+        if ($tenant->plan_tier === 'pro' || in_array($themeId, $starterThemeKeys, true)) {
+            $tenant->theme_id = $themeId;
+
+            return;
+        }
+
+        $tenant->pending_pro_theme_id = $themeId;
+        if (empty($tenant->theme_id) || !in_array($tenant->theme_id, $starterThemeKeys, true)) {
+            $tenant->theme_id = 'rustic_kitchen';
+        }
     }
 
     /**
@@ -200,7 +220,7 @@ class OnboardingController extends Controller
         // Save theme choice if passed from onboarding step 3
         $themeId = $request->input('theme_id');
         if (!empty($themeId)) {
-            $tenant->theme_id = $themeId;
+            $this->applyThemeChoice($tenant, $themeId);
         }
 
         if ($request->has('plan_tier')) {
@@ -248,19 +268,14 @@ class OnboardingController extends Controller
         $siteContent = $tenant->site_content ?? [];
         $selectedPlan = $request->input('plan_tier') ?? ($siteContent['selected_plan'] ?? 'free');
 
-        // If user chose PRO plan but has not completed Stripe payment yet
-        if ($selectedPlan === 'pro' && $tenant->plan_tier !== 'pro') {
-            // DO NOT set onboarding_completed = true or plan_tier = 'pro'!
-            $redirectUrl = 'https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id=' . $tenant->id . '&prefilled_email=' . urlencode($tenant->email ?? '');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Redirecting to Stripe payment to activate Pro Plan...',
-                'redirect' => $redirectUrl,
-            ]);
-        }
-
-        // For Free plan (or already confirmed Pro plan)
+        // Import ALWAYS completes now, regardless of payment status — this is
+        // the Phase 9 fix for the old Pro-plan deadlock, where choosing Pro
+        // and abandoning the Stripe page left the tenant stuck mid-wizard
+        // forever with onboarding_completed never set. The theme actually
+        // applied was already safely gated in applyThemeChoice() (starter
+        // fallback if unpaid, with the real choice stashed on
+        // pending_pro_theme_id); Stripe is now a post-launch upsell, never a
+        // blocker to going live.
         $tenant->update([
             'onboarding_completed' => true,
         ]);
@@ -273,74 +288,72 @@ class OnboardingController extends Controller
             $redirectUrl = 'https://' . $tenant->subdomain . '.' . $brandDomain;
         }
 
-        return response()->json([
+        $response = [
             'success' => true,
             'message' => 'Your bakery website is live! 🎉',
             'redirect' => $redirectUrl,
-        ]);
+        ];
+
+        // Non-blocking upsell: only offered if they actually wanted Pro and
+        // haven't paid — never withholds the redirect above.
+        if ($selectedPlan === 'pro' && $tenant->plan_tier !== 'pro') {
+            $response['stripe_upsell_url'] = 'https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id=' . $tenant->id . '&prefilled_email=' . urlencode($tenant->email ?? '');
+            $response['message'] = 'Your bakery website is live! 🎉 Upgrade to Pro anytime to unlock your chosen theme.';
+        }
+
+        return response()->json($response);
     }
 
     /**
-     * Handle Stripe payment callback for Pro upgrade.
+     * Resume an onboarding draft from an emailed link. Requires BOTH the
+     * token AND an active login — the email itself could be forwarded, so
+     * the token alone must never be sufficient (see the Phase 9 plan).
+     * A missing/foreign/expired draft all render the same friendly page
+     * rather than leaking which case it was or throwing a 500.
+     */
+    public function resume(Request $request, string $token)
+    {
+        $tenantId = auth()->user()->tenant_id;
+        $draft = OnboardingDraft::where('resume_token', $token)->where('tenant_id', $tenantId)->first();
+
+        if (!$draft || $this->isExpired($draft)) {
+            return view('onboarding.resume-expired');
+        }
+
+        $draft->last_activity_at = now();
+        $draft->save();
+
+        return redirect()->route('onboarding.v2.wizard', ['draft' => $draft->id]);
+    }
+
+    private function isExpired(OnboardingDraft $draft): bool
+    {
+        if (!in_array($draft->status, OnboardingDraft::INCOMPLETE_STATUSES, true)) {
+            return false; // imported/importing drafts aren't on the resume-token clock
+        }
+
+        $lastActivity = $draft->last_activity_at ?? $draft->created_at;
+        $ttlHours = (int) config('onboarding.incomplete_draft_ttl_hours', 48);
+
+        return $lastActivity !== null && $lastActivity->lt(now()->subHours($ttlHours));
+    }
+
+    /**
+     * The browser's return trip from Stripe Checkout. Deliberately does
+     * NOTHING to grant Pro — it never did anything trustworthy anyway
+     * (client_reference_id straight off the query string, no signature, no
+     * proof a payment happened). Actual Pro activation now happens
+     * exclusively via the signature-verified StripeWebhookController, which
+     * Stripe calls server-to-server and typically completes before this
+     * browser redirect even lands. This route only exists to send the baker
+     * somewhere sensible with a "hang tight" message.
      */
     public function stripeCallback(Request $request)
     {
-        $tenantId = $request->input('client_reference_id') ?? $request->input('tenant_id');
-        $user = auth()->user();
-
-        if ($tenantId !== null && !is_numeric($tenantId)) {
-            $tenantId = null;
+        if (auth()->check()) {
+            return redirect('/dashboard')->with('success', '🎉 Payment received! Your Pro upgrade is being activated — this usually takes just a few seconds.');
         }
 
-        $tenant = null;
-        if ($tenantId) {
-            $tenant = Tenant::find($tenantId);
-        }
-        if (!$tenant && $user) {
-            $tenant = $user->tenant;
-        }
-
-        if ($tenant) {
-            $tenant->plan_tier = 'pro';
-            $tenant->onboarding_completed = true;
-
-            // If Stripe gave us a checkout session_id, look it up to capture the
-            // customer/subscription IDs so we can cancel the subscription via the
-            // API later (Payment Links don't otherwise hand us these).
-            $sessionId = $request->input('session_id');
-            if ($sessionId && config('services.stripe.secret')) {
-                try {
-                    $stripe = new StripeClient(config('services.stripe.secret'));
-                    $session = $stripe->checkout->sessions->retrieve($sessionId, ['expand' => ['subscription']]);
-
-                    if ($session->customer) {
-                        $tenant->stripe_customer_id = is_string($session->customer) ? $session->customer : $session->customer->id;
-                    }
-                    if ($session->subscription) {
-                        $tenant->stripe_subscription_id = is_string($session->subscription) ? $session->subscription : $session->subscription->id;
-                    }
-                } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::warning('Stripe checkout session lookup failed', [
-                        'tenant_id' => $tenant->id,
-                        'session_id' => $sessionId,
-                        'error' => $e->getMessage(),
-                    ]);
-                }
-            }
-
-            $tenant->save();
-
-            \App\Models\AuditLog::logEvent('billing.upgrade_pro', $tenant->id, $user ? $user->id : null, [
-                'session_id' => $sessionId,
-            ], 'info');
-
-            if (auth()->check()) {
-                return redirect('/dashboard')->with('success', '🎉 Welcome to Doughmain Pro! Your account has been upgraded and all 7 premium themes & features are unlocked.');
-            }
-
-            return redirect('/login')->with('success', '🎉 Payment received! Your Doughmain Pro account is active. Please log in to view your dashboard.');
-        }
-
-        return redirect('/login')->with('info', 'Please log in to verify your Pro account upgrade.');
+        return redirect('/login')->with('info', 'Payment received! Please log in — your Pro upgrade will be active shortly.');
     }
 }

@@ -288,7 +288,62 @@ document.addEventListener('DOMContentLoaded', () => {
     initOrderModalTrigger();
     initGalleryFiltering();
     handleHashNavigation();
+    initEntranceAnimations();
 });
+
+// Scroll-triggered entrance animations, theme-agnostic (works on every storefront theme
+// since they all share this markup/CSS). Progressive enhancement: sections are only
+// hidden once JS has confirmed it can reveal them, so content never gets stuck invisible.
+function initEntranceAnimations() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!('IntersectionObserver' in window)) return;
+
+    const revealGroups = [
+        '#storefront-view > section',
+        '.about-hero-section, .meet-founder-section, .ingredients-section, .about-specialties-section',
+        '.gallery-page-section',
+        '.menu-hero-section, .menu-text-section, .image-menu-wrapper',
+        '.policy-hero-section',
+        '.highlights-bar .highlight-item',
+        '.categories-grid-exact .category-card-exact',
+        '.reviews-grid .cloud-review-card',
+        '.gallery-masonry-grid .gallery-card',
+        '.ingredients-grid-6 .ingredient-card'
+    ];
+
+    const seen = new Set();
+    const targets = [];
+    revealGroups.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => {
+            if (seen.has(el) || el.classList.contains('hero-section')) return;
+            seen.add(el);
+            targets.push(el);
+        });
+    });
+
+    if (targets.length === 0) return;
+
+    // Stagger items that share a parent (e.g. cards in a grid) instead of the whole page.
+    const staggerIndex = new Map();
+    targets.forEach(el => {
+        const parent = el.parentElement;
+        const i = staggerIndex.get(parent) || 0;
+        el.style.setProperty('--reveal-i', Math.min(i, 6));
+        staggerIndex.set(parent, i + 1);
+        el.classList.add('js-reveal');
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    targets.forEach(el => observer.observe(el));
+}
 
 // Window Hash Listener for SPA Routing (#gallery, #admin, #home)
 window.addEventListener('hashchange', () => {

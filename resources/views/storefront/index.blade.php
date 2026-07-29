@@ -247,6 +247,31 @@
                         @endforeach
                     </div>
                 </section>
+            @elseif($secId === 'featured_gallery')
+                <!-- Featured Photos Gallery Section -->
+                @php $featuredImages = $tenant->getSiteContent('featured_gallery_images', []); @endphp
+                @if(!empty($featuredImages))
+                    <section class="featured-gallery-section" style="padding:70px 25px; background:#ffffff; text-align:center;">
+                        <h2 class="section-title-script" style="margin-bottom:35px;">{{ $tenant->getSiteContent('featured_gallery_title', 'Featured Creations') }}</h2>
+                        <div class="gallery-masonry-grid" style="max-width:1150px; margin:0 auto;">
+                            @foreach($featuredImages as $fImg)
+                                @php $fSrc = $fImg['path'] ?? null; @endphp
+                                @if($fSrc)
+                                    <div class="gallery-card" onclick="openLightbox(@js(asset($fSrc)), @js($fImg['title'] ?? ''))">
+                                        <div class="gallery-card-img-wrap">
+                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? 'Featured Creation' }}">
+                                        </div>
+                                        @if(!empty($fImg['title']))
+                                            <div class="gallery-card-info">
+                                                <h4>{{ $fImg['title'] }}</h4>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
             @elseif($secId === 'cta_banner')
                 <!-- Footer Call to Action Banner -->
                 @php
@@ -265,6 +290,15 @@
 </div>
 
 @include('storefront.partials.order_modal')
+
+<!-- LIGHTBOX MODAL FOR FEATURED GALLERY PREVIEWS -->
+<div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+        <button class="modal-close-btn" onclick="closeLightbox()">✕</button>
+        <img id="lightbox-img" src="" alt="Gallery Preview">
+        <div id="lightbox-caption" class="lightbox-caption"></div>
+    </div>
+</div>
 
 <footer class="site-footer">
     <div class="footer-logo">

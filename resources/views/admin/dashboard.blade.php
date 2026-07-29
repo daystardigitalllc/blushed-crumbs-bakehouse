@@ -587,6 +587,26 @@
                                                 </div>
                                             </div>
 
+                                        @elseif($secId === 'featured_gallery')
+                                            <h6 style="color:#6d28d9; margin-bottom:6px; font-weight:700;">📸 Featured Photos Gallery</h6>
+                                            <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Pick your best shots from your Device Gallery to spotlight right on the homepage.</p>
+
+                                            @php
+                                                $featuredTitle = data_get($siteContent, 'featured_gallery_title', 'Featured Creations');
+                                                $featuredImages = data_get($siteContent, 'featured_gallery_images', []);
+                                            @endphp
+
+                                            <div style="margin-bottom:14px;">
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Title</label>
+                                                <input type="text" name="featured_gallery_title" value="{{ $featuredTitle }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                            </div>
+
+                                            <input type="hidden" id="featured_gallery_images_input" name="featured_gallery_images" value='{{ json_encode($featuredImages) }}'>
+
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="openFeaturedGalleryPicker()" style="border-color:#8b5cf6; color:#6d28d9; font-weight:700; margin-bottom:12px;">📷 Select Featured Photos from Device Gallery</button>
+
+                                            <div id="featured-gallery-preview-strip" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
+
                                         @else
                                             <p style="font-size:0.85rem; color:#666; margin:0;">Standard section enabled. Click Save to apply section order &amp; visibility state.</p>
                                         @endif
@@ -1572,23 +1592,62 @@
 
             let activeGalleryPickerTarget = null;
             let activeGalleryPickerPreview = null;
+            let galleryPickerMode = 'single'; // 'single' (attach one photo to an input) or 'multi' (Featured Photos)
+            let featuredGallerySelection = [];
+
+            (function initFeaturedGallerySelection() {
+                const hidden = document.getElementById('featured_gallery_images_input');
+                try {
+                    featuredGallerySelection = hidden ? (JSON.parse(hidden.value || '[]') || []) : [];
+                } catch (e) {
+                    featuredGallerySelection = [];
+                }
+                renderFeaturedPreviewStrip();
+            })();
 
             function openGalleryPicker(targetInput, previewElId = null) {
+                galleryPickerMode = 'single';
                 if (typeof targetInput === 'string') {
                     activeGalleryPickerTarget = document.getElementById(targetInput);
                 } else {
                     activeGalleryPickerTarget = targetInput;
                 }
                 activeGalleryPickerPreview = previewElId ? document.getElementById(previewElId) : null;
+                setGalleryPickerFooterMode('single');
                 const modal = document.getElementById('gallery-picker-modal');
                 if (modal) {
                     modal.style.display = 'flex';
                 }
             }
 
+            function openFeaturedGalleryPicker() {
+                galleryPickerMode = 'multi';
+                setGalleryPickerFooterMode('multi');
+                document.querySelectorAll('.gallery-picker-item').forEach(el => {
+                    const isSelected = featuredGallerySelection.some(i => i.path === el.dataset.path);
+                    el.classList.toggle('picker-selected', isSelected);
+                });
+                const modal = document.getElementById('gallery-picker-modal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                }
+            }
+
+            function setGalleryPickerFooterMode(mode) {
+                const doneBtn = document.getElementById('gallery-picker-done-btn');
+                const clearBtn = document.getElementById('gallery-picker-clear-btn');
+                const hint = document.getElementById('gallery-picker-multi-hint');
+                if (doneBtn) doneBtn.style.display = mode === 'multi' ? 'inline-block' : 'none';
+                if (clearBtn) clearBtn.style.display = mode === 'multi' ? 'none' : 'inline-block';
+                if (hint) hint.style.display = mode === 'multi' ? 'block' : 'none';
+            }
+
             function closeGalleryPickerModal() {
                 const modal = document.getElementById('gallery-picker-modal');
                 if (modal) modal.style.display = 'none';
+                galleryPickerMode = 'single';
+                setGalleryPickerFooterMode('single');
+                document.querySelectorAll('.gallery-picker-item').forEach(el => el.classList.remove('picker-selected'));
             }
 
             function selectGalleryPickerImage(fullAssetUrl, relativePath) {
@@ -1606,6 +1665,50 @@
                     }
                 }
                 closeGalleryPickerModal();
+            }
+
+            function handleGalleryPickerItemClick(el, fullAssetUrl, relativePath, title) {
+                if (galleryPickerMode === 'multi') {
+                    const idx = featuredGallerySelection.findIndex(i => i.path === relativePath);
+                    if (idx > -1) {
+                        featuredGallerySelection.splice(idx, 1);
+                        el.classList.remove('picker-selected');
+                    } else {
+                        featuredGallerySelection.push({ path: relativePath, title: title || '' });
+                        el.classList.add('picker-selected');
+                    }
+                } else {
+                    selectGalleryPickerImage(fullAssetUrl, relativePath);
+                }
+            }
+
+            function confirmFeaturedGallerySelection() {
+                const hidden = document.getElementById('featured_gallery_images_input');
+                if (hidden) hidden.value = JSON.stringify(featuredGallerySelection);
+                renderFeaturedPreviewStrip();
+                closeGalleryPickerModal();
+            }
+
+            function renderFeaturedPreviewStrip() {
+                const wrap = document.getElementById('featured-gallery-preview-strip');
+                if (!wrap) return;
+                if (featuredGallerySelection.length === 0) {
+                    wrap.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0;">No featured photos selected yet.</p>';
+                    return;
+                }
+                wrap.innerHTML = featuredGallerySelection.map((img, i) => `
+                    <div class="featured-preview-thumb" style="position:relative; width:80px; height:80px;">
+                        <img src="${location.origin}/${img.path}" style="width:100%; height:100%; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
+                        <button type="button" onclick="removeFeaturedPreviewItem(${i})" title="Remove" style="position:absolute; top:-6px; right:-6px; background:#dc2626; color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; line-height:1;">✕</button>
+                    </div>
+                `).join('');
+            }
+
+            function removeFeaturedPreviewItem(i) {
+                featuredGallerySelection.splice(i, 1);
+                const hidden = document.getElementById('featured_gallery_images_input');
+                if (hidden) hidden.value = JSON.stringify(featuredGallerySelection);
+                renderFeaturedPreviewStrip();
             }
 
             function addAccordionCategoryItem() {
@@ -1897,7 +2000,8 @@
         <div id="gallery-picker-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:12px; overflow-y:auto; padding-right:6px; flex:1; max-height:50vh;">
             @forelse($gallery as $gItem)
                 @php $gSrc = $gItem->image_url ?? $gItem->image_path; @endphp
-                <div class="gallery-picker-item" onclick="selectGalleryPickerImage('{{ asset($gSrc) }}', '{{ $gSrc }}')" style="cursor:pointer; border:2px solid #e9d5ff; border-radius:10px; overflow:hidden; background:#ffffff; transition:all 0.2s ease; text-align:center; padding:6px;">
+                <div class="gallery-picker-item" data-path="{{ $gSrc }}" onclick="handleGalleryPickerItemClick(this, @js(asset($gSrc)), @js($gSrc), @js($gItem->title))" style="cursor:pointer; border:2px solid #e9d5ff; border-radius:10px; overflow:hidden; background:#ffffff; transition:all 0.2s ease; text-align:center; padding:6px; position:relative;">
+                    <span class="gallery-picker-checkmark" style="display:none; position:absolute; top:4px; right:4px; background:#16a34a; color:white; width:22px; height:22px; border-radius:50%; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; z-index:2;">✓</span>
                     <img src="{{ asset($gSrc) }}" style="width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:4px;">
                     <strong style="font-size:0.75rem; color:#4c1d95; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $gItem->title }}</strong>
                     <span style="font-size:0.7rem; color:#8b5cf6;">{{ $gItem->category }}</span>
@@ -1911,12 +2015,26 @@
             @endforelse
         </div>
 
-        <div style="margin-top:16px; border-top:1px solid #e9d5ff; pt:12px; display:flex; justify-content:space-between; align-items:center;">
-            <button type="button" class="btn btn-outline" onclick="selectGalleryPickerImage('', '')" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">❌ Clear Selection (Theme Default)</button>
-            <button type="button" class="btn btn-outline" onclick="closeGalleryPickerModal()">Cancel</button>
+        <div style="margin-top:16px; border-top:1px solid #e9d5ff; padding-top:12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+            <button type="button" id="gallery-picker-clear-btn" class="btn btn-outline" onclick="selectGalleryPickerImage('', '')" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">❌ Clear Selection (Theme Default)</button>
+            <div id="gallery-picker-multi-hint" style="display:none; font-size:0.82rem; color:#6d28d9; font-weight:600;">Click photos to select or deselect them, then hit Done.</div>
+            <div style="display:flex; gap:8px;">
+                <button type="button" id="gallery-picker-done-btn" class="btn btn-primary" style="display:none; background:#7c3aed; border-color:#6d28d9;" onclick="confirmFeaturedGallerySelection()">✅ Done — Use Selected Photos</button>
+                <button type="button" class="btn btn-outline" onclick="closeGalleryPickerModal()">Cancel</button>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .gallery-picker-item.picker-selected {
+        border-color: #16a34a !important;
+        box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.25);
+    }
+    .gallery-picker-item.picker-selected .gallery-picker-checkmark {
+        display: flex !important;
+    }
+</style>
 
 <!-- TERMS & POLICY TEXT WYSIWYG EDIT MODAL -->
 <style>

@@ -22,11 +22,20 @@ return [
         'ai' => ['width' => 1568, 'format' => 'jpeg', 'quality' => 82], // JPEG deliberately — sized for token efficiency, thrown away after extraction
     ],
 
-    // ─── Retention (full two-tier policy lands in a later phase; the TTL lives here from day one) ───
+    // ─── Retention (Phase 9 — the two-tier policy this TTL always described) ───
     'incomplete_draft_ttl_hours' => env('ONBOARDING_INCOMPLETE_DRAFT_TTL_HOURS', 48),
     'imported_draft_file_ttl_days' => env('ONBOARDING_IMPORTED_DRAFT_FILE_TTL_DAYS', 7),
     'extraction_cache_ttl_days' => env('ONBOARDING_EXTRACTION_CACHE_TTL_DAYS', 30),
     'events_ttl_days' => env('ONBOARDING_EVENTS_TTL_DAYS', 30),
+
+    // ─── Resume (Phase 9) — the resume window must equal the retention window above ───
+    // Second/final reminder email fires once a still-unreviewed draft has been
+    // inactive this long — chosen so the email's "expires in 12 hours" claim
+    // stays true against the 48h incomplete_draft_ttl_hours above.
+    'resume_reminder_inactive_hours' => env('ONBOARDING_RESUME_REMINDER_INACTIVE_HOURS', 36),
+    // The first "ready to review" email only fires if the baker looks to have
+    // actually navigated away, not just paused between clicks.
+    'resume_ready_email_inactive_minutes' => env('ONBOARDING_RESUME_READY_EMAIL_INACTIVE_MINUTES', 3),
 
     // ─── Upload signed-URL lifetime ───
     'upload_url_ttl_minutes' => env('ONBOARDING_UPLOAD_URL_TTL_MINUTES', 180),

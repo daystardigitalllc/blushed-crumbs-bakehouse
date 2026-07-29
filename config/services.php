@@ -56,6 +56,11 @@ return [
     // ─── Stripe (Pro plan billing) ───
     'stripe' => [
         'secret' => env('STRIPE_SECRET'),
+        // Verifies the Stripe-Signature header on POST /stripe/webhook — the
+        // only thing that can grant Pro (Phase 9). Without this configured,
+        // StripeWebhookController refuses every request rather than silently
+        // trusting an unverified payload.
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
 
 ];

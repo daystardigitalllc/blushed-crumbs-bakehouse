@@ -60,6 +60,7 @@ class Tenant extends Model implements TenancyContract
         'stripe_customer_id',
         'stripe_subscription_id',
         'theme_id',
+        'pending_pro_theme_id',
         'logo_path',
         'gallery_images',
         'instagram_url',
@@ -128,6 +129,8 @@ class Tenant extends Model implements TenancyContract
             'cta_headline',
             'cta_subtext',
             'cta_btn_text',
+            'featured_gallery_title',
+            'featured_gallery_images',
             'about_title',
             'about_bio',
             'contact_hours',
@@ -183,6 +186,8 @@ class Tenant extends Model implements TenancyContract
             'cta_headline' => 'Ready For Your Custom Cake?',
             'cta_subtext' => 'Order your custom baking creation now',
             'cta_btn_text' => 'Order Now',
+            'featured_gallery_title' => 'Featured Creations',
+            'featured_gallery_images' => [],
             'about_title' => 'About Our Bakery',
             'about_bio' => 'Welcome to ' . $name . '! We specialize in custom artisanal cakes, gourmet treats, and unforgettable dessert experiences crafted with premium ingredients and passion.',
             'contact_hours' => 'Mon-Sat: 8:00 AM - 6:00 PM | Sun: Closed',
@@ -215,12 +220,23 @@ class Tenant extends Model implements TenancyContract
             'reviews' => ['id' => 'reviews', 'name' => '⭐ Customer Reviews & Social Proof', 'enabled' => true, 'order' => 7],
             'faq' => ['id' => 'faq', 'name' => '❓ FAQ & Bakery Policies', 'enabled' => true, 'order' => 8],
             'cta_banner' => ['id' => 'cta_banner', 'name' => '🎬 Footer Booking CTA Banner', 'enabled' => true, 'order' => 9],
+            'featured_gallery' => ['id' => 'featured_gallery', 'name' => '📸 Featured Photos Gallery', 'enabled' => false, 'order' => 10],
         ];
     }
 
     public function getOrderedSections()
     {
         $sections = $this->section_settings ?? self::getDefaultSectionSettings();
+
+        // Backfill any section types added after this tenant's settings were last saved
+        // (e.g. a new section shipped to the platform) so it shows up without requiring
+        // the baker to re-save Page Builder first.
+        foreach (self::getDefaultSectionSettings() as $key => $default) {
+            if (!isset($sections[$key])) {
+                $sections[$key] = $default;
+            }
+        }
+
         uasort($sections, function ($a, $b) {
             return ($a['order'] ?? 0) <=> ($b['order'] ?? 0);
         });

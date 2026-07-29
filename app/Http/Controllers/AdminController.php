@@ -424,6 +424,21 @@ class AdminController extends Controller
             }
         }
 
+        // Featured Gallery selections (JSON array of {path, title} chosen from the Device Gallery picker)
+        $featuredImagesRaw = $request->input('featured_gallery_images', '[]');
+        $featuredImagesDecoded = json_decode($featuredImagesRaw, true);
+        $processedFeaturedImages = [];
+        if (is_array($featuredImagesDecoded)) {
+            foreach ($featuredImagesDecoded as $fImg) {
+                if (!empty($fImg['path'])) {
+                    $processedFeaturedImages[] = [
+                        'path' => $fImg['path'],
+                        'title' => $fImg['title'] ?? '',
+                    ];
+                }
+            }
+        }
+
         $updatedContent = array_merge($currentContent, [
             'hero_subheading' => $request->input('hero_subheading', $currentContent['hero_subheading'] ?? ''),
             'hero_headline' => $request->input('hero_headline', $currentContent['hero_headline'] ?? ''),
@@ -445,6 +460,8 @@ class AdminController extends Controller
             'cta_headline' => $request->input('cta_headline', $currentContent['cta_headline'] ?? ''),
             'cta_subtext' => $request->input('cta_subtext', $currentContent['cta_subtext'] ?? ''),
             'cta_btn_text' => $request->input('cta_btn_text', $currentContent['cta_btn_text'] ?? ''),
+            'featured_gallery_title' => $request->input('featured_gallery_title', $currentContent['featured_gallery_title'] ?? ''),
+            'featured_gallery_images' => $processedFeaturedImages,
         ]);
 
         $tenant->update([

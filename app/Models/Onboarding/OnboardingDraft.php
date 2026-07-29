@@ -34,6 +34,8 @@ class OnboardingDraft extends Model
         'extraction_started_at',
         'extraction_completed_at',
         'imported_at',
+        'ready_notified_at',
+        'reminder_sent_at',
     ];
 
     protected $casts = [
@@ -46,7 +48,32 @@ class OnboardingDraft extends Model
         'extraction_started_at' => 'datetime',
         'extraction_completed_at' => 'datetime',
         'imported_at' => 'datetime',
+        'ready_notified_at' => 'datetime',
+        'reminder_sent_at' => 'datetime',
     ];
+
+    /**
+     * Statuses that count as "incomplete" for retention/resume purposes —
+     * anything not yet imported and not actively being imported. Shared by
+     * onboarding:prune-drafts (48h TTL) and onboarding:send-resume-reminders
+     * (36h "still unreviewed" check) so the two never drift apart.
+     */
+    public const INCOMPLETE_STATUSES = ['collecting', 'extracting', 'synthesizing', 'ready_for_review', 'failed'];
+
+    /**
+     * Generates a resume token if one doesn't already exist. Idempotent —
+     * safe to call from a mail-sending path without worrying about handing
+     * out a second token for the same draft.
+     */
+    public function ensureResumeToken(): string
+    {
+        if (!$this->resume_token) {
+            $this->resume_token = \Illuminate\Support\Str::random(48);
+            $this->save();
+        }
+
+        return $this->resume_token;
+    }
 
     public function tenant()
     {

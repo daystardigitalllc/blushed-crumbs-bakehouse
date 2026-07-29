@@ -1032,6 +1032,52 @@ body:not(.theme-sweet_elegant) .raining-cake {
     }
 }
 
+/* ==========================================================================
+   Entrance Animations (all themes)
+   - Hero content animates in on load via CSS.
+   - Everything below the fold animates in on scroll via .js-reveal,
+     toggled to .is-visible by an IntersectionObserver in app.js.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+    .site-header {
+        animation: headerSlideDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .hero-section .subheading {
+        animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+    }
+
+    .hero-section .hero-wrapper h1 {
+        animation: heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+    }
+
+    .hero-section .hero-buttons {
+        animation: heroFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both;
+    }
+
+    @keyframes headerSlideDown {
+        from { opacity: 0; transform: translateY(-18px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes heroFadeUp {
+        from { opacity: 0; transform: translateY(26px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .js-reveal {
+        opacity: 0;
+        transform: translateY(36px);
+        transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: calc(var(--reveal-i, 0) * 90ms);
+    }
+
+    .js-reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Highlights Bar */
 .highlights-bar {
     background: #f896b8;

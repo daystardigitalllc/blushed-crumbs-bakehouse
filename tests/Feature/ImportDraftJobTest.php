@@ -248,4 +248,49 @@ class ImportDraftJobTest extends TestCase
         $draft->refresh();
         $this->assertSame('importing', $draft->status);
     }
+
+    /**
+     * Phase 9's theme-bypass fix: ReviewPanel's picker previews what a
+     * self-reported `selected_plan: pro` would unlock (see
+     * Tenant::onboardingAvailableThemes()), but that self-report is never
+     * proof of payment. Import must gate on the tenant's real plan_tier
+     * only, falling back to a starter theme with the real choice stashed.
+     */
+    public function test_unpaid_tenant_picking_a_pro_theme_falls_back_to_starter_and_stashes_choice()
+    {
+        $tenant = $this->makeTenant(['plan_tier' => 'standard', 'theme_id' => 'rustic_kitchen']);
+        $draft = OnboardingDraft::create([
+            'tenant_id' => $tenant->id,
+            'version' => 1,
+            'status' => 'ready_for_review',
+            'proposed_content' => ['hero_headline' => 'Test Bakery'],
+            'theme_id' => 'sweet_elegant', // a Pro-only theme, picked while basics.selected_plan === 'pro' but never paid
+        ]);
+
+        ImportDraftJob::dispatch($draft->id);
+
+        $tenant->refresh();
+        $this->assertNotSame('sweet_elegant', $tenant->theme_id);
+        $this->assertContains($tenant->theme_id, array_keys(Tenant::getStarterThemes()));
+        $this->assertSame('sweet_elegant', $tenant->pending_pro_theme_id);
+        $this->assertTrue((bool) $tenant->onboarding_completed); // import still completes — no deadlock
+    }
+
+    public function test_paid_pro_tenant_gets_their_chosen_theme_applied_directly()
+    {
+        $tenant = $this->makeTenant(['plan_tier' => 'pro', 'theme_id' => 'rustic_kitchen']);
+        $draft = OnboardingDraft::create([
+            'tenant_id' => $tenant->id,
+            'version' => 1,
+            'status' => 'ready_for_review',
+            'proposed_content' => ['hero_headline' => 'Test Bakery'],
+            'theme_id' => 'sweet_elegant',
+        ]);
+
+        ImportDraftJob::dispatch($draft->id);
+
+        $tenant->refresh();
+        $this->assertSame('sweet_elegant', $tenant->theme_id);
+        $this->assertNull($tenant->pending_pro_theme_id);
+    }
 }

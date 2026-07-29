@@ -7,12 +7,16 @@ use App\Models\Onboarding\OnboardingDraftItem;
 use App\Models\Onboarding\OnboardingEvent;
 use App\Models\Onboarding\OnboardingFile;
 use App\Models\Tenant;
+use App\Models\User;
+use App\Mail\OnboardingResumeMail;
 use App\Services\Onboarding\DraftSynthesisService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 /**
@@ -74,6 +78,45 @@ class SynthesizeDraftJob implements ShouldQueue
                 'hero_file_id' => $proposal['hero_file_id'],
             ],
         ]);
+
+        $this->maybeSendReadyEmail($draft, $tenant);
+    }
+
+    /**
+     * "On extraction complete (if they've navigated away)" per the Phase 9
+     * plan. last_activity_at is only refreshed while the wizard tab is open
+     * and visible (Wizard::checkProgress(), driven by wire:poll.visible), so
+     * a stale timestamp here is a reasonable proxy for "not watching anymore"
+     * rather than requiring real presence detection. Best-effort — a mail
+     * failure must never fail an otherwise-successful synthesis.
+     */
+    private function maybeSendReadyEmail(OnboardingDraft $draft, Tenant $tenant): void
+    {
+        if ($draft->ready_notified_at !== null) {
+            return; // already sent for this draft
+        }
+
+        $inactiveMinutes = (int) config('onboarding.resume_ready_email_inactive_minutes', 3);
+        if ($draft->last_activity_at !== null && $draft->last_activity_at->gt(now()->subMinutes($inactiveMinutes))) {
+            return; // still actively watching — no need to email
+        }
+
+        $user = User::where('tenant_id', $tenant->id)->first();
+        if (!$user || !$user->email) {
+            return;
+        }
+
+        try {
+            $draft->ensureResumeToken();
+            Mail::to($user->email)->queue(new OnboardingResumeMail($draft, $tenant, 'ready'));
+            $draft->ready_notified_at = now();
+            $draft->save();
+        } catch (\Throwable $e) {
+            Log::warning('Onboarding resume-ready email failed to send.', [
+                'draft_id' => $draft->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     private function persistCategories(OnboardingDraft $draft, array $categories): void

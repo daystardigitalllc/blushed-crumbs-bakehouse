@@ -358,7 +358,32 @@ class ImportDraftJob implements ShouldQueue
         }
 
         if (!empty($draft->theme_id)) {
-            $tenant->theme_id = $draft->theme_id;
+            $this->applyThemeChoice($tenant, $draft->theme_id);
+        }
+    }
+
+    /**
+     * The real gate on what theme ends up live. ReviewPanel's picker
+     * (onboardingAvailableThemes()) intentionally previews what a Pro plan
+     * *would* unlock based on the draft's self-reported `basics.selected_plan`
+     * — that self-report is never proof of payment, so it must never be
+     * trusted here. Import checks the tenant's actual plan_tier only; an
+     * unpaid Pro pick falls back to a starter theme with the real choice
+     * stashed on pending_pro_theme_id for StripeWebhookController to apply
+     * automatically the moment a real payment lands (Phase 9's fix for the
+     * same free-Pro-theme bypass that existed in the legacy v1 wizard).
+     */
+    private function applyThemeChoice(Tenant $tenant, string $themeId): void
+    {
+        if ($tenant->plan_tier === 'pro' || array_key_exists($themeId, Tenant::getStarterThemes())) {
+            $tenant->theme_id = $themeId;
+
+            return;
+        }
+
+        $tenant->pending_pro_theme_id = $themeId;
+        if (empty($tenant->theme_id) || !array_key_exists($tenant->theme_id, Tenant::getStarterThemes())) {
+            $tenant->theme_id = 'rustic_kitchen';
         }
     }
 
