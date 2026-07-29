@@ -26,7 +26,11 @@ class ExtractBatchJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 2;
-    public int $timeout = 120;
+    // Same worst-case math as SynthesizeDraftJob's timeout (see that class):
+    // one primary Gemini call plus one repair call, each up to 3 x 60s HTTP
+    // attempts, is roughly 360s worst case. 120s here carried the identical
+    // risk of a mid-request kill, it just hadn't been hit yet.
+    public int $timeout = 400;
 
     public function __construct(public int $draftId, public string $batchId)
     {

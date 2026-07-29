@@ -33,7 +33,13 @@ class SynthesizeDraftJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 2;
-    public int $timeout = 90;
+    // Must comfortably exceed GeminiClient's worst case: one primary call
+    // (up to 3 attempts x 60s HTTP timeout) plus, if that doesn't parse, one
+    // repair call (another up to 3 x 60s) - roughly 360s worst case. The
+    // previous 90s here caused a real production incident: the job got
+    // killed mid-request by Laravel's own timeout enforcement, leaving the
+    // draft permanently stuck in 'synthesizing' with no retry left.
+    public int $timeout = 400;
 
     public function __construct(public int $draftId)
     {
