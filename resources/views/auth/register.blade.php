@@ -261,12 +261,12 @@
                 <div class="row">
                     <div class="form-group">
                         <label for="password" class="form-label">Password</label>
-                        <input id="password" type="password" class="form-control" name="password" required placeholder="••••••••">
+                        <input id="password" type="password" class="form-control" name="password" required placeholder="••••••••" autocomplete="new-password">
                     </div>
 
                     <div class="form-group">
                         <label for="password_confirmation" class="form-label">Confirm Password</label>
-                        <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" required placeholder="••••••••">
+                        <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" required placeholder="••••••••" autocomplete="new-password">
                     </div>
                 </div>
 
