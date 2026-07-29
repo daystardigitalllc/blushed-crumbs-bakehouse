@@ -37,17 +37,29 @@ body.theme-rustic_kitchen {
     --theme-section-bg: #ede0c8;
     --theme-accent-bg: #3d2817;
     font-family: 'Georgia', 'Times New Roman', serif;
-    background: linear-gradient(180deg, #f6ecd9 0%, #efe0c4 100%);
+    background:
+        repeating-linear-gradient(115deg, rgba(59, 42, 26, 0.025) 0px, transparent 3px, transparent 7px),
+        linear-gradient(180deg, #f6ecd9 0%, #efe0c4 100%);
 }
 
 body.theme-rustic_kitchen h1,
 body.theme-rustic_kitchen h2,
 body.theme-rustic_kitchen h3,
-body.theme-rustic_kitchen .subheading,
 body.theme-rustic_kitchen .section-title-script,
 body.theme-rustic_kitchen .whimsical-col-right h2 {
     font-family: 'Georgia', serif !important;
     color: #3b2a1a !important;
+    letter-spacing: 0.5px;
+}
+
+/* Keep a hand-lettered accent on the small eyebrow text (echoes the
+   Great Vibes signatures on testimonial cards) instead of forcing every
+   scrap of text into the same serif — a rustic/craft feel needs at least
+   one hand-written touch, not just "everything brown". */
+body.theme-rustic_kitchen .subheading {
+    font-family: 'Great Vibes', cursive !important;
+    color: #6b4423 !important;
+    font-size: 1.9rem;
     letter-spacing: 0.5px;
 }
 
@@ -63,11 +75,92 @@ body.theme-rustic_kitchen .site-header {
 
 body.theme-rustic_kitchen .hero-section {
     background-color: #f0e0c2 !important;
+    position: relative;
+}
+
+/* The hero photo itself is set inline per-tenant with a plain white wash
+   (needed so any random photo stays legible) — that wash reads as flat
+   gray, not rustic. This warm scrim sits on top of it (not replacing the
+   photo) so the same image reads sepia/amber instead of washed-out. */
+body.theme-rustic_kitchen .hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(61, 40, 23, 0.12) 0%, rgba(61, 40, 23, 0.38) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+body.theme-rustic_kitchen .btn-secondary {
+    background: rgba(61, 40, 23, 0.55) !important;
+    color: #fff8ec !important;
+    border: 2px solid #fff8ec !important;
+    box-shadow: none !important;
+}
+
+body.theme-rustic_kitchen .btn-secondary:hover {
+    background: rgba(61, 40, 23, 0.8) !important;
 }
 
 body.theme-rustic_kitchen .categories-section,
 body.theme-rustic_kitchen .reviews-section {
-    background: #ede0c8 !important;
+    background:
+        repeating-linear-gradient(115deg, rgba(59, 42, 26, 0.03) 0px, transparent 3px, transparent 7px),
+        #ede0c8 !important;
+}
+
+/* "How Custom Ordering Works" step numbers are hard-coded 1️⃣2️⃣3️⃣ emoji in
+   the blade template — those render as the OS's native blue keycap emoji
+   regardless of theme, which is the one visibly off-brand color on the
+   whole page. Hide the glyph and draw a themed numbered badge instead,
+   using a CSS counter so it isn't tied to exactly 3 steps. */
+body.theme-rustic_kitchen .how-it-works-section {
+    counter-reset: rustic-step;
+    background-image: repeating-linear-gradient(115deg, rgba(59, 42, 26, 0.035) 0px, transparent 3px, transparent 7px) !important;
+}
+
+body.theme-rustic_kitchen .how-it-works-section .category-card-exact {
+    counter-increment: rustic-step;
+}
+
+body.theme-rustic_kitchen .how-it-works-section .category-card-exact > span:first-child {
+    font-size: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #8a5a2e 0%, #6b4423 100%) !important;
+    margin: 0 auto 14px auto !important;
+    box-shadow: 0 6px 16px rgba(107, 68, 35, 0.35);
+}
+
+body.theme-rustic_kitchen .how-it-works-section .category-card-exact > span:first-child::before {
+    content: counter(rustic-step);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff8ec;
+    font-family: 'Georgia', serif;
+}
+
+body.theme-rustic_kitchen .faq-policies-section {
+    background:
+        repeating-linear-gradient(115deg, rgba(59, 42, 26, 0.03) 0px, transparent 3px, transparent 7px),
+        #f3e9d8 !important;
+}
+
+/* cta-video-banner already has a themeable ::before scrim (see base rule
+   below) — recolor it warm brown instead of the default black so it mutes
+   the sweet_elegant-pink gradient baked into the section's own inline
+   background, rather than replacing the tenant's approved photo outright. */
+body.theme-rustic_kitchen .cta-video-banner::before {
+    background: linear-gradient(135deg, rgba(61, 40, 23, 0.68) 0%, rgba(138, 90, 46, 0.62) 100%) !important;
+}
+
+body.theme-rustic_kitchen .cta-video-banner h2,
+body.theme-rustic_kitchen .cta-video-banner p {
+    color: #fff8ec !important;
 }
 
 body.theme-rustic_kitchen .highlights-bar {
