@@ -47,6 +47,14 @@ class GeminiClient
                 'temperature' => $temperature,
                 'responseMimeType' => 'application/json',
                 'responseSchema' => $responseSchema,
+                // Without this, a multi-image batch's combined JSON output can
+                // silently exceed the model's own default cap and get cut off
+                // mid-array — valid-looking JSON that's simply truncated, which
+                // fails to parse (and fails the repair retry identically, since
+                // the retry hits the same cap). Generous on purpose: a 6-image
+                // batch with detailed alt_text/labels/category per image, or a
+                // full synthesis copy pass, both fit comfortably under this.
+                'maxOutputTokens' => (int) config('onboarding.gemini_max_output_tokens', 8192),
             ],
         ];
 

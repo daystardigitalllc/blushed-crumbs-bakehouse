@@ -70,6 +70,10 @@ return [
     // Gemini's own per-request inline-data cap — a batch (or a single large PDF)
     // that would exceed this falls back to a local-only result instead of erroring.
     'ai_max_request_bytes' => env('ONBOARDING_AI_MAX_REQUEST_BYTES', 18 * 1024 * 1024),
+    // Response token ceiling — without this, a multi-image batch's combined
+    // JSON can silently exceed the model's implicit default and get truncated
+    // mid-response (looks like a parse failure, but it's really a length cap).
+    'gemini_max_output_tokens' => env('ONBOARDING_GEMINI_MAX_OUTPUT_TOKENS', 8192),
 
     // ─── Synthesis (Phase 5) ───
     'synthesis_max_categories' => env('ONBOARDING_SYNTHESIS_MAX_CATEGORIES', 6),
