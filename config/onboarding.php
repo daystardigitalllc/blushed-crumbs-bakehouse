@@ -62,8 +62,11 @@ return [
     // images still import with local score + a filename-derived alt text.
     'ai_max_images_per_draft' => env('ONBOARDING_AI_MAX_IMAGES_PER_DRAFT', 50),
     // Bump this to invalidate ai_extraction_cache after a prompt/schema change
-    // without touching content_hash or the model name.
-    'ai_prompt_version' => env('ONBOARDING_AI_PROMPT_VERSION', 'v1'),
+    // without touching content_hash or the model name. v2: image prompt no
+    // longer gates product_name/price behind a visible price tag, and adds a
+    // real `category` field distinct from content_type (was previously
+    // leaking content_type values like "product" into the category picker).
+    'ai_prompt_version' => env('ONBOARDING_AI_PROMPT_VERSION', 'v2'),
     // Gemini's own per-request inline-data cap — a batch (or a single large PDF)
     // that would exceed this falls back to a local-only result instead of erroring.
     'ai_max_request_bytes' => env('ONBOARDING_AI_MAX_REQUEST_BYTES', 18 * 1024 * 1024),

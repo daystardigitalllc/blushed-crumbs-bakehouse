@@ -83,8 +83,14 @@ class DraftSynthesisService
      */
     private function canonicalizeCategories(Collection $pdfItems, Collection $images): array
     {
+        // content_type is deliberately never a source here — it classifies
+        // the *kind of photo* ("product"/"storefront"/"menu_or_price_list"/
+        // etc.), not the product itself, and using it as a category value
+        // used to leak literal strings like "Product" straight into the
+        // review UI. `category` (a general baked-good type, e.g. "cakes")
+        // and `product_name` (e.g. "Chocolate Drip Cake") are the real signals.
         $raw = $pdfItems->pluck('category')->filter()
-            ->merge($images->pluck('ai_result.content_type')->filter()->reject(fn ($t) => in_array($t, ['storefront', 'ambiance', 'other'], true)))
+            ->merge($images->pluck('ai_result.category')->filter())
             ->merge($images->pluck('ai_result.product_name')->filter());
 
         $counts = [];
@@ -96,7 +102,7 @@ class DraftSynthesisService
                 continue;
             }
 
-            $canonicalKey = self::CATEGORY_SYNONYMS[$key] ?? $this->fuzzyMatch($key, array_keys($counts)) ?? $key;
+            $canonicalKey = $this->matchSynonym($key) ?? $this->fuzzyMatch($key, array_keys($counts)) ?? $key;
             $counts[$canonicalKey] = ($counts[$canonicalKey] ?? 0) + 1;
             $words[$canonicalKey][] = $key;
         }
@@ -111,6 +117,28 @@ class DraftSynthesisService
             ->values();
 
         return [$ranked, $words];
+    }
+
+    /**
+     * Matches the whole value first (handles a PDF's own "Wedding Cakes"
+     * category, or a single-word image category), then falls back to
+     * matching individual words (handles a multi-word product_name like
+     * "Chocolate Drip Cake" resolving to "cakes" even though the phrase
+     * itself was never one of the synonym keys).
+     */
+    private function matchSynonym(string $key): ?string
+    {
+        if (isset(self::CATEGORY_SYNONYMS[$key])) {
+            return self::CATEGORY_SYNONYMS[$key];
+        }
+
+        foreach (preg_split('/[\s\-]+/', $key) as $word) {
+            if (isset(self::CATEGORY_SYNONYMS[$word])) {
+                return self::CATEGORY_SYNONYMS[$word];
+            }
+        }
+
+        return null;
     }
 
     private function fuzzyMatch(string $key, array $existingKeys): ?string
@@ -140,7 +168,7 @@ class DraftSynthesisService
             $covers = $images->filter(function (OnboardingFile $file) use ($words) {
                 $labels = array_map('strtolower', array_filter(array_merge(
                     $file->ai_labels ?? [],
-                    [$file->ai_result['content_type'] ?? null, $file->ai_result['product_name'] ?? null]
+                    [$file->ai_result['content_type'] ?? null, $file->ai_result['product_name'] ?? null, $file->ai_result['category'] ?? null]
                 )));
 
                 foreach ($labels as $label) {
@@ -223,7 +251,7 @@ class DraftSynthesisService
                 'description' => null,
                 'price_min' => $file->ai_result['price'] ?? null,
                 'price_max' => $file->ai_result['price'] ?? null,
-                'category' => $this->canonicalCategoryFor($file->ai_result['content_type'] ?? null, $categoryWords),
+                'category' => $this->canonicalCategoryFor($file->ai_result['category'] ?? $file->ai_result['product_name'] ?? null, $categoryWords),
                 'source' => 'photo',
                 'source_file_id' => $file->id,
             ]);
@@ -243,9 +271,26 @@ class DraftSynthesisService
         }
 
         $key = strtolower(trim($raw));
+
+        if ($canonical = $this->matchSynonym($key)) {
+            return ucwords($canonical);
+        }
+
+        // Did this exact raw value already get folded into one of
+        // canonicalizeCategories()'s groups (e.g. via a fuzzy match)?
         foreach ($categoryWords as $canonicalKey => $words) {
             if (in_array($key, $words, true)) {
                 return ucwords($canonicalKey);
+            }
+        }
+
+        // Last resort: a multi-word value ("chocolate cake") whose individual
+        // words weren't a synonym-map hit but did land in an established group.
+        foreach (preg_split('/[\s\-]+/', $key) as $word) {
+            foreach ($categoryWords as $canonicalKey => $words) {
+                if (in_array($word, $words, true)) {
+                    return ucwords($canonicalKey);
+                }
             }
         }
 

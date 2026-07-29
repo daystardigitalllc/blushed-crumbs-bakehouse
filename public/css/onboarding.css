@@ -121,6 +121,27 @@ body.ob-shell {
   transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Files are claimed into a batch and sit in "extracting" as a group for the
+   whole AI round-trip before flipping to done all at once — a static bar
+   would look frozen for that entire stretch, so this pulses instead. */
+.ob-progress-fill--active {
+  background-size: 200% 100%;
+  animation: ob-progress-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes ob-progress-pulse {
+  0% { background-position: 0% 0%; opacity: 0.55; }
+  50% { background-position: 100% 0%; opacity: 1; }
+  100% { background-position: 0% 0%; opacity: 0.55; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-progress-fill--active {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
 .ob-main {
   flex: 1;
   display: flex;

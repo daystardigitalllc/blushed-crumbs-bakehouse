@@ -46,6 +46,20 @@ class ProgressBar extends Component
         return (int) round(($done / $total) * 100);
     }
 
+    /**
+     * Files claimed into a batch move to 'extracting' as a group and stay
+     * there for the whole Gemini round-trip (often 30-60s) before flipping
+     * to a terminal status all at once — so percentComplete alone sits at 0%
+     * the entire time and then jumps straight to 100%, which reads as a
+     * frozen page. The view uses this to show real "something is happening"
+     * feedback instead of a static bar during that gap.
+     */
+    #[Computed]
+    public function extractingCount(): int
+    {
+        return $this->counts()['extracting'] ?? 0;
+    }
+
     public function render()
     {
         return view('livewire.onboarding.progress-bar');

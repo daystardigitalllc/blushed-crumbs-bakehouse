@@ -58,14 +58,17 @@ class DispatchPendingExtractionsJob implements ShouldQueue, ShouldBeUnique
                 ? 'onboarding.extraction_batch_size_images'
                 : 'onboarding.extraction_batch_size_pdfs');
 
-            while ($batchId = $this->claimBatch($draft->id, $kind, $batchSize)) {
+            while ($claimed = $this->claimBatch($draft->id, $kind, $batchSize)) {
+                [$batchId, $count] = $claimed;
                 $claimedAny = true;
 
                 OnboardingEvent::create([
                     'draft_id' => $draft->id,
                     'tenant_id' => $draft->tenant_id,
                     'type' => 'extraction_batch_claimed',
-                    'message' => "{$kind} batch {$batchId}",
+                    'message' => $kind === 'image'
+                        ? "Analyzing {$count} " . \Illuminate\Support\Str::plural('photo', $count) . ' with AI…'
+                        : "Reading {$count} " . \Illuminate\Support\Str::plural('menu/PDF', $count) . '…',
                 ]);
 
                 ExtractBatchJob::dispatch($draft->id, $batchId);
@@ -97,7 +100,10 @@ class DispatchPendingExtractionsJob implements ShouldQueue, ShouldBeUnique
      * WHERE status='pending' being re-evaluated under the row lock, not
      * from any subsequent SELECT.
      */
-    private function claimBatch(int $draftId, string $kind, int $limit): ?string
+    /**
+     * @return array{0:string,1:int}|null [batchId, filesClaimed]
+     */
+    private function claimBatch(int $draftId, string $kind, int $limit): ?array
     {
         if ($limit < 1) {
             return null;
@@ -127,6 +133,6 @@ class DispatchPendingExtractionsJob implements ShouldQueue, ShouldBeUnique
             'updated_at' => now(),
         ]);
 
-        return $claimed > 0 ? $batchId : null;
+        return $claimed > 0 ? [$batchId, $claimed] : null;
     }
 }

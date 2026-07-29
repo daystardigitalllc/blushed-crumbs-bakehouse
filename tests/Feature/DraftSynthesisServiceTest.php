@@ -257,6 +257,72 @@ class DraftSynthesisServiceTest extends TestCase
         $this->assertGreaterThanOrEqual(3, $totalCovers);
     }
 
+    /**
+     * Regression: content_type ("product"/"storefront"/"menu_or_price_list"/
+     * etc.) classifies the *kind of photo*, not the product — it must never
+     * leak into the category picker as a literal category name. This is
+     * exactly the bug a real user hit: plain product photos with no visible
+     * price all shared content_type "product", so "Product" dominated the
+     * ranked category list and crowded out real categories like "Cakes".
+     */
+    public function test_content_type_never_becomes_a_category_name()
+    {
+        config(['services.gemini.key' => '']);
+
+        $tenant = $this->makeTenant();
+        $draft = $this->makeDraft($tenant);
+
+        foreach (range(1, 5) as $i) {
+            $this->seedExtractedImage($draft, $tenant, [
+                'ai_result' => [
+                    'source' => 'gemini',
+                    'content_type' => 'product',
+                    'product_name' => "Chocolate Cake {$i}",
+                    'category' => 'cakes',
+                ],
+            ]);
+        }
+
+        $proposal = app(DraftSynthesisService::class)->synthesize($draft, $tenant);
+
+        $categoryNames = collect($proposal['categories'])->pluck('name');
+        $this->assertContains('Cakes', $categoryNames);
+        $this->assertNotContains('Product', $categoryNames);
+    }
+
+    /**
+     * Regression: a plain product photo with no visible price tag must still
+     * become a product. The old prompt only asked Gemini for product_name
+     * when a price was visible, so ordinary product photos silently produced
+     * zero products — this asserts the synthesis-side contract (product_name
+     * present => a product is built) independent of the prompt wording.
+     */
+    public function test_product_photo_without_a_price_still_becomes_a_product()
+    {
+        config(['services.gemini.key' => '']);
+
+        $tenant = $this->makeTenant();
+        $draft = $this->makeDraft($tenant);
+
+        $this->seedExtractedImage($draft, $tenant, [
+            'ai_result' => [
+                'source' => 'gemini',
+                'content_type' => 'product',
+                'product_name' => 'Chocolate Drip Cake',
+                'category' => 'cakes',
+                'price' => null,
+            ],
+        ]);
+
+        $proposal = app(DraftSynthesisService::class)->synthesize($draft, $tenant);
+
+        $names = collect($proposal['products'])->pluck('name');
+        $this->assertContains('Chocolate Drip Cake', $names);
+
+        $product = collect($proposal['products'])->firstWhere('name', 'Chocolate Drip Cake');
+        $this->assertSame('Cakes', $product['category']);
+    }
+
     public function test_hero_is_the_landscape_top_score_candidate()
     {
         config(['services.gemini.key' => '']);

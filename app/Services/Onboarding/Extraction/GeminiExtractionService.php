@@ -127,6 +127,7 @@ class GeminiExtractionService implements ExtractorInterface
                         'source' => 'gemini',
                         'content_type' => $entry['content_type'] ?? null,
                         'product_name' => $entry['product_name'] ?? null,
+                        'category' => $entry['category'] ?? null,
                         'price' => $entry['price'] ?? null,
                     ],
                 ])
@@ -194,9 +195,13 @@ class GeminiExtractionService implements ExtractorInterface
     {
         return 'You are analyzing photos uploaded by a bakery owner during website onboarding. For each image, '
             . 'in the exact order given, classify it and write a short, natural, accessibility-friendly alt text. '
-            . 'If the image shows a specific baked good with a visible price (e.g. a menu board or price tag), '
-            . 'extract the product name and price. Never invent a price you cannot see. Return one JSON object '
-            . 'per image, in input order.';
+            . 'If the photo shows a specific baked good (a cake, cupcakes, cookies, bread, a pie, donuts, macarons, '
+            . 'brownies, muffins, pastries, etc.) — whether or not a price is visible — set content_type to '
+            . '"product", give it a short specific product_name describing what it is (e.g. "Chocolate Drip Cake", '
+            . '"Red Velvet Cupcakes"), and set category to the general type of baked good it is (e.g. "cakes", '
+            . '"cupcakes", "cookies", "bread", "pies", "donuts", "macarons", "brownies", "muffins", "pastries"). '
+            . 'Only include a price if you can actually read a visible price tag or menu board — never invent one. '
+            . 'Return one JSON object per image, in input order.';
     }
 
     private function imageResponseSchema(): array
@@ -210,6 +215,10 @@ class GeminiExtractionService implements ExtractorInterface
                     'alt_text' => ['type' => 'STRING'],
                     'labels' => ['type' => 'ARRAY', 'items' => ['type' => 'STRING']],
                     'product_name' => ['type' => 'STRING', 'nullable' => true],
+                    // The general type of baked good ("cakes", "cupcakes", ...) — distinct
+                    // from content_type, which only classifies the *kind of photo*, not
+                    // the product. Never use content_type as a category value.
+                    'category' => ['type' => 'STRING', 'nullable' => true],
                     'price' => ['type' => 'NUMBER', 'nullable' => true],
                 ],
                 'required' => ['content_type', 'alt_text', 'labels'],
