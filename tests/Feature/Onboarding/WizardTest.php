@@ -120,6 +120,33 @@ class WizardTest extends TestCase
         $this->assertSame('My Bakery', $draft->fresh()->basics['business_name']);
     }
 
+    /**
+     * Regression: storeLogo() used to call Symfony's UploadedFile::move(),
+     * which only works on a file uploaded in the CURRENT HTTP request.
+     * Livewire::fake() reproduces the real failure mode — the temp file
+     * genuinely exists on disk as an ordinary file (not one PHP's own
+     * upload-tracking recognizes), so this test would have caught the
+     * production 500 if it had existed beforehand.
+     */
+    public function test_save_basics_stores_an_uploaded_logo()
+    {
+        \Illuminate\Http\UploadedFile::fake()->image('logo.png')->size(100);
+        $user = $this->makeUser();
+        $draft = OnboardingDraft::create(['tenant_id' => $user->tenant_id, 'version' => 1, 'status' => 'collecting']);
+
+        Livewire::actingAs($user)
+            ->test(Wizard::class, ['draft' => $draft])
+            ->set('basicsForm.business_name', 'My Bakery')
+            ->set('logo', \Illuminate\Http\UploadedFile::fake()->image('logo.png'))
+            ->call('saveBasics')
+            ->assertSet('step', 'upload')
+            ->assertHasNoErrors();
+
+        $draft->refresh();
+        $this->assertNotNull($draft->logo_path);
+        $this->assertFileExists($draft->logo_path);
+    }
+
     public function test_save_basics_requires_a_business_name()
     {
         $user = $this->makeUser();

@@ -168,9 +168,21 @@ class Wizard extends Component
         }
 
         $filename = 'logo.' . $this->logo->getClientOriginalExtension();
-        $this->logo->move($dir, $filename);
+        $destination = "{$dir}/{$filename}";
 
-        return "{$dir}/{$filename}";
+        // Not ->move() — that goes through Symfony's UploadedFile::move(),
+        // which calls move_uploaded_file() and only works on a file uploaded
+        // in the CURRENT HTTP request. Livewire's temp file was uploaded in a
+        // separate prior request and just sits in storage/app/livewire-tmp
+        // as an ordinary file by the time saveBasics() runs, so a plain copy
+        // is what actually works here (matches Livewire's own documented
+        // storeAs() pattern, just against a raw filesystem path instead of a
+        // Storage disk, since TenantMediaPath deals entirely in real paths).
+        if (!@copy($this->logo->getRealPath(), $destination)) {
+            throw new \RuntimeException("Failed to store uploaded logo to {$destination}.");
+        }
+
+        return $destination;
     }
 
     public function continueToAnalysis(): void
