@@ -50,6 +50,7 @@
             background-color: var(--soft-pink);
             line-height: 1.6;
             overflow-x: hidden;
+            overflow-y: visible;
         }
 
         h1, h2, h3, h4, h5, h6 {
