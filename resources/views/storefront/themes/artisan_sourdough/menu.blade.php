@@ -15,12 +15,12 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <style>
         .menu-hero-section {
-            background: var(--theme-section-bg, var(--pink-bg, #f5eee6));
+            background: var(--theme-section-bg, var(--pink-bg, #f3e3dc));
             text-align: center;
             padding: 90px 20px 60px 20px;
             border-bottom: 1px solid rgba(0,0,0,0.05);
@@ -30,12 +30,12 @@
             font-size: 0.8rem;
             letter-spacing: 2px;
             font-weight: 600;
-            color: #a9836c;
+            color: #8b5a45;
             margin-bottom: 12px;
             display: block;
         }
         .menu-hero-title {
-            font-family: var(--theme-heading-font, 'Cormorant Garamond', serif);
+            font-family: var(--theme-heading-font, 'Fraunces', serif);
             font-size: 3.2rem;
             font-weight: 600;
             color: var(--dark-text, #2b2118);
@@ -68,12 +68,12 @@
         }
         .menu-text-section h2,
         .menu-text-section h3 {
-            font-family: var(--theme-heading-font, 'Cormorant Garamond', serif);
+            font-family: var(--theme-heading-font, 'Fraunces', serif);
             color: var(--dark-text, #2b2118);
             margin-top: 32px;
             margin-bottom: 16px;
             padding-bottom: 10px;
-            border-bottom: 2px dashed #a9836c;
+            border-bottom: 2px dashed #8b5a45;
             font-size: 1.7rem;
             font-weight: 700;
         }
@@ -106,7 +106,7 @@
             position: absolute;
             left: 6px;
             top: 0;
-            color: #a9836c;
+            color: #8b5a45;
             font-size: 1.5rem;
             font-weight: 800;
         }
@@ -124,7 +124,7 @@
             @if(!empty($tenant->logo_path))
                 <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
             @else
-                <span style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.5rem; color:var(--dark-text, #2b2118);"><span class="material-symbols-outlined petal-icon" style="font-size:1.2rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
+                <span style="font-family:'Fraunces',serif; font-weight:700; font-size:1.5rem; color:var(--dark-text, #2b2118);"><span class="material-symbols-outlined petal-icon" style="font-size:1.2rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
             @endif
         </a>
         <nav class="nav-links">
@@ -163,7 +163,7 @@
 
     @if(!$hasMenuContent)
         <!-- NO MENU CONFIGURED PLACEHOLDER -->
-        <section style="max-width:700px; margin:70px auto; padding:60px 30px; text-align:center; background:var(--theme-card-bg, #ffffff); border-radius:20px; border:2px dashed #a9836c; box-shadow:0 10px 30px rgba(0,0,0,0.04);">
+        <section style="max-width:700px; margin:70px auto; padding:60px 30px; text-align:center; background:var(--theme-card-bg, #ffffff); border-radius:20px; border:2px dashed #8b5a45; box-shadow:0 10px 30px rgba(0,0,0,0.04);">
             <div class="material-symbols-outlined petal-icon" style="font-size:3.5rem; margin-bottom:16px;">bakery_dining</div>
             <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); font-size:1.8rem; margin-bottom:12px;">Menu Coming Soon</h2>
             <p style="font-size:1.05rem; color:#666; max-width:500px; margin:0 auto 24px auto; line-height:1.6;">
@@ -205,10 +205,10 @@
                     @foreach($products as $p)
                         <div class="category-card-exact" style="padding:22px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
                             <div>
-                                <h4 style="margin:0 0 4px 0; font-size:1.15rem; color:var(--dark-text); font-family:'Cormorant Garamond',serif;">{{ $p->name }}</h4>
+                                <h4 style="margin:0 0 4px 0; font-size:1.15rem; color:var(--dark-text); font-family:'Fraunces',serif;">{{ $p->name }}</h4>
                                 <span style="font-size:0.85rem; color:#777;">Base Price</span>
                             </div>
-                            <div style="font-size:1.3rem; font-weight:700; color:#a9836c;">${{ number_format($p->price, 2) }}</div>
+                            <div style="font-size:1.3rem; font-weight:700; color:#8b5a45;">${{ number_format($p->price, 2) }}</div>
                         </div>
                     @endforeach
                 </div>
@@ -234,7 +234,7 @@
         @if(!empty($tenant->logo_path))
             <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
         @else
-            <span style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.6rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
+            <span style="font-family:'Fraunces',serif; font-weight:700; font-size:1.6rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
         @endif
     </div>
     <div class="footer-nav">

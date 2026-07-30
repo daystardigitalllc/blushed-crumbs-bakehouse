@@ -15,7 +15,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
@@ -27,7 +27,7 @@
             @if(!empty($tenant->logo_path))
                 <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
             @else
-                <span style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.5rem; color:var(--dark-text, #2b2118);"><span class="material-symbols-outlined petal-icon" style="font-size:1.2rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
+                <span style="font-family:'Fraunces',serif; font-weight:700; font-size:1.5rem; color:var(--dark-text, #2b2118);"><span class="material-symbols-outlined petal-icon" style="font-size:1.2rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
             @endif
         </a>
         <nav class="nav-links">
@@ -100,7 +100,7 @@
         @if(!empty($tenant->logo_path))
             <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
         @else
-            <span style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.6rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
+            <span style="font-family:'Fraunces',serif; font-weight:700; font-size:1.6rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
         @endif
     </div>
     <div class="footer-nav">

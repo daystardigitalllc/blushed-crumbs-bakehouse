@@ -16,7 +16,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
 
     <!-- CSS Assets -->
@@ -30,7 +30,7 @@
             @if(!empty($tenant->logo_path))
                 <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
             @else
-                <span style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.5rem; color:var(--dark-text, #2b2118);"><span class="material-symbols-outlined petal-icon" style="font-size:1.2rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
+                <span style="font-family:'Fraunces',serif; font-weight:700; font-size:1.5rem; color:var(--dark-text, #2b2118);"><span class="material-symbols-outlined petal-icon" style="font-size:1.2rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
             @endif
         </a>
         <nav class="nav-links">
@@ -136,7 +136,7 @@
                                     @if($catImg)
                                         <img src="{{ asset($catImg) }}" alt="{{ $cat['title'] ?? 'Category' }}">
                                     @else
-                                        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #a9836c 0%, #2b2118 100%);">
+                                        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #8b5a45 0%, #2b2118 100%);">
                                             <span class="material-symbols-outlined" style="font-size:2.5rem; color:#ffffff;">cake</span>
                                         </div>
                                     @endif
@@ -176,7 +176,7 @@
                             @if(!empty($promoBg))
                                 <img src="{{ asset($promoBg) }}" alt="{{ $tenant->name }}">
                             @else
-                                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #a9836c 0%, #2b2118 100%);">
+                                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #8b5a45 0%, #2b2118 100%);">
                                     <span class="material-symbols-outlined" style="font-size:3rem; color:#ffffff;">redeem</span>
                                 </div>
                             @endif
@@ -259,7 +259,7 @@
                 </section>
             @elseif($secId === 'faq')
                 <!-- FAQ — soft accordion -->
-                <section style="padding:90px 25px; background:#f5eee6; text-align:center;">
+                <section style="padding:90px 25px; background:#f3e3dc; text-align:center;">
                     <h2 class="section-title-script" style="margin-bottom:35px;">Frequently Asked Questions</h2>
                     <div class="petal-accordion">
                         @php $faqs = $tenant->getSiteContent('faqs', []); @endphp
@@ -301,7 +301,7 @@
                 @php
                     $ctaBg = $tenant->getSiteContent('cta_bg_image_url');
                 @endphp
-                <section class="cta-video-banner" style="position:relative; background: {{ !empty($ctaBg) ? 'url(' . asset($ctaBg) . ') center/cover no-repeat' : 'linear-gradient(135deg, #a9836c 0%, #2b2118 100%)' }}; padding: 70px 25px; text-align: center;">
+                <section class="cta-video-banner" style="position:relative; background: {{ !empty($ctaBg) ? 'url(' . asset($ctaBg) . ') center/cover no-repeat' : 'linear-gradient(135deg, #8b5a45 0%, #2b2118 100%)' }}; padding: 70px 25px; text-align: center;">
                     <div class="cta-content" style="max-width:750px; margin:0 auto; position:relative; z-index:2;">
                         <h2 style="font-size: 2.6rem; margin-bottom: 10px;">{{ $tenant->getSiteContent('cta_headline', 'Ready to Order?') }}</h2>
                         <p style="font-size: 1.05rem; opacity: 0.95; margin-bottom: 24px;">{{ $tenant->getSiteContent('cta_subtext', "Let's bring your order to life.") }}</p>
@@ -329,7 +329,7 @@
         @if(!empty($tenant->logo_path))
             <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
         @else
-            <span style="font-family:'Cormorant Garamond',serif; font-weight:700; font-size:1.6rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
+            <span style="font-family:'Fraunces',serif; font-weight:700; font-size:1.6rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
         @endif
     </div>
     <div class="footer-nav">

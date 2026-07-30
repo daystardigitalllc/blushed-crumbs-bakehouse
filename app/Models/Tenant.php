@@ -350,9 +350,9 @@ class Tenant extends Model implements TenancyContract
             'artisan_sourdough' => [
                 'id' => 'artisan_sourdough',
                 'name' => '🌸 Petal & Crumb',
-                'subtitle' => 'Dusty mauve & cream, romantic serif, floating rounded cards',
-                'preview_bg' => '#d8c4b8',
-                'preview_accent' => '#a9836c',
+                'subtitle' => 'Blush mauve & cream, romantic serif, floating rounded cards',
+                'preview_bg' => '#c9a08f',
+                'preview_accent' => '#8b5a45',
             ],
             'clean_minimal' => [
                 'id' => 'clean_minimal',

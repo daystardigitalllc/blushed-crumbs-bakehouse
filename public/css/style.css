@@ -2731,16 +2731,16 @@ body.theme-country_farmhouse .farmhouse-grid .gallery-card-img-wrap {
 /* 6. 🌸 PETAL & CRUMB THEME — dusty mauve & cream, romantic serif,
    floating rounded cards. Pro tier (see Tenant::getStarterThemes()). */
 body.theme-artisan_sourdough {
-    --primary: #a9836c;
-    --primary-hover: #8f6b54;
-    --pink-bg: #f5eee6;
+    --primary: #8b5a45;
+    --primary-hover: #74483a;
+    --pink-bg: #f3e3dc;
     --dark-text: #2b2118;
-    --theme-heading-font: 'Cormorant Garamond', serif;
+    --theme-heading-font: 'Fraunces', serif;
     --theme-card-bg: #ffffff;
-    --theme-section-bg: #f5eee6;
-    --theme-accent-bg: #d8c4b8;
+    --theme-section-bg: #f3e3dc;
+    --theme-accent-bg: #c9a08f;
     font-family: 'Poppins', sans-serif;
-    background-color: #d8c4b8;
+    background-color: #c9a08f;
 }
 
 body.theme-artisan_sourdough h1,
@@ -2748,7 +2748,7 @@ body.theme-artisan_sourdough h2,
 body.theme-artisan_sourdough h3,
 body.theme-artisan_sourdough .section-title-script,
 body.theme-artisan_sourdough .whimsical-col-right h2 {
-    font-family: 'Cormorant Garamond', serif !important;
+    font-family: 'Fraunces', serif !important;
     font-weight: 600 !important;
     color: #2b2118 !important;
     letter-spacing: 0;
@@ -2759,7 +2759,7 @@ body.theme-artisan_sourdough .subheading {
     font-weight: 600 !important;
     text-transform: uppercase;
     letter-spacing: 2px !important;
-    color: #a9836c !important;
+    color: #8b5a45 !important;
     font-size: 0.8rem !important;
 }
 
@@ -2789,11 +2789,11 @@ body.theme-artisan_sourdough .site-header:has(+ #storefront-view .petal-hero) .n
 
 body.theme-artisan_sourdough .categories-section,
 body.theme-artisan_sourdough .reviews-section {
-    background: #f5eee6 !important;
+    background: #f3e3dc !important;
 }
 
 body.theme-artisan_sourdough .highlights-bar {
-    background: #f5eee6 !important;
+    background: #f3e3dc !important;
 }
 
 body.theme-artisan_sourdough .video-promo-banner h2,
@@ -2802,7 +2802,7 @@ body.theme-artisan_sourdough .video-overlay-content h2 {
 }
 
 body.theme-artisan_sourdough .whimsical-section {
-    background-color: #d8c4b8 !important;
+    background-color: #c9a08f !important;
     color: #2b2118 !important;
 }
 
@@ -2812,7 +2812,7 @@ body.theme-artisan_sourdough .whimsical-section h2 {
 
 body.theme-artisan_sourdough .btn-primary,
 body.theme-artisan_sourdough .nav-order-btn {
-    background: #a9836c !important;
+    background: #8b5a45 !important;
     color: #ffffff !important;
     border-radius: 30px !important;
     box-shadow: 0 4px 12px rgba(169, 131, 108, 0.3) !important;
@@ -2843,33 +2843,33 @@ body.theme-artisan_sourdough .cta-video-banner p {
 body.theme-artisan_sourdough .order-modal-card {
     border-radius: 16px !important;
     border: 1px solid #e8dccc !important;
-    background: #f5eee6 !important;
+    background: #f3e3dc !important;
     box-shadow: 0 12px 35px rgba(43, 33, 24, 0.15) !important;
 }
 
 body.theme-artisan_sourdough .sticky-order-summary-bar {
-    background: #f5eee6 !important;
+    background: #f3e3dc !important;
     border: 2px solid #e8dccc !important;
 }
 
 body.theme-artisan_sourdough .product,
 body.theme-artisan_sourdough .option-chip {
     border-radius: 10px !important;
-    border: 1px solid #a9836c !important;
+    border: 1px solid #8b5a45 !important;
     background: #ffffff !important;
     color: #2b2118 !important;
 }
 
 body.theme-artisan_sourdough .product.selected,
 body.theme-artisan_sourdough .option-chip.selected {
-    background: #a9836c !important;
+    background: #8b5a45 !important;
     color: #ffffff !important;
-    border-color: #8f6b54 !important;
+    border-color: #74483a !important;
     box-shadow: 0 4px 12px rgba(169, 131, 108, 0.35) !important;
 }
 
 body.theme-artisan_sourdough .next-btn {
-    background: #a9836c !important;
+    background: #8b5a45 !important;
     color: #ffffff !important;
     border-radius: 10px !important;
     box-shadow: 0 4px 12px rgba(169, 131, 108, 0.35) !important;
@@ -2885,7 +2885,7 @@ body.theme-artisan_sourdough .next-btn {
    classes. */
 
 body.theme-artisan_sourdough .petal-icon {
-    color: #a9836c;
+    color: #8b5a45;
 }
 
 /* Hero — big rounded card floating on the mauve page background */
@@ -2900,7 +2900,7 @@ body.theme-artisan_sourdough .petal-hero {
     padding: 110px 50px 60px 50px;
     border-radius: 32px;
     overflow: hidden;
-    background: linear-gradient(135deg, #f0e2d6 0%, #e6d2c2 100%);
+    background: linear-gradient(135deg, #f3e3dc 0%, #ecd5cb 100%);
     box-shadow: 0 30px 60px rgba(43, 33, 24, 0.18);
 }
 
@@ -2925,7 +2925,7 @@ body.theme-artisan_sourdough .petal-hero-media-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #a9836c 0%, #2b2118 100%);
+    background: linear-gradient(160deg, #8b5a45 0%, #2b2118 100%);
 }
 
 body.theme-artisan_sourdough .petal-hero-copy h1 {
@@ -2965,7 +2965,7 @@ body.theme-artisan_sourdough .petal-about-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #a9836c 0%, #2b2118 100%);
+    background: linear-gradient(160deg, #8b5a45 0%, #2b2118 100%);
 }
 
 body.theme-artisan_sourdough .petal-about-copy p {
@@ -2993,11 +2993,11 @@ body.theme-artisan_sourdough .petal-feature-card {
 }
 
 body.theme-artisan_sourdough .petal-feature-card.is-accent {
-    background: #d8c4b8;
+    background: #c9a08f;
 }
 
 body.theme-artisan_sourdough .petal-feature-card h4 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Fraunces', serif;
     font-size: 1.3rem;
     margin-bottom: 8px;
 }
@@ -3036,7 +3036,7 @@ body.theme-artisan_sourdough .petal-pick-badge {
     top: 12px;
     left: 12px;
     background: rgba(255, 255, 255, 0.92);
-    color: #a9836c;
+    color: #8b5a45;
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -3046,7 +3046,7 @@ body.theme-artisan_sourdough .petal-pick-badge {
 }
 
 body.theme-artisan_sourdough .petal-pick-card h4 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Fraunces', serif;
     font-size: 1.2rem;
     margin-bottom: 4px;
 }
@@ -3058,7 +3058,7 @@ body.theme-artisan_sourdough .petal-pick-card p {
 
 /* Promo, re-purposed as a full-width soft-mauve banner */
 body.theme-artisan_sourdough .petal-promo {
-    background: linear-gradient(135deg, #e6d2c2 0%, #d8c4b8 100%);
+    background: linear-gradient(135deg, #ecd5cb 0%, #c9a08f 100%);
     text-align: center;
     padding: 80px 25px;
 }
@@ -3100,12 +3100,12 @@ body.theme-artisan_sourdough .petal-step-num {
     height: 46px;
     border-radius: 50%;
     background: #ffffff;
-    border: 1px solid #a9836c;
-    color: #a9836c;
+    border: 1px solid #8b5a45;
+    color: #8b5a45;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Fraunces', serif;
     font-size: 1.2rem;
     font-weight: 700;
 }
@@ -3153,7 +3153,7 @@ body.theme-artisan_sourdough .petal-accordion-item summary::-webkit-details-mark
 body.theme-artisan_sourdough .petal-accordion-item summary::after {
     content: '+';
     font-size: 1.3rem;
-    color: #a9836c;
+    color: #8b5a45;
     transition: transform 0.2s ease;
 }
 
@@ -3208,7 +3208,7 @@ body.theme-artisan_sourdough .petal-icon-circle {
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: #a9836c;
+    background: #8b5a45;
     display: flex;
     align-items: center;
     justify-content: center;
