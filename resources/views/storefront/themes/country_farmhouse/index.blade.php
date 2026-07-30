@@ -117,7 +117,10 @@
                     ['title' => 'Cupcakes'],
                     ['title' => 'Treats'],
                 ]);
-                $catImg = !empty($catList[0]['image_url']) ? $catList[0]['image_url'] : (!empty($tenant->gallery_images[0]) ? $tenant->gallery_images[0] : null);
+                $catImg = $catList[0]['image_url']
+                    ?? $tenant->gallery_images[0]
+                    ?? $tenant->getSiteContent('hero_bg_url')
+                    ?? null;
             @endphp
             <div class="farmhouse-menu-index-media">
                 @if($catImg)
@@ -148,13 +151,14 @@
         </section>
     @endif
 
-    <!-- Contact + Hours — always shown, built from real tenant contact fields -->
+    <!-- Contact + Hours + Map — always shown, built from real tenant fields -->
     <section class="farmhouse-contact">
         <div class="farmhouse-contact-grid">
             <div class="farmhouse-contact-info">
                 <h2 style="margin-bottom:18px;">Contact Us</h2>
-                @if(!empty($tenant->getSiteContent('contact_location')))
-                    <p>{{ $tenant->getSiteContent('contact_location') }}</p>
+                @php $location = $tenant->getSiteContent('contact_location'); @endphp
+                @if(!empty($location))
+                    <p>{{ $location }}</p>
                 @endif
                 @if(!empty($tenant->email))
                     <p>{{ $tenant->email }}</p>
@@ -177,15 +181,20 @@
                         <span class="material-symbols-outlined" style="font-size:1.2rem;">shopping_bag</span>
                     </a>
                 </div>
-            </div>
-            <div class="farmhouse-hours-panel">
-                @if(!empty($tenant->gallery_images[1]))
-                    <img src="{{ asset($tenant->gallery_images[1]) }}" alt="{{ $tenant->name }} Hours">
-                @endif
-                <div class="farmhouse-hours-content">
+                <div class="farmhouse-hours-block">
                     <h3>Hours</h3>
                     <p>{{ $tenant->getSiteContent('contact_hours', 'Mon-Sat: 8:00 AM - 6:00 PM | Sun: Closed') }}</p>
                 </div>
+            </div>
+            <div class="farmhouse-map-panel">
+                @if(!empty($location))
+                    <iframe src="https://www.google.com/maps?q={{ urlencode($location) }}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{{ $tenant->name }} Location"></iframe>
+                @else
+                    <div class="farmhouse-map-placeholder">
+                        <span class="material-symbols-outlined" style="font-size:3rem; color:#ffffff;">location_on</span>
+                        <p>Add a location in your dashboard to show a map here.</p>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
