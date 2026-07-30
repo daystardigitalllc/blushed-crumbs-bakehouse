@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Bakery Pricing Calculator — Price Cakes, Cookies & Cupcakes | Doughmain.pro</title>
-    <meta name="description" content="Free bakery pricing calculator. Instantly calculate ingredient cost, labor, packaging, overhead, delivery, and profit margin to find the perfect selling price for your cakes, cookies, and cupcakes.">
+    <meta name="description" content="Free bakery pricing calculator. Instantly calculate ingredient cost, labor, packaging, delivery, and profit margin to find the perfect selling price for your cakes, cookies, and cupcakes.">
     <link rel="canonical" href="{{ route('tools.pricing-calculator') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('tools.pricing-calculator') }}">
     <meta property="og:title" content="Free Bakery Pricing Calculator — Price Cakes, Cookies & Cupcakes">
-    <meta property="og:description" content="Calculate ingredient cost, labor, packaging, overhead, delivery, and profit margin instantly. Built for home bakers and custom cake businesses.">
+    <meta property="og:description" content="Calculate ingredient cost, labor, packaging, delivery, and profit margin instantly. Built for home bakers and custom cake businesses.">
     <meta property="og:image" content="{{ asset('images/og_image.jpg') }}">
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Free Bakery Pricing Calculator — Price Cakes, Cookies & Cupcakes">
-    <meta name="twitter:description" content="Calculate ingredient cost, labor, packaging, overhead, delivery, and profit margin instantly. Built for home bakers and custom cake businesses.">
+    <meta name="twitter:description" content="Calculate ingredient cost, labor, packaging, delivery, and profit margin instantly. Built for home bakers and custom cake businesses.">
     <meta name="twitter:image" content="{{ asset('images/og_image.jpg') }}">
     <link rel="icon" href="{{ asset('images/favicon.png') }}">
 
@@ -34,7 +35,7 @@
                 "applicationCategory": "BusinessApplication",
                 "operatingSystem": "Any",
                 "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-                "description": "Free calculator that helps home bakers price cakes, cookies, and cupcakes by accounting for ingredients, labor, packaging, overhead, delivery, and profit margin.",
+                "description": "Free calculator that helps home bakers price cakes, cookies, and cupcakes by accounting for ingredients, labor, packaging, delivery, and profit margin.",
                 "publisher": { "@type": "Organization", "name": "Doughmain.pro" }
             },
             {
@@ -45,7 +46,7 @@
                         "name": "How do I price a custom cake?",
                         "acceptedAnswer": {
                             "@type": "Answer",
-                            "text": "Add up every ingredient's actual cost, your labor time at a fair hourly rate, packaging, a share of your overhead (electricity, rental, insurance), and delivery if you offer it. That total is your true cost. Then apply a markup or profit margin on top so you're paid for your skill, not just reimbursed for supplies."
+                            "text": "Add up every ingredient's actual cost, your labor time at a fair hourly rate, packaging, and delivery if you offer it. That total is your true cost. Then apply a markup or profit margin on top so you're paid for your skill, not just reimbursed for supplies."
                         }
                     },
                     {
@@ -69,7 +70,7 @@
                         "name": "What markup should I charge?",
                         "acceptedAnswer": {
                             "@type": "Answer",
-                            "text": "A common starting point is a 100-200% markup over total cost (ingredients, labor, packaging, and overhead combined), which translates to roughly a 30-50% profit margin depending on your market and how custom the order is."
+                            "text": "A common starting point is a 100-200% markup over total cost (ingredients, labor, and packaging combined), which translates to roughly a 30-50% profit margin depending on your market and how custom the order is."
                         }
                     }
                 ]
@@ -217,6 +218,39 @@
         }
         input:focus, select:focus { outline: 2px solid var(--primary-pink); outline-offset: 1px; }
 
+        /* Ingredient import */
+        .import-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+        .import-panel {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: var(--input-bg);
+        }
+        .import-panel textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            resize: vertical;
+        }
+        .import-panel-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .import-status {
+            font-size: 0.85rem;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .import-status.info { background: var(--input-bg); color: var(--text-gray); }
+        .import-status.error { background: #fde2e2; color: #a12727; }
+        @media (prefers-color-scheme: dark) { .import-status.error { background: #3a1717; color: #f2a5a5; } }
+        .import-status.success { background: #e2f5e8; color: #1f7a3f; }
+        @media (prefers-color-scheme: dark) { .import-status.success { background: #123420; color: #8fd6a6; } }
+
         /* Ingredient rows */
         .ing-row {
             border: 1px solid var(--border-color);
@@ -252,7 +286,7 @@
         }
         .remove-row-btn:hover { color: #d64545; }
 
-        /* Generic simple rows (packaging / overhead) */
+        /* Generic simple rows (packaging) */
         .simple-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 12px; }
         .simple-row .field { flex: 1; }
         .simple-row .field-name { flex: 1.4; }
@@ -429,6 +463,24 @@
                 <div class="calc-card">
                     <h2><span class="step-num">1</span> Ingredients</h2>
                     <p class="step-hint">Add every ingredient you use. We'll work out the exact cost from what you paid for the package.</p>
+
+                    <div class="import-toolbar">
+                        <button type="button" class="btn btn-light btn-small" id="btn-import-paste">📋 Paste a List</button>
+                        <button type="button" class="btn btn-light btn-small" id="btn-import-photo">📷 Scan a Photo</button>
+                        <input type="file" id="import-photo-input" accept="image/*" style="display:none;">
+                    </div>
+
+                    <div class="import-panel" id="import-paste-panel" style="display:none;">
+                        <label for="import-paste-text">Paste your ingredient list</label>
+                        <textarea id="import-paste-text" rows="5" placeholder="e.g.&#10;Butter, 100g used, $5.99 for 454g&#10;Sugar, 200g used, $3.49 for 907g"></textarea>
+                        <div class="import-panel-actions">
+                            <button type="button" class="btn btn-primary btn-small" id="btn-import-paste-submit">Fill In Ingredients</button>
+                            <button type="button" class="btn btn-light btn-small" id="btn-import-paste-cancel">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="import-status" id="import-status" style="display:none;"></div>
+
                     <div id="ingredients-list"></div>
                     <button type="button" class="add-row-btn" id="add-ingredient">+ Add Ingredient</button>
                 </div>
@@ -463,18 +515,9 @@
                     <div class="ing-cost-line"><span>Packaging Total</span><span id="packaging-total-display">$0.00</span></div>
                 </div>
 
-                <!-- Step 4: Overhead -->
+                <!-- Step 4: Delivery -->
                 <div class="calc-card">
-                    <h2><span class="step-num">4</span> Overhead</h2>
-                    <p class="step-hint">Optional running costs of your business. Enter a flat dollar amount, or a percentage of your total cost so far.</p>
-                    <div id="overhead-list"></div>
-                    <button type="button" class="add-row-btn" id="add-overhead">+ Add Overhead Item</button>
-                    <div class="ing-cost-line"><span>Overhead Total</span><span id="overhead-total-display">$0.00</span></div>
-                </div>
-
-                <!-- Step 5: Delivery -->
-                <div class="calc-card">
-                    <h2><span class="step-num">5</span> Delivery</h2>
+                    <h2><span class="step-num">4</span> Delivery</h2>
                     <p class="step-hint">Are you delivering this order?</p>
                     <div class="pill-select" id="delivery-mode-select">
                         <label><input type="radio" name="delivery-mode" value="none" checked> No Delivery</label>
@@ -500,9 +543,9 @@
                     <div class="ing-cost-line"><span>Delivery Cost</span><span id="delivery-cost-display">$0.00</span></div>
                 </div>
 
-                <!-- Step 6: Profit -->
+                <!-- Step 5: Profit -->
                 <div class="calc-card">
-                    <h2><span class="step-num">6</span> Desired Profit</h2>
+                    <h2><span class="step-num">5</span> Desired Profit</h2>
                     <p class="step-hint">
                         Choose how you'd like to add profit on top of your costs.
                         <span class="tooltip-wrap" tabindex="0">
@@ -539,7 +582,6 @@
                     <div class="result-line"><span>Ingredient Cost</span><span id="r-ingredients">$0.00</span></div>
                     <div class="result-line"><span>Labor Cost</span><span id="r-labor">$0.00</span></div>
                     <div class="result-line"><span>Packaging</span><span id="r-packaging">$0.00</span></div>
-                    <div class="result-line"><span>Overhead</span><span id="r-overhead">$0.00</span></div>
                     <div class="result-line"><span>Delivery</span><span id="r-delivery">$0.00</span></div>
                     <div class="result-line total"><span>Total Cost</span><span id="r-total-cost">$0.00</span></div>
                     <div class="result-line"><span>Desired Profit</span><span id="r-desired-profit">$0.00</span></div>
@@ -581,7 +623,7 @@
 
         <details class="faq-item">
             <summary>How do I price a custom cake?</summary>
-            <p>Add up every ingredient's actual cost, your labor time at a fair hourly rate, packaging, a share of your overhead (electricity, rental, insurance), and delivery if you offer it. That total is your true cost. Then apply a markup or profit margin on top so you're paid for your skill, not just reimbursed for supplies.</p>
+            <p>Add up every ingredient's actual cost, your labor time at a fair hourly rate, packaging, and delivery if you offer it. That total is your true cost. Then apply a markup or profit margin on top so you're paid for your skill, not just reimbursed for supplies.</p>
         </details>
         <details class="faq-item">
             <summary>How much profit should a home bakery make?</summary>
@@ -593,7 +635,7 @@
         </details>
         <details class="faq-item">
             <summary>What markup should I charge?</summary>
-            <p>A common starting point is a 100-200% markup over total cost (ingredients, labor, packaging, and overhead combined), which translates to roughly a 30-50% profit margin depending on your market and how custom the order is.</p>
+            <p>A common starting point is a 100-200% markup over total cost (ingredients, labor, and packaging combined), which translates to roughly a 30-50% profit margin depending on your market and how custom the order is.</p>
         </details>
     </section>
 
@@ -611,6 +653,9 @@
 
         var UNIT_OPTIONS = ['grams', 'ounces', 'pounds', 'cups', 'teaspoons', 'tablespoons', 'pieces', 'custom'];
 
+        var PARSE_INGREDIENTS_URL = '{{ route('tools.pricing-calculator.parse') }}';
+        var CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         function defaultState() {
             return {
                 ingredients: [
@@ -622,14 +667,6 @@
                     { name: 'Ribbon', cost: 0 },
                     { name: 'Sticker', cost: 0 },
                     { name: 'Cake Board', cost: 0 }
-                ],
-                overhead: [
-                    { name: 'Electricity', mode: 'amount', value: 0 },
-                    { name: 'Water', mode: 'amount', value: 0 },
-                    { name: 'Kitchen Rental', mode: 'amount', value: 0 },
-                    { name: 'Equipment Wear', mode: 'percent', value: 3 },
-                    { name: 'Business Insurance', mode: 'amount', value: 0 },
-                    { name: 'Marketing', mode: 'amount', value: 0 }
                 ],
                 delivery: { mode: 'none', flatFee: 0, miles: 0, mileageRate: 0.67 },
                 profit: { mode: 'markup', value: 50 },
@@ -719,33 +756,6 @@
             }).join('');
         }
 
-        function renderOverhead() {
-            var list = document.getElementById('overhead-list');
-            list.innerHTML = state.overhead.map(function (row, i) {
-                return '' +
-                    '<div class="simple-row" data-index="' + i + '">' +
-                        '<div class="field field-name"><label>Expense</label><input type="text" class="oh-name" value="' + escapeHtml(row.name) + '"></div>' +
-                        '<div class="field" style="max-width:150px;">' +
-                            '<label>&nbsp;</label>' +
-                            '<div class="toggle-group">' +
-                                '<button type="button" class="oh-mode-btn" data-mode="amount">$</button>' +
-                                '<button type="button" class="oh-mode-btn" data-mode="percent">%</button>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="field"><label>Value</label><input type="number" class="oh-value" min="0" step="0.01" value="' + row.value + '"></div>' +
-                        '<button type="button" class="remove-row-btn" data-remove="overhead" title="Remove item">✕</button>' +
-                    '</div>';
-            }).join('');
-            // Fix up toggle-group active classes (can't conditionally set class attr twice above cleanly)
-            list.querySelectorAll('.simple-row').forEach(function (rowEl) {
-                var i = parseInt(rowEl.getAttribute('data-index'), 10);
-                var mode = state.overhead[i].mode;
-                rowEl.querySelectorAll('.oh-mode-btn').forEach(function (btn) {
-                    btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
-                });
-            });
-        }
-
         function escapeHtml(str) {
             return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
                 return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -805,37 +815,6 @@
             recalculate();
         });
 
-        document.getElementById('overhead-list').addEventListener('input', function (e) {
-            var rowEl = e.target.closest('.simple-row');
-            if (!rowEl) return;
-            var i = parseInt(rowEl.getAttribute('data-index'), 10);
-            var row = state.overhead[i];
-            if (e.target.classList.contains('oh-name')) row.name = e.target.value;
-            if (e.target.classList.contains('oh-value')) row.value = e.target.value;
-            recalculate();
-        });
-        document.getElementById('overhead-list').addEventListener('click', function (e) {
-            if (e.target.getAttribute && e.target.getAttribute('data-remove') === 'overhead') {
-                var rowEl = e.target.closest('.simple-row');
-                state.overhead.splice(parseInt(rowEl.getAttribute('data-index'), 10), 1);
-                renderOverhead();
-                recalculate();
-                return;
-            }
-            if (e.target.classList.contains('oh-mode-btn')) {
-                var rowEl2 = e.target.closest('.simple-row');
-                var i2 = parseInt(rowEl2.getAttribute('data-index'), 10);
-                state.overhead[i2].mode = e.target.getAttribute('data-mode');
-                renderOverhead();
-                recalculate();
-            }
-        });
-        document.getElementById('add-overhead').addEventListener('click', function () {
-            state.overhead.push({ name: 'Other', mode: 'amount', value: 0 });
-            renderOverhead();
-            recalculate();
-        });
-
         // Labor
         document.getElementById('labor-hours').addEventListener('input', function (e) { state.labor.hours = e.target.value; recalculate(); });
         document.getElementById('labor-minutes').addEventListener('input', function (e) { state.labor.minutes = e.target.value; recalculate(); });
@@ -885,13 +864,6 @@
             return state.packaging.reduce(function (sum, row) { return sum + num(row.cost); }, 0);
         }
 
-        function overheadTotal(basisCost) {
-            return state.overhead.reduce(function (sum, row) {
-                if (row.mode === 'percent') return sum + (num(row.value) / 100) * basisCost;
-                return sum + num(row.value);
-            }, 0);
-        }
-
         function deliveryCost() {
             if (state.delivery.mode === 'flat') return num(state.delivery.flatFee);
             if (state.delivery.mode === 'mileage') return num(state.delivery.miles) * num(state.delivery.mileageRate);
@@ -907,10 +879,8 @@
             var ingCost = ingredientsTotal();
             var labCost = laborCost();
             var pkgCost = packagingTotal();
-            var basisForOverhead = ingCost + labCost + pkgCost;
-            var ohCost = overheadTotal(basisForOverhead);
             var delCost = deliveryCost();
-            var totalCost = basisForOverhead + ohCost + delCost;
+            var totalCost = ingCost + labCost + pkgCost + delCost;
 
             var profitVal = num(state.profit.value);
             var rawPrice;
@@ -927,13 +897,11 @@
 
             document.getElementById('labor-cost-display').textContent = fmt(labCost);
             document.getElementById('packaging-total-display').textContent = fmt(pkgCost);
-            document.getElementById('overhead-total-display').textContent = fmt(ohCost);
             document.getElementById('delivery-cost-display').textContent = fmt(delCost);
 
             document.getElementById('r-ingredients').textContent = fmt(ingCost);
             document.getElementById('r-labor').textContent = fmt(labCost);
             document.getElementById('r-packaging').textContent = fmt(pkgCost);
-            document.getElementById('r-overhead').textContent = fmt(ohCost);
             document.getElementById('r-delivery').textContent = fmt(delCost);
             document.getElementById('r-total-cost').textContent = fmt(totalCost);
             document.getElementById('r-desired-profit').textContent = fmt(rawPrice - totalCost);
@@ -941,7 +909,7 @@
             document.getElementById('r-profit-sub').textContent = 'Profit: ' + fmt(profitDollars) + ' (' + profitPercentOfPrice.toFixed(1) + '%)';
 
             renderTips({
-                ingCost: ingCost, labCost: labCost, pkgCost: pkgCost, ohCost: ohCost, delCost: delCost,
+                ingCost: ingCost, labCost: labCost, pkgCost: pkgCost, delCost: delCost,
                 totalCost: totalCost, suggestedPrice: suggestedPrice, profitDollars: profitDollars, profitPercentOfPrice: profitPercentOfPrice
             });
 
@@ -980,10 +948,6 @@
                 if (d.delCost > 0 && (d.delCost / price) * 100 > 15) {
                     tips.push('Delivery is a meaningful chunk of this price — consider a minimum order size for delivery orders.');
                 }
-
-                if (d.ohCost === 0) {
-                    tips.push('You have not added any overhead. Even a small percentage for electricity, rental, or equipment wear helps your price reflect the true cost of running your business.');
-                }
             }
 
             document.getElementById('tips-list').innerHTML = tips.map(function (t) {
@@ -1006,7 +970,6 @@
                 'Ingredient Cost: ' + document.getElementById('r-ingredients').textContent,
                 'Labor Cost: ' + document.getElementById('r-labor').textContent,
                 'Packaging: ' + document.getElementById('r-packaging').textContent,
-                'Overhead: ' + document.getElementById('r-overhead').textContent,
                 'Delivery: ' + document.getElementById('r-delivery').textContent,
                 'Total Cost: ' + document.getElementById('r-total-cost').textContent,
                 'Suggested Selling Price: ' + document.getElementById('r-suggested-price').textContent,
@@ -1038,12 +1001,113 @@
             }
         });
 
+        // ---------- Ingredient import (paste list / scan photo) ----------
+
+        var importStatusEl = document.getElementById('import-status');
+        var importPastePanel = document.getElementById('import-paste-panel');
+        var importPasteText = document.getElementById('import-paste-text');
+        var importPhotoInput = document.getElementById('import-photo-input');
+
+        function setImportStatus(kind, message) {
+            if (!message) {
+                importStatusEl.style.display = 'none';
+                return;
+            }
+            importStatusEl.className = 'import-status ' + kind;
+            importStatusEl.textContent = message;
+            importStatusEl.style.display = 'block';
+        }
+
+        function isEmptyIngredientRow(row) {
+            return !row.name && !row.qty && !row.pkgCost && !row.pkgSize;
+        }
+
+        function normalizedUnit(u) {
+            return UNIT_OPTIONS.indexOf(u) !== -1 ? u : 'grams';
+        }
+
+        function applyImportedIngredients(imported) {
+            if (!Array.isArray(imported) || imported.length === 0) {
+                setImportStatus('error', "We couldn't find any ingredients in that — try adding a bit more detail.");
+                return;
+            }
+
+            var newRows = imported.map(function (item) {
+                return {
+                    name: item.name || '',
+                    qty: (item.qty !== null && item.qty !== undefined) ? item.qty : '',
+                    unit: normalizedUnit(item.unit),
+                    pkgCost: (item.pkgCost !== null && item.pkgCost !== undefined) ? item.pkgCost : '',
+                    pkgSize: (item.pkgSize !== null && item.pkgSize !== undefined) ? item.pkgSize : '',
+                    pkgUnit: normalizedUnit(item.pkgUnit || item.unit)
+                };
+            });
+
+            var keptExisting = state.ingredients.filter(function (row) { return !isEmptyIngredientRow(row); });
+            state.ingredients = keptExisting.concat(newRows);
+
+            renderIngredients();
+            recalculate();
+            setImportStatus('success', 'Added ' + newRows.length + ' ingredient' + (newRows.length === 1 ? '' : 's') + '. Double check quantities and costs, then adjust as needed.');
+        }
+
+        function submitImport(formData, busyMessage) {
+            setImportStatus('info', busyMessage);
+            fetch(PARSE_INGREDIENTS_URL, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Accept': 'application/json' },
+                body: formData
+            })
+                .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+                .then(function (result) {
+                    if (!result.ok || result.data.error) {
+                        setImportStatus('error', (result.data && result.data.error) || 'Something went wrong reading that. Please try again.');
+                        return;
+                    }
+                    applyImportedIngredients(result.data.ingredients);
+                })
+                .catch(function () {
+                    setImportStatus('error', 'Could not reach the server. Check your connection and try again.');
+                });
+        }
+
+        document.getElementById('btn-import-paste').addEventListener('click', function () {
+            importPastePanel.style.display = importPastePanel.style.display === 'none' ? 'block' : 'none';
+            setImportStatus(null, null);
+        });
+        document.getElementById('btn-import-paste-cancel').addEventListener('click', function () {
+            importPastePanel.style.display = 'none';
+            importPasteText.value = '';
+            setImportStatus(null, null);
+        });
+        document.getElementById('btn-import-paste-submit').addEventListener('click', function () {
+            var text = importPasteText.value.trim();
+            if (!text) {
+                setImportStatus('error', 'Paste your ingredient list first.');
+                return;
+            }
+            var formData = new FormData();
+            formData.append('text', text);
+            submitImport(formData, 'Reading your list…');
+        });
+
+        document.getElementById('btn-import-photo').addEventListener('click', function () {
+            importPhotoInput.click();
+        });
+        importPhotoInput.addEventListener('change', function () {
+            var file = importPhotoInput.files && importPhotoInput.files[0];
+            if (!file) return;
+            var formData = new FormData();
+            formData.append('image', file);
+            submitImport(formData, 'Scanning your photo…');
+            importPhotoInput.value = '';
+        });
+
         // ---------- Init ----------
 
         function init() {
             renderIngredients();
             renderPackaging();
-            renderOverhead();
 
             document.getElementById('labor-hours').value = state.labor.hours;
             document.getElementById('labor-minutes').value = state.labor.minutes;
