@@ -146,8 +146,14 @@ class ToolsController extends Controller
             . 'only when nothing else fits. Never invent a number you cannot see or clearly infer from the text — '
             . 'leave pkgCost and pkgSize null if package pricing was not given, but still set pkgUnit to your best '
             . 'guess of the unit that ingredient would normally be purchased in (defaulting to the same value as '
-            . "unit if unsure). Return one JSON object per distinct ingredient, skipping instructions, section "
-            . 'headers, or anything that is not an actual ingredient.';
+            . 'unit if unsure). For a vague amount like "a pinch," "to taste," or "a dash," give a small realistic '
+            . 'numeric estimate (e.g. 0.125 teaspoons for a pinch of salt) instead of leaving qty empty — only '
+            . 'leave qty null when the text truly gives no quantity information at all. If the same ingredient '
+            . 'appears in more than one part of the recipe (e.g. a cake and its frosting), use the exact same '
+            . 'name string both times — do not append the recipe section (e.g. "(buttercream)", "(frosting)") to '
+            . 'the name, since matching names are combined into one total by the calculator. Return one JSON '
+            . 'object per distinct ingredient, skipping instructions, section headers, or anything that is not an '
+            . 'actual ingredient.';
     }
 
     private function ingredientResponseSchema(): array

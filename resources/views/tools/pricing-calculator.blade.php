@@ -130,6 +130,7 @@
         }
         .btn-outline:hover { background: var(--primary-pink); color: #fff; }
         .btn-small { padding: 8px 14px; font-size: 0.85rem; border-radius: 6px; }
+        .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; }
 
         /* Navigation (matches brand landing) */
         .navbar {
@@ -1005,6 +1006,15 @@
             return UNIT_OPTIONS.indexOf(u) !== -1 ? u : 'grams';
         }
 
+        // The AI doesn't always name the same ingredient identically across
+        // recipe sections (e.g. plain "unsalted butter" in one call, then
+        // "unsalted butter (buttercream)" in another) — strip a trailing
+        // parenthetical qualifier before matching so those still combine.
+        // This only affects the matching key, never what's displayed.
+        function ingredientMatchName(name) {
+            return name.trim().replace(/\s*\([^)]*\)\s*$/, '').trim().toLowerCase();
+        }
+
         // Same ingredient appearing more than once (e.g. butter used in both
         // a cake and its buttercream) gets combined into one row instead of
         // duplicated. Only rows with the same name AND unit are combined —
@@ -1016,12 +1026,13 @@
             var indexByKey = {};
 
             rows.forEach(function (row) {
-                var key = row.name.trim().toLowerCase() + '|' + row.unit;
-                if (!row.name.trim()) {
+                var matchName = ingredientMatchName(row.name);
+                if (!matchName) {
                     merged.push(row);
                     return;
                 }
 
+                var key = matchName + '|' + row.unit;
                 var existingIndex = indexByKey[key];
                 if (existingIndex === undefined) {
                     indexByKey[key] = merged.length;
@@ -1033,6 +1044,10 @@
                 existing.qty = num(existing.qty) + num(row.qty);
                 if (!existing.pkgCost && row.pkgCost) existing.pkgCost = row.pkgCost;
                 if (!existing.pkgSize && row.pkgSize) existing.pkgSize = row.pkgSize;
+                // Prefer the plainer name (no parenthetical qualifier) for display.
+                if (/\([^)]*\)\s*$/.test(existing.name) && !/\([^)]*\)\s*$/.test(row.name)) {
+                    existing.name = row.name;
+                }
             });
 
             return merged;
@@ -1066,9 +1081,27 @@
             setImportStatus('success', 'Added ' + newRows.length + ' ingredient' + (newRows.length === 1 ? '' : 's')
                 + (mergedCount > 0 ? ' (combined ' + mergedCount + ' duplicate' + (mergedCount === 1 ? '' : 's') + ')' : '')
                 + '. Double check quantities and costs, then adjust as needed.');
+
+            // Close out the paste flow on success so the same text can't be
+            // left sitting there and accidentally resubmitted (which used to
+            // double every quantity).
+            importPastePanel.style.display = 'none';
+            importPasteText.value = '';
+        }
+
+        var importBusy = false;
+        var importPasteSubmitBtn = document.getElementById('btn-import-paste-submit');
+        var importPhotoBtn = document.getElementById('btn-import-photo');
+
+        function setImportBusy(busy) {
+            importBusy = busy;
+            importPasteSubmitBtn.disabled = busy;
+            importPhotoBtn.disabled = busy;
         }
 
         function submitImport(formData, busyMessage) {
+            if (importBusy) return;
+            setImportBusy(true);
             setImportStatus('info', busyMessage);
             fetch(PARSE_INGREDIENTS_URL, {
                 method: 'POST',
@@ -1085,6 +1118,9 @@
                 })
                 .catch(function () {
                     setImportStatus('error', 'Could not reach the server. Check your connection and try again.');
+                })
+                .finally(function () {
+                    setImportBusy(false);
                 });
         }
 
@@ -1097,7 +1133,7 @@
             importPasteText.value = '';
             setImportStatus(null, null);
         });
-        document.getElementById('btn-import-paste-submit').addEventListener('click', function () {
+        importPasteSubmitBtn.addEventListener('click', function () {
             var text = importPasteText.value.trim();
             if (!text) {
                 setImportStatus('error', 'Paste your ingredient list first.');
@@ -1108,7 +1144,7 @@
             submitImport(formData, 'Reading your list…');
         });
 
-        document.getElementById('btn-import-photo').addEventListener('click', function () {
+        importPhotoBtn.addEventListener('click', function () {
             importPhotoInput.click();
         });
         importPhotoInput.addEventListener('change', function () {
