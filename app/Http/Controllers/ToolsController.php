@@ -96,9 +96,10 @@ class ToolsController extends Controller
             . "and that package's size and unit (pkgSize/pkgUnit). Use one of these exact values for unit and "
             . "pkgUnit whenever possible: {$units}. Use \"pieces\" for countable items (e.g. eggs) and \"custom\" "
             . 'only when nothing else fits. Never invent a number you cannot see or clearly infer from the text — '
-            . 'leave pkgCost, pkgSize, and pkgUnit null if package pricing was not given. Return one JSON object '
-            . 'per distinct ingredient, skipping instructions, section headers, or anything that is not an actual '
-            . 'ingredient.';
+            . 'leave pkgCost and pkgSize null if package pricing was not given, but still set pkgUnit to your best '
+            . 'guess of the unit that ingredient would normally be purchased in (defaulting to the same value as '
+            . "unit if unsure). Return one JSON object per distinct ingredient, skipping instructions, section "
+            . 'headers, or anything that is not an actual ingredient.';
     }
 
     private function ingredientResponseSchema(): array
@@ -113,9 +114,13 @@ class ToolsController extends Controller
                     'unit' => ['type' => 'STRING', 'enum' => self::UNITS],
                     'pkgCost' => ['type' => 'NUMBER', 'nullable' => true],
                     'pkgSize' => ['type' => 'NUMBER', 'nullable' => true],
-                    'pkgUnit' => ['type' => 'STRING', 'enum' => self::UNITS, 'nullable' => true],
+                    // Deliberately not nullable, unlike pkgCost/pkgSize above — combining
+                    // "enum" with "nullable" on the same property isn't reliably supported
+                    // by Gemini's structured-output schema and caused every request to fail
+                    // outright (a 400, not a decode failure) before this was split out.
+                    'pkgUnit' => ['type' => 'STRING', 'enum' => self::UNITS],
                 ],
-                'required' => ['name', 'unit'],
+                'required' => ['name', 'unit', 'pkgUnit'],
             ],
         ];
     }
