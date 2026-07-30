@@ -95,20 +95,6 @@
             --page-bg: var(--soft-pink);
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --soft-pink: #17101c;
-                --page-bg: #120c16;
-                --card-bg: #241a2a;
-                --text-dark: #f2e9ee;
-                --text-gray: #c9b8c3;
-                --border-color: #3a2b41;
-                --input-bg: #2c2032;
-                --white: #241a2a;
-                --dark-section: #f2e9ee;
-            }
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -152,9 +138,6 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        @media (prefers-color-scheme: dark) {
-            .navbar { background-color: rgba(26, 18, 30, 0.95); }
         }
         .navbar .container { display: flex; justify-content: space-between; align-items: center; }
         .nav-logo img { height: 56px; width: auto; object-fit: contain; }
@@ -247,9 +230,7 @@
         }
         .import-status.info { background: var(--input-bg); color: var(--text-gray); }
         .import-status.error { background: #fde2e2; color: #a12727; }
-        @media (prefers-color-scheme: dark) { .import-status.error { background: #3a1717; color: #f2a5a5; } }
         .import-status.success { background: #e2f5e8; color: #1f7a3f; }
-        @media (prefers-color-scheme: dark) { .import-status.success { background: #123420; color: #8fd6a6; } }
 
         /* Ingredient rows */
         .ing-row {
@@ -350,7 +331,6 @@
             padding: 12px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 400;
             line-height: 1.5; z-index: 10; box-shadow: 0 6px 20px rgba(0,0,0,0.25);
         }
-        @media (prefers-color-scheme: dark) { .tooltip-text { background: #000; } }
         .tooltip-wrap:hover .tooltip-text, .tooltip-wrap:focus-within .tooltip-text { display: block; }
 
         /* Results sidebar */
@@ -398,12 +378,11 @@
         .cta-section {
             background: var(--dark-section);
             color: #fff;
-            padding: 60px 0;
+            padding: 60px 24px;
             text-align: center;
             border-radius: 24px;
-            margin: 0 24px 40px;
+            margin-bottom: 40px;
         }
-        @media (prefers-color-scheme: dark) { .cta-section { background: #000; } }
         .cta-section h2 { color: #fff; font-size: 2rem; margin-bottom: 12px; }
         .cta-section p { color: #d9c9d3; max-width: 560px; margin: 0 auto 24px; }
         .cta-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
