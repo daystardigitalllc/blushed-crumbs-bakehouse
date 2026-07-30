@@ -356,10 +356,10 @@ class Tenant extends Model implements TenancyContract
             ],
             'clean_minimal' => [
                 'id' => 'clean_minimal',
-                'name' => '◻️ Clean Minimal',
-                'subtitle' => 'Ultra-clean Swiss minimalism, monochrome precision',
-                'preview_bg' => '#ffffff',
-                'preview_accent' => '#111111',
+                'name' => '🌙 Midnight Bakehouse',
+                'subtitle' => 'Deep navy & brushed gold, elegant serif, editorial luxury feel',
+                'preview_bg' => '#f7f5f1',
+                'preview_accent' => '#b8935a',
             ],
         ];
     }
