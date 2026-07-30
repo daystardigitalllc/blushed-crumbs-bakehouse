@@ -159,6 +159,55 @@
             color: var(--primary-pink);
         }
 
+        /* Nav dropdown (Free Tools) */
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0;
+        }
+        .nav-dropdown-toggle .caret {
+            font-size: 0.6rem;
+            transition: transform 0.2s ease;
+        }
+        .nav-dropdown.open .nav-dropdown-toggle .caret {
+            transform: rotate(180deg);
+        }
+        .nav-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 14px);
+            left: 0;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            padding: 8px;
+            min-width: 200px;
+            z-index: 1001;
+        }
+        .nav-dropdown.open .nav-dropdown-menu {
+            display: block;
+        }
+        .nav-dropdown-menu a {
+            display: block;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            white-space: nowrap;
+        }
+        .nav-dropdown-menu a:hover {
+            background: var(--soft-pink);
+            color: var(--primary-pink-dark);
+        }
+
         /* Hero Section */
         .hero {
             padding: 180px 0 140px;
@@ -917,7 +966,14 @@
             </a>
             <div class="nav-links">
                 @if(\App\Http\Controllers\ToolsController::isAllowedHost(request()->getHost()))
-                    <a href="{{ route('tools.pricing-calculator') }}" class="nav-login">Free Tools</a>
+                    <div class="nav-dropdown" id="free-tools-dropdown">
+                        <button type="button" class="nav-login nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                            Free Tools <span class="caret">▾</span>
+                        </button>
+                        <div class="nav-dropdown-menu">
+                            <a href="{{ route('tools.pricing-calculator') }}">Bakery Pricing Calculator</a>
+                        </div>
+                    </div>
                 @endif
                 <a href="/login" class="nav-login">Login</a>
                 <a href="/register" class="btn btn-primary">Build Your Free Site →</a>
@@ -1529,6 +1585,29 @@
             }, 100);
 
             startFeatureAutoSlide();
+
+            // Free Tools nav dropdown
+            const dropdown = document.getElementById("free-tools-dropdown");
+            if (dropdown) {
+                const toggle = dropdown.querySelector(".nav-dropdown-toggle");
+                toggle.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const isOpen = dropdown.classList.toggle("open");
+                    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+                });
+                document.addEventListener("click", (e) => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.classList.remove("open");
+                        toggle.setAttribute("aria-expanded", "false");
+                    }
+                });
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") {
+                        dropdown.classList.remove("open");
+                        toggle.setAttribute("aria-expanded", "false");
+                    }
+                });
+            }
         });
     </script>
 </body>

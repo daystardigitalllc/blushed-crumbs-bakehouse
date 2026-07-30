@@ -147,6 +147,47 @@
         .nav-links a.nav-login:hover { color: var(--primary-pink); }
         .nav-links a.active { color: var(--primary-pink-dark); font-weight: 700; }
 
+        /* Nav dropdown (Free Tools) */
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0;
+        }
+        .nav-dropdown-toggle .caret { font-size: 0.6rem; transition: transform 0.2s ease; }
+        .nav-dropdown.open .nav-dropdown-toggle .caret { transform: rotate(180deg); }
+        .nav-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 14px);
+            left: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            padding: 8px;
+            min-width: 210px;
+            z-index: 1001;
+        }
+        .nav-dropdown.open .nav-dropdown-menu { display: block; }
+        .nav-dropdown-menu a {
+            display: block;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            white-space: nowrap;
+        }
+        .nav-dropdown-menu a:hover { background: var(--input-bg); color: var(--primary-pink-dark); }
+        .nav-dropdown-menu a.active { color: var(--primary-pink-dark); font-weight: 700; }
+
         /* Hero */
         .tool-hero { padding: 56px 0 24px; text-align: center; }
         .tool-hero h1 { font-size: 2.4rem; margin-bottom: 14px; }
@@ -421,7 +462,14 @@
                 <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo">
             </a>
             <div class="nav-links">
-                <a href="{{ route('tools.pricing-calculator') }}" class="nav-login active">Free Tools</a>
+                <div class="nav-dropdown" id="free-tools-dropdown">
+                    <button type="button" class="nav-login nav-dropdown-toggle active" aria-haspopup="true" aria-expanded="false">
+                        Free Tools <span class="caret">▾</span>
+                    </button>
+                    <div class="nav-dropdown-menu">
+                        <a href="{{ route('tools.pricing-calculator') }}" class="active">Bakery Pricing Calculator</a>
+                    </div>
+                </div>
                 <a href="/login" class="nav-login">Login</a>
                 <a href="/register" class="btn btn-primary btn-small">Build Your Free Site →</a>
             </div>
@@ -1186,7 +1234,31 @@
             }
         }
 
+        function initNavDropdown() {
+            var dropdown = document.getElementById('free-tools-dropdown');
+            if (!dropdown) return;
+            var toggle = dropdown.querySelector('.nav-dropdown-toggle');
+            toggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var isOpen = dropdown.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+            document.addEventListener('click', function (e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.classList.remove('open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    dropdown.classList.remove('open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+
         init();
+        initNavDropdown();
     })();
     </script>
 </body>
