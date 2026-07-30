@@ -51,10 +51,10 @@
 
             <nav class="admin-sidebar-nav">
                 <button class="admin-nav-item active" data-tab="tab-orders">
-                    <span>📅</span> Priority Queue
+                    <span>📅</span> Orders
                 </button>
                 <button class="admin-nav-item" data-tab="tab-form-builder">
-                    <span>⚙️</span> Form Studio
+                    <span>⚙️</span> Order Form
                 </button>
                 <button class="admin-nav-item" data-tab="tab-page-builder">
                     <span>🎨</span> Page Builder
@@ -177,7 +177,7 @@
                 </div>
             </div>
 
-            <!-- TAB 2: Form Studio -->
+            <!-- TAB 2: Order Form -->
             <div id="tab-form-builder" class="tab-content">
                 @php
                     $serverFormSchema = $tenant->form_schema ?? [];
@@ -193,7 +193,7 @@
                     window._serverBookingSettings = @json($serverBookingSettings);
                 </script>
                 <div class="section-header">
-                    <h3>⚙️ Form Studio</h3>
+                    <h3>⚙️ Order Form</h3>
                     <p class="subtitle">Customize step headers, directions, and form fields for your bakery (cakes, cookies, sourdough, etc.). Use ↑↓ or drag rows to reorder steps.</p>
                 </div>
 
@@ -1825,7 +1825,7 @@
             const ADMIN_TOUR_STEPS = [
                 {
                     icon: '📋',
-                    title: 'Form Studio',
+                    title: 'Order Form',
                     body: "This is where you build your custom order form. Add steps for cake sizes, flavors, frosting, terms &amp; conditions, and more — drag rows to reorder, then click \"Save Order Form Layout Live\" to publish instantly to your storefront."
                 },
                 {
