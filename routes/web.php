@@ -9,6 +9,7 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\OnboardingUploadController;
 
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\ToolsController;
 
 // ─── Authentication Routes ───
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -29,6 +30,9 @@ Route::get('/site/{subdomain}/legal/{slug}', [LegalController::class, 'previewSh
 
 // ───  SaaS Landing Page ───
 Route::get('/landing', [BrandController::class, 'landing'])->name('brand.landing');
+
+// ─── Free Tools (SEO lead-gen calculators) ───
+Route::get('/tools/bakery-pricing-calculator', [ToolsController::class, 'pricingCalculator'])->name('tools.pricing-calculator');
 
 // ─── Storefront Routes (Public Bakery Website) ───
 Route::get('/', [StorefrontController::class, 'index'])->name('storefront.index');

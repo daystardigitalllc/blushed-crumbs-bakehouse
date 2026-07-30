@@ -916,6 +916,9 @@
                 <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo" style="height: 65px; width: auto; object-fit: contain;">
             </a>
             <div class="nav-links">
+                @if(\App\Http\Controllers\ToolsController::isAllowedHost(request()->getHost()))
+                    <a href="{{ route('tools.pricing-calculator') }}" class="nav-login">Free Tools</a>
+                @endif
                 <a href="/login" class="nav-login">Login</a>
                 <a href="/register" class="btn btn-primary">Build Your Free Site →</a>
             </div>
