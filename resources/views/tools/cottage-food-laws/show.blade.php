@@ -192,6 +192,7 @@
                     <li>{{ $req }}</li>
                 @endforeach
             </ol>
+            <p class="label-disclaimer">Not legal advice — label wording and requirements can change. Do your own research with {{ $state['official_source_name'] }} before printing labels.</p>
         </div>
 
         <div class="card">

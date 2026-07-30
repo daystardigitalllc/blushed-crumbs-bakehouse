@@ -260,6 +260,10 @@
         background: var(--primary-pink); color: #fff; width: 22px; height: 22px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;
     }
+    .label-disclaimer {
+        margin-top: 14px; font-size: 0.78rem; color: var(--text-gray); font-style: italic;
+        border-top: 1px solid var(--border-color); padding-top: 12px;
+    }
 
     /* Checklist */
     .checklist { list-style: none; }
