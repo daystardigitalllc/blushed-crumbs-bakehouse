@@ -1022,6 +1022,11 @@
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px;">
                         @php
                             $themes = $tenant->getAvailableThemesForTenant();
+                            $starterThemeIds = ['rustic_kitchen', 'modern_bakery', 'country_farmhouse'];
+                            // Free/starter themes first, Pro themes after - usort() is a
+                            // stable sort as of PHP 8.0, so ties (both free or both pro)
+                            // keep their original registry order.
+                            usort($themes, fn($a, $b) => in_array($b['id'], $starterThemeIds) <=> in_array($a['id'], $starterThemeIds));
                             $currentTheme = $tenant->theme_id ?? 'sweet_elegant';
                         @endphp
                         @foreach($themes as $t)

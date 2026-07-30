@@ -697,6 +697,15 @@ body.theme-modern_bakery .video-overlay-content h2 {
     color: #ffffff !important;
 }
 
+/* Without this, the theme-wide "h1,h2,h3{color:dark}" rule above (more
+   specific than the base .cta-content h2{color:#fff}, since it's
+   body.theme-X h2 vs .cta-content h2) wins and renders the CTA banner's
+   headline in dark navy on its own dark scrim - unreadable. */
+body.theme-modern_bakery .cta-video-banner h2,
+body.theme-modern_bakery .cta-video-banner p {
+    color: #ffffff !important;
+}
+
 body.theme-modern_bakery .whimsical-section {
     background: linear-gradient(135deg, rgba(30, 27, 75, 0.92) 0%, rgba(67, 56, 202, 0.88) 100%) !important;
     color: #ffffff !important;
@@ -2179,6 +2188,15 @@ body.theme-country_farmhouse .video-overlay-content h2 {
     color: #ffffff !important;
 }
 
+/* Without this, the theme-wide "h1,h2,h3{color:dark}" rule above (more
+   specific than the base .cta-content h2{color:#fff}, since it's
+   body.theme-X h2 vs .cta-content h2) wins and renders the CTA banner's
+   headline in dark charcoal on its own dark scrim - unreadable. */
+body.theme-country_farmhouse .cta-video-banner h2,
+body.theme-country_farmhouse .cta-video-banner p {
+    color: #ffffff !important;
+}
+
 body.theme-country_farmhouse .whimsical-section {
     background-color: #2b2117 !important;
     color: #f6efe1 !important;
@@ -2869,6 +2887,19 @@ body.theme-clean_minimal .site-header {
     background: transparent !important;
 }
 
+/* Header text needs to be white only while it's actually floating over
+   the dark navy hero (via the shared :has() overlap rule above) - if
+   hero is ever disabled the header sits on the page's own cream
+   background instead, where white text would disappear. */
+body.theme-clean_minimal .site-header:has(+ #storefront-view .midnight-hero) .nav-links a,
+body.theme-clean_minimal .site-header:has(+ #storefront-view .midnight-hero) .logo span {
+    color: #ffffff !important;
+}
+
+body.theme-clean_minimal .site-header:has(+ #storefront-view .midnight-hero) .nav-links a:hover {
+    color: #b8935a !important;
+}
+
 body.theme-clean_minimal .categories-section,
 body.theme-clean_minimal .reviews-section {
     background: #f7f5f1 !important;
@@ -2880,6 +2911,15 @@ body.theme-clean_minimal .highlights-bar {
 
 body.theme-clean_minimal .video-promo-banner h2,
 body.theme-clean_minimal .video-overlay-content h2 {
+    color: #ffffff !important;
+}
+
+/* Without this, the theme-wide "h1,h2,h3{color:dark}" rule above (more
+   specific than the base .cta-content h2{color:#fff}, since it's
+   body.theme-X h2 vs .cta-content h2) wins and renders the CTA banner's
+   headline in dark navy on its own dark scrim - unreadable. */
+body.theme-clean_minimal .cta-video-banner h2,
+body.theme-clean_minimal .cta-video-banner p {
     color: #ffffff !important;
 }
 
@@ -3469,7 +3509,8 @@ body {
 
 .site-header:has(+ #storefront-view .hero-section),
 .site-header:has(+ #storefront-view .playful-hero),
-.site-header:has(+ #storefront-view .farmhouse-hero) {
+.site-header:has(+ #storefront-view .farmhouse-hero),
+.site-header:has(+ #storefront-view .midnight-hero) {
     position: absolute;
     top: 0;
     left: 0;
