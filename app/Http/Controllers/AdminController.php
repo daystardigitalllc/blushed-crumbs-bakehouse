@@ -226,8 +226,12 @@ class AdminController extends Controller
     public function saveTheme(Request $request)
     {
         $tenant = $this->tenant($request);
-        $availableThemes = array_keys($tenant->getAvailableThemesForTenant());
-        
+        // Plan-gated, not just getAvailableThemesForTenant() - the dashboard UI
+        // already locks non-starter themes (like country_farmhouse) behind a Pro
+        // upsell, but that's client-side only. Without this check here, a direct
+        // POST to this endpoint could still set a Pro-only theme_id on a free tenant.
+        $availableThemes = array_keys($tenant->onboardingAvailableThemes());
+
         \Log::info('saveTheme called', [
             'tenant_id' => $tenant->id,
             'tenant_subdomain' => $tenant->subdomain,

@@ -342,10 +342,10 @@ class Tenant extends Model implements TenancyContract
             ],
             'country_farmhouse' => [
                 'id' => 'country_farmhouse',
-                'name' => '🏡 Country Farmhouse',
-                'subtitle' => 'Barn red & forest green, warm cream, Cracker Barrel charm',
-                'preview_bg' => '#faf6f0',
-                'preview_accent' => '#8B2500',
+                'name' => '🥯 Artisan Deli',
+                'subtitle' => 'Bold mustard & charcoal, full-bleed photography, deli-counter energy',
+                'preview_bg' => '#f6efe1',
+                'preview_accent' => '#c1810a',
             ],
             'artisan_sourdough' => [
                 'id' => 'artisan_sourdough',

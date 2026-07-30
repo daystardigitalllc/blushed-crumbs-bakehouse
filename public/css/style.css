@@ -2126,17 +2126,20 @@ body.theme-playful_treats .playful-specialty-badge {
 }
 
 /* 5. 🏡 COUNTRY FARMHOUSE THEME (Barn Red & Forest Green Cracker Barrel Charm) */
+/* 5. 🥯 ARTISAN DELI THEME — full-bleed photography, bold condensed
+   uppercase signage type, mustard/amber + charcoal, hand-drawn deli-menu
+   energy. Pro-only (see Tenant::getStarterThemes()). */
 body.theme-country_farmhouse {
-    --primary: #8B2500;
-    --primary-hover: #6e1d00;
-    --pink-bg: #faf6f0;
-    --dark-text: #2a1f14;
-    --theme-heading-font: 'Georgia', serif;
+    --primary: #c1810a;
+    --primary-hover: #a66d08;
+    --pink-bg: #f6efe1;
+    --dark-text: #2b2117;
+    --theme-heading-font: 'Oswald', sans-serif;
     --theme-card-bg: #ffffff;
-    --theme-section-bg: #f5efe7;
-    --theme-accent-bg: #1a3c2a;
-    font-family: 'Georgia', 'Times New Roman', serif;
-    background-color: #faf6f0;
+    --theme-section-bg: #f6efe1;
+    --theme-accent-bg: #2b2117;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f6efe1;
 }
 
 body.theme-country_farmhouse h1,
@@ -2145,10 +2148,11 @@ body.theme-country_farmhouse h3,
 body.theme-country_farmhouse .subheading,
 body.theme-country_farmhouse .section-title-script,
 body.theme-country_farmhouse .whimsical-col-right h2 {
-    font-family: 'Georgia', serif !important;
+    font-family: 'Oswald', sans-serif !important;
     font-weight: 700 !important;
-    color: #2a1f14 !important;
-    letter-spacing: 0.3px;
+    color: #2b2117 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 body.theme-country_farmhouse .hero-cloud-elementor-top,
@@ -2161,17 +2165,13 @@ body.theme-country_farmhouse .site-header {
     background: transparent !important;
 }
 
-body.theme-country_farmhouse .hero-section {
-    background-color: #faf6f0 !important;
-}
-
 body.theme-country_farmhouse .categories-section,
 body.theme-country_farmhouse .reviews-section {
-    background: #f0e8dc !important;
+    background: #f0e6d2 !important;
 }
 
 body.theme-country_farmhouse .highlights-bar {
-    background: #8B2500 !important;
+    background: #2b2117 !important;
 }
 
 body.theme-country_farmhouse .video-promo-banner h2,
@@ -2180,65 +2180,513 @@ body.theme-country_farmhouse .video-overlay-content h2 {
 }
 
 body.theme-country_farmhouse .whimsical-section {
-    background-color: #1a3c2a !important;
-    color: #f5efe7 !important;
+    background-color: #2b2117 !important;
+    color: #f6efe1 !important;
 }
 
 body.theme-country_farmhouse .whimsical-section h2 {
-    color: #f5efe7 !important;
+    color: #f6efe1 !important;
 }
 
 body.theme-country_farmhouse .btn-primary,
 body.theme-country_farmhouse .nav-order-btn {
-    background: #8B2500 !important;
+    background: #c1810a !important;
     color: #ffffff !important;
-    border-radius: 6px !important;
-    box-shadow: 0 4px 12px rgba(139, 37, 0, 0.25) !important;
+    border-radius: 4px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(193, 129, 10, 0.3) !important;
 }
 
 body.theme-country_farmhouse .category-card-exact,
 body.theme-country_farmhouse .cloud-review-card,
 body.theme-country_farmhouse .category-image-frame {
-    border-radius: 8px !important;
-    border: 1px solid #d4c4b0 !important;
+    border-radius: 4px !important;
+    border: 1px solid #e2d5bc !important;
     background: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(42, 31, 20, 0.06) !important;
+    box-shadow: 0 4px 12px rgba(43, 33, 23, 0.06) !important;
 }
 
-/* Order Form Modal Theme Rules - Country Farmhouse */
+/* Order Form Modal Theme Rules - Artisan Deli */
 body.theme-country_farmhouse .order-modal-card {
-    border-radius: 8px !important;
-    border: 2px solid #8B2500 !important;
-    background: #faf6f0 !important;
-    box-shadow: 0 12px 35px rgba(42, 31, 20, 0.15) !important;
+    border-radius: 4px !important;
+    border: 2px solid #c1810a !important;
+    background: #f6efe1 !important;
+    box-shadow: 0 12px 35px rgba(43, 33, 23, 0.15) !important;
 }
 
 body.theme-country_farmhouse .sticky-order-summary-bar {
-    background: #f0e8dc !important;
-    border: 2px solid #d4c4b0 !important;
+    background: #f0e6d2 !important;
+    border: 2px solid #e2d5bc !important;
 }
 
 body.theme-country_farmhouse .product,
 body.theme-country_farmhouse .option-chip {
-    border-radius: 6px !important;
-    border: 1px solid #8B2500 !important;
+    border-radius: 4px !important;
+    border: 1px solid #c1810a !important;
     background: #ffffff !important;
-    color: #2a1f14 !important;
+    color: #2b2117 !important;
 }
 
 body.theme-country_farmhouse .product.selected,
 body.theme-country_farmhouse .option-chip.selected {
-    background: #8B2500 !important;
+    background: #c1810a !important;
     color: #ffffff !important;
-    border-color: #6e1d00 !important;
-    box-shadow: 0 4px 12px rgba(139, 37, 0, 0.3) !important;
+    border-color: #a66d08 !important;
+    box-shadow: 0 4px 12px rgba(193, 129, 10, 0.35) !important;
 }
 
 body.theme-country_farmhouse .next-btn {
-    background: #8B2500 !important;
+    background: #c1810a !important;
     color: #ffffff !important;
-    border-radius: 6px !important;
-    box-shadow: 0 4px 12px rgba(139, 37, 0, 0.3) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 12px rgba(193, 129, 10, 0.35) !important;
+}
+
+/* --- country_farmhouse's own per-theme layout (resources/views/storefront/themes/country_farmhouse/*.blade.php) ---
+   Modeled on a full-bleed-photo deli/bakery reference site: dark-overlay
+   hero with bold condensed uppercase type, a header that floats
+   transparent over it, text/photo About teaser, a photo + quick-nav
+   "menu index" instead of a plain category grid, and a Contact+Hours
+   panel built from the tenant's own phone/location/social/hours fields
+   rather than repurposing unrelated section data. Class names scoped to
+   body.theme-country_farmhouse, same convention as the other themes'
+   .rustic-*/.playful-*/.modern-* classes. */
+
+body.theme-country_farmhouse .farmhouse-icon {
+    color: #c1810a;
+}
+
+/* Header text needs to be white only while it's actually floating over
+   the dark hero photo (via the shared :has() overlap rule above) - if
+   hero is ever disabled the header sits on the page's own light
+   background instead, where white text would disappear. */
+body.theme-country_farmhouse .site-header:has(+ #storefront-view .farmhouse-hero) .nav-links a,
+body.theme-country_farmhouse .site-header:has(+ #storefront-view .farmhouse-hero) .logo span {
+    color: #ffffff !important;
+}
+
+body.theme-country_farmhouse .site-header:has(+ #storefront-view .farmhouse-hero) .nav-links a:hover {
+    color: #c1810a !important;
+}
+
+body.theme-country_farmhouse .nav-links a {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.95rem;
+}
+
+/* Hero — full-bleed photo, dark scrim, centered condensed uppercase type */
+body.theme-country_farmhouse .farmhouse-hero {
+    position: relative;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    background-color: #2b2117;
+}
+
+body.theme-country_farmhouse .farmhouse-hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+body.theme-country_farmhouse .farmhouse-hero-media img,
+body.theme-country_farmhouse .farmhouse-hero-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-country_farmhouse .farmhouse-hero-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(20, 15, 10, 0.55) 0%, rgba(20, 15, 10, 0.72) 100%);
+}
+
+body.theme-country_farmhouse .farmhouse-hero-copy {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    padding: 0 25px;
+}
+
+body.theme-country_farmhouse .farmhouse-hero-copy .subheading {
+    color: #f6efe1 !important;
+    opacity: 0.85;
+    font-size: 0.85rem !important;
+    letter-spacing: 3px !important;
+}
+
+body.theme-country_farmhouse .farmhouse-hero-copy h1 {
+    color: #ffffff !important;
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    line-height: 1.05;
+    margin: 14px 0 22px 0;
+}
+
+body.theme-country_farmhouse .farmhouse-hero-copy .hero-buttons {
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+body.theme-country_farmhouse .farmhouse-scroll-cue {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: #f6efe1;
+    opacity: 0.8;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: -10px;
+}
+
+body.theme-country_farmhouse .farmhouse-scroll-cue .material-symbols-outlined {
+    animation: farmhouse-bounce 1.8s ease-in-out infinite;
+}
+
+@keyframes farmhouse-bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(6px);
+    }
+}
+
+/* About teaser — text/photo split, always shown (uses the same
+   about_bio/about_title fields the About page reads) */
+body.theme-country_farmhouse .farmhouse-about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 60px;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 90px 40px;
+}
+
+body.theme-country_farmhouse .farmhouse-about-media {
+    aspect-ratio: 4 / 3;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(43, 33, 23, 0.18);
+}
+
+body.theme-country_farmhouse .farmhouse-about-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-country_farmhouse .farmhouse-about-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #2b2117 0%, #c1810a 100%);
+}
+
+body.theme-country_farmhouse .farmhouse-about-copy p {
+    color: #4a3d2c;
+    font-size: 1.02rem;
+    line-height: 1.8;
+    margin: 18px 0 26px 0;
+}
+
+/* Categories — quick-nav "menu index": photo + stacked tabs on the
+   left, a themed list on the right (no fabricated prices - categories
+   only carry title/desc in this app's data model) */
+body.theme-country_farmhouse .farmhouse-menu-index {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1150px;
+    margin: 0 auto 60px auto;
+    box-shadow: 0 20px 50px rgba(43, 33, 23, 0.15);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+body.theme-country_farmhouse .farmhouse-menu-index-media {
+    position: relative;
+    min-height: 420px;
+}
+
+body.theme-country_farmhouse .farmhouse-menu-index-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+}
+
+body.theme-country_farmhouse .farmhouse-menu-index-media-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #2b2117 0%, #c1810a 100%);
+}
+
+body.theme-country_farmhouse .farmhouse-tabs {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1;
+}
+
+body.theme-country_farmhouse .farmhouse-tab {
+    background: rgba(246, 239, 225, 0.95);
+    color: #2b2117;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.95rem;
+    padding: 10px 22px;
+    border-left: 4px solid #c1810a;
+}
+
+body.theme-country_farmhouse .farmhouse-tab.is-accent {
+    background: #c1810a;
+    color: #ffffff;
+    border-left-color: #2b2117;
+}
+
+body.theme-country_farmhouse .farmhouse-menu-index-list {
+    background: #c1810a;
+    padding: 45px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+}
+
+body.theme-country_farmhouse .farmhouse-menu-index-list h2 {
+    color: #ffffff !important;
+    margin-bottom: 6px;
+}
+
+body.theme-country_farmhouse .farmhouse-menu-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    padding-bottom: 14px;
+}
+
+body.theme-country_farmhouse .farmhouse-menu-item h4 {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+body.theme-country_farmhouse .farmhouse-menu-item p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+/* Contact + Hours — always shown, built from real tenant contact fields */
+body.theme-country_farmhouse .farmhouse-contact {
+    background: #f0e6d2;
+    padding: 90px 40px;
+}
+
+body.theme-country_farmhouse .farmhouse-contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    max-width: 1150px;
+    margin: 0 auto;
+    align-items: center;
+}
+
+body.theme-country_farmhouse .farmhouse-contact-info {
+    text-align: center;
+}
+
+body.theme-country_farmhouse .farmhouse-contact-info p {
+    color: #4a3d2c;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+body.theme-country_farmhouse .farmhouse-contact-phone {
+    display: block;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #2b2117;
+    margin-bottom: 20px;
+}
+
+body.theme-country_farmhouse .farmhouse-social-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+}
+
+body.theme-country_farmhouse .farmhouse-social-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #c1810a;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+/* Hours panel, styled like handwriting on a chalkboard/window - a photo
+   if one's available, otherwise a solid charcoal card either way */
+body.theme-country_farmhouse .farmhouse-hours-panel {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2b2117;
+}
+
+body.theme-country_farmhouse .farmhouse-hours-panel img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.35;
+}
+
+body.theme-country_farmhouse .farmhouse-hours-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 30px;
+}
+
+body.theme-country_farmhouse .farmhouse-hours-content h3 {
+    color: #ffffff !important;
+    margin-bottom: 14px;
+}
+
+body.theme-country_farmhouse .farmhouse-hours-content p {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.8rem;
+    color: #ffffff;
+    line-height: 1.4;
+}
+
+/* Shared page-intro kicker + title for about/gallery */
+body.theme-country_farmhouse .farmhouse-page-hero {
+    text-align: center;
+    padding: 100px 20px 55px 20px;
+}
+
+body.theme-country_farmhouse .farmhouse-page-hero-kicker {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
+    color: #c1810a;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+}
+
+body.theme-country_farmhouse .farmhouse-page-hero-title {
+    font-size: 3rem;
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+/* About page — ingredients/why-us icon list, specialty cards */
+body.theme-country_farmhouse .farmhouse-ingredients-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 25px 70px 25px;
+}
+
+body.theme-country_farmhouse .farmhouse-ingredient-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+body.theme-country_farmhouse .farmhouse-icon-circle {
+    flex-shrink: 0;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: #c1810a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-country_farmhouse .farmhouse-icon-circle .material-symbols-outlined {
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+body.theme-country_farmhouse .farmhouse-ingredient-row h3 {
+    font-size: 1.02rem;
+    margin-bottom: 4px;
+}
+
+body.theme-country_farmhouse .farmhouse-ingredient-row p {
+    font-size: 0.88rem;
+    color: #4a3d2c;
+}
+
+/* Gallery — plain rectangular photo grid (documentary, not decorative) */
+body.theme-country_farmhouse .farmhouse-grid .gallery-card-img-wrap {
+    aspect-ratio: 4 / 3;
+}
+
+@media (max-width: 860px) {
+
+    body.theme-country_farmhouse .farmhouse-about,
+    body.theme-country_farmhouse .farmhouse-menu-index,
+    body.theme-country_farmhouse .farmhouse-contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.theme-country_farmhouse .farmhouse-menu-index-media {
+        min-height: 320px;
+    }
+
+    body.theme-country_farmhouse .farmhouse-tabs {
+        left: 16px;
+    }
+
+    body.theme-country_farmhouse .farmhouse-contact-info {
+        margin-bottom: 20px;
+    }
 }
 
 /* 6. 🍞 ARTISAN SOURDOUGH THEME (Golden Wheat & Parchment Craft Bakery) */
@@ -2504,7 +2952,8 @@ body {
 }
 
 .site-header:has(+ #storefront-view .hero-section),
-.site-header:has(+ #storefront-view .playful-hero) {
+.site-header:has(+ #storefront-view .playful-hero),
+.site-header:has(+ #storefront-view .farmhouse-hero) {
     position: absolute;
     top: 0;
     left: 0;
@@ -3201,14 +3650,14 @@ body.theme-playful_treats {
     --footer-link-weight: 700;
 }
 
-/* ─── Country Farmhouse (deep forest green) ─── */
+/* ─── Artisan Deli (charcoal & mustard) ─── */
 body.theme-country_farmhouse {
-    --footer-bg: #1a3c2a;
-    --footer-text: #f5efe7;
-    --footer-border-top: 4px solid #8B2500;
-    --footer-link-color: #8B2500;
-    --footer-link-font: 'Georgia', serif;
-    --footer-link-size: 1.2rem;
+    --footer-bg: #2b2117;
+    --footer-text: #f6efe1;
+    --footer-border-top: 4px solid #c1810a;
+    --footer-link-color: #c1810a;
+    --footer-link-font: 'Oswald', sans-serif;
+    --footer-link-size: 1rem;
     --footer-link-weight: 700;
 }
 
