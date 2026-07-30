@@ -76,6 +76,27 @@ class ToolsController extends Controller
             $parts[] = ['text' => $text];
         }
 
+        // TEMP DIAGNOSTIC (round 2) — the UTF-8 fix resolved the first error
+        // but the generic failure persists, so something else is still wrong.
+        // Same secret-gated bypass as before; remove once fixed for real.
+        if ($request->query('debug_key') === 'daystar-temp-diag-7f3a') {
+            try {
+                $raw = $client->generateJson(
+                    [['role' => 'user', 'parts' => $parts]],
+                    $this->ingredientSystemInstruction(),
+                    $this->ingredientResponseSchema(),
+                    temperature: 0.1
+                );
+
+                return response()->json(['debug_raw_text' => $raw['text'] ?? null, 'debug_usage' => $raw['usage'] ?? null]);
+            } catch (\Throwable $e) {
+                return response()->json([
+                    'debug_exception_class' => get_class($e),
+                    'debug_exception_message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
         $decoded = $client->generateJsonWithRepair(
             [['role' => 'user', 'parts' => $parts]],
             $this->ingredientSystemInstruction(),
