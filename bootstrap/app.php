@@ -21,6 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\ResolveTenant::class,
         ]);
 
+        $middleware->alias([
+            'tenant.owner' => \App\Http\Middleware\EnsureBakerOwnsTenant::class,
+        ]);
+
         // Stripe calls this server-to-server with no session/CSRF token —
         // the Stripe-Signature header (verified in StripeWebhookController)
         // is the real authenticity check for this one route.

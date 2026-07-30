@@ -33,8 +33,13 @@ Route::get('/landing', [BrandController::class, 'landing'])->name('brand.landing
 // ─── Storefront Routes (Public Bakery Website) ───
 Route::get('/', [StorefrontController::class, 'index'])->name('storefront.index');
 Route::get('/site/{subdomain}', [StorefrontController::class, 'preview'])->name('storefront.preview');
-Route::get('/site/{subdomain}/dashboard', [AdminController::class, 'dashboard'])->name('storefront.preview.dashboard');
-Route::get('/site/{subdomain}/admin', [AdminController::class, 'dashboard']);
+// Auth + tenant.owner required - these render the real baker admin
+// dashboard (orders, customers, settings), not a public preview, despite
+// living under /site/{subdomain}/*.
+Route::middleware(['auth', 'tenant.owner'])->group(function () {
+    Route::get('/site/{subdomain}/dashboard', [AdminController::class, 'dashboard'])->name('storefront.preview.dashboard');
+    Route::get('/site/{subdomain}/admin', [AdminController::class, 'dashboard']);
+});
 Route::get('/site/{subdomain}/about', [StorefrontController::class, 'previewAbout'])->name('storefront.preview.about');
 Route::get('/site/{subdomain}/menu', [StorefrontController::class, 'previewMenu'])->name('storefront.preview.menu');
 Route::get('/site/{subdomain}/gallery', [StorefrontController::class, 'previewGallery'])->name('storefront.preview.gallery');
@@ -105,7 +110,7 @@ Route::middleware(['auth', \App\Http\Middleware\SuperAdminMiddleware::class])->p
 });
 
 // ─── Baker Portal Dashboard (Authenticated Bakery Owner) ───
-Route::middleware('auth')->prefix('dashboard')->group(function () {
+Route::middleware(['auth', 'tenant.owner'])->prefix('dashboard')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('baker.dashboard');
     Route::post('/gallery', [AdminController::class, 'storeGallery'])->name('admin.gallery.store');
     Route::delete('/gallery/{id}', [AdminController::class, 'destroyGallery'])->name('admin.gallery.destroy');
@@ -144,4 +149,4 @@ Route::middleware('auth')->prefix('dashboard')->group(function () {
 });
 
 // Alias for backwards compatibility
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::middleware(['auth', 'tenant.owner'])->get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
