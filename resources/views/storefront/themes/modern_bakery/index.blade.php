@@ -154,15 +154,15 @@
                         </div>
                         <div class="whimsical-col-right">
                             <h2>{{ $tenant->getSiteContent('whimsical_title', 'Custom Cakes') }}</h2>
-                            <p style="color:var(--dark-text); font-size:1rem; line-height:1.7; margin-bottom:18px;">
-                                @php $bullets = $tenant->getSiteContent('whimsical_bullets', []); @endphp
-                                @if(!empty($bullets))
-                                    {{ $bullets[0] }}
-                                @else
-                                    A custom cake is perfect for a big anniversary, a special event, or any time you want something extra special.
-                                @endif
-                            </p>
-                            <button onclick="openOrderModal()" class="btn btn-primary">Custom Order</button>
+                            @php $bullets = $tenant->getSiteContent('whimsical_bullets', []); @endphp
+                            @if(!empty($bullets))
+                                @foreach($bullets as $bullet)
+                                    <p style="color:var(--dark-text); font-size:1rem; line-height:1.7; margin-bottom:10px;">{{ $bullet }}</p>
+                                @endforeach
+                            @else
+                                <p style="color:var(--dark-text); font-size:1rem; line-height:1.7; margin-bottom:18px;">A custom cake is perfect for a big anniversary, a special event, or any time you want something extra special.</p>
+                            @endif
+                            <button onclick="openOrderModal()" class="btn btn-primary" style="margin-top:8px;">Custom Order</button>
                         </div>
                     </div>
                 </section>
