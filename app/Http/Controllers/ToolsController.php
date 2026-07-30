@@ -82,11 +82,19 @@ class ToolsController extends Controller
         // actual "couldn't parse this" case, which the caller should be told
         // differently: one is "try again shortly," the other is "try a
         // clearer photo or a simpler list."
+        //
+        // Deliberately uses the lighter 'model' (flash-lite, already used
+        // elsewhere for content generation) rather than the heavier
+        // 'extraction_model' the onboarding photo pipeline relies on —
+        // pulling ingredients out of plain text/a simple photo doesn't need
+        // that much capability, and it was gemini-3.5-flash specifically
+        // returning 503 "high demand" in production, not this one.
         try {
             $raw = $client->generateJson(
                 [['role' => 'user', 'parts' => $parts]],
                 $this->ingredientSystemInstruction(),
                 $this->ingredientResponseSchema(),
+                model: (string) config('services.gemini.model', 'gemini-3.5-flash-lite'),
                 temperature: 0.1
             );
         } catch (\Throwable $e) {
