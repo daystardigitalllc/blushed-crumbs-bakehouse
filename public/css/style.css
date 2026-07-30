@@ -617,11 +617,8 @@ body.theme-rustic_kitchen #tab-page-builder .accordion-arrow {
     color: #9D7052 !important;
 }
 
-body.theme-rustic_kitchen #tab-page-builder [style*="#FAF8FF"] {
+body.theme-rustic_kitchen #tab-page-builder [style*="border:1px solid #eee"] {
     background: #fffaf2 !important;
-}
-
-body.theme-rustic_kitchen #tab-page-builder [style*="#e9d5ff"] {
     border-color: #CFBBA2 !important;
 }
 
@@ -1578,11 +1575,8 @@ body.theme-playful_treats #tab-page-builder .accordion-arrow {
     color: #1AD1CB !important;
 }
 
-body.theme-playful_treats #tab-page-builder [style*="#FAF8FF"] {
+body.theme-playful_treats #tab-page-builder [style*="border:1px solid #eee"] {
     background: #FFF3F8 !important;
-}
-
-body.theme-playful_treats #tab-page-builder [style*="#e9d5ff"] {
     border-color: #F7C3DE !important;
 }
 

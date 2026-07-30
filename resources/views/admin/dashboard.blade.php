@@ -302,18 +302,13 @@
             <!-- TAB: Page Builder (Homepage Section & Content Accordion Studio) -->
             <div id="tab-page-builder" class="tab-content">
                 <div class="section-header">
-                    <h3>🎨 Page Builder &amp; Section Studio</h3>
-                    <p class="subtitle">Customize every section of your homepage, edit text &amp; copy, upload background media, and reorder sections in real time.</p>
+                    <h3>Page Builder</h3>
+                    <p class="subtitle">Edit your homepage's text, images, and section order. Changes go live when you save.</p>
                 </div>
 
-                <!-- UNIFIED ACCORDION HOMEPAGE SECTION & CONTENT STUDIO -->
-                <div class="form-builder-card" style="border:2px solid #8b5cf6; background:#f5f3ff;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
-                        <div>
-                            <h4 style="color:#6d28d9; margin:0;">☰ Homepage Section &amp; Content Accordion Studio</h4>
-                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Click any section below to expand and edit its copy, images, and text. Reorder or toggle sections ON/OFF in real time.</p>
-                        </div>
-                        <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:#7c3aed; border-color:#6d28d9;">💾 Save All Sections &amp; Copy</button>
+                <div class="form-builder-card" style="border:1px solid #ddd6fe;">
+                    <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
+                        <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:#7c3aed; border-color:#6d28d9;">Save All Changes</button>
                     </div>
 
                     <div id="section-manager-msg" style="display:none; margin-bottom:14px; background:#ddd6fe; color:#4c1d95; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c4b5fd;"></div>
@@ -326,39 +321,43 @@
                             $bullets = data_get($siteContent, 'whimsical_bullets', []);
                         @endphp
 
-                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:12px;">
+                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:10px;">
                             @foreach($orderedSections as $secId => $sec)
-                                <div class="section-manager-row" data-id="{{ $secId }}" style="background:white; border-radius:12px; border:1px solid #ddd6fe; overflow:hidden; box-shadow:0 2px 8px rgba(109, 40, 217, 0.05);">
-                                    
+                                @php
+                                    // Defensive: strips any leading emoji from section names saved to a
+                                    // tenant's DB before Tenant::getDefaultSectionSettings() dropped them.
+                                    $secName = trim(preg_replace('/^[^\p{L}\p{N}]+/u', '', $sec['name'] ?? $secId));
+                                @endphp
+                                <div class="section-manager-row" data-id="{{ $secId }}" style="background:white; border-radius:10px; border:1px solid #e5e7eb; overflow:hidden;">
+
                                     <!-- ACCORDION HEADER ROW -->
-                                    <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; cursor:pointer; background:#FAF8FF; user-select:none;">
+                                    <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; cursor:pointer; background:#fafafa; user-select:none;">
                                         <div style="display:flex; align-items:center; gap:12px;">
-                                            <span class="drag-handle" style="cursor:grab; font-weight:800; color:#8b5cf6; font-size:1.2rem;" onclick="event.stopPropagation()">☰</span>
+                                            <span class="drag-handle" style="cursor:grab; font-weight:800; color:#a1a1aa; font-size:1.1rem;" onclick="event.stopPropagation()">⠿</span>
                                             <input type="hidden" class="section-order-input" name="sections[{{ $secId }}][order]" value="{{ $sec['order'] ?? 1 }}">
-                                            <strong style="color:#4c1d95; font-size:1rem;">{{ $sec['name'] ?? $secId }}</strong>
+                                            <strong style="color:#27272a; font-size:0.95rem;">{{ $secName }}</strong>
                                         </div>
 
-                                        <div style="display:flex; align-items:center; gap:10px;" onclick="event.stopPropagation()">
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:3px 8px; font-size:0.78rem;">⬆️ Up</button>
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:3px 8px; font-size:0.78rem;">⬇️ Down</button>
+                                        <div style="display:flex; align-items:center; gap:8px;" onclick="event.stopPropagation()">
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:3px 9px; font-size:0.78rem;" aria-label="Move up">↑</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:3px 9px; font-size:0.78rem;" aria-label="Move down">↓</button>
                                             <label class="toggle-switch" style="transform:scale(0.8);">
                                                 <input type="checkbox" name="sections[{{ $secId }}][enabled]" value="1" {{ !empty($sec['enabled']) ? 'checked' : '' }}>
                                                 <span class="toggle-slider"></span>
                                             </label>
-                                            <span class="accordion-arrow" style="font-size:1rem; color:#8b5cf6; font-weight:800; margin-left:6px; transition:transform 0.2s ease;">🔽</span>
+                                            <span class="accordion-arrow" style="font-size:0.9rem; color:#a1a1aa; margin-left:4px; transition:transform 0.2s ease;">▾</span>
                                         </div>
                                     </div>
 
                                     <!-- EXPANDABLE ACCORDION BODY WITH SECTION COPY & CONTENT EDITORS -->
-                                    <div class="section-accordion-body" style="display:none; padding:18px; border-top:1px solid #e9d5ff; background:#ffffff;">
+                                    <div class="section-accordion-body" style="display:none; padding:18px; border-top:1px solid #eee; background:#ffffff;">
                                         @if($secId === 'hero')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Hero Copy, Buttons &amp; Background Media</h6>
-                                            <div style="margin-bottom:12px; background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
-                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Background Media (Image or Video)</label>
+                                            <div style="margin-bottom:12px; padding:12px; border-radius:10px; border:1px solid #eee;">
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Background (Image or Video)</label>
                                                 <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                     <input type="text" id="hero_bg_url" name="hero_bg_url" value="{{ data_get($siteContent, 'hero_bg_url', '') }}" placeholder="URL or uploaded path (e.g. storage/hero.mp4)" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
-                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
-                                                        📁 Upload File
+                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                        Upload File
                                                         <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'hero_bg_url')" style="display:none;">
                                                     </label>
                                                 </div>
@@ -383,18 +382,17 @@
                                             </div>
 
                                         @elseif($secId === 'highlights')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">🛡️ Edit Trust Highlights Bar Text &amp; Icons</h6>
                                             @php $hlList = data_get($siteContent, 'highlights', []); @endphp
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                                 @for($h = 0; $h < 4; $h++)
-                                                    <div style="background:#FAF8FF; padding:14px; border-radius:10px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:8px;">
-                                                        <label style="font-weight:700; font-size:0.85rem; color:#6d28d9;">Highlight Badge {{ $h+1 }}</label>
-                                                        
+                                                    <div style="padding:14px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;">
+                                                        <label style="font-weight:700; font-size:0.85rem; color:#6d28d9;">Highlight {{ $h+1 }}</label>
+
                                                         <div>
                                                             <label style="font-size:0.78rem; color:#666; display:block; margin-bottom:3px; font-weight:600;">Icon</label>
                                                             <div style="display:flex; gap:8px; align-items:center;">
                                                                 <input type="text" id="hl-icon-input-{{ $h }}" name="highlights[{{ $h }}][icon]" value="{{ $hlList[$h]['icon'] ?? '🎂' }}" style="width:50px; text-align:center; padding:6px; border-radius:6px; border:1px solid #ccc; font-size:1.1rem;">
-                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openIconPicker(document.getElementById('hl-icon-input-{{ $h }}'))" style="padding:5px 10px; font-size:0.8rem; border-color:#8b5cf6; color:#6d28d9;">🎨 Select Icon</button>
+                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openIconPicker(document.getElementById('hl-icon-input-{{ $h }}'))" style="padding:5px 10px; font-size:0.8rem; border-color:#8b5cf6; color:#6d28d9;">Select Icon</button>
                                                             </div>
                                                         </div>
 
@@ -412,23 +410,20 @@
                                             </div>
 
                                         @elseif($secId === 'categories')
-                                            <h6 style="color:#6d28d9; margin-bottom:6px; font-weight:700;">🧁 Categories Showcase Grid (Titles, Descriptions &amp; Custom Category Photos)</h6>
-                                            <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Add, edit, or remove bakery categories. You can select an existing photo from your Device Gallery or upload a fresh category photo right here.</p>
-
-                                            @php 
+                                            @php
                                                 $catList = data_get($siteContent, 'categories', [
                                                     ['title' => 'Single Tier Cakes', 'desc' => 'Perfect for birthdays & intimate gatherings', 'image_url' => ''],
                                                     ['title' => 'Multi Tier Custom Cakes', 'desc' => 'Bespoke designs for weddings & celebrations', 'image_url' => ''],
                                                     ['title' => 'Treats & Sweets By The Dozen', 'desc' => 'Cupcakes, macarons, and dessert tables', 'image_url' => '']
-                                                ]); 
+                                                ]);
                                             @endphp
 
                                             <div id="accordion-categories-list" style="display:flex; flex-direction:column; gap:12px;">
                                                 @foreach($catList as $cIdx => $cat)
-                                                    <div class="accordion-category-item" style="background:#FAF8FF; padding:16px; border-radius:12px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:10px;">
+                                                    <div class="accordion-category-item" style="padding:16px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:10px;">
                                                         <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
                                                             <input type="text" name="categories[{{ $cIdx }}][title]" value="{{ $cat['title'] ?? '' }}" placeholder="Category Title (e.g. Single Tier Cakes)" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-weight:700; font-size:0.95rem;">
-                                                            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-category-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:4px 10px; font-size:0.8rem;">🗑️ Delete Category</button>
+                                                            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-category-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:4px 10px; font-size:0.8rem;">Delete</button>
                                                         </div>
 
                                                         <div>
@@ -437,42 +432,41 @@
                                                         </div>
 
                                                         <div>
-                                                            <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image Selection</label>
+                                                            <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image</label>
                                                             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                                                                 <input type="text" id="cat_img_input_{{ $cIdx }}" name="categories[{{ $cIdx }}][image_url]" value="{{ $cat['image_url'] ?? '' }}" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
-                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_{{ $cIdx }}'), 'cat_preview_{{ $cIdx }}')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">📷 Device Gallery</button>
+                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_{{ $cIdx }}'), 'cat_preview_{{ $cIdx }}')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">Device Gallery</button>
                                                                 <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
-                                                                    📁 Upload File
+                                                                    Upload File
                                                                     <input type="file" name="category_image_{{ $cIdx }}" accept="image/*" style="display:none;" onchange="uploadSectionMedia(this, 'cat_img_input_{{ $cIdx }}', 'cat_preview_{{ $cIdx }}')">
                                                                 </label>
                                                             </div>
                                                             <div id="cat_preview_{{ $cIdx }}" style="margin-top:8px; {{ !empty($cat['image_url']) ? 'display:flex;' : 'display:none;' }} align-items:center; gap:8px;">
                                                                 <img src="{{ !empty($cat['image_url']) ? asset($cat['image_url']) : '' }}" style="width:38px; height:38px; object-fit:cover; border-radius:6px; border:1px solid #ddd;">
-                                                                <span style="font-size:0.78rem; color:#15803d; font-weight:600;">✅ Category Photo Attached</span>
+                                                                <span style="font-size:0.78rem; color:#15803d; font-weight:600;">Photo attached</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 @endforeach
                                             </div>
                                             <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionCategoryItem()" style="margin-top:12px; border-color:#8b5cf6; color:#6d28d9; font-weight:700;">
-                                                + Add New Category
+                                                + Add Category
                                             </button>
 
                                         @elseif($secId === 'whimsical')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">Edit Whimsical Creations Photo, Title &amp; Bullets</h6>
-                                            <div style="margin-bottom:12px; background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
-                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Photo / Image</label>
+                                            <div style="margin-bottom:12px; padding:12px; border-radius:10px; border:1px solid #eee;">
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Photo</label>
                                                 <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                     <input type="text" id="whimsical_image_url" name="whimsical_image_url" value="{{ data_get($siteContent, 'whimsical_image_url', '') }}" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
-                                                    <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('whimsical_image_url'), 'whimsical_preview')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">📷 Device Gallery</button>
-                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
-                                                        📁 Upload File
+                                                    <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('whimsical_image_url'), 'whimsical_preview')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">Device Gallery</button>
+                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                        Upload File
                                                         <input type="file" accept="image/*" onchange="uploadSectionMedia(this, 'whimsical_image_url', 'whimsical_preview')" style="display:none;">
                                                     </label>
                                                 </div>
                                                 <div id="whimsical_preview" style="margin-top:8px; {{ !empty(data_get($siteContent, 'whimsical_image_url')) ? 'display:flex;' : 'display:none;' }} align-items:center; gap:10px;">
                                                     <img src="{{ !empty(data_get($siteContent, 'whimsical_image_url')) ? asset(data_get($siteContent, 'whimsical_image_url')) : '' }}" style="height:48px; width:48px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
-                                                    <span style="font-size:0.8rem; color:#15803d; font-weight:600;">✅ Active Photo Attached</span>
+                                                    <span style="font-size:0.8rem; color:#15803d; font-weight:600;">Photo attached</span>
                                                 </div>
                                             </div>
                                             <div style="margin-bottom:10px;">
@@ -489,14 +483,13 @@
                                             </div>
 
                                         @elseif($secId === 'promo_video')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">🎥 Edit Video/Image Banner Background &amp; Text</h6>
                                             <div style="display:flex; flex-direction:column; gap:10px;">
-                                                <div style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
-                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background Media</label>
+                                                <div style="padding:12px; border-radius:10px; border:1px solid #eee;">
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background</label>
                                                     <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                         <input type="text" id="promo_video_url" name="promo_video_url" value="{{ data_get($siteContent, 'promo_video_url', '') }}" placeholder="Upload custom video or image URL..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
-                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
-                                                            📁 Upload File
+                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                            Upload File
                                                             <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'promo_video_url')" style="display:none;">
                                                         </label>
                                                     </div>
@@ -514,11 +507,10 @@
                                             </div>
 
                                         @elseif($secId === 'how_it_works')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">📝 Edit 3-Step Custom Ordering Guide Copy</h6>
                                             @php $hwList = data_get($siteContent, 'how_it_works', []); @endphp
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
                                                 @for($s = 0; $s < 3; $s++)
-                                                    <div style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
+                                                    <div style="padding:12px; border-radius:10px; border:1px solid #eee;">
                                                         <label style="font-weight:700; font-size:0.8rem; color:#6d28d9;">Step {{ $s+1 }}</label>
                                                         <input type="text" name="how_it_works[{{ $s }}][title]" value="{{ $hwList[$s]['title'] ?? '' }}" placeholder="Step Title..." style="width:100%; margin-top:6px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.85rem;">
                                                         <textarea name="how_it_works[{{ $s }}][desc]" rows="2" placeholder="Step Description..." style="width:100%; margin-top:6px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.82rem; font-family:inherit;">{{ $hwList[$s]['desc'] ?? '' }}</textarea>
@@ -527,46 +519,43 @@
                                             </div>
 
                                         @elseif($secId === 'reviews')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">⭐ Customer Reviews &amp; Social Proof (Add / Edit / Delete)</h6>
                                             @php $revList = data_get($siteContent, 'reviews', []); @endphp
                                             <div id="accordion-reviews-list" style="display:flex; flex-direction:column; gap:10px;">
                                                 @foreach($revList as $rIdx => $rev)
-                                                    <div class="accordion-review-item" style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:8px;">
+                                                    <div class="accordion-review-item" style="padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;">
                                                         <div style="display:flex; justify-content:space-between; align-items:center;">
                                                             <input type="text" name="reviews[{{ $rIdx }}][name]" value="{{ $rev['name'] ?? '' }}" placeholder="Customer Name (e.g. Kristen Ramirez)" style="width:240px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
-                                                            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-review-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">🗑️ Delete</button>
+                                                            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-review-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">Delete</button>
                                                         </div>
                                                         <textarea name="reviews[{{ $rIdx }}][quote]" rows="2" placeholder="Customer Quote / Testimonial..." style="width:100%; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem; font-family:inherit;">{{ $rev['quote'] ?? '' }}</textarea>
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionReviewItem()" style="margin-top:10px; border-color:#8b5cf6; color:#6d28d9;">+ Add New Customer Review</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionReviewItem()" style="margin-top:10px; border-color:#8b5cf6; color:#6d28d9;">+ Add Review</button>
 
                                         @elseif($secId === 'faq')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">❓ FAQ Questions &amp; Bakery Policies (Add / Edit / Delete)</h6>
                                             @php $faqList = data_get($siteContent, 'faqs', []); @endphp
                                             <div id="accordion-faqs-list" style="display:flex; flex-direction:column; gap:10px;">
                                                 @foreach($faqList as $fIdx => $faq)
-                                                    <div class="accordion-faq-item" style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:8px;">
+                                                    <div class="accordion-faq-item" style="padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;">
                                                         <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-                                                            <input type="text" name="faqs[{{ $fIdx }}][q]" value="{{ $faq['q'] ?? '' }}" placeholder="Question (e.g. 📅 How far in advance should I order?)" style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
-                                                            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-faq-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">🗑️ Delete</button>
+                                                            <input type="text" name="faqs[{{ $fIdx }}][q]" value="{{ $faq['q'] ?? '' }}" placeholder="Question (e.g. How far in advance should I order?)" style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
+                                                            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-faq-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">Delete</button>
                                                         </div>
                                                         <textarea name="faqs[{{ $fIdx }}][a]" rows="2" placeholder="Answer / Bakery Policy..." style="width:100%; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem; font-family:inherit;">{{ $faq['a'] ?? '' }}</textarea>
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionFaqItem()" style="margin-top:10px; border-color:#8b5cf6; color:#6d28d9;">+ Add New FAQ Question</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionFaqItem()" style="margin-top:10px; border-color:#8b5cf6; color:#6d28d9;">+ Add FAQ</button>
 
                                         @elseif($secId === 'cta_banner')
-                                            <h6 style="color:#6d28d9; margin-bottom:10px; font-weight:700;">🎬 Edit Footer Booking CTA Banner Text &amp; Background</h6>
                                             <div style="display:flex; flex-direction:column; gap:10px;">
-                                                <div style="background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff;">
-                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background Media</label>
+                                                <div style="padding:12px; border-radius:10px; border:1px solid #eee;">
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background</label>
                                                     <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                         <input type="text" id="cta_banner_url" name="cta_banner_url" value="{{ data_get($siteContent, 'cta_banner_url', '') }}" placeholder="Upload custom background media URL..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
-                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
-                                                            📁 Upload File
+                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                            Upload File
                                                             <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'cta_banner_url')" style="display:none;">
                                                         </label>
                                                     </div>
@@ -588,9 +577,6 @@
                                             </div>
 
                                         @elseif($secId === 'featured_gallery')
-                                            <h6 style="color:#6d28d9; margin-bottom:6px; font-weight:700;">📸 Featured Photos Gallery</h6>
-                                            <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Pick your best shots from your Device Gallery to spotlight right on the homepage.</p>
-
                                             @php
                                                 $featuredTitle = data_get($siteContent, 'featured_gallery_title', 'Featured Creations');
                                                 $featuredImages = data_get($siteContent, 'featured_gallery_images', []);
@@ -603,12 +589,12 @@
 
                                             <input type="hidden" id="featured_gallery_images_input" name="featured_gallery_images" value='{{ json_encode($featuredImages) }}'>
 
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="openFeaturedGalleryPicker()" style="border-color:#8b5cf6; color:#6d28d9; font-weight:700; margin-bottom:12px;">📷 Select Featured Photos from Device Gallery</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="openFeaturedGalleryPicker()" style="border-color:#8b5cf6; color:#6d28d9; font-weight:700; margin-bottom:12px;">Select Photos from Device Gallery</button>
 
                                             <div id="featured-gallery-preview-strip" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
 
                                         @else
-                                            <p style="font-size:0.85rem; color:#666; margin:0;">Standard section enabled. Click Save to apply section order &amp; visibility state.</p>
+                                            <p style="font-size:0.85rem; color:#666; margin:0;">No additional settings for this section — use Save to apply its order and visibility.</p>
                                         @endif
                                     </div>
                                 </div>

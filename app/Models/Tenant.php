@@ -211,16 +211,16 @@ class Tenant extends Model implements TenancyContract
     public static function getDefaultSectionSettings()
     {
         return [
-            'hero' => ['id' => 'hero', 'name' => '🌟 Hero Banner Section', 'enabled' => true, 'order' => 1],
-            'highlights' => ['id' => 'highlights', 'name' => '🛡️ Trust Highlights Bar', 'enabled' => true, 'order' => 2],
-            'promo_video' => ['id' => 'promo_video', 'name' => '🎥 Video Background Promo Banner', 'enabled' => true, 'order' => 3],
-            'categories' => ['id' => 'categories', 'name' => '🧁 Category Showcase Grid', 'enabled' => false, 'order' => 4],
-            'whimsical' => ['id' => 'whimsical', 'name' => '✨ Whimsical Creations & Specialties', 'enabled' => true, 'order' => 5],
-            'how_it_works' => ['id' => 'how_it_works', 'name' => '📝 How Custom Ordering Works (3 Steps)', 'enabled' => true, 'order' => 6],
-            'reviews' => ['id' => 'reviews', 'name' => '⭐ Customer Reviews & Social Proof', 'enabled' => true, 'order' => 7],
-            'faq' => ['id' => 'faq', 'name' => '❓ FAQ & Bakery Policies', 'enabled' => true, 'order' => 8],
-            'cta_banner' => ['id' => 'cta_banner', 'name' => '🎬 Footer Booking CTA Banner', 'enabled' => true, 'order' => 9],
-            'featured_gallery' => ['id' => 'featured_gallery', 'name' => '📸 Featured Photos Gallery', 'enabled' => false, 'order' => 10],
+            'hero' => ['id' => 'hero', 'name' => 'Hero Banner', 'enabled' => true, 'order' => 1],
+            'highlights' => ['id' => 'highlights', 'name' => 'Trust Highlights Bar', 'enabled' => true, 'order' => 2],
+            'promo_video' => ['id' => 'promo_video', 'name' => 'Video/Image Promo Banner', 'enabled' => true, 'order' => 3],
+            'categories' => ['id' => 'categories', 'name' => 'Category Showcase Grid', 'enabled' => false, 'order' => 4],
+            'whimsical' => ['id' => 'whimsical', 'name' => 'Whimsical Creations & Specialties', 'enabled' => true, 'order' => 5],
+            'how_it_works' => ['id' => 'how_it_works', 'name' => 'How Ordering Works (3 Steps)', 'enabled' => true, 'order' => 6],
+            'reviews' => ['id' => 'reviews', 'name' => 'Customer Reviews & Social Proof', 'enabled' => true, 'order' => 7],
+            'faq' => ['id' => 'faq', 'name' => 'FAQ & Bakery Policies', 'enabled' => true, 'order' => 8],
+            'cta_banner' => ['id' => 'cta_banner', 'name' => 'Footer Booking CTA Banner', 'enabled' => true, 'order' => 9],
+            'featured_gallery' => ['id' => 'featured_gallery', 'name' => 'Featured Photos Gallery', 'enabled' => false, 'order' => 10],
         ];
     }
 
