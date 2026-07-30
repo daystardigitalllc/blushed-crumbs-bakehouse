@@ -285,10 +285,10 @@
         .ing-row-top { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-end; }
         .ing-row-top .field { flex: 1; }
         .ing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        @media (max-width: 640px) { .ing-grid { grid-template-columns: 1fr 1fr; } }
-        .ing-grid .field-group { display: flex; gap: 6px; }
-        .ing-grid .field-group input { flex: 1.3; }
-        .ing-grid .field-group select { flex: 1; }
+        @media (max-width: 640px) { .ing-grid { grid-template-columns: 1fr; } }
+        .ing-grid .field-group { display: flex; gap: 6px; min-width: 0; }
+        .ing-grid .field-group input { flex: 1.3; min-width: 0; padding-left: 10px; padding-right: 8px; font-size: 0.9rem; }
+        .ing-grid .field-group select { flex: 1; min-width: 0; padding-left: 8px; padding-right: 24px; font-size: 0.85rem; }
         .ing-cost-line {
             margin-top: 12px;
             display: flex;
@@ -757,8 +757,8 @@
                         '<div class="ing-grid">' +
                             '<div class="field-group"><input type="number" class="ing-qty" min="0" step="0.01" placeholder="Qty used" value="' + row.qty + '">' +
                                 '<select class="ing-unit">' + unitOptionsHtml(row.unit) + '</select></div>' +
-                            '<div class="field-group"><span style="align-self:center;padding-right:4px;">$</span><input type="number" class="ing-pkgcost" min="0" step="0.01" placeholder="Package cost" value="' + row.pkgCost + '"></div>' +
-                            '<div class="field-group"><input type="number" class="ing-pkgsize" min="0" step="0.01" placeholder="Package size" value="' + row.pkgSize + '">' +
+                            '<div class="field-group"><span style="align-self:center;padding-right:4px;">$</span><input type="number" class="ing-pkgcost" min="0" step="0.01" placeholder="Pkg cost" value="' + row.pkgCost + '"></div>' +
+                            '<div class="field-group"><input type="number" class="ing-pkgsize" min="0" step="0.01" placeholder="Pkg size" value="' + row.pkgSize + '">' +
                                 '<select class="ing-pkgunit">' + unitOptionsHtml(row.pkgUnit) + '</select></div>' +
                         '</div>' +
                         '<div class="ing-cost-line"><span>Ingredient Cost</span><span class="ing-cost-value">' + fmt(ingredientCost(row)) + '</span></div>' +
