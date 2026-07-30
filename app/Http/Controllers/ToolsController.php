@@ -48,7 +48,13 @@ class ToolsController extends Controller
             'image' => 'nullable|image|max:8192',
         ]);
 
-        $text = trim((string) $request->input('text', ''));
+        // Pasted text (especially copied from Word/a webpage) can carry byte
+        // sequences that aren't valid UTF-8 — fraction glyphs, smart quotes,
+        // en/em dashes copied through a lossy clipboard path. json_encode()
+        // refuses to encode the Gemini request payload at all if any string
+        // in it is invalid UTF-8, so this must be sanitized before use, not
+        // just trimmed.
+        $text = trim((string) (iconv('UTF-8', 'UTF-8//IGNORE', (string) $request->input('text', '')) ?: ''));
         $image = $request->file('image');
 
         if ($text === '' && !$image) {
@@ -68,28 +74,6 @@ class ToolsController extends Controller
         }
         if ($text !== '') {
             $parts[] = ['text' => $text];
-        }
-
-        // TEMP DIAGNOSTIC — remove after tracking down the prod "couldn't read
-        // that clearly" failure. Gated by a one-off secret so it can't be
-        // triggered by a normal visitor; bypasses the repair-retry so the raw
-        // Gemini exception/response is visible instead of being swallowed.
-        if ($request->query('debug_key') === 'daystar-temp-diag-7f3a') {
-            try {
-                $raw = $client->generateJson(
-                    [['role' => 'user', 'parts' => $parts]],
-                    $this->ingredientSystemInstruction(),
-                    $this->ingredientResponseSchema(),
-                    temperature: 0.1
-                );
-
-                return response()->json(['debug_raw_text' => $raw['text'] ?? null, 'debug_usage' => $raw['usage'] ?? null]);
-            } catch (\Throwable $e) {
-                return response()->json([
-                    'debug_exception_class' => get_class($e),
-                    'debug_exception_message' => $e->getMessage(),
-                ], 500);
-            }
         }
 
         $decoded = $client->generateJsonWithRepair(
