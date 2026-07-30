@@ -308,7 +308,11 @@ function initEntranceAnimations() {
         '.categories-grid-exact .category-card-exact',
         '.reviews-grid .cloud-review-card',
         '.gallery-masonry-grid .gallery-card',
-        '.ingredients-grid-6 .ingredient-card'
+        '.ingredients-grid-6 .ingredient-card',
+        '.rustic-shelf-row .rustic-shelf-card',
+        '.rustic-steps-list .rustic-step-row',
+        '.rustic-ingredients-list .rustic-ingredient-row',
+        '.rustic-recipe-list .rustic-recipe-row'
     ];
 
     const seen = new Set();

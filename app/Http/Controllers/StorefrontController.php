@@ -59,7 +59,7 @@ class StorefrontController extends Controller
         
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
 
-        return view('storefront.index', compact('tenant', 'products', 'reviews', 'gallery'));
+        return view($tenant->themeView('index'), compact('tenant', 'products', 'reviews', 'gallery'));
     }
 
     public function preview(Request $request, $subdomain)
@@ -82,7 +82,7 @@ class StorefrontController extends Controller
         $request->attributes->set('tenant', $tenant);
         app()->instance('tenant', $tenant);
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
-        return view('storefront.about', compact('tenant', 'products'));
+        return view($tenant->themeView('about'), compact('tenant', 'products'));
     }
 
     public function previewMenu(Request $request, $subdomain)
@@ -93,7 +93,7 @@ class StorefrontController extends Controller
         app()->instance('tenant', $tenant);
 
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
-        return view('storefront.menu', compact('tenant', 'products'));
+        return view($tenant->themeView('menu'), compact('tenant', 'products'));
     }
 
     public function previewGallery(Request $request, $subdomain)
@@ -105,7 +105,7 @@ class StorefrontController extends Controller
 
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
-        return view('storefront.gallery', compact('tenant', 'gallery', 'products'));
+        return view($tenant->themeView('gallery'), compact('tenant', 'gallery', 'products'));
     }
 
     public function previewPolicy(Request $request, $subdomain)
@@ -116,7 +116,7 @@ class StorefrontController extends Controller
         app()->instance('tenant', $tenant);
 
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
-        return view('storefront.policy', compact('tenant', 'products'));
+        return view($tenant->themeView('policy'), compact('tenant', 'products'));
     }
 
     public function previewPrivacy(Request $request, $subdomain)
@@ -147,7 +147,7 @@ class StorefrontController extends Controller
         }
 
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
-        return view('storefront.about', compact('tenant', 'products'));
+        return view($tenant->themeView('about'), compact('tenant', 'products'));
     }
 
     public function menu(Request $request)
@@ -158,7 +158,7 @@ class StorefrontController extends Controller
         }
 
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
-        return view('storefront.menu', compact('tenant', 'products'));
+        return view($tenant->themeView('menu'), compact('tenant', 'products'));
     }
 
     public function gallery(Request $request)
@@ -170,7 +170,7 @@ class StorefrontController extends Controller
 
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
-        return view('storefront.gallery', compact('tenant', 'gallery', 'products'));
+        return view($tenant->themeView('gallery'), compact('tenant', 'gallery', 'products'));
     }
 
     public function policy(Request $request)
@@ -181,7 +181,7 @@ class StorefrontController extends Controller
         }
 
         $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
-        return view('storefront.policy', compact('tenant', 'products'));
+        return view($tenant->themeView('policy'), compact('tenant', 'products'));
     }
 
     public function privacy(Request $request)

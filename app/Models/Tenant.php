@@ -244,6 +244,17 @@ class Tenant extends Model implements TenancyContract
     }
 
     /**
+     * Resolve the storefront Blade view for a given page under this tenant's
+     * theme, falling back to sweet_elegant for any theme that doesn't have
+     * its own template yet (or a bad/missing theme_id).
+     */
+    public function themeView(string $page): string
+    {
+        $view = "storefront.themes.{$this->theme_id}.{$page}";
+        return view()->exists($view) ? $view : "storefront.themes.sweet_elegant.{$page}";
+    }
+
+    /**
      * Get Starter (Free) themes available for onboarding.
      */
     public static function getStarterThemes(): array
