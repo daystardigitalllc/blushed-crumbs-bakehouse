@@ -117,10 +117,14 @@
                     ['title' => 'Cupcakes'],
                     ['title' => 'Treats'],
                 ]);
-                $catImg = $catList[0]['image_url']
-                    ?? $tenant->gallery_images[0]
-                    ?? $tenant->getSiteContent('hero_bg_url')
-                    ?? null;
+                // !empty(), not ?? - an unset image field is stored as an
+                // empty string, not null, so ?? was stopping at the first
+                // option every time and never actually falling through.
+                $catImg = !empty($catList[0]['image_url'])
+                    ? $catList[0]['image_url']
+                    : (!empty($tenant->gallery_images[0])
+                        ? $tenant->gallery_images[0]
+                        : $tenant->getSiteContent('hero_bg_url'));
             @endphp
             <div class="farmhouse-menu-index-media">
                 @if($catImg)
