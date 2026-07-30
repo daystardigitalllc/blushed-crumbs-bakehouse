@@ -1005,6 +1005,39 @@
             return UNIT_OPTIONS.indexOf(u) !== -1 ? u : 'grams';
         }
 
+        // Same ingredient appearing more than once (e.g. butter used in both
+        // a cake and its buttercream) gets combined into one row instead of
+        // duplicated. Only rows with the same name AND unit are combined —
+        // quantities in different units (e.g. cups vs. grams) aren't safely
+        // addable without a conversion, so those are deliberately left as
+        // separate rows rather than guessed at.
+        function mergeIngredientRows(rows) {
+            var merged = [];
+            var indexByKey = {};
+
+            rows.forEach(function (row) {
+                var key = row.name.trim().toLowerCase() + '|' + row.unit;
+                if (!row.name.trim()) {
+                    merged.push(row);
+                    return;
+                }
+
+                var existingIndex = indexByKey[key];
+                if (existingIndex === undefined) {
+                    indexByKey[key] = merged.length;
+                    merged.push(row);
+                    return;
+                }
+
+                var existing = merged[existingIndex];
+                existing.qty = num(existing.qty) + num(row.qty);
+                if (!existing.pkgCost && row.pkgCost) existing.pkgCost = row.pkgCost;
+                if (!existing.pkgSize && row.pkgSize) existing.pkgSize = row.pkgSize;
+            });
+
+            return merged;
+        }
+
         function applyImportedIngredients(imported) {
             if (!Array.isArray(imported) || imported.length === 0) {
                 setImportStatus('error', "We couldn't find any ingredients in that — try adding a bit more detail.");
@@ -1023,11 +1056,16 @@
             });
 
             var keptExisting = state.ingredients.filter(function (row) { return !isEmptyIngredientRow(row); });
-            state.ingredients = keptExisting.concat(newRows);
+            var combinedCount = keptExisting.length + newRows.length;
+            state.ingredients = mergeIngredientRows(keptExisting.concat(newRows));
+
+            var mergedCount = combinedCount - state.ingredients.length;
 
             renderIngredients();
             recalculate();
-            setImportStatus('success', 'Added ' + newRows.length + ' ingredient' + (newRows.length === 1 ? '' : 's') + '. Double check quantities and costs, then adjust as needed.');
+            setImportStatus('success', 'Added ' + newRows.length + ' ingredient' + (newRows.length === 1 ? '' : 's')
+                + (mergedCount > 0 ? ' (combined ' + mergedCount + ' duplicate' + (mergedCount === 1 ? '' : 's') + ')' : '')
+                + '. Double check quantities and costs, then adjust as needed.');
         }
 
         function submitImport(formData, busyMessage) {
