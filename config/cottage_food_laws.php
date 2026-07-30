@@ -1,0 +1,879 @@
+<?php
+
+/**
+ * Cottage Food Laws data — powers /cottage-food-laws and /cottage-food-laws/{state}.
+ *
+ * To add or update a state: edit its entry under 'states' below. Every state
+ * entry is merged over 'defaults' (see CottageFoodLawsController::state()),
+ * so a state only needs to list what's different from the defaults —
+ * 'selling_restrictions' is a sparse list of which default-true locations are
+ * actually NOT allowed for that state, not a full list of every location.
+ *
+ * Sourced from each state's official agency where linked, cross-checked
+ * against multiple 2026 cottage food law trackers (Forrager, Institute for
+ * Justice, PermitDeck, StandScout, FindHomegrown) in July 2026. Laws change
+ * often — 'last_updated' reflects when this entry was last verified, not
+ * when the underlying law changed. Always re-verify with the official
+ * source before relying on this for a real business decision (see the
+ * disclaimer rendered on every page).
+ */
+
+return [
+
+    'defaults' => [
+        'allowed_foods' => [
+            'Cookies, brownies, and bars',
+            'Cakes and cupcakes (no cream, custard, or perishable fillings)',
+            'Quick breads and yeast breads',
+            'Pies and pastries (fruit-based, not cream or custard)',
+            'Candy, fudge, and confections',
+            'Granola, cereals, and dry snack mixes',
+            'Dry baking mixes and dry herb/spice blends',
+            'Jams, jellies, and fruit butters',
+            'Honey and roasted coffee or dry tea',
+        ],
+        'prohibited_foods' => [
+            'Foods that require refrigeration to be safe (cream pies, cheesecakes, custards)',
+            'Meat, poultry, or seafood products',
+            'Most dairy products, including soft cheeses',
+            'Canned low-acid vegetables',
+            'Alcohol-infused products',
+            'Any food that needs time/temperature control for safety (TCS foods)',
+        ],
+        'labeling_requirements' => [
+            'Product name',
+            'Full ingredient list, in descending order by weight',
+            'Major allergens (milk, eggs, wheat, tree nuts, peanuts, soy, etc.)',
+            'Net weight or count',
+            'Business name',
+            'Business address or registration/permit number, as your state requires',
+            'Date the product was made',
+            "A cottage food disclaimer, e.g. \"Made in a home kitchen not subject to state inspection\" — exact required wording varies by state",
+        ],
+        'selling_locations' => [
+            'direct_to_consumer' => true,
+            'farmers_markets' => true,
+            'online_orders' => true,
+            'pickup' => true,
+            'delivery' => true,
+            'events' => true,
+        ],
+    ],
+
+    'states' => [
+
+        'alabama' => [
+            'name' => 'Alabama',
+            'abbr' => 'AL',
+            'summary' => 'Alabama has no statewide sales cap for cottage food operations. Producers register with the state and complete a food handler course before selling non-perishable homemade foods directly to consumers.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state permit required, but you must register as a cottage food operation.',
+                'food_handler' => 'Alabama food handler certification is required.',
+                'business_license' => 'A local business license may be required — check with your city or county.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.alabamapublichealth.gov/foodsafety/',
+            'official_source_name' => 'Alabama Department of Public Health — Food Safety',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'alaska' => [
+            'name' => 'Alaska',
+            'abbr' => 'AK',
+            'summary' => 'Alaska places no statewide cap on cottage food sales. Homemade, non-potentially-hazardous foods can be sold directly to consumers without a state permit.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food sales.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A general state business license is typically required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://dec.alaska.gov/eh/fss/food/',
+            'official_source_name' => 'Alaska Department of Environmental Conservation — Food Safety',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'arizona' => [
+            'name' => 'Arizona',
+            'abbr' => 'AZ',
+            'summary' => "Arizona has no annual sales cap and expanded its cottage food law in 2024 to allow far more than baked goods. Free online registration and a food handler card are required.",
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'Free online registration with the Arizona Department of Health Services is required (no license fee).',
+                'food_handler' => 'An ANSI/ANAB-accredited food handler card is required.',
+                'business_license' => 'A local business license may be required — check with your city.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'prohibited_foods_note' => "Arizona's 2024 expansion allows many prepared and perishable foods beyond typical baked goods — check the official source for the full current list.",
+            'official_source' => 'https://www.azdhs.gov/preparedness/environmental-health/food-safety-environmental-services/index.php',
+            'official_source_name' => 'Arizona Department of Health Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'arkansas' => [
+            'name' => 'Arkansas',
+            'abbr' => 'AR',
+            'summary' => 'Arkansas has no statewide sales cap for cottage food producers and does not require a state permit or food handler course to sell non-perishable homemade foods.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food sales.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required — check with your city or county.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'selling_restrictions' => [],
+            'official_source' => 'https://www.healthy.arkansas.gov/programs-services/topics/cottage-food-production',
+            'official_source_name' => 'Arkansas Department of Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'california' => [
+            'name' => 'California',
+            'abbr' => 'CA',
+            'summary' => 'California offers two cottage food tiers: Class A (self-certified, up to $75,000/year, direct sales only) and Class B (county-permitted, up to $150,000/year, allows sales through retail stores).',
+            'sales_limit' => 'Class A: $75,000/year (direct sales) · Class B: $150,000/year (retail allowed)',
+            'permits' => [
+                'permit_required' => 'Class A requires self-certification; Class B requires a county health permit and inspection.',
+                'food_handler' => 'A California food handler card is required.',
+                'business_license' => 'A local business license is typically required.',
+                'kitchen_inspection' => 'Not required for Class A; required for Class B.',
+            ],
+            'official_source' => 'https://www.cdph.ca.gov/Programs/CEH/DFDCS/Pages/FDBPrograms/FoodSafetyProgram/CottageFood.aspx',
+            'official_source_name' => 'California Department of Public Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'colorado' => [
+            'name' => 'Colorado',
+            'abbr' => 'CO',
+            'summary' => 'Colorado allows home producers to sell homemade goods directly to consumers up to an annual sales cap, with online sales permitted.',
+            'sales_limit' => '$90,000 per year',
+            'permits' => [
+                'permit_required' => 'Registration with your local health department is generally required.',
+                'food_handler' => 'A food safety training course is recommended and may be required locally.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://cdphe.colorado.gov/cottage-foods',
+            'official_source_name' => 'Colorado Department of Public Health & Environment',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'connecticut' => [
+            'name' => 'Connecticut',
+            'abbr' => 'CT',
+            'summary' => 'Connecticut requires a state permit and kitchen inspection before selling cottage foods, with sales capped annually and no online sales allowed.',
+            'sales_limit' => '$50,000 per year',
+            'permits' => [
+                'permit_required' => 'A $50 Connecticut cottage food permit is required.',
+                'food_handler' => 'ServSafe (or equivalent) food safety certification is required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'A home kitchen inspection is required before approval.',
+            ],
+            'selling_restrictions' => ['online_orders' => false],
+            'official_source' => 'https://portal.ct.gov/dcp/food-standards-branch/food-standards-branch-page/cottage-food-program',
+            'official_source_name' => 'Connecticut Department of Consumer Protection',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'delaware' => [
+            'name' => 'Delaware',
+            'abbr' => 'DE',
+            'summary' => 'Delaware removed its sales cap in December 2023. A state permit, home kitchen inspection, and an 8-hour food safety course are required; online sales are not allowed.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'A Delaware cottage food permit (about $30/year) is required.',
+                'food_handler' => 'An 8-hour food safety course is required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'A home kitchen inspection is required.',
+            ],
+            'selling_restrictions' => ['online_orders' => false, 'delivery' => false],
+            'official_source' => 'https://dhss.delaware.gov/dhss/dph/hsp/cottagefood.html',
+            'official_source_name' => 'Delaware Division of Public Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'florida' => [
+            'name' => 'Florida',
+            'abbr' => 'FL',
+            'summary' => 'Florida raised its cottage food sales cap to $250,000/year — one of the highest in the country. No state permit or food handler course is required to sell.',
+            'sales_limit' => '$250,000 per year',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food operations.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.fdacs.gov/Business-Services/Cottage-Food-Operations',
+            'official_source_name' => 'Florida Department of Agriculture and Consumer Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'georgia' => [
+            'name' => 'Georgia',
+            'abbr' => 'GA',
+            'summary' => "Georgia's cottage food sales cap is $150,000/year for a sole operator, or $300,000/year with one employee. Registration with the Department of Agriculture is required.",
+            'sales_limit' => '$150,000/year (individual) · $300,000/year (with one employee)',
+            'permits' => [
+                'permit_required' => 'Registration with the Georgia Department of Agriculture is required.',
+                'food_handler' => 'A food safety course may be required — check current guidance.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://agr.georgia.gov/cottage-food',
+            'official_source_name' => 'Georgia Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'hawaii' => [
+            'name' => 'Hawaii',
+            'abbr' => 'HI',
+            'summary' => 'Hawaii has no statewide sales cap for cottage food producers. A free Department of Health workshop or a low-cost online food safety course is required.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'Check current Department of Health guidance for registration requirements.',
+                'food_handler' => 'A free DOH workshop or an online ANSI-accredited course (about $10–15) is required.',
+                'business_license' => 'A general excise tax license is required to sell in Hawaii.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://health.hawaii.gov/food-drug/food/',
+            'official_source_name' => 'Hawaii Department of Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'idaho' => [
+            'name' => 'Idaho',
+            'abbr' => 'ID',
+            'summary' => 'Idaho has no statewide sales cap and does not require a state permit to sell homemade, non-perishable foods directly to consumers.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food sales.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://agri.idaho.gov/food-consumer-protections/',
+            'official_source_name' => 'Idaho State Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'illinois' => [
+            'name' => 'Illinois',
+            'abbr' => 'IL',
+            'summary' => "Illinois offers a basic cottage food tier up to $50,000/year, and a Home Kitchen Operation tier up to $75,000/year that requires county approval.",
+            'sales_limit' => '$50,000/year (basic tier) · $75,000/year (Home Kitchen Operation)',
+            'permits' => [
+                'permit_required' => 'County health department approval is required for the higher-limit Home Kitchen Operation tier.',
+                'food_handler' => 'A food handler certificate is generally required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Required for the Home Kitchen Operation tier.',
+            ],
+            'official_source' => 'https://dph.illinois.gov/topics-services/food-safety/cottage-food.html',
+            'official_source_name' => 'Illinois Department of Public Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'indiana' => [
+            'name' => 'Indiana',
+            'abbr' => 'IN',
+            'summary' => 'Indiana has no statewide sales cap, license, or inspection requirement for home-based vendors selling non-perishable homemade foods.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state license required for Home Based Vendors.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.in.gov/health/food-safety/home-based-vendors/',
+            'official_source_name' => 'Indiana Department of Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'iowa' => [
+            'name' => 'Iowa',
+            'abbr' => 'IA',
+            'summary' => 'Iowa has no sales cap for shelf-stable homemade foods; a separate license and a $50,000 cap apply if you make time/temperature-sensitive (perishable) products.',
+            'sales_limit' => 'No limit for shelf-stable foods · $50,000/year for perishable foods (separate license)',
+            'permits' => [
+                'permit_required' => 'No license needed for the basic shelf-stable tier; a license is required to sell perishable foods.',
+                'food_handler' => 'Not required for the basic tier.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for the basic tier; required for the perishable-foods license.',
+            ],
+            'official_source' => 'https://dial.iowa.gov/food-consumer-safety/food-establishment-licensing/home-food-processing',
+            'official_source_name' => 'Iowa Department of Inspections, Appeals & Licensing',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'kansas' => [
+            'name' => 'Kansas',
+            'abbr' => 'KS',
+            'summary' => 'Kansas has no statewide sales cap and does not require a state permit to sell homemade, non-perishable foods directly to consumers.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food sales.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://agriculture.ks.gov/divisions-programs/food-safety-lodging/home-based-food',
+            'official_source_name' => 'Kansas Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'kentucky' => [
+            'name' => 'Kentucky',
+            'abbr' => 'KY',
+            'summary' => "Kentucky caps cottage food sales at $60,000 in gross annual income. Registration with the Cabinet for Health and Family Services is required.",
+            'sales_limit' => '$60,000 per year',
+            'permits' => [
+                'permit_required' => 'Registration with the Cabinet for Health and Family Services is required.',
+                'food_handler' => 'A food safety course is generally required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for the standard cottage food tier.',
+            ],
+            'official_source' => 'https://www.chfs.ky.gov/agencies/dph/dphps/fs/Pages/homebased.aspx',
+            'official_source_name' => 'Kentucky Cabinet for Health and Family Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'louisiana' => [
+            'name' => 'Louisiana',
+            'abbr' => 'LA',
+            'summary' => "Louisiana's general cottage food cap is $30,000/year — but breads, cakes, cookies, and pies are exempt from that cap entirely, which is good news for home bakers specifically.",
+            'sales_limit' => '$30,000/year generally — breads, cakes, cookies, and pies are exempt from the cap',
+            'permits' => [
+                'permit_required' => 'No state permit required for most cottage food sales.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://ldh.la.gov/page/cottage-food',
+            'official_source_name' => 'Louisiana Department of Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'maine' => [
+            'name' => 'Maine',
+            'abbr' => 'ME',
+            'summary' => 'Maine has no statewide sales cap for cottage food producers selling homemade, non-perishable foods directly to consumers.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'Registration with the Department of Agriculture, Conservation and Forestry may be required — check current guidance.',
+                'food_handler' => 'Not typically required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.maine.gov/dacf/php/homefoodprocessing/',
+            'official_source_name' => 'Maine Department of Agriculture, Conservation and Forestry',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'maryland' => [
+            'name' => 'Maryland',
+            'abbr' => 'MD',
+            'summary' => "Maryland allows cottage food sales up to $50,000 per year directly to consumers, including online orders.",
+            'sales_limit' => '$50,000 per year',
+            'permits' => [
+                'permit_required' => 'Registration with your local health department is generally required.',
+                'food_handler' => 'A food safety training course may be required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://health.maryland.gov/ofood/Pages/Cottage-Food-Businesses.aspx',
+            'official_source_name' => 'Maryland Department of Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'massachusetts' => [
+            'name' => 'Massachusetts',
+            'abbr' => 'MA',
+            'summary' => 'Massachusetts sets no statewide dollar cap for permitted Residential Kitchens, unlike most states — but a local permit is required before you can sell.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'A Residential Kitchen permit from your local board of health is required.',
+                'food_handler' => 'A food safety course (e.g. ServSafe) is generally required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'A home kitchen inspection is generally required.',
+            ],
+            'official_source' => 'https://www.mass.gov/info-details/residential-kitchens',
+            'official_source_name' => 'Massachusetts Department of Public Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'michigan' => [
+            'name' => 'Michigan',
+            'abbr' => 'MI',
+            'summary' => "Michigan's cottage food cap rose from $25,000 to $50,000 in March 2026, and online sales with delivery are now allowed for the first time.",
+            'sales_limit' => '$50,000 per year',
+            'permits' => [
+                'permit_required' => 'No state license required for cottage food operations.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.michigan.gov/mdard/consumers/food-safety/cottage-food-law',
+            'official_source_name' => 'Michigan Department of Agriculture and Rural Development',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'minnesota' => [
+            'name' => 'Minnesota',
+            'abbr' => 'MN',
+            'summary' => 'Minnesota uses a two-tier system: a free registration tier up to about $7,665/year, and a $50 registration tier up to $78,000/year that requires a more thorough food safety course.',
+            'sales_limit' => 'Up to $78,000 per year (tiered registration)',
+            'permits' => [
+                'permit_required' => 'Free annual registration for the lower tier; $50 registration for the higher tier.',
+                'food_handler' => 'A free online training is required for the lower tier; a more thorough food safety course is required for the higher tier.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.mda.state.mn.us/food-feed/cottage-food-law-guidance',
+            'official_source_name' => 'Minnesota Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'mississippi' => [
+            'name' => 'Mississippi',
+            'abbr' => 'MS',
+            'summary' => "Mississippi caps cottage food sales at $35,000 per year for homemade, non-perishable foods sold directly to consumers.",
+            'sales_limit' => '$35,000 per year',
+            'permits' => [
+                'permit_required' => 'Check current Department of Health guidance for registration requirements.',
+                'food_handler' => 'Not typically required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://msdh.ms.gov/page/31,0,86.html',
+            'official_source_name' => 'Mississippi State Department of Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'missouri' => [
+            'name' => 'Missouri',
+            'abbr' => 'MO',
+            'summary' => 'Missouri removed its $50,000 sales cap in 2022 — cottage food producers now have unlimited sales with no state registration, permit, or fees required.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state registration or permit required for cottage food operations.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://health.mo.gov/safety/foodsafety/cottagefoods.php',
+            'official_source_name' => 'Missouri Department of Health and Senior Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'montana' => [
+            'name' => 'Montana',
+            'abbr' => 'MT',
+            'summary' => 'Montana has no statewide sales cap, and a 2025 law (SB 2386) now allows cottage food producers to ship across state lines.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food operations.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://dphhs.mt.gov/publichealth/fcs/cottagefoods',
+            'official_source_name' => 'Montana Department of Public Health and Human Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'nebraska' => [
+            'name' => 'Nebraska',
+            'abbr' => 'NE',
+            'summary' => "Nebraska removed its sales cap under LB 262 — cottage food producers now register for free with no dollar limit on sales.",
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'Free registration with the Department of Agriculture is required.',
+                'food_handler' => 'A short course is included as part of registration.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://nda.nebraska.gov/food_safety/cottage_food/',
+            'official_source_name' => 'Nebraska Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'nevada' => [
+            'name' => 'Nevada',
+            'abbr' => 'NV',
+            'summary' => "Nevada's cottage food cap is $35,000/year, rising to $100,000/year starting July 2027. Sales are currently limited to in-person only.",
+            'sales_limit' => '$35,000/year (rising to $100,000/year in July 2027)',
+            'permits' => [
+                'permit_required' => 'Requirements vary by county health district — check with yours.',
+                'food_handler' => 'A food handler card is generally required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Requirements vary by county health district.',
+            ],
+            'selling_restrictions' => ['online_orders' => false, 'delivery' => false],
+            'official_source' => 'https://dpbh.nv.gov/Reg/FoodSafety/dta/Programs/Home-Based_Food_Operations/',
+            'official_source_name' => 'Nevada Division of Public and Behavioral Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'new-hampshire' => [
+            'name' => 'New Hampshire',
+            'abbr' => 'NH',
+            'summary' => "New Hampshire allows up to $35,000/year in sales without a license, or unlimited sales (including wholesale) with an optional $150/year Homestead License.",
+            'sales_limit' => '$35,000/year unlicensed · unlimited with a Homestead License',
+            'permits' => [
+                'permit_required' => 'No license needed under $35,000/year; an optional $150/year Homestead License removes the cap and allows wholesale.',
+                'food_handler' => 'Not required for the unlicensed tier.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for the unlicensed tier; may apply to the Homestead License.',
+            ],
+            'official_source' => 'https://www.dhhs.nh.gov/programs-services/health-care/food-protection/homemade-food',
+            'official_source_name' => 'New Hampshire Department of Health and Human Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'new-jersey' => [
+            'name' => 'New Jersey',
+            'abbr' => 'NJ',
+            'summary' => 'New Jersey was the last state to legalize cottage food sales (2021). A state permit and food safety certification are required, sales are capped at $50,000/year, and online orders must be handed over in person — no shipping.',
+            'sales_limit' => '$50,000 per year',
+            'permits' => [
+                'permit_required' => 'A New Jersey Cottage Food Operator Permit (about $100, renewed every 2 years) is required.',
+                'food_handler' => 'Food safety manager certification is required (renewed every 5 years).',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required — permit holders are exempt from routine inspection.',
+            ],
+            'selling_restrictions' => ['delivery' => false],
+            'official_source' => 'https://www.nj.gov/health/foodhandling/cottage-food/',
+            'official_source_name' => 'New Jersey Department of Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'new-mexico' => [
+            'name' => 'New Mexico',
+            'abbr' => 'NM',
+            'summary' => 'New Mexico has no statewide sales cap for cottage food producers, who must hold a food handler card to sell directly to consumers.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'Registration with the Environment Department is generally required.',
+                'food_handler' => 'A New Mexico food handler card is required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.env.nm.gov/food-program/cottage-foods/',
+            'official_source_name' => 'New Mexico Environment Department',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'new-york' => [
+            'name' => 'New York',
+            'abbr' => 'NY',
+            'summary' => "New York's Home Processor Exemption allows sales of homemade goods up to $50,000/year, sold in person only.",
+            'sales_limit' => '$50,000 per year',
+            'permits' => [
+                'permit_required' => 'Registration as a Home Processor with the Department of Agriculture and Markets is required.',
+                'food_handler' => 'Not typically required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for the standard Home Processor Exemption.',
+            ],
+            'selling_restrictions' => ['online_orders' => false, 'delivery' => false],
+            'official_source' => 'https://agriculture.ny.gov/food-safety/home-processing',
+            'official_source_name' => 'New York Department of Agriculture and Markets',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'north-carolina' => [
+            'name' => 'North Carolina',
+            'abbr' => 'NC',
+            'summary' => "North Carolina caps cottage food sales at $50,000 per year, sold in person directly to consumers.",
+            'sales_limit' => '$50,000 per year',
+            'permits' => [
+                'permit_required' => 'Check current Department of Agriculture guidance for registration requirements.',
+                'food_handler' => 'Not typically required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'selling_restrictions' => ['online_orders' => false, 'delivery' => false],
+            'official_source' => 'https://www.ncagr.gov/divisions/food-drug-protection',
+            'official_source_name' => 'North Carolina Department of Agriculture & Consumer Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'north-dakota' => [
+            'name' => 'North Dakota',
+            'abbr' => 'ND',
+            'summary' => 'North Dakota has no statewide sales cap, and a 2025 law (SB 2386) now allows cottage food producers to ship across state lines.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food operations.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.hhs.nd.gov/health/food-safety/cottage-food',
+            'official_source_name' => 'North Dakota Department of Health and Human Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'ohio' => [
+            'name' => 'Ohio',
+            'abbr' => 'OH',
+            'summary' => 'Ohio caps cottage food sales at $75,000 per year, sold in person, and requires a food safety course.',
+            'sales_limit' => '$75,000 per year',
+            'permits' => [
+                'permit_required' => 'Check current Department of Agriculture guidance for registration requirements.',
+                'food_handler' => 'A food safety course is required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'selling_restrictions' => ['online_orders' => false, 'delivery' => false],
+            'official_source' => 'https://agri.ohio.gov/divisions/food-safety/cottage-foods',
+            'official_source_name' => 'Ohio Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'oklahoma' => [
+            'name' => 'Oklahoma',
+            'abbr' => 'OK',
+            'summary' => 'Oklahoma caps cottage food sales at $75,000 per year, with an optional $15/year registration and ServSafe certification required only for perishable items.',
+            'sales_limit' => '$75,000 per year',
+            'permits' => [
+                'permit_required' => 'An optional $15/year registration is available.',
+                'food_handler' => 'ServSafe certification is required only if selling perishable items.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.oda.state.ok.us/food/cottage.htm',
+            'official_source_name' => 'Oklahoma Department of Agriculture, Food & Forestry',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'oregon' => [
+            'name' => 'Oregon',
+            'abbr' => 'OR',
+            'summary' => "Oregon's cottage food sales cap is adjusted for inflation each year (about $52,700). A low-cost online food safety course is required.",
+            'sales_limit' => 'About $52,700 per year (adjusted annually for inflation)',
+            'permits' => [
+                'permit_required' => 'Check current Department of Agriculture guidance for registration requirements.',
+                'food_handler' => 'An online food safety course (about $10) is required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.oregon.gov/oda/programs/foodsafety/domesticfoodsafety/pages/cottagefoods.aspx',
+            'official_source_name' => 'Oregon Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'pennsylvania' => [
+            'name' => 'Pennsylvania',
+            'abbr' => 'PA',
+            'summary' => "Pennsylvania doesn't use a typical \"cottage food law\" — home producers register as a Limited Food Establishment with no revenue cap, and can even sell online and out of state.",
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'Limited Food Establishment registration (about $35) with a one-time home inspection is required.',
+                'food_handler' => 'Not always required — check current Department of Agriculture guidance.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'A one-time inspection is required, with routine follow-up inspections.',
+            ],
+            'official_source' => 'https://www.pa.gov/agencies/pda/programs/food-safety/limited-food-establishments.html',
+            'official_source_name' => 'Pennsylvania Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'rhode-island' => [
+            'name' => 'Rhode Island',
+            'abbr' => 'RI',
+            'summary' => "Rhode Island caps cottage food sales at $50,000/year, requires a state permit and food safety training, and doesn't allow online sales.",
+            'sales_limit' => '$50,000 per year',
+            'permits' => [
+                'permit_required' => 'A cottage food permit (about $65/year) is required. Selling at farmers markets requires an additional retail food peddler license.',
+                'food_handler' => 'Food safety training is required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'May be required as part of permit approval.',
+            ],
+            'selling_restrictions' => ['online_orders' => false],
+            'official_source' => 'https://health.ri.gov/licenses/detail.php?id=222',
+            'official_source_name' => 'Rhode Island Department of Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'south-carolina' => [
+            'name' => 'South Carolina',
+            'abbr' => 'SC',
+            'summary' => "South Carolina removed its $15,000 sales cap in 2022 — cottage food producers now have no statewide revenue limit.",
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food operations.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://agriculture.sc.gov/cottage-food/',
+            'official_source_name' => 'South Carolina Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'south-dakota' => [
+            'name' => 'South Dakota',
+            'abbr' => 'SD',
+            'summary' => 'South Dakota has no statewide sales cap and does not require a state permit to sell homemade, non-perishable foods directly to consumers.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food operations.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://doh.sd.gov/food/cottage/',
+            'official_source_name' => 'South Dakota Department of Health',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'tennessee' => [
+            'name' => 'Tennessee',
+            'abbr' => 'TN',
+            'summary' => "Tennessee's Food Freedom Act is one of the most permissive laws in the country: no sales cap, no permit, no registration, and no food handler course — and it covers far more than typical cottage foods.",
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No permit or registration required under the Food Freedom Act.',
+                'food_handler' => 'Not required under the Food Freedom Act.',
+                'business_license' => 'A local business license may still be required.',
+                'kitchen_inspection' => 'Not required, and local governments cannot add their own inspection requirement.',
+            ],
+            'prohibited_foods_note' => "Tennessee's Food Freedom Act allows most types of food, including many perishable items, sold from home, at markets, or online — well beyond typical cottage food categories.",
+            'official_source' => 'https://www.tn.gov/agriculture/consumers/food-safety/home-food-production.html',
+            'official_source_name' => 'Tennessee Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'texas' => [
+            'name' => 'Texas',
+            'abbr' => 'TX',
+            'summary' => "Texas caps cottage food sales at $50,000 per year. No food handler course is required, and online sales are allowed.",
+            'sales_limit' => '$50,000 per year',
+            'permits' => [
+                'permit_required' => 'No state permit required for cottage food operations.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.dshs.texas.gov/cottage-food-law',
+            'official_source_name' => 'Texas Department of State Health Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'utah' => [
+            'name' => 'Utah',
+            'abbr' => 'UT',
+            'summary' => 'Utah offers two paths: unlimited sales with no registration under the Food Freedom Act (direct-to-consumer only), or a traditional cottage food registration capped at $50,000/year that also allows retail sales.',
+            'sales_limit' => 'No limit (Food Freedom Act) · $50,000/year (traditional cottage food, retail allowed)',
+            'permits' => [
+                'permit_required' => 'No registration under the Food Freedom Act; a $50 registration and inspection for the traditional cottage food path.',
+                'food_handler' => 'Not required under the Food Freedom Act.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required under the Food Freedom Act; required for the traditional path.',
+            ],
+            'official_source' => 'https://ag.utah.gov/farmers/cottage-foods/',
+            'official_source_name' => 'Utah Department of Agriculture and Food',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'vermont' => [
+            'name' => 'Vermont',
+            'abbr' => 'VT',
+            'summary' => "Vermont tripled its cottage food sales cap in 2025, from $10,000 to $30,000 per year.",
+            'sales_limit' => '$30,000 per year',
+            'permits' => [
+                'permit_required' => 'Check current Agency of Agriculture guidance for registration requirements.',
+                'food_handler' => 'Not typically required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://agriculture.vermont.gov/food-safety-consumer-protection/cottage-food-and-home-baker-programs',
+            'official_source_name' => 'Vermont Agency of Agriculture, Food & Markets',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'virginia' => [
+            'name' => 'Virginia',
+            'abbr' => 'VA',
+            'summary' => "Virginia caps most cottage food sales at $50,000 per year (pickled products are capped separately at $3,000/year).",
+            'sales_limit' => '$50,000 per year (pickled products limited to $3,000/year)',
+            'permits' => [
+                'permit_required' => 'Check current Department of Agriculture and Consumer Services guidance for registration requirements.',
+                'food_handler' => 'Not typically required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not typically required for cottage food operations.',
+            ],
+            'official_source' => 'https://www.vdacs.virginia.gov/food-cottagefood.shtml',
+            'official_source_name' => 'Virginia Department of Agriculture and Consumer Services',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'washington' => [
+            'name' => 'Washington',
+            'abbr' => 'WA',
+            'summary' => "Washington caps cottage food sales at $75,000 per year and requires a low-cost food worker card.",
+            'sales_limit' => '$75,000 per year',
+            'permits' => [
+                'permit_required' => 'A cottage food permit from the Washington State Department of Agriculture is required.',
+                'food_handler' => 'A food worker card (about $10) is required.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'A home kitchen inspection is generally required.',
+            ],
+            'official_source' => 'https://agr.wa.gov/departments/food-safety/food-safety-cottage-food',
+            'official_source_name' => 'Washington State Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'west-virginia' => [
+            'name' => 'West Virginia',
+            'abbr' => 'WV',
+            'summary' => 'West Virginia has no statewide sales cap for non-hazardous cottage foods, and does not require a license, permit, inspection, or fee. A 2026 law expands the program to also allow certain "potentially hazardous" foods.',
+            'sales_limit' => 'No statewide sales limit',
+            'permits' => [
+                'permit_required' => 'No permit required for non-potentially-hazardous cottage foods.',
+                'food_handler' => 'Not required for cottage food operations.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for non-potentially-hazardous cottage foods.',
+            ],
+            'prohibited_foods_note' => "A 2026 law (SB 44) expands West Virginia's cottage food program to also allow certain acidified, pickled, fermented, and time/temperature-controlled foods — check the official source for current details.",
+            'official_source' => 'https://agriculture.wv.gov/',
+            'official_source_name' => 'West Virginia Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'wisconsin' => [
+            'name' => 'Wisconsin',
+            'abbr' => 'WI',
+            'summary' => "Wisconsin never passed a comprehensive cottage food law — home bakers operate under a 2017 court ruling that struck down the state's ban on selling homemade baked goods. There's no cap on baked goods, though a separate $5,000/year cap applies to canned pickled products.",
+            'sales_limit' => 'No cap on baked goods · $5,000/year cap on canned pickled ("Pickle Bill") products',
+            'permits' => [
+                'permit_required' => 'No license required to sell homemade baked goods, following the 2017 "cookie case" ruling.',
+                'food_handler' => 'Not required for baked goods.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required for baked goods.',
+            ],
+            'official_source' => 'https://datcp.wi.gov/Pages/Programs_Services/HomeBasedFoodBusinesses.aspx',
+            'official_source_name' => 'Wisconsin Department of Agriculture, Trade and Consumer Protection',
+            'last_updated' => '2026-07-30',
+        ],
+
+        'wyoming' => [
+            'name' => 'Wyoming',
+            'abbr' => 'WY',
+            'summary' => "Wyoming's Food Freedom Act allows up to $250,000 per year in sales with no permit required, and even allows wholesale of non-perishable goods.",
+            'sales_limit' => '$250,000 per year',
+            'permits' => [
+                'permit_required' => 'No permit required under the Food Freedom Act.',
+                'food_handler' => 'Not required under the Food Freedom Act.',
+                'business_license' => 'A local business license may be required.',
+                'kitchen_inspection' => 'Not required under the Food Freedom Act.',
+            ],
+            'official_source' => 'https://agriculture.wy.gov/divisions/consumer-health-safety/food-safety-and-consumer-services/food-freedom-act',
+            'official_source_name' => 'Wyoming Department of Agriculture',
+            'last_updated' => '2026-07-30',
+        ],
+
+    ],
+
+];

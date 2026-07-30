@@ -10,6 +10,7 @@ use App\Http\Controllers\OnboardingUploadController;
 
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\ToolsController;
+use App\Http\Controllers\CottageFoodLawsController;
 
 // ─── Authentication Routes ───
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -36,6 +37,8 @@ Route::get('/tools/bakery-pricing-calculator', [ToolsController::class, 'pricing
 Route::post('/tools/bakery-pricing-calculator/parse-ingredients', [ToolsController::class, 'parseIngredients'])
     ->middleware('throttle:10,1')
     ->name('tools.pricing-calculator.parse');
+Route::get('/cottage-food-laws', [CottageFoodLawsController::class, 'index'])->name('cottage-food-laws.index');
+Route::get('/cottage-food-laws/{state}', [CottageFoodLawsController::class, 'show'])->name('cottage-food-laws.show');
 
 // ─── Storefront Routes (Public Bakery Website) ───
 Route::get('/', [StorefrontController::class, 'index'])->name('storefront.index');

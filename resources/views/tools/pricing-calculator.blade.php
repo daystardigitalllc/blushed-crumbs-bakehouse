@@ -468,6 +468,7 @@
                     </button>
                     <div class="nav-dropdown-menu">
                         <a href="{{ route('tools.pricing-calculator') }}" class="active">Bakery Pricing Calculator</a>
+                        <a href="{{ route('cottage-food-laws.index') }}">Cottage Food Law Lookup</a>
                     </div>
                 </div>
                 <a href="/login" class="nav-login">Login</a>
