@@ -81,7 +81,7 @@ window.saveSiteContentForm = function() {
         if (data.success) {
             if (msgEl) {
                 msgEl.style.display = 'block';
-                msgEl.innerHTML = `✅ ${data.message} <a href="/" target="_blank" style="color:#065f46; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Site ↗</a>`;
+                msgEl.innerHTML = `${data.message} <a href="/" target="_blank" style="color:#065f46; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Site ↗</a>`;
                 setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
             }
             window.showToast('Site copy & content saved successfully!', 'success');
@@ -116,11 +116,11 @@ window.addAccordionReviewItem = function() {
     const idx = list.querySelectorAll('.accordion-review-item').length;
     const div = document.createElement('div');
     div.className = 'accordion-review-item';
-    div.style.cssText = 'background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:8px;';
+    div.style.cssText = 'padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;';
     div.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <input type="text" name="reviews[${idx}][name]" value="" placeholder="Customer Name (e.g. Sarah Jenkins)" style="width:240px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
-            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-review-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">🗑️ Delete</button>
+            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-review-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">Delete</button>
         </div>
         <textarea name="reviews[${idx}][quote]" rows="2" placeholder="Customer Quote / Testimonial..." style="width:100%; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem; font-family:inherit;"></textarea>
     `;
@@ -133,11 +133,11 @@ window.addAccordionFaqItem = function() {
     const idx = list.querySelectorAll('.accordion-faq-item').length;
     const div = document.createElement('div');
     div.className = 'accordion-faq-item';
-    div.style.cssText = 'background:#FAF8FF; padding:12px; border-radius:10px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:8px;';
+    div.style.cssText = 'padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;';
     div.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-            <input type="text" name="faqs[${idx}][q]" value="" placeholder="Question (e.g. 🎂 Do you offer vegan cakes?)" style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
-            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-faq-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">🗑️ Delete</button>
+            <input type="text" name="faqs[${idx}][q]" value="" placeholder="Question (e.g. Do you offer vegan cakes?)" style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
+            <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-faq-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">Delete</button>
         </div>
         <textarea name="faqs[${idx}][a]" rows="2" placeholder="Answer / Bakery Policy..." style="width:100%; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem; font-family:inherit;"></textarea>
     `;
@@ -260,7 +260,7 @@ window.saveSectionManagerForm = function() {
         if (data.success) {
             if (msgEl) {
                 msgEl.style.display = 'block';
-                msgEl.innerHTML = `✅ ${data.message} <a href="/" target="_blank" style="color:#4c1d95; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Site ↗</a>`;
+                msgEl.innerHTML = `${data.message} <a href="/" target="_blank" style="color:#4c1d95; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Site ↗</a>`;
                 setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
             }
             window.showToast('Section order & visibility saved successfully!', 'success');
@@ -1019,7 +1019,7 @@ function initAdminPortal() {
                 reader.onload = (ev) => {
                     galPreviewImg.src = ev.target.result;
                     if (galPreviewWrap) galPreviewWrap.style.display = 'block';
-                    if (galDropText) galDropText.innerHTML = `✅ Selected: <strong>${file.name}</strong>`;
+                    if (galDropText) galDropText.innerHTML = `Selected: <strong>${file.name}</strong>`;
                 };
                 reader.readAsDataURL(file);
             }
@@ -1077,7 +1077,7 @@ function initAdminPortal() {
                 row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;';
                 row.innerHTML = `
                     <div>
-                        <strong style="color:#5c1d37; font-size:1.05rem;">💳 ${methodName}</strong>: <code>${methodHandle}</code>
+                        <strong style="color:#5c1d37; font-size:1.05rem;">${methodName}</strong>: <code>${methodHandle}</code>
                         ${methodInstructions ? `<p style="font-size:0.85rem; color:#666; margin-top:2px;">${methodInstructions}</p>` : ''}
                     </div>
                     <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Remove</button>
@@ -1116,7 +1116,7 @@ function initAdminPortal() {
                     if (data.success) {
                         if (statusEl) {
                             statusEl.style.display = 'block';
-                            statusEl.innerText = `✅ Order Notification Email saved live as: ${routingEmail}! All future form entries for your site will route here.`;
+                            statusEl.innerText = `Order notification email saved: ${routingEmail}. Future form entries route here.`;
                         }
                         alert(`Success: Order notification routing email updated to ${routingEmail}!`);
                     } else {
@@ -1258,23 +1258,23 @@ function initAdminPortal() {
         }
 
         const typeLabels = {
-            'products': '🛒 Product Catalog',
-            'calendar': '📅 Booking Calendar',
-            'flavors': '🍰 Flavors Grid',
-            'frosting': '🧁 Frosting Grid',
-            'fillings': '🍫 Fillings Grid',
-            'fulfillment': '🚚 Fulfillment & Time Slots',
-            'allergies': '⚠️ Allergy Notice',
-            'social_discount': '🎁 Social Discounts',
-            'file_upload': '📎 Inspiration File Upload',
-            'terms': '📜 Terms Agreement',
-            'contact_info': '👤 Contact Info & Submit',
-            'text': '📝 Single-Line Text',
-            'textarea': '📄 Multi-line Textarea',
-            'select': '☑️ Select Dropdown',
-            'chips': '🏷️ Select Chips',
-            'datepicker': '📅 Standard Date Picker',
-            'toggle': '🔘 Yes/No Toggle'
+            'products': 'Product Catalog',
+            'calendar': 'Booking Calendar',
+            'flavors': 'Flavors Grid',
+            'frosting': 'Frosting Grid',
+            'fillings': 'Fillings Grid',
+            'fulfillment': 'Fulfillment & Time Slots',
+            'allergies': 'Allergy Notice',
+            'social_discount': 'Social Discounts',
+            'file_upload': 'Inspiration File Upload',
+            'terms': 'Terms Agreement',
+            'contact_info': 'Contact Info & Submit',
+            'text': 'Single-Line Text',
+            'textarea': 'Multi-line Textarea',
+            'select': 'Select Dropdown',
+            'chips': 'Select Chips',
+            'datepicker': 'Standard Date Picker',
+            'toggle': 'Yes/No Toggle'
         };
 
         tbody.innerHTML = window._customFields.map((f, i) => `
@@ -1291,8 +1291,8 @@ function initAdminPortal() {
                     ${['flavors', 'frosting', 'fillings', 'fulfillment', 'social_discount', 'select', 'chips'].includes(f.type) ?
                         `<span style="border-bottom:1px dashed #ccc; cursor:text; padding:2px; display:inline-block; min-width:50px;" contenteditable="true" onblur="updateField(${i}, 'options', this.innerText)" title="Edit Options (comma separated)">${f.options || '—'}</span>` :
                       (f.type === 'terms' ?
-                        `<button type="button" class="btn btn-sm btn-outline" onclick="openTermsEditModal(${i})" style="border-color:#f8c6d7; color:#e67399; font-size:0.8rem; font-weight:700;">✏️ Edit Policy Text</button>
-                         ${f.description ? '<div style="color:#15803d; font-size:0.75rem; margin-top:4px;">✅ Custom text set</div>' : '<div style="color:#aaa; font-size:0.75rem; margin-top:4px;">Using default message</div>'}` :
+                        `<button type="button" class="btn btn-sm btn-outline" onclick="openTermsEditModal(${i})" style="border-color:#f8c6d7; color:#e67399; font-size:0.8rem; font-weight:700;">Edit Policy Text</button>
+                         ${f.description ? '<div style="color:#15803d; font-size:0.75rem; margin-top:4px;">Custom text set</div>' : '<div style="color:#aaa; font-size:0.75rem; margin-top:4px;">Using default message</div>'}` :
                       (['textarea', 'allergies', 'file_upload', 'text', 'toggle'].includes(f.type) ?
                         `<span style="border-bottom:1px dashed #ccc; cursor:text; padding:2px; display:inline-block; min-width:50px;" contenteditable="true" onblur="updateField(${i}, 'description', this.innerText)" title="Edit Placeholder/Description">${f.description || '—'}</span>` :
                         `<span style="color:#aaa;">—</span>`
@@ -1357,7 +1357,7 @@ function initAdminPortal() {
 
         if (saveBtn) {
             saveBtn.disabled = true;
-            saveBtn.innerText = '⏳ Saving Form Steps...';
+            saveBtn.innerText = 'Saving Form Steps...';
         }
 
         fetch('/dashboard/form-builder', {
@@ -1384,7 +1384,7 @@ function initAdminPortal() {
         .finally(() => {
             if (saveBtn) {
                 saveBtn.disabled = false;
-                saveBtn.innerText = '💾 Save Order Form Layout Live';
+                saveBtn.innerText = 'Save Order Form Layout';
             }
         });
     };
@@ -1814,7 +1814,7 @@ window.deleteProduct = async function(productId, btnElement) {
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerText = '⏳ Uploading Photo...';
+                submitBtn.innerText = 'Uploading Photo...';
             }
 
             fetch('/dashboard/gallery', {
@@ -1889,7 +1889,7 @@ window.deleteProduct = async function(productId, btnElement) {
             .finally(() => {
                 if (submitBtn) {
                     submitBtn.disabled = false;
-                    submitBtn.innerText = '🚀 Publish Photo to Live Gallery';
+                    submitBtn.innerText = 'Publish Photo to Live Gallery';
                 }
             });
         });
@@ -2369,7 +2369,7 @@ function appendOrderToAdminQueue(order) {
     card.dataset.fulfillment = order.fulfillment_type;
     card.innerHTML = `
         <div class="order-card-header">
-            <div class="due-badge due-urgent">⏰ DUE: ${order.due_date} (${order.time_slot})</div>
+            <div class="due-badge due-urgent">DUE: ${order.due_date} (${order.time_slot})</div>
             <select class="status-select status-${order.status || 'new'}" onchange="updateOrderStatus(${order.id}, this.value)">
                 <option value="new" ${(!order.status || order.status === 'new') ? 'selected' : ''}>NEW</option>
                 <option value="invoiced" ${order.status === 'invoiced' ? 'selected' : ''}>INVOICED</option>
@@ -2386,11 +2386,11 @@ function appendOrderToAdminQueue(order) {
             <p><strong>Fulfillment:</strong> ${order.fulfillment_type.toUpperCase()}</p>
             <div class="pricing-breakdown">
                 <span>Total: <strong>$${order.total_price.toFixed(2)}</strong></span>
-                <span>50% Deposit: <strong>$${order.deposit_amount.toFixed(2)}</strong> (⏳ Pending)</span>
+                <span>50% Deposit: <strong>$${order.deposit_amount.toFixed(2)}</strong> (Pending)</span>
             </div>
         </div>
         <div class="order-card-actions">
-            <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder(${order.id})">💳 Create Invoice</button>
+            <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder(${order.id})">Create Invoice</button>
         </div>
     `;
     queue.prepend(card);
@@ -2545,7 +2545,7 @@ function renderBlockedDatesList() {
         const badge = document.createElement('div');
         badge.className = 'blocked-date-badge';
         badge.innerHTML = `
-            <span>🚫 ${dateStr}</span>
+            <span>${dateStr}</span>
             <button title="Unblock Date" onclick="removeBlockedDate('${dateStr}')">✕</button>
         `;
         list.appendChild(badge);
@@ -2657,7 +2657,7 @@ window.selectBakeryTheme = function(themeId, cardEl) {
             const msgEl = document.getElementById('theme-status-msg');
             if (msgEl) {
                 msgEl.style.display = 'inline-block';
-                msgEl.innerHTML = `✅ Theme updated to <strong>${themeId.replace('_', ' ').toUpperCase()}</strong>! <a href="/" target="_blank" style="color:#e67399; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Storefront ↗</a>`;
+                msgEl.innerHTML = `Theme updated to <strong>${themeId.replace('_', ' ').toUpperCase()}</strong>. <a href="/" target="_blank" style="color:#e67399; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Storefront ↗</a>`;
             }
         }
     })

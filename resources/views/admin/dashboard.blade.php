@@ -51,60 +51,59 @@
 
             <nav class="admin-sidebar-nav">
                 <button class="admin-nav-item active" data-tab="tab-orders">
-                    <span>📅</span> Orders
+                    Orders
                 </button>
                 <button class="admin-nav-item" data-tab="tab-form-builder">
-                    <span>⚙️</span> Order Form
+                    Order Form
                 </button>
                 <button class="admin-nav-item" data-tab="tab-page-builder">
-                    <span>🎨</span> Page Builder
+                    Page Builder
                 </button>
                 <button class="admin-nav-item" data-tab="tab-products">
-                    <span>🎂</span> Products
+                    Products
                 </button>
                 <button class="admin-nav-item" data-tab="tab-gallery-manager">
-                    <span>📷</span> Device Gallery
+                    Device Gallery
                 </button>
                 <button class="admin-nav-item" data-tab="tab-invoices">
-                    <span>💳</span> Invoices & Payments
+                    Invoices &amp; Payments
                 </button>
                 <button class="admin-nav-item" data-tab="tab-reviews">
-                    <span>⭐</span> Client Reviews
+                    Client Reviews
                 </button>
                 <button class="admin-nav-item" data-tab="tab-calendar">
-                    <span>📆</span> Availability & Blackouts
+                    Availability &amp; Blackouts
                 </button>
                 <button class="admin-nav-item" data-tab="tab-settings">
-                    <span>🔧</span> Settings
+                    Settings
                 </button>
                 <button class="admin-nav-item" data-tab="tab-subscription-support">
-                    <span>💳</span> Subscription &amp; Support
+                    Subscription &amp; Support
                 </button>
                 @if(($tenant->plan_tier ?? 'free') !== 'pro')
                     <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
-                        ⚡ Upgrade to PRO ($29/mo)
-                    </a> 
-                    
+                        Upgrade to Pro ($29/mo)
+                    </a>
                 @endif
             </nav>
 
             <div class="admin-sidebar-footer">
-                <button type="button" onclick="openAdminTour()" class="btn btn-outline" style="display:block; width:100%; text-align:center; border-color:rgba(255,255,255,0.3); color:white; margin-bottom:10px;">🎓 Take the Tour</button>
+                <button type="button" onclick="openAdminTour()" class="btn btn-outline" style="display:block; width:100%; text-align:center; border-color:rgba(255,255,255,0.3); color:white; margin-bottom:10px;">Take the Tour</button>
                 <a href="/" target="_blank" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white; text-decoration:none; margin-bottom:10px;">← Exit to Storefront</a>
                 <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                     @csrf
-                    <button type="submit" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white;">🚪 Sign Out</button>
+                    <button type="submit" class="btn btn-outline" style="display:block; text-align:center; width:100%; border-color:rgba(255,255,255,0.3); color:white;">Sign Out</button>
                 </form>
             </div>
         </aside>
 
         <!-- RIGHT MAIN CONTENT -->
         <main class="admin-main-content">
-            <!-- TAB 1: Priority Orders Queue -->
+            <!-- TAB 1: Orders -->
             <div id="tab-orders" class="tab-content active">
                 <div class="section-header">
-                    <h3>📅 Priority Order Queue</h3>
-                    <p class="subtitle">Sorted chronologically by <strong>due date</strong> so you know exactly what is due first!</p>
+                    <h3>Orders</h3>
+                    <p class="subtitle">Sorted by due date, soonest first.</p>
                 </div>
                 <div class="orders-list-grid" id="admin-orders-list">
                     @forelse($urgentOrders as $order)
@@ -115,7 +114,7 @@
                         <div class="order-card {{ $isUrgent ? 'urgent-border' : '' }}" data-fulfillment="{{ $order->fulfillment_type }}">
                             <div class="order-card-header">
                                 <div class="due-badge {{ $isUrgent ? 'due-urgent' : 'due-normal' }}">
-                                    ⏰ DUE: {{ $dueDate->format('M d, Y') }} ({{ $order->time_slot }})
+                                    DUE: {{ $dueDate->format('M d, Y') }} ({{ $order->time_slot }})
                                 </div>
                                 <select class="status-select status-{{ $order->status }}" onchange="updateOrderStatus({{ $order->id }}, this.value)">
                                     <option value="new" {{ $order->status == 'new' ? 'selected' : '' }}>NEW</option>
@@ -150,25 +149,24 @@
                                     <p class="notes-box"><strong>Special Notes:</strong> {{ $order->special_notes }}</p>
                                 @endif
                                 @if($order->allergies)
-                                    <p class="allergy-warning"><strong>⚠️ Allergies:</strong> {{ $order->allergies }}</p>
+                                    <p class="allergy-warning"><strong>Allergies:</strong> {{ $order->allergies }}</p>
                                 @endif
 
                                 <div class="pricing-breakdown">
                                     <span>Total: <strong>${{ number_format($order->total_price, 2) }}</strong></span>
-                                    <span>50% Deposit: <strong>${{ number_format($order->deposit_amount, 2) }}</strong> 
-                                        ({{ $order->deposit_paid ? '✅ Paid' : '⏳ Pending' }})
+                                    <span>50% Deposit: <strong>${{ number_format($order->deposit_amount, 2) }}</strong>
+                                        ({{ $order->deposit_paid ? 'Paid' : 'Pending' }})
                                     </span>
                                 </div>
                             </div>
 
                             <div class="order-card-actions">
-                                <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder({{ $order->id }}, {{ $order->total_price }}, {{ $order->deposit_amount }})">💳 Create Invoice</button>
-                                <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $order->invoice ? $order->invoice->invoice_number : '' }}', {{ $order->id }})">📋 Copy Invoice Link</button>
+                                <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder({{ $order->id }}, {{ $order->total_price }}, {{ $order->deposit_amount }})">Create Invoice</button>
+                                <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $order->invoice ? $order->invoice->invoice_number : '' }}', {{ $order->id }})">Copy Invoice Link</button>
                             </div>
                         </div>
                     @empty
                         <div style="background:#ffffff; border:2px dashed #e2e8f0; border-radius:16px; padding:48px; text-align:center; color:#64748b; grid-column: 1 / -1;">
-                            <span style="font-size:3rem; display:block; margin-bottom:12px;">🧁</span>
                             <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:6px;">No Customer Orders Yet</h4>
                             <p style="font-size:0.95rem; margin-bottom:18px;">When customers submit cake inquiries or place orders on your storefront, they will appear here in order of due date!</p>
                             <a href="{{ url('/') }}" target="_blank" class="btn btn-primary" style="display:inline-block; padding:10px 20px; font-size:0.9rem; text-decoration:none;">View Your Storefront →</a>
@@ -193,44 +191,44 @@
                     window._serverBookingSettings = @json($serverBookingSettings);
                 </script>
                 <div class="section-header">
-                    <h3>⚙️ Order Form</h3>
-                    <p class="subtitle">Customize step headers, directions, and form fields for your bakery (cakes, cookies, sourdough, etc.). Use ↑↓ or drag rows to reorder steps.</p>
+                    <h3>Order Form</h3>
+                    <p class="subtitle">Customize the steps and fields customers fill out when placing an order.</p>
                 </div>
 
                 <!-- EMAIL ROUTING SETTINGS CARD -->
                 <div class="form-builder-card" style="border: 2px solid #e67399; background: #fff7fa;">
-                    <h4 style="color:#5c1d37;">✉️ Order Email Routing</h4>
+                    <h4 style="color:#5c1d37;">Order Email Routing</h4>
                     <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">All completed order form entries will be sent to this address:</p>
                     <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
                         <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? '' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:220px;">
-                        <button type="submit" class="btn btn-primary">💾 Save</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </form>
                     <div id="email-save-status" style="margin-top:10px; font-weight:700; color:#28a745; font-size:0.88rem; display:none;"></div>
                 </div>
 
                 <!-- ADD STEP / FIELD CARD -->
                 <div class="form-builder-card">
-                    <h4>➕ Add Step or Field to Order Builder</h4>
+                    <h4>Add Step or Field</h4>
                     <form id="add-field-form" class="form-builder-grid">
                         <div style="grid-column: 1 / -1;">
                             <label style="font-weight:700; color:#5c1d37;">Field Type / Template</label>
                             <select id="field-type" onchange="toggleOptionsRow(this.value)" style="width:100%; max-width:100%; box-sizing:border-box; text-overflow:ellipsis;">
-                                <option value="products">🛒 Product Catalog</option>
-                                <option value="calendar">📅 Booking Calendar</option>
-                                <option value="flavors">🍰 Flavors Grid</option>
-                                <option value="frosting">🧁 Frosting Grid</option>
-                                <option value="fillings">🍫 Fillings Grid</option>
-                                <option value="textarea">📄 Textarea / Notes</option>
-                                <option value="fulfillment">🚚 Fulfillment &amp; Time Slots</option>
-                                <option value="allergies">⚠️ Allergy Notice</option>
-                                <option value="social_discount">🎁 Social Discounts</option>
-                                <option value="file_upload">📎 Inspiration Photo Upload</option>
-                                <option value="terms">📜 Terms &amp; Conditions</option>
-                                <option value="contact_info">👤 Contact Info &amp; Submit</option>
-                                <option value="text">📝 Single-Line Text</option>
-                                <option value="select">☑️ Select Dropdown</option>
-                                <option value="datepicker">📅 Date Picker</option>
-                                <option value="toggle">🔘 Yes / No Toggle</option>
+                                <option value="products">Product Catalog</option>
+                                <option value="calendar">Booking Calendar</option>
+                                <option value="flavors">Flavors Grid</option>
+                                <option value="frosting">Frosting Grid</option>
+                                <option value="fillings">Fillings Grid</option>
+                                <option value="textarea">Textarea / Notes</option>
+                                <option value="fulfillment">Fulfillment &amp; Time Slots</option>
+                                <option value="allergies">Allergy Notice</option>
+                                <option value="social_discount">Social Discounts</option>
+                                <option value="file_upload">Inspiration Photo Upload</option>
+                                <option value="terms">Terms &amp; Conditions</option>
+                                <option value="contact_info">Contact Info &amp; Submit</option>
+                                <option value="text">Single-Line Text</option>
+                                <option value="select">Select Dropdown</option>
+                                <option value="datepicker">Date Picker</option>
+                                <option value="toggle">Yes / No Toggle</option>
                             </select>
                         </div>
                         <div>
@@ -255,7 +253,7 @@
                             <input type="hidden" id="field-options">
 
                             <button type="button" class="btn btn-outline btn-sm" onclick="addAdminOptionRow()" style="border-radius:12px; font-weight:700; color:#e67399; border-color:#f8c6d7;">
-                                ➕ Add Option Choice
+                                + Add Option Choice
                             </button>
                         </div>
                         <div style="grid-column: 1 / -1; margin-top:10px;">
@@ -268,10 +266,10 @@
                 <div class="form-builder-card">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
                         <div>
-                            <h4 style="margin-bottom:4px;">📋 Configured Form Steps &amp; Fields</h4>
-                            <span style="font-size:0.85rem; color:#888; font-weight:500;">Use ↑↓ or drag rows to reorder steps.</span>
+                            <h4 style="margin-bottom:4px;">Configured Form Steps &amp; Fields</h4>
+                            <span style="font-size:0.85rem; color:#888; font-weight:500;">Drag rows, or use the arrows, to reorder steps.</span>
                         </div>
-                        <button id="save-form-schema-btn" class="btn btn-primary" onclick="saveFormSchemaToServer()">💾 Save Order Form Layout Live</button>
+                        <button id="save-form-schema-btn" class="btn btn-primary" onclick="saveFormSchemaToServer()">Save Order Form Layout</button>
                     </div>
 
                     <div class="field-table-wrapper">
@@ -606,12 +604,12 @@
 
             <div id="tab-products" class="tab-content">
                 <div class="section-header">
-                    <h3>🎂 Product Catalog &amp; Pricing</h3>
-                    <p class="subtitle">Add, remove, and update prices for your order form products. Changes reflect immediately on the storefront.</p>
+                    <h3>Products</h3>
+                    <p class="subtitle">Add, remove, and update prices for your order form products.</p>
                 </div>
 
                 <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
-                    <h4>➕ Add New Product</h4>
+                    <h4>Add New Product</h4>
                     <form id="add-product-form" class="form-builder-grid" action="{{ route('admin.products.store') }}" method="POST">
                         @csrf
                         <div>
@@ -641,7 +639,7 @@
                 </div>
 
                 <div class="form-builder-card">
-                    <h4>📋 Current Product Catalog</h4>
+                    <h4>Current Product Catalog</h4>
                     <div id="products-admin-grid">
                         @foreach($products as $prod)
                             <div class="product-item-row" data-id="{{ $prod->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid #f0e4ea;">
@@ -664,8 +662,8 @@
                 <div class="form-builder-card" style="border:2px solid #6d28d9; background:linear-gradient(135deg, #ffffff, #fdf4ff); margin-top:25px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
                         <div>
-                            <h4 style="color:#6d28d9; font-size:1.25rem; margin-bottom:4px;">📄 Menu Page Studio &amp; Uploads</h4>
-                            <p style="font-size:0.88rem; color:#555;">Upload your official bakery menu image/PDF or enter custom menu items &amp; disclaimers. Displays on your public <code>/menu</code> page.</p>
+                            <h4 style="color:#6d28d9; font-size:1.25rem; margin-bottom:4px;">Menu Page &amp; Uploads</h4>
+                            <p style="font-size:0.88rem; color:#555;">Upload your official menu image/PDF, or write custom menu text. Shown on your public <code>/menu</code> page.</p>
                         </div>
                         <span style="background:#6d28d9; color:white; font-size:0.75rem; font-weight:800; padding:4px 12px; border-radius:12px; text-transform:uppercase;">Public Storefront Menu</span>
                     </div>
@@ -688,7 +686,7 @@
                                     <option value="image" {{ $menuType === 'image' ? 'selected' : '' }}>Uploaded Menu Image / PDF + Custom Notes</option>
                                 </select>
                                 <small style="color:#64748b; font-size:0.8rem; display:block; margin-top:4px;">
-                                    💡 Custom notes (WYSIWYG editor below) will appear at the bottom of your public menu page.
+                                    Custom notes (editor below) appear at the bottom of your public menu page.
                                 </small>
                             </div>
 
@@ -701,26 +699,24 @@
                                 @if($menuImagePath)
                                     <div style="background:#f0fdf4; border:1.5px solid #22c55e; border-radius:12px; padding:12px 16px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
                                         <div style="display:flex; align-items:center; gap:12px;">
-                                            @if(Str::endsWith(strtolower($menuImagePath), '.pdf'))
-                                                <span style="font-size:2rem;">📄</span>
-                                            @else
+                                            @if(!Str::endsWith(strtolower($menuImagePath), '.pdf'))
                                                 <img src="{{ asset($menuImagePath) }}" alt="Current Menu Thumbnail" style="width:48px; height:48px; object-fit:cover; border-radius:8px; border:1px solid #bbf7d0;">
                                             @endif
                                             <div>
-                                                <div style="font-weight:700; color:#15803d; font-size:0.88rem;">✅ Menu File Active on Storefront</div>
+                                                <div style="font-weight:700; color:#15803d; font-size:0.88rem;">Menu file active on storefront</div>
                                                 <a href="{{ asset($menuImagePath) }}" target="_blank" style="color:#166534; font-size:0.82rem; font-weight:600; text-decoration:underline;">
-                                                    🔍 Click to View Uploaded File ↗
+                                                    View uploaded file ↗
                                                 </a>
                                             </div>
                                         </div>
                                         <label style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; padding:4px 10px; border-radius:8px; font-weight:700; font-size:0.8rem; cursor:pointer;">
-                                            <input type="checkbox" name="remove_menu_image" value="1"> 🗑️ Delete Active File
+                                            <input type="checkbox" name="remove_menu_image" value="1"> Delete Active File
                                         </label>
                                     </div>
                                     <small style="color:#64748b; font-size:0.8rem; display:block; margin-bottom:6px;">Upload new file below to replace current file:</small>
                                 @else
                                     <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:8px 12px; margin-bottom:8px; font-size:0.82rem; color:#64748b;">
-                                        ℹ️ No official menu image/PDF uploaded yet. Select a file below to upload.
+                                        No official menu image/PDF uploaded yet. Select a file below to upload.
                                     </div>
                                 @endif
 
@@ -732,10 +728,10 @@
                         <div style="margin-bottom:20px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                 <label style="font-weight:700; color:#334155; font-size:0.9rem;">
-                                    ✨ Custom Menu &amp; Pricing Builder (WYSIWYG Rich Text Editor — Bold, Bullets, Headings)
+                                    Custom Menu &amp; Pricing Text
                                 </label>
                                 <button type="button" class="btn btn-sm btn-outline" style="font-size:0.75rem; padding:2px 10px; color:#dc2626; border-color:#fca5a5;" onclick="clearMenuQuillEditor()">
-                                    🗑️ Clear Editor
+                                    Clear Editor
                                 </button>
                             </div>
                             <input type="hidden" name="menu_text" id="admin_menu_text" value="{{ $menuText }}">
@@ -744,10 +740,10 @@
 
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <a href="{{ route('storefront.menu') }}" target="_blank" style="color:#6d28d9; font-size:0.9rem; font-weight:600; text-decoration:none;">
-                                👀 Preview Public Menu Page ↗
+                                Preview Public Menu Page ↗
                             </a>
                             <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); border:none; padding:10px 24px; font-weight:700; border-radius:8px;">
-                                💾 Save Menu &amp; Pricing Settings
+                                Save Menu &amp; Pricing Settings
                             </button>
                         </div>
                     </form>
@@ -757,8 +753,8 @@
 
             <div id="tab-gallery-manager" class="tab-content">
                 <div class="section-header">
-                    <h3>📷 Device Gallery Uploader</h3>
-                    <p class="subtitle">Upload photos directly from your computer, phone, or tablet to publish live to your public <strong>/gallery</strong> page!</p>
+                    <h3>Device Gallery</h3>
+                    <p class="subtitle">Upload photos from your computer, phone, or tablet. They'll publish to your public <strong>/gallery</strong> page.</p>
                 </div>
 
                 <div class="form-builder-card">
@@ -785,7 +781,6 @@
                         <div>
                             <label>Select Image File From Your Device</label>
                             <div id="gal-device-dropzone" style="border:2px dashed #e67399; background:#fff7fa; padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
-                                <span style="font-size:2.5rem; color:#e67399; display:block; margin-bottom:8px;">📷</span>
                                 <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photo from device or drag image here</p>
                                 <span style="font-size:12px; color:#888;">Supports JPG, PNG, WEBP, GIF (Up to 10MB)</span>
                             </div>
@@ -795,10 +790,10 @@
                         <!-- LIVE PREVIEW CONTAINER -->
                         <div id="gal-upload-preview" style="display:none; text-align:center;">
                             <img id="gal-preview-img" src="" style="max-width:200px; height:140px; object-fit:cover; border-radius:14px; border:2px solid #e67399; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-                            <p style="font-weight:700; color:#28a745; margin-top:6px; font-size:0.9rem;">✅ Photo ready for publish</p>
+                            <p style="font-weight:700; color:#28a745; margin-top:6px; font-size:0.9rem;">Photo ready for publish</p>
                         </div>
 
-                        <button type="submit" id="gal-submit-btn" class="btn btn-primary" style="padding:14px;">🚀 Publish Photo to Live Gallery</button>
+                        <button type="submit" id="gal-submit-btn" class="btn btn-primary" style="padding:14px;">Publish Photo to Live Gallery</button>
                     </form>
                 </div>
 
@@ -825,13 +820,13 @@
             <!-- TAB 4: Invoices & Payment Handles Manager -->
             <div id="tab-invoices" class="tab-content">
                 <div class="section-header">
-                    <h3>💳 Invoices & Payment Options Studio</h3>
-                    <p class="subtitle">Add your custom payment methods, set payout usernames, and generate digital client invoices!</p>
+                    <h3>Invoices &amp; Payments</h3>
+                    <p class="subtitle">Add payment methods and generate digital client invoices.</p>
                 </div>
 
                 <!-- RECENT INVOICES TRACKER -->
                 <div class="form-builder-card" style="margin-bottom:20px;">
-                    <h4>📋 Recent Invoices</h4>
+                    <h4>Recent Invoices</h4>
                     <table style="width:100%; border-collapse:collapse; text-align:left; margin-top:10px;">
                         <thead>
                             <tr style="border-bottom:2px solid #f0e4ea;">
@@ -857,10 +852,10 @@
                                         </select>
                                     </td>
                                     <td style="padding:12px 8px;">
-                                        <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $inv->invoice_number }}')">📋 Copy Link</button>
-                                        <button class="btn btn-sm btn-outline" onclick="openInvoiceEditModal({{ $inv->id }}, {{ $inv->total_amount }}, {{ $inv->deposit_amount ?? 0 }}, '{{ addslashes($inv->notes ?? '') }}', {{ $inv->order_id ?? 'null' }})">✏️ Edit</button>
-                                        <button class="btn btn-sm btn-primary" onclick="sendInvoice('{{ $inv->id }}')">📧 Send</button>
-                                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteInvoice({{ $inv->id }}, this)">🗑️ Delete</button>
+                                        <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $inv->invoice_number }}')">Copy Link</button>
+                                        <button class="btn btn-sm btn-outline" onclick="openInvoiceEditModal({{ $inv->id }}, {{ $inv->total_amount }}, {{ $inv->deposit_amount ?? 0 }}, '{{ addslashes($inv->notes ?? '') }}', {{ $inv->order_id ?? 'null' }})">Edit</button>
+                                        <button class="btn btn-sm btn-primary" onclick="sendInvoice('{{ $inv->id }}')">Send</button>
+                                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteInvoice({{ $inv->id }}, this)">Delete</button>
                                     </td>
                                 </tr>
                             @empty
@@ -874,7 +869,7 @@
 
                 <!-- ADD CUSTOM PAYMENT METHOD CARD -->
                 <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
-                    <h4 style="color:#5c1d37;">➕ Add Custom Payment Option</h4>
+                    <h4 style="color:#5c1d37;">Add Custom Payment Option</h4>
                     <form id="add-payment-method-form" class="form-builder-grid">
                         <div>
                             <label>Payment Method Name</label>
@@ -900,14 +895,14 @@
                     <div id="payment-methods-list">
                         <div class="payment-method-row" style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;">
                             <div>
-                                <strong style="color:#5c1d37; font-size:1.05rem;">🟣 Venmo</strong>: <code>{{ !empty($tenant->payment_settings['venmo']) ? $tenant->payment_settings['venmo'] : 'Not Configured' }}</code>
+                                <strong style="color:#5c1d37; font-size:1.05rem;">Venmo</strong>: <code>{{ !empty($tenant->payment_settings['venmo']) ? $tenant->payment_settings['venmo'] : 'Not Configured' }}</code>
                                 <p style="font-size:0.85rem; color:#666; margin-top:2px;">Include Order # in payment memo</p>
                             </div>
                             <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Remove</button>
                         </div>
                         <div class="payment-method-row" style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;">
                             <div>
-                                <strong style="color:#5c1d37; font-size:1.05rem;">🟢 CashApp</strong>: <code>{{ !empty($tenant->payment_settings['cashapp']) ? $tenant->payment_settings['cashapp'] : 'Not Configured' }}</code>
+                                <strong style="color:#5c1d37; font-size:1.05rem;">CashApp</strong>: <code>{{ !empty($tenant->payment_settings['cashapp']) ? $tenant->payment_settings['cashapp'] : 'Not Configured' }}</code>
                                 <p style="font-size:0.85rem; color:#666; margin-top:2px;">Include Order # in payment memo</p>
                             </div>
                             <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Remove</button>
@@ -919,13 +914,13 @@
             <!-- TAB 5: Customer Reviews -->
             <div id="tab-reviews" class="tab-content">
                 <div class="section-header">
-                    <h3>⭐ Customer Reviews Manager</h3>
-                    <p class="subtitle">Manage client reviews and testimonials displayed on your storefront!</p>
+                    <h3>Client Reviews</h3>
+                    <p class="subtitle">Manage reviews and testimonials shown on your storefront.</p>
                 </div>
 
                 <!-- ADD NEW REVIEW CARD -->
                 <div class="form-builder-card" style="margin-bottom:20px; border:2px solid #e67399; background:#fff7fa;">
-                    <h4 style="color:#5c1d37; margin-bottom:12px;">➕ Add New Client Review</h4>
+                    <h4 style="color:#5c1d37; margin-bottom:12px;">Add New Client Review</h4>
                     <form id="add-review-form" style="display:flex; flex-direction:column; gap:12px;">
                         <div>
                             <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Client Name</label>
@@ -941,8 +936,8 @@
 
                 <!-- PUBLISHED REVIEWS LIST -->
                 <div class="form-builder-card">
-                    <h4>📋 Published Reviews</h4>
-                    <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">The following reviews are currently live on your bakery storefront:</p>
+                    <h4>Published Reviews</h4>
+                    <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Currently live on your storefront:</p>
 
                     <div id="admin-reviews-list" style="display:flex; flex-direction:column; gap:12px;">
                         @forelse($reviews as $rev)
@@ -954,7 +949,7 @@
                                     </div>
                                     <p style="font-size:0.9rem; color:#555; margin:0; line-height:1.5;">"{{ $rev->review_text }}"</p>
                                 </div>
-                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteReview({{ $rev->id }}, this)">🗑️ Delete</button>
+                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteReview({{ $rev->id }}, this)">Delete</button>
                             </div>
                         @empty
                             <p style="color:#888; text-align:center; padding:20px;">No reviews added yet. Use the form above to publish client reviews!</p>
@@ -966,15 +961,15 @@
             <!-- TAB: Settings -->
             <div id="tab-settings" class="tab-content">
                 <div class="section-header">
-                    <h3>🎨 Bakery Theme &amp; Storefront Options</h3>
-                    <p class="subtitle">Choose a professionally curated bakery theme, upload your brand logo, and configure settings.</p>
+                    <h3>Settings</h3>
+                    <p class="subtitle">Theme, logo, booking rules, and support.</p>
                 </div>
 
                 <!-- BAKERY LOGO MANAGEMENT CARD -->
                 <div class="form-builder-card" style="border:2px solid #6d28d9; background:#FAF8FF; margin-bottom:20px;">
-                    <h4 style="color:#4c1d95; margin-bottom:6px;">🖼️ Bakery Brand Logo</h4>
-                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Upload your official bakery logo. This will be displayed in the header &amp; footer across all your storefront pages.</p>
-                    
+                    <h4 style="color:#4c1d95; margin-bottom:6px;">Brand Logo</h4>
+                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Shown in the header and footer across all your storefront pages.</p>
+
                     <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
                         <div style="width:90px; height:90px; border-radius:16px; background:#ffffff; border:2px dashed #c4b5fd; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:6px;">
                             <img id="bakery-logo-preview" src="{{ $tenant->logo_path ? asset($tenant->logo_path) : asset('images/doughmain_logo.png') }}" alt="Bakery Logo" style="max-width:100%; max-height:100%; object-fit:contain;">
@@ -984,9 +979,9 @@
                                 <input type="file" id="bakery-logo-file" name="logo" accept="image/*" required onchange="previewBakeryLogoFile(this)" style="font-size:0.88rem;">
                                 <div style="display:flex; gap:10px; align-items:center;">
                                     <button type="submit" class="btn btn-primary" style="background:#6d28d9; border-color:#6d28d9;">
-                                        💾 Save Bakery Logo
+                                        Save Logo
                                     </button>
-                                    <span id="logo-upload-status" style="font-size:0.85rem; font-weight:600; color:#059669; display:none;">✓ Logo updated!</span>
+                                    <span id="logo-upload-status" style="font-size:0.85rem; font-weight:600; color:#059669; display:none;">Logo updated!</span>
                                 </div>
                             </form>
                         </div>
@@ -997,10 +992,10 @@
                 <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
                         <div>
-                            <h4 style="color:#5c1d37; margin:0;">🌸 Select Your Bakery Theme</h4>
-                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Pick a standardized, low-maintenance design template. Customizes colors and layout automatically.</p>
+                            <h4 style="color:#5c1d37; margin:0;">Storefront Theme</h4>
+                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Pick a design template. Colors and layout update automatically.</p>
                         </div>
-                        <a href="/site/{{ $tenant->subdomain }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:#e67399; color:#e67399;">👁️ View Live Storefront ↗</a>
+                        <a href="/site/{{ $tenant->subdomain }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:#e67399; color:#e67399;">View Live Storefront ↗</a>
                     </div>
 
                     <div id="theme-status-msg" style="display:none; margin-bottom:14px; background:#d4edda; color:#155724; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c3e6cb;"></div>
@@ -1031,11 +1026,11 @@
                                 @if($currentTheme === $t['id'])
                                     <span class="theme-badge" style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#e67399; color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
                                 @elseif($tenant->plan_tier === 'pro' && !$isStarterTheme)
-                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#c7d2fe; color:#4338ca; padding:3px 10px; border-radius:20px; font-weight:700;">Pro Tier ✨</span>
+                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#c7d2fe; color:#4338ca; padding:3px 10px; border-radius:20px; font-weight:700;">Pro Tier</span>
                                 @elseif($isLockedTheme)
-                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#fef3c7; color:#92400e; padding:3px 10px; border-radius:20px; font-weight:700;">🔒 PRO ONLY ($29/mo)</span>
+                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#fef3c7; color:#92400e; padding:3px 10px; border-radius:20px; font-weight:700;">Pro Only ($29/mo)</span>
                                 @else
-                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#d1fae5; color:#065f46; padding:3px 10px; border-radius:20px; font-weight:700;">Free Tier 🎁</span>
+                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#d1fae5; color:#065f46; padding:3px 10px; border-radius:20px; font-weight:700;">Free Tier</span>
                                 @endif
                             </div>
                         @endforeach
@@ -1044,7 +1039,7 @@
 
                 <!-- BOOKING RULES CARD -->
                 <div class="form-builder-card">
-                    <h4>📅 Order Lead Time</h4>
+                    <h4>Order Lead Time</h4>
                     <p style="font-size:0.9rem; color:#666; margin-bottom:18px;">Prevent customers from selecting a completion date that is too soon to fulfill.</p>
 
                     <div class="settings-toggle-row" id="lead-time-toggle-row">
@@ -1063,15 +1058,15 @@
                         <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
                             <input type="number" id="custom-lead-days" min="0" max="60" value="3" style="width:100px;">
                             <button class="btn btn-primary" onclick="saveLeadTime()">Save Setting</button>
-                            <span id="lead-time-save-msg" style="font-size:0.85rem; color:#28a745; display:none;">✅ Saved!</span>
+                            <span id="lead-time-save-msg" style="font-size:0.85rem; color:#28a745; display:none;">Saved!</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- BAKER SUPPORT CARD -->
                 <div class="form-builder-card" style="margin-top:20px; border:2px solid #6d28d9; background:#fbf8ff;">
-                    <h4 style="color:#4c1d95; margin-bottom:4px;">💬 Baker Support & Custom Code Request</h4>
-                    <p style="font-size:0.88rem; color:#666; margin-bottom:14px;">Direct support request form for custom features, theme tweaks, or code assistance ($50/mo Pro Tier perk).</p>
+                    <h4 style="color:#4c1d95; margin-bottom:4px;">Support &amp; Custom Code Requests</h4>
+                    <p style="font-size:0.88rem; color:#666; margin-bottom:14px;">Request custom features, theme tweaks, or code assistance (Pro Tier perk).</p>
                     <form id="support-request-form" style="display:flex; flex-direction:column; gap:12px;">
                         <div>
                             <label style="font-weight:700; font-size:0.85rem; color:#4c1d95; display:block; margin-bottom:4px;">Subject</label>
@@ -1089,15 +1084,15 @@
             <!-- TAB: Calendar & Availability Manager -->
             <div id="tab-calendar" class="tab-content">
                 <div class="section-header">
-                    <h3>📆 Calendar &amp; Availability Manager</h3>
-                    <p class="subtitle">Set recurring weekly closed days, block off specific dates for holidays or vacations, and manage order availability live!</p>
+                    <h3>Availability &amp; Blackouts</h3>
+                    <p class="subtitle">Set weekly closed days and block off specific dates.</p>
                 </div>
 
                 <!-- CARD 1: RECURRING WEEKLY CLOSED DAYS -->
                 <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
-                    <h4 style="color:#5c1d37;">🔄 Weekly Recurring Closed Days</h4>
-                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Select days of the week when your bakery is regularly closed (e.g. Saturdays &amp; Sundays). These will automatically be blocked on the order form calendar.</p>
-                    
+                    <h4 style="color:#5c1d37;">Weekly Recurring Closed Days</h4>
+                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Days you're regularly closed (e.g. Saturdays &amp; Sundays) are automatically blocked on the order form calendar.</p>
+
                     <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
                         @foreach([
                             ['0', 'Sunday'],
@@ -1119,8 +1114,8 @@
                     </div>
 
                     <div style="display:flex; gap:12px; align-items:center;">
-                        <button class="btn btn-primary" onclick="saveRecurringClosedDays()">💾 Save Recurring Schedule</button>
-                        <span id="recurring-save-msg" style="font-size:0.85rem; color:#28a745; display:none;">✅ Saved!</span>
+                        <button class="btn btn-primary" onclick="saveRecurringClosedDays()">Save Recurring Schedule</button>
+                        <span id="recurring-save-msg" style="font-size:0.85rem; color:#28a745; display:none;">Saved!</span>
                     </div>
                 </div>
 
@@ -1128,8 +1123,8 @@
                 <div class="form-builder-card">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:20px;">
                         <div>
-                            <h4 style="margin-bottom:4px;">🚫 Interactive Date Blackout Calendar</h4>
-                            <p style="font-size:0.85rem; color:#888; margin:0;">Click any date below to toggle it blocked 🔴 or available 🟢</p>
+                            <h4 style="margin-bottom:4px;">Date Blackout Calendar</h4>
+                            <p style="font-size:0.85rem; color:#888; margin:0;">Click any date below to toggle it blocked or available.</p>
                         </div>
                         <!-- Month Navigation -->
                         <div style="display:flex; align-items:center; gap:10px; background:#fff0f5; padding:6px 14px; border-radius:14px; border:1px solid #f8c6d7;">
@@ -1188,18 +1183,18 @@
                             <label style="font-size:0.85rem; font-weight:700; color:#5c1d37; display:block; margin-bottom:6px;">Block Specific Date Manually</label>
                             <input type="date" id="manual-block-date" style="padding:10px 14px; border-radius:10px; border:1px solid #f0e4ea;">
                         </div>
-                        <button class="btn btn-primary" onclick="addManualBlockedDate()">🚫 Block Date</button>
+                        <button class="btn btn-primary" onclick="addManualBlockedDate()">Block Date</button>
                     </div>
                 </div>
 
                 <!-- CARD 3: LIST OF CURRENTLY BLOCKED DATES -->
                 <div class="form-builder-card">
-                    <h4>📋 Currently Blocked Custom Dates</h4>
-                    <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">These specific dates are currently blacked out for client orders:</p>
+                    <h4>Currently Blocked Custom Dates</h4>
+                    <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Blacked out for client orders:</p>
                     <div id="admin-blocked-dates-list" style="display:flex; flex-wrap:wrap; gap:10px;">
                         @forelse($serverBookingSettings['blocked_dates'] ?? ['2026-07-04', '2026-07-25'] as $bDate)
                             <div class="blocked-date-badge">
-                                <span>🚫 {{ $bDate }}</span>
+                                <span>{{ $bDate }}</span>
                                 <button title="Unblock Date" onclick="removeBlockedDate('{{ $bDate }}')">✕</button>
                             </div>
                         @empty
@@ -1212,8 +1207,8 @@
             <!-- TAB 9: Subscription & Support -->
             <div id="tab-subscription-support" class="tab-content">
                 <div class="section-header">
-                    <h3>💳 Subscription &amp; Platform Support</h3>
-                    <p class="subtitle">Manage your bakery plan subscription and get direct support from Doughmain.pro.</p>
+                    <h3>Subscription &amp; Support</h3>
+                    <p class="subtitle">Manage your plan and get help from Doughmain.pro.</p>
                 </div>
 
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px;">
@@ -1237,7 +1232,7 @@
                                 <input type="password" name="new_password_confirmation" required minlength="8" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
                             </div>
                             <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">
-                                Update Password 🔒
+                                Update Password
                             </button>
                             @if(session('success'))
                                 <div style="margin-top:10px; color:#059669; font-size:0.9rem; font-weight:600; text-align:center;">{{ session('success') }}</div>
@@ -1266,8 +1261,8 @@
                                 <p style="font-size:0.9rem; color:#555; margin-top:4px; margin-bottom:16px;">Unlock all 7 premium themes, custom domain support, and priority baker support.</p>
                                  
                     <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6) !important; color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
-                        ⚡ Upgrade to PRO ($29/mo)
-                    </a> 
+                        Upgrade to Pro ($29/mo)
+                    </a>
                     
                      
                             </div>
@@ -1332,7 +1327,7 @@
                                 <textarea id="ticket_message" name="message" required rows="4" class="form-input" placeholder="Tell our support team how we can assist your bakery..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">
-                                Submit Support Ticket 🚀
+                                Submit Support Ticket
                             </button>
                         </form>
                     </div>
@@ -1478,7 +1473,7 @@
                         const data = await res.json();
 
                         if (data.status === 'verified') {
-                            statusEl.innerText = 'Domain verified and live! 🎉';
+                            statusEl.innerText = 'Domain verified and live!';
                             statusEl.style.color = '#047857';
                             clearInterval(customDomainPollTimer);
                         } else if (data.status === 'failed') {
@@ -1538,7 +1533,7 @@
                         if (data.logo_path) {
                             document.getElementById('bakery-logo-preview').src = data.logo_path;
                         }
-                        statusEl.innerText = '✓ Logo saved!';
+                        statusEl.innerText = 'Logo saved!';
                         statusEl.style.display = 'inline-block';
                         setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
                     } else {
@@ -1708,29 +1703,29 @@
                 const idx = list.querySelectorAll('.accordion-category-item').length;
                 const div = document.createElement('div');
                 div.className = 'accordion-category-item';
-                div.style.cssText = 'background:#FAF8FF; padding:16px; border-radius:12px; border:1px solid #e9d5ff; display:flex; flex-direction:column; gap:10px;';
+                div.style.cssText = 'padding:16px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:10px;';
                 div.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
                         <input type="text" name="categories[${idx}][title]" placeholder="Category Title (e.g. Gourmet Cupcakes)" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-weight:700; font-size:0.95rem;">
-                        <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-category-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:4px 10px; font-size:0.8rem;">🗑️ Delete Category</button>
+                        <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-category-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:4px 10px; font-size:0.8rem;">Delete</button>
                     </div>
                     <div>
                         <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Short Description</label>
                         <input type="text" name="categories[${idx}][desc]" placeholder="Category Description..." style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-size:0.88rem;">
                     </div>
                     <div>
-                        <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image Selection</label>
+                        <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image</label>
                         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                             <input type="text" id="cat_img_input_${idx}" name="categories[${idx}][image_url]" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
-                            <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_${idx}'), 'cat_preview_${idx}')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">📷 Device Gallery</button>
+                            <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_${idx}'), 'cat_preview_${idx}')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">Device Gallery</button>
                             <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
-                                📁 Upload File
+                                Upload File
                                 <input type="file" name="category_image_${idx}" accept="image/*" style="display:none;" onchange="uploadSectionMedia(this, 'cat_img_input_${idx}', 'cat_preview_${idx}')">
                             </label>
                         </div>
                         <div id="cat_preview_${idx}" style="margin-top:8px; display:none; align-items:center; gap:8px;">
                             <img src="" style="width:38px; height:38px; object-fit:cover; border-radius:6px; border:1px solid #ddd;">
-                            <span style="font-size:0.78rem; color:#15803d; font-weight:600;">✅ Category Photo Attached</span>
+                            <span style="font-size:0.78rem; color:#15803d; font-weight:600;">Photo attached</span>
                         </div>
                     </div>
                 `;
@@ -1812,7 +1807,7 @@
                 {
                     icon: '📋',
                     title: 'Order Form',
-                    body: "This is where you build your custom order form. Add steps for cake sizes, flavors, frosting, terms &amp; conditions, and more — drag rows to reorder, then click \"Save Order Form Layout Live\" to publish instantly to your storefront."
+                    body: "This is where you build your custom order form. Add steps for cake sizes, flavors, frosting, terms &amp; conditions, and more — drag rows to reorder, then click \"Save Order Form Layout\" to publish instantly to your storefront."
                 },
                 {
                     icon: '🎂',
@@ -1911,7 +1906,7 @@
                 const btn = form.querySelector('button[type="submit"]');
 
                 btn.disabled = true;
-                btn.innerText = '⏳ Saving Menu Settings...';
+                btn.innerText = 'Saving Menu Settings...';
 
                 try {
                     const res = await fetch('/dashboard/settings/menu', {
@@ -1924,7 +1919,7 @@
                     });
                     const data = await res.json();
                     if (data.success) {
-                        alert('🎉 ' + data.message);
+                        alert(data.message);
                         window.location.reload();
                     } else {
                         alert(data.message || 'Error saving menu settings.');
@@ -1935,7 +1930,7 @@
                     window.location.reload();
                 } finally {
                     btn.disabled = false;
-                    btn.innerText = '💾 Save Menu & Pricing Settings';
+                    btn.innerText = 'Save Menu & Pricing Settings';
                 }
             }
         </script>
@@ -1944,7 +1939,7 @@
 <div id="invoice-edit-modal" class="order-modal-overlay" style="display:none; z-index:9999;">
     <div class="order-modal-card" style="max-width: 500px; width:90%;">
         <div class="order-modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:12px; margin-bottom:16px;">
-            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; color:#5c1d37; margin:0;">💳 Invoice Details</h2>
+            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; color:#5c1d37; margin:0;">Invoice Details</h2>
             <button class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeInvoiceEditModal()">✕</button>
         </div>
         <div class="order-modal-body">
@@ -1969,8 +1964,8 @@
 
                 <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid #eee; padding-top:16px;">
                     <button type="button" class="btn btn-outline" onclick="closeInvoiceEditModal()">Cancel</button>
-                    <button type="button" class="btn btn-outline" onclick="saveInvoiceEdits()" style="border-color:#e67399; color:#e67399;">💾 Save Invoice</button>
-                    <button type="button" class="btn btn-primary" onclick="saveAndSendInvoice()">📧 Save & Send</button>
+                    <button type="button" class="btn btn-outline" onclick="saveInvoiceEdits()" style="border-color:#e67399; color:#e67399;">Save Invoice</button>
+                    <button type="button" class="btn btn-primary" onclick="saveAndSendInvoice()">Save &amp; Send</button>
                 </div>
             </form>
         </div>
@@ -1982,7 +1977,7 @@
     <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid #8b5cf6; padding:20px; box-shadow:0 20px 50px rgba(109,40,217,0.2);">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e9d5ff; padding-bottom:12px; margin-bottom:16px;">
             <div>
-                <h3 style="margin:0; color:#6d28d9; font-size:1.2rem; font-family:'Outfit',sans-serif;">📷 Device Gallery Media Picker</h3>
+                <h3 style="margin:0; color:#6d28d9; font-size:1.2rem; font-family:'Outfit',sans-serif;">Device Gallery Media Picker</h3>
                 <p style="margin:2px 0 0 0; font-size:0.82rem; color:#666;">Click any photo thumbnail to attach it to this section.</p>
             </div>
             <button type="button" class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeGalleryPickerModal()">✕</button>
@@ -1999,7 +1994,6 @@
                 </div>
             @empty
                 <div style="grid-column:1 / -1; text-align:center; padding:30px; color:#666;">
-                    <span style="font-size:2.5rem; display:block; margin-bottom:8px;">📷</span>
                     <p style="margin:0; font-weight:600;">No images in Device Gallery yet.</p>
                     <p style="font-size:0.8rem; color:#888;">Upload photos under the <strong>Device Gallery</strong> sidebar tab first or upload directly below.</p>
                 </div>
@@ -2007,10 +2001,10 @@
         </div>
 
         <div style="margin-top:16px; border-top:1px solid #e9d5ff; padding-top:12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
-            <button type="button" id="gallery-picker-clear-btn" class="btn btn-outline" onclick="selectGalleryPickerImage('', '')" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">❌ Clear Selection (Theme Default)</button>
+            <button type="button" id="gallery-picker-clear-btn" class="btn btn-outline" onclick="selectGalleryPickerImage('', '')" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">Clear Selection (Theme Default)</button>
             <div id="gallery-picker-multi-hint" style="display:none; font-size:0.82rem; color:#6d28d9; font-weight:600;">Click photos to select or deselect them, then hit Done.</div>
             <div style="display:flex; gap:8px;">
-                <button type="button" id="gallery-picker-done-btn" class="btn btn-primary" style="display:none; background:#7c3aed; border-color:#6d28d9;" onclick="confirmFeaturedGallerySelection()">✅ Done — Use Selected Photos</button>
+                <button type="button" id="gallery-picker-done-btn" class="btn btn-primary" style="display:none; background:#7c3aed; border-color:#6d28d9;" onclick="confirmFeaturedGallerySelection()">Done — Use Selected Photos</button>
                 <button type="button" class="btn btn-outline" onclick="closeGalleryPickerModal()">Cancel</button>
             </div>
         </div>
@@ -2039,7 +2033,7 @@
     <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; overflow-y:auto; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid #e67399; padding:20px; box-shadow:0 20px 50px rgba(230,115,153,0.2);">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f8c6d7; padding-bottom:12px; margin-bottom:16px;">
             <div>
-                <h3 style="margin:0; color:#5c1d37; font-size:1.2rem; font-family:'Outfit',sans-serif;">📜 Edit Terms &amp; Policy Text</h3>
+                <h3 style="margin:0; color:#5c1d37; font-size:1.2rem; font-family:'Outfit',sans-serif;">Edit Terms &amp; Policy Text</h3>
                 <p style="margin:2px 0 0 0; font-size:0.82rem; color:#666;">Leave blank to show the default message: <em>"Please consult the bakery directly for their order policies and terms."</em></p>
             </div>
             <button type="button" class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeTermsEditModal()">✕</button>
@@ -2048,10 +2042,10 @@
         <div id="quill-terms-modal-editor" style="background:#ffffff; border-radius:0 0 8px 8px; font-size:0.95rem;"></div>
 
         <div style="margin-top:16px; border-top:1px solid #f8c6d7; padding-top:12px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
-            <button type="button" class="btn btn-outline" onclick="clearTermsEditModal()" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">🗑️ Clear (Use Default)</button>
+            <button type="button" class="btn btn-outline" onclick="clearTermsEditModal()" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">Clear (Use Default)</button>
             <div style="display:flex; gap:10px;">
                 <button type="button" class="btn btn-outline" onclick="closeTermsEditModal()">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="saveTermsEditModal()">💾 Save Text</button>
+                <button type="button" class="btn btn-primary" onclick="saveTermsEditModal()">Save Text</button>
             </div>
         </div>
     </div>
