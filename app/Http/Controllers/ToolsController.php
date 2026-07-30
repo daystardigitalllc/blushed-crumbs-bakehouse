@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\Onboarding\Extraction\GeminiClient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ToolsController extends Controller
 {
@@ -76,47 +77,52 @@ class ToolsController extends Controller
             $parts[] = ['text' => $text];
         }
 
-        // TEMP DIAGNOSTIC (round 3) — GeminiClient's own exception only
-        // carries the HTTP status, not Google's response body, which is
-        // where the real reason for a persistent 503 will be. Calling the
-        // API directly here, bypassing the wrapper, just for this one call.
-        if ($request->query('debug_key') === 'daystar-temp-diag-7f3a') {
-            $model = (string) config('services.gemini.extraction_model', 'gemini-3.5-flash');
-            $key = (string) config('services.gemini.key');
-            $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$key}";
+        // Called directly (not via generateJsonWithRepair) so a Gemini-side
+        // outage or overload — which throws here — can be told apart from an
+        // actual "couldn't parse this" case, which the caller should be told
+        // differently: one is "try again shortly," the other is "try a
+        // clearer photo or a simpler list."
+        try {
+            $raw = $client->generateJson(
+                [['role' => 'user', 'parts' => $parts]],
+                $this->ingredientSystemInstruction(),
+                $this->ingredientResponseSchema(),
+                temperature: 0.1
+            );
+        } catch (\Throwable $e) {
+            Log::warning('Ingredient scan: Gemini call failed.', ['message' => $e->getMessage()]);
 
-            $response = \Illuminate\Support\Facades\Http::withHeaders(['Content-Type' => 'application/json'])
-                ->timeout(60)
-                ->post($url, [
-                    'systemInstruction' => ['parts' => [['text' => $this->ingredientSystemInstruction()]]],
-                    'contents' => [['role' => 'user', 'parts' => $parts]],
-                    'generationConfig' => [
-                        'temperature' => 0.1,
-                        'responseMimeType' => 'application/json',
-                        'responseSchema' => $this->ingredientResponseSchema(),
-                    ],
-                ]);
+            $busy = str_contains($e->getMessage(), '503') || str_contains($e->getMessage(), '429');
 
             return response()->json([
-                'debug_model' => $model,
-                'debug_status' => $response->status(),
-                'debug_body' => $response->json() ?? $response->body(),
-            ]);
+                'error' => $busy
+                    ? "Ingredient scanning is busy right now — please try again in a minute, or add ingredients manually."
+                    : "We couldn't read that clearly — try a clearer photo or a simpler list.",
+            ], $busy ? 503 : 422);
         }
 
-        $decoded = $client->generateJsonWithRepair(
-            [['role' => 'user', 'parts' => $parts]],
-            $this->ingredientSystemInstruction(),
-            $this->ingredientResponseSchema(),
-            null,
-            temperature: 0.1
-        );
+        $decoded = $this->decodeIngredientsJson($raw['text'] ?? null);
 
         if ($decoded === null) {
+            Log::warning('Ingredient scan: Gemini response was not valid JSON.', ['text' => $raw['text'] ?? null]);
+
             return response()->json(['error' => "We couldn't read that clearly — try a clearer photo or a simpler list."], 422);
         }
 
         return response()->json(['ingredients' => $decoded]);
+    }
+
+    private function decodeIngredientsJson(?string $text): ?array
+    {
+        if (!$text) {
+            return null;
+        }
+
+        $clean = preg_replace('/^```(?:json)?\s*/i', '', trim($text));
+        $clean = preg_replace('/\s*```$/', '', $clean ?? '');
+        $decoded = json_decode($clean ?? '', true);
+
+        return is_array($decoded) ? $decoded : null;
     }
 
     private function ingredientSystemInstruction(): string
