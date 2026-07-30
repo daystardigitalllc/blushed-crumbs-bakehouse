@@ -16,6 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
@@ -27,7 +28,7 @@
             @if(!empty($tenant->logo_path))
                 <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
             @else
-                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);">🧁 {{ $tenant->name }}</span>
+                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);"><span class="material-symbols-outlined rustic-icon" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
             @endif
         </a>
         <nav class="nav-links">
@@ -71,7 +72,7 @@
                     <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}">
                 @else
                     <div class="founder-placeholder-card">
-                        <span style="font-size:3.5rem;">🧁</span>
+                        <span class="material-symbols-outlined rustic-icon" style="font-size:3.5rem;">cake</span>
                         <h3>{{ $tenant->name }}</h3>
                         <p>Artisanal Bakehouse</p>
                     </div>
@@ -85,42 +86,42 @@
         <h2 class="ingredients-title">The Ingredients Behind {{ $tenant->name }}</h2>
         <div class="rustic-ingredients-list">
             <div class="rustic-ingredient-row">
-                <div class="ingredient-icon-circle">👩‍🍳</div>
+                <div class="ingredient-icon-circle"><span class="material-symbols-outlined">home</span></div>
                 <div>
                     <h3>100% Homemade</h3>
                     <p>Baked completely from scratch using traditional family techniques and premium real ingredients.</p>
                 </div>
             </div>
             <div class="rustic-ingredient-row">
-                <div class="ingredient-icon-circle">🎂</div>
+                <div class="ingredient-icon-circle"><span class="material-symbols-outlined">cake</span></div>
                 <div>
                     <h3>Custom Design</h3>
                     <p>Every cake is designed uniquely to match your vision, theme, and celebration style.</p>
                 </div>
             </div>
             <div class="rustic-ingredient-row">
-                <div class="ingredient-icon-circle">🍓</div>
+                <div class="ingredient-icon-circle"><span class="material-symbols-outlined">eco</span></div>
                 <div>
                     <h3>Fresh Flavors</h3>
                     <p>Real fruit preserves, rich cocoa, real vanilla beans, and signature velvet frostings.</p>
                 </div>
             </div>
             <div class="rustic-ingredient-row">
-                <div class="ingredient-icon-circle">📅</div>
+                <div class="ingredient-icon-circle"><span class="material-symbols-outlined">event</span></div>
                 <div>
                     <h3>Reliable Booking</h3>
                     <p>Easy custom order scheduling with guaranteed calendar availability for your date.</p>
                 </div>
             </div>
             <div class="rustic-ingredient-row">
-                <div class="ingredient-icon-circle">✨</div>
+                <div class="ingredient-icon-circle"><span class="material-symbols-outlined">auto_awesome</span></div>
                 <div>
                     <h3>Attention to Detail</h3>
                     <p>Intricate piping, elegant edible details, and perfection in every single bite.</p>
                 </div>
             </div>
             <div class="rustic-ingredient-row">
-                <div class="ingredient-icon-circle">💬</div>
+                <div class="ingredient-icon-circle"><span class="material-symbols-outlined">chat</span></div>
                 <div>
                     <h3>Personalized Service</h3>
                     <p>Direct communication with the baker to ensure your event dessert is stress-free.</p>
@@ -160,7 +161,7 @@
         @if(!empty($tenant->logo_path))
             <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
         @else
-            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);">🧁 {{ $tenant->name }}</span>
+            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.4rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
         @endif
     </div>
     <div class="footer-nav">

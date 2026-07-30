@@ -11,6 +11,24 @@
     --card-shadow: 0 8px 30px rgba(74, 33, 51, 0.08);
 }
 
+/* Google Fonts' official base rule for the Material Symbols ligature font
+   (rustic_kitchen's decorative-icon replacement for emoji — see the
+   rustic_kitchen theme block for the icon-name-to-glyph mapping). Requires
+   the Material Symbols Outlined stylesheet link in a page's <head>. */
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+}
+
 /* 🎨 CURATED BAKERY THEME ENGINE (Fully Dynamic Theme System) */
 
 /* 1. 🌸 SWEET & ELEGANT THEME (Default Romantic Vintage Pink) */
@@ -42,6 +60,22 @@ body.theme-rustic_kitchen {
     background:
         repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.025) 0px, transparent 3px, transparent 7px),
         linear-gradient(180deg, #F8F3EA 0%, #F1E4D3 100%);
+    /* Safety net: nothing on this theme's pages is meant to scroll
+       horizontally (the shelf row wraps instead of scrolling). */
+    overflow-x: hidden;
+}
+
+/* Decorative-icon color default for rustic_kitchen's Material Symbols
+   glyphs (see resources/views/storefront/themes/rustic_kitchen/*.blade.php
+   for where these are used) — individual instances override font-size and
+   vertical-align inline to match the space the emoji they replaced used. */
+body.theme-rustic_kitchen .rustic-icon {
+    color: #9D7052;
+}
+
+body.theme-rustic_kitchen .ingredient-icon-circle .material-symbols-outlined {
+    font-size: 2.2rem;
+    color: #9D7052;
 }
 
 /* Big display headings match the brand board's script "Large Heading"
@@ -207,12 +241,12 @@ body.theme-rustic_kitchen .rustic-hero-copy .hero-buttons {
 /* Categories — horizontal shelf row instead of a grid */
 body.theme-rustic_kitchen .rustic-shelf-row {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 22px;
-    overflow-x: auto;
     padding: 10px 4px 20px 4px;
     max-width: 1150px;
     margin: 0 auto;
-    scroll-snap-type: x proximity;
 }
 
 body.theme-rustic_kitchen .rustic-shelf-card {

@@ -16,6 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=Outfit:wght@500;600;700&family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <style>
         .menu-hero-section {
@@ -124,7 +125,7 @@
             @if(!empty($tenant->logo_path))
                 <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
             @else
-                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);">🧁 {{ $tenant->name }}</span>
+                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);"><span class="material-symbols-outlined rustic-icon" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
             @endif
         </a>
         <nav class="nav-links">
@@ -147,7 +148,7 @@
         <h1 class="menu-hero-title">Menu &amp; Pricing</h1>
         <p style="font-size:1.05rem; color:var(--dark-text); opacity:0.85; max-width:650px; margin:0 auto 24px auto;">Explore our handcrafted baked goods and custom options.</p>
         <button onclick="openOrderModal()" class="btn btn-primary" style="padding:12px 32px; font-size:1.05rem; border-radius:30px;">
-            Order Custom Creation 🎂
+            Order Custom Creation <span class="material-symbols-outlined" style="font-size:1.1rem; vertical-align:-3px;">cake</span>
         </button>
     </section>
 
@@ -165,13 +166,13 @@
     @if(!$hasMenuContent)
         <!-- NO MENU CONFIGURED PLACEHOLDER -->
         <section style="max-width:700px; margin:70px auto; padding:60px 30px; text-align:center; background:var(--theme-card-bg, #ffffff); border-radius:24px; border:2px dashed var(--primary, #e67399); box-shadow:0 10px 30px rgba(0,0,0,0.04);">
-            <div style="font-size:3.5rem; margin-bottom:16px;">🧁</div>
+            <div class="material-symbols-outlined rustic-icon" style="font-size:3.5rem; margin-bottom:16px;">bakery_dining</div>
             <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); font-size:1.8rem; margin-bottom:12px;">Menu Coming Soon</h2>
             <p style="font-size:1.05rem; color:#666; max-width:500px; margin:0 auto 24px auto; line-height:1.6;">
                 This bakery hasn't set up their menu yet. Please check back later or request a custom quote directly!
             </p>
             <button onclick="openOrderModal()" class="btn btn-primary" style="padding:12px 30px; font-size:1rem; border-radius:30px;">
-                Request Custom Order Quote 🍰
+                Request Custom Order Quote <span class="material-symbols-outlined" style="font-size:1rem; vertical-align:-2px;">cake</span>
             </button>
         </section>
     @else
@@ -179,14 +180,14 @@
         <!-- 1. UPLOADED MENU FILE CARD (IMAGE OR PDF) -->
         @if(($menuType === 'image' || $menuType === 'both') && $hasImage)
             <section class="image-menu-wrapper">
-                <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); margin-bottom:12px; font-size:1.8rem;">📄 Official Bakery Menu</h2>
+                <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); margin-bottom:12px; font-size:1.8rem;"><span class="material-symbols-outlined" style="vertical-align:-4px;">description</span> Official Bakery Menu</h2>
                 @if($isPdf)
                     <div style="background:var(--theme-card-bg, #ffffff); border:1px solid rgba(0,0,0,0.1); border-radius:20px; padding:40px 20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); max-width:700px; margin:20px auto;">
-                        <div style="font-size:4rem; margin-bottom:12px;">📄</div>
+                        <div class="material-symbols-outlined rustic-icon" style="font-size:4rem; margin-bottom:12px;">picture_as_pdf</div>
                         <h3 style="font-family:var(--theme-heading-font); color:var(--dark-text); margin-bottom:8px;">Official Menu PDF</h3>
                         <p style="color:#666; font-size:0.95rem; margin-bottom:20px;">Click below to view or download our full menu PDF</p>
                         <a href="{{ asset($imagePath) }}" target="_blank" class="btn btn-primary" style="padding:12px 28px; font-size:1rem; border-radius:30px; display:inline-block; text-decoration:none;">
-                            📄 Open Official Menu PDF ↗
+                            <span class="material-symbols-outlined" style="vertical-align:-4px;">picture_as_pdf</span> Open Official Menu PDF ↗
                         </a>
                     </div>
                 @else
@@ -201,7 +202,7 @@
         <!-- 2. CATALOG PRODUCTS — recipe card list instead of a pricing grid -->
         @if($hasProducts && ($menuType === 'text' || $menuType === 'both'))
             <section style="max-width:1100px; margin:40px auto 40px auto; padding:0 20px;">
-                <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); text-align:center; margin-bottom:25px; font-size:2rem;">🎂 Featured Catalog &amp; Pricing</h2>
+                <h2 style="font-family:var(--theme-heading-font); color:var(--dark-text); text-align:center; margin-bottom:25px; font-size:2rem;"><span class="material-symbols-outlined" style="vertical-align:-5px;">cake</span> Featured Catalog &amp; Pricing</h2>
                 <div class="rustic-recipe-list">
                     @foreach($products as $p)
                         <div class="rustic-recipe-row">
@@ -236,7 +237,7 @@
         @if(!empty($tenant->logo_path))
             <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
         @else
-            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);">🧁 {{ $tenant->name }}</span>
+            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.4rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
         @endif
     </div>
     <div class="footer-nav">

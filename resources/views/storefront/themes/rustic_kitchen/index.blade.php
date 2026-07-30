@@ -17,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
 
     <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -29,7 +30,7 @@
             @if(!empty($tenant->logo_path))
                 <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
             @else
-                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);">🧁 {{ $tenant->name }}</span>
+                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);"><span class="material-symbols-outlined rustic-icon" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
             @endif
         </a>
         <nav class="nav-links">
@@ -67,7 +68,7 @@
                         @elseif(!empty($heroBg))
                             <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}">
                         @else
-                            <div class="rustic-hero-media-placeholder">🍞</div>
+                            <div class="rustic-hero-media-placeholder"><span class="material-symbols-outlined" style="font-size:6rem; color:#fff8ec;">bakery_dining</span></div>
                         @endif
                     </div>
                     <div class="rustic-hero-copy">
@@ -111,7 +112,7 @@
                 @else
                     <section class="video-promo-banner" style="position:relative; background: {{ !empty($promoBg) ? 'linear-gradient(135deg, rgba(42,8,24,0.82) 0%, rgba(74,21,49,0.82) 100%), url(' . asset($promoBg) . ') center/cover no-repeat' : 'linear-gradient(135deg, var(--dark-text, #2a0818) 0%, #4a1531 100%)' }}; padding: 75px 25px; text-align: center;">
                         <div class="video-overlay-content" style="position:relative; z-index:2; max-width:720px; margin:0 auto;">
-                            <span style="font-size:2.2rem; display:block; margin-bottom:10px;">🎁</span>
+                            <span class="material-symbols-outlined" style="font-size:2.2rem; display:block; margin-bottom:10px; color:#ffffff;">redeem</span>
                             <h2 style="font-size:2.4rem; font-weight:800; color:#ffffff; margin-bottom:12px;">{{ $tenant->getSiteContent('promo_headline', 'Special Custom Bakery Orders!') }}</h2>
                             <p style="font-size:1.05rem; color:rgba(255,255,255,0.9); margin-bottom:24px;">{{ $tenant->getSiteContent('promo_subtext', 'Order online directly from our kitchen for your upcoming celebration.') }}</p>
                             <button onclick="openOrderModal()" class="btn btn-primary" style="padding:13px 34px; font-size:1.05rem; border-radius:30px; box-shadow:0 4px 15px rgba(0,0,0,0.2);">Order Now</button>
@@ -141,7 +142,7 @@
                                     @if($imgUrl)
                                         <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? 'Category' }}">
                                     @else
-                                        <span class="rustic-shelf-emoji">🧁</span>
+                                        <span class="material-symbols-outlined rustic-icon rustic-shelf-emoji">cake</span>
                                     @endif
                                 </div>
                                 <h3>{{ $cat['title'] ?? 'Category' }}</h3>
@@ -169,7 +170,7 @@
                                 <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation">
                             @else
                                 <div style="text-align:center; padding:40px 20px; background:rgba(255,255,255,0.15); border-radius:24px;">
-                                    <span style="font-size:4rem; display:block; margin-bottom:12px;">✨</span>
+                                    <span class="material-symbols-outlined" style="font-size:4rem; display:block; margin-bottom:12px; color:#ffffff;">auto_awesome</span>
                                     <h3 style="color:#ffffff;">Handcrafted Excellence</h3>
                                 </div>
                             @endif
@@ -290,7 +291,7 @@
 <!-- LIGHTBOX MODAL FOR FEATURED GALLERY PREVIEWS -->
 <div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
-        <button class="modal-close-btn" onclick="closeLightbox()">✕</button>
+        <button class="modal-close-btn" onclick="closeLightbox()"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-2px;">close</span></button>
         <img id="lightbox-img" src="" alt="Gallery Preview">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
@@ -301,7 +302,7 @@
         @if(!empty($tenant->logo_path))
             <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
         @else
-            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);">🧁 {{ $tenant->name }}</span>
+            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.4rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
         @endif
     </div>
     <div class="footer-nav">

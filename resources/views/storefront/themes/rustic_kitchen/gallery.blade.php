@@ -16,6 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
@@ -26,7 +27,7 @@
             @if(!empty($tenant->logo_path))
                 <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
             @else
-                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);">🧁 {{ $tenant->name }}</span>
+                <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.4rem; color:var(--dark-text, #2c2419);"><span class="material-symbols-outlined rustic-icon" style="font-size:1.3rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
             @endif
         </a>
         <nav class="nav-links">
@@ -74,7 +75,7 @@
                 </div>
             @empty
                 <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #888;">
-                    <span style="font-size: 3rem; display: block; margin-bottom: 12px;">📷</span>
+                    <span class="material-symbols-outlined rustic-icon" style="font-size: 3rem; display: block; margin-bottom: 12px;">photo_camera</span>
                     <h3 style="color: #5c1d37; margin-bottom: 8px;">No Gallery Photos Published Yet</h3>
                     <p style="font-size: 0.95rem;">Upload photos directly from your phone, tablet, or computer in the Baker Admin Portal under <strong>Device Gallery</strong> to display them here live!</p>
                 </div>
@@ -87,7 +88,7 @@
 <!-- LIGHTBOX MODAL FOR GALLERY PREVIEWS -->
 <div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
-        <button class="modal-close-btn" onclick="closeLightbox()">✕</button>
+        <button class="modal-close-btn" onclick="closeLightbox()"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-2px;">close</span></button>
         <img id="lightbox-img" src="" alt="Gallery Preview">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
@@ -100,7 +101,7 @@
         @if(!empty($tenant->logo_path))
             <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:60px; width:auto; object-fit:contain;">
         @else
-            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);">🧁 {{ $tenant->name }}</span>
+            <span style="font-family:'Outfit',sans-serif; font-weight:700; font-size:1.5rem; color:var(--footer-text, #ffffff);"><span class="material-symbols-outlined" style="font-size:1.4rem; vertical-align:-3px;">cake</span> {{ $tenant->name }}</span>
         @endif
     </div>
     <div class="footer-nav">
