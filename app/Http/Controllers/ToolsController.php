@@ -70,6 +70,28 @@ class ToolsController extends Controller
             $parts[] = ['text' => $text];
         }
 
+        // TEMP DIAGNOSTIC — remove after tracking down the prod "couldn't read
+        // that clearly" failure. Gated by a one-off secret so it can't be
+        // triggered by a normal visitor; bypasses the repair-retry so the raw
+        // Gemini exception/response is visible instead of being swallowed.
+        if ($request->query('debug_key') === 'daystar-temp-diag-7f3a') {
+            try {
+                $raw = $client->generateJson(
+                    [['role' => 'user', 'parts' => $parts]],
+                    $this->ingredientSystemInstruction(),
+                    $this->ingredientResponseSchema(),
+                    temperature: 0.1
+                );
+
+                return response()->json(['debug_raw_text' => $raw['text'] ?? null, 'debug_usage' => $raw['usage'] ?? null]);
+            } catch (\Throwable $e) {
+                return response()->json([
+                    'debug_exception_class' => get_class($e),
+                    'debug_exception_message' => $e->getMessage(),
+                ], 500);
+            }
+        }
+
         $decoded = $client->generateJsonWithRepair(
             [['role' => 'user', 'parts' => $parts]],
             $this->ingredientSystemInstruction(),
