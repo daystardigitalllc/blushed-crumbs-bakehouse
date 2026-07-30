@@ -153,6 +153,15 @@
             @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
                 <a href="{{ route('storefront.policy') }}">Policy</a>
             @endif
+            @if(Auth::check() && Auth::user()->tenant_id === $tenant->id)
+                @php
+                    $navBakerSub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
+                    $navBakerPortalUrl = request()->is('site/*')
+                        ? url('/site/' . $navBakerSub . '/dashboard')
+                        : route('baker.dashboard');
+                @endphp
+                <a href="{{ $navBakerPortalUrl }}">Dashboard</a>
+            @endif
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
         </nav>
     </div>
