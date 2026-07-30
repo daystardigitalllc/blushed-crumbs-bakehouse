@@ -260,7 +260,7 @@ class Tenant extends Model implements TenancyContract
     public static function getStarterThemes(): array
     {
         $all = static::getAllThemes();
-        $starterKeys = ['rustic_kitchen', 'modern_bakery', 'playful_treats'];
+        $starterKeys = ['rustic_kitchen', 'modern_bakery', 'country_farmhouse'];
         $starter = [];
         foreach ($starterKeys as $key) {
             if (isset($all[$key])) {

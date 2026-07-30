@@ -604,7 +604,7 @@
                     @foreach($themes as $theme)
                     @php
                         $themeId = $theme['id'] ?? $theme->id ?? '';
-                        $isStarter = in_array($themeId, ['rustic_kitchen', 'modern_bakery', 'playful_treats']);
+                        $isStarter = in_array($themeId, ['rustic_kitchen', 'modern_bakery', 'country_farmhouse']);
                         $isLocked = ($tenant->plan_tier !== 'pro') && !$isStarter;
                     @endphp
                     <label class="selection-card theme-card" style="{{ $isLocked ? 'opacity:0.55; filter:grayscale(25%); cursor:not-allowed;' : '' }}">

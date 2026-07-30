@@ -227,9 +227,9 @@ class AdminController extends Controller
     {
         $tenant = $this->tenant($request);
         // Plan-gated, not just getAvailableThemesForTenant() - the dashboard UI
-        // already locks non-starter themes (like country_farmhouse) behind a Pro
-        // upsell, but that's client-side only. Without this check here, a direct
-        // POST to this endpoint could still set a Pro-only theme_id on a free tenant.
+        // already locks non-starter themes behind a Pro upsell, but that's
+        // client-side only. Without this check here, a direct POST to this
+        // endpoint could still set a Pro-only theme_id on a free tenant.
         $availableThemes = array_keys($tenant->onboardingAvailableThemes());
 
         \Log::info('saveTheme called', [

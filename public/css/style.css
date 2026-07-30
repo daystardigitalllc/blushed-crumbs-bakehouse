@@ -1261,7 +1261,8 @@ body.theme-modern_bakery .modern-grid .gallery-card-img-wrap {
 }
 
 /* 4. 🧁 PLAYFUL TREATS THEME — "Pastry Corner" reference site
-   (teal #1AD1CB / hot pink #FF4FA0 / orange #F2A93D / navy #1A1A2E / white) */
+   (teal #1AD1CB / hot pink #FF4FA0 / orange #F2A93D / navy #1A1A2E / white)
+   Pro tier (see Tenant::getStarterThemes()). */
 body.theme-playful_treats {
     --primary: #FF4FA0;
     --primary-hover: #E63E8C;
@@ -2125,10 +2126,9 @@ body.theme-playful_treats .playful-specialty-badge {
     }
 }
 
-/* 5. 🏡 COUNTRY FARMHOUSE THEME (Barn Red & Forest Green Cracker Barrel Charm) */
 /* 5. 🥯 ARTISAN DELI THEME — full-bleed photography, bold condensed
    uppercase signage type, mustard/amber + charcoal, hand-drawn deli-menu
-   energy. Pro-only (see Tenant::getStarterThemes()). */
+   energy. Starter/free tier (see Tenant::getStarterThemes()). */
 body.theme-country_farmhouse {
     --primary: #c1810a;
     --primary-hover: #a66d08;

@@ -1026,7 +1026,7 @@
                         @endphp
                         @foreach($themes as $t)
                             @php
-                                $isStarterTheme = in_array($t['id'], ['rustic_kitchen', 'modern_bakery', 'playful_treats']);
+                                $isStarterTheme = in_array($t['id'], ['rustic_kitchen', 'modern_bakery', 'country_farmhouse']);
                                 $isLockedTheme = ($tenant->plan_tier !== 'pro') && !$isStarterTheme;
                             @endphp
                             <div class="bakery-theme-card" 
