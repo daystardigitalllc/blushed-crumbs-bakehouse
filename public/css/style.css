@@ -60,14 +60,6 @@ body.theme-rustic_kitchen {
     background:
         repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.025) 0px, transparent 3px, transparent 7px),
         linear-gradient(180deg, #F8F3EA 0%, #F1E4D3 100%);
-    /* Safety net: nothing on this theme's pages is meant to scroll
-       horizontally (the shelf row wraps instead of scrolling).
-       overflow-y is set explicitly because overflow-x:hidden alone makes
-       the UA compute overflow-y as auto (CSS Overflow §3), turning this
-       element into its own vertical scroll container that fights the
-       page's real scrollbar. */
-    overflow-x: hidden;
-    overflow-y: visible;
 }
 
 /* Decorative-icon color default for rustic_kitchen's Material Symbols
@@ -1457,12 +1449,6 @@ body.theme-clean_minimal .next-btn {
 
 html,
 body {
-    /* overflow-y is set explicitly: overflow-x:hidden alone makes the UA
-       compute overflow-y as auto (CSS Overflow §3), which turns body into
-       its own scroll container and can produce a second, competing
-       vertical scrollbar alongside the page's real one. */
-    overflow-x: hidden;
-    overflow-y: visible;
     width: 100%;
 }
 
@@ -1473,12 +1459,6 @@ body {
 }
 
 #storefront-view {
-    /* overflow-y is set explicitly here too, for the same reason as the
-       html/body rule above — this div wraps the whole page below the
-       header, so if it silently got its own auto overflow-y it would
-       scroll independently of the page, producing two vertical scrollbars. */
-    overflow-x: hidden;
-    overflow-y: visible;
     width: 100%;
 }
 
@@ -2943,11 +2923,17 @@ body.theme-clean_minimal {
     }
 
     .hero-cake-far-right {
-        display: none;
+        top: 32%;
+        right: 2%;
+        width: 80px;
+        opacity: 0.85;
     }
 
     .hero-cake-bottom-left {
-        display: none;
+        bottom: 20px;
+        left: 4%;
+        width: 85px;
+        opacity: 0.85;
     }
 
     .hero-cake-bottom-right {
