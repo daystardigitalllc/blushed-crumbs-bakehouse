@@ -2787,6 +2787,16 @@ body.theme-artisan_sourdough .site-header:has(+ #storefront-view .petal-hero) .n
     color: #f0dcd0 !important;
 }
 
+/* The shared overlap rule pins the header to top:0 (the viewport edge),
+   but this hero is a rounded card with its own margin-top:20px - at
+   top:0 the header sat above the card's rounded top edge instead of
+   inside it. Nudging it down to match the card's own offset lets it
+   sit comfortably inside the rounded box instead of overlapping/
+   floating above the curve. */
+body.theme-artisan_sourdough .site-header:has(+ #storefront-view .petal-hero) {
+    top: 20px;
+}
+
 body.theme-artisan_sourdough .categories-section,
 body.theme-artisan_sourdough .reviews-section {
     background: #f3e3dc !important;
