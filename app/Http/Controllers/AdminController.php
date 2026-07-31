@@ -261,61 +261,73 @@ class AdminController extends Controller
         ]);
     }
 
-    public function saveContent(Request $request)
+    // Replaces the old saveContent()/admin.content.save — that route was never
+    // called from any view or JS (confirmed dead code) despite being the only
+    // place contact_hours/location/instagram/facebook were ever persisted.
+    // This is the real, reachable home for those fields plus the tenant's
+    // structured contact/address columns and SEO title/description, none of
+    // which previously had any admin form field at all despite rendering on
+    // the live storefront (contact_*) or feeding every page's meta tags and
+    // LocalBusiness structured data (address/phone/socials, seo_title/description).
+    public function saveBusinessInfo(Request $request)
     {
         $tenant = $this->tenant($request);
 
         $data = $request->validate([
-            'hero_subheading' => 'nullable|string|max:255',
-            'hero_headline' => 'nullable|string|max:255',
-            'hero_cta_primary' => 'nullable|string|max:255',
-            'hero_cta_secondary' => 'nullable|string|max:255',
-            'whimsical_title' => 'nullable|string|max:255',
-            'whimsical_bullet_1' => 'nullable|string|max:500',
-            'whimsical_bullet_2' => 'nullable|string|max:500',
-            'whimsical_bullet_3' => 'nullable|string|max:500',
-            'whimsical_bullet_4' => 'nullable|string|max:500',
-            'whimsical_bullet_5' => 'nullable|string|max:500',
-            'about_title' => 'nullable|string|max:255',
-            'about_bio' => 'nullable|string|max:2000',
             'contact_hours' => 'nullable|string|max:255',
             'contact_location' => 'nullable|string|max:255',
-            'contact_instagram' => 'nullable|string|max:255',
-            'contact_facebook' => 'nullable|string|max:255',
-        ]);
-
-        $currentContent = $tenant->site_content ?? Tenant::getDefaultSiteContent();
-
-        $bullets = [];
-        for ($i = 1; $i <= 5; $i++) {
-            if (!empty($data["whimsical_bullet_$i"])) {
-                $bullets[] = $data["whimsical_bullet_$i"];
-            }
-        }
-
-        $updatedContent = array_merge($currentContent, [
-            'hero_subheading' => $data['hero_subheading'] ?? $currentContent['hero_subheading'],
-            'hero_headline' => $data['hero_headline'] ?? $currentContent['hero_headline'],
-            'hero_cta_primary' => $data['hero_cta_primary'] ?? $currentContent['hero_cta_primary'],
-            'hero_cta_secondary' => $data['hero_cta_secondary'] ?? $currentContent['hero_cta_secondary'],
-            'whimsical_title' => $data['whimsical_title'] ?? $currentContent['whimsical_title'],
-            'whimsical_bullets' => !empty($bullets) ? $bullets : ($currentContent['whimsical_bullets'] ?? []),
-            'about_title' => $data['about_title'] ?? $currentContent['about_title'],
-            'about_bio' => $data['about_bio'] ?? $currentContent['about_bio'],
-            'contact_hours' => $data['contact_hours'] ?? $currentContent['contact_hours'],
-            'contact_location' => $data['contact_location'] ?? $currentContent['contact_location'],
-            'contact_instagram' => $data['contact_instagram'] ?? $currentContent['contact_instagram'],
-            'contact_facebook' => $data['contact_facebook'] ?? $currentContent['contact_facebook'],
+            'phone' => 'nullable|string|max:50',
+            'address_line1' => 'nullable|string|max:255',
+            'address_line2' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:120',
+            'state' => 'nullable|string|max:120',
+            'postal_code' => 'nullable|string|max:20',
+            'instagram_url' => 'nullable|string|max:255',
+            'facebook_url' => 'nullable|string|max:255',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
+            'policy_deposit_percentage' => 'nullable|string|max:10',
+            'policy_late_fee_percentage' => 'nullable|string|max:10',
+            'policy_delivery_base_fee' => 'nullable|string|max:10',
+            'policy_delivery_per_mile' => 'nullable|string|max:10',
+            'policy_delivery_change_fee' => 'nullable|string|max:10',
+            'policy_pickup_hours' => 'nullable|string|max:100',
+            'policy_closed_days' => 'nullable|string|max:100',
+            'policy_extra_layer_fee' => 'nullable|string|max:10',
         ]);
 
         $tenant->update([
-            'site_content' => $updatedContent,
+            'phone' => $data['phone'] ?? $tenant->phone,
+            'address_line1' => $data['address_line1'] ?? $tenant->address_line1,
+            'address_line2' => $data['address_line2'] ?? $tenant->address_line2,
+            'city' => $data['city'] ?? $tenant->city,
+            'state' => $data['state'] ?? $tenant->state,
+            'postal_code' => $data['postal_code'] ?? $tenant->postal_code,
+            'instagram_url' => $data['instagram_url'] ?? $tenant->instagram_url,
+            'facebook_url' => $data['facebook_url'] ?? $tenant->facebook_url,
         ]);
+
+        $currentContent = $tenant->site_content ?? Tenant::getDefaultSiteContent();
+        $updatedContent = array_merge($currentContent, [
+            'contact_hours' => $data['contact_hours'] ?? ($currentContent['contact_hours'] ?? ''),
+            'contact_location' => $data['contact_location'] ?? ($currentContent['contact_location'] ?? ''),
+            'seo_title' => $data['seo_title'] ?? ($currentContent['seo_title'] ?? ''),
+            'seo_description' => $data['seo_description'] ?? ($currentContent['seo_description'] ?? ''),
+            'policy_deposit_percentage' => $data['policy_deposit_percentage'] ?? ($currentContent['policy_deposit_percentage'] ?? '50'),
+            'policy_late_fee_percentage' => $data['policy_late_fee_percentage'] ?? ($currentContent['policy_late_fee_percentage'] ?? '10'),
+            'policy_delivery_base_fee' => $data['policy_delivery_base_fee'] ?? ($currentContent['policy_delivery_base_fee'] ?? '30'),
+            'policy_delivery_per_mile' => $data['policy_delivery_per_mile'] ?? ($currentContent['policy_delivery_per_mile'] ?? '2'),
+            'policy_delivery_change_fee' => $data['policy_delivery_change_fee'] ?? ($currentContent['policy_delivery_change_fee'] ?? '15'),
+            'policy_pickup_hours' => $data['policy_pickup_hours'] ?? ($currentContent['policy_pickup_hours'] ?? '10:00am – 4:00pm'),
+            'policy_closed_days' => $data['policy_closed_days'] ?? ($currentContent['policy_closed_days'] ?? 'Sundays or Mondays'),
+            'policy_extra_layer_fee' => $data['policy_extra_layer_fee'] ?? ($currentContent['policy_extra_layer_fee'] ?? '20'),
+        ]);
+        $tenant->update(['site_content' => $updatedContent]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Bakery site copy & content saved successfully!',
-            'site_content' => $tenant->site_content,
+            'message' => 'Business info & SEO saved!',
+            'site_content' => $tenant->fresh()->site_content,
         ]);
     }
 

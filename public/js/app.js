@@ -273,6 +273,39 @@ window.saveSectionManagerForm = function() {
     });
 };
 
+window.saveBusinessInfoForm = function() {
+    const form = document.getElementById('business-info-form');
+    if (!form) return;
+
+    const formData = new FormData(form);
+    const msgEl = document.getElementById('business-info-msg');
+
+    fetch('/dashboard/settings/business', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            if (msgEl) {
+                msgEl.style.display = 'block';
+                msgEl.textContent = data.message;
+                setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
+            }
+            window.showToast('Business info & SEO saved!', 'success');
+        } else {
+            window.showToast(data.message || 'Failed to save business info.', 'error');
+        }
+    })
+    .catch(err => {
+        window.showToast('Error saving business info: ' + err.message, 'error');
+    });
+};
+
 // Global Mobile Sidebar Drawer Toggle
 window.toggleAdminMobileSidebar = function toggleAdminMobileSidebar() {
     const sidebar = document.getElementById('admin-sidebar-drawer');

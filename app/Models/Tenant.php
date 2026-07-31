@@ -139,6 +139,14 @@ class Tenant extends Model implements TenancyContract
             'contact_facebook',
             'seo_title',
             'seo_description',
+            'policy_deposit_percentage',
+            'policy_late_fee_percentage',
+            'policy_delivery_base_fee',
+            'policy_delivery_per_mile',
+            'policy_delivery_change_fee',
+            'policy_pickup_hours',
+            'policy_closed_days',
+            'policy_extra_layer_fee',
         ];
     }
 
@@ -194,6 +202,18 @@ class Tenant extends Model implements TenancyContract
             'contact_location' => 'Local Delivery & Pickup Available',
             'contact_instagram' => '',
             'contact_facebook' => '',
+            // Policy page numbers/facts — the only parts of the (otherwise
+            // shared, hardcoded) policy page that actually vary per bakery.
+            // Defaults below match the original hardcoded copy exactly, so
+            // no tenant's live page changes until they edit these.
+            'policy_deposit_percentage' => '50',
+            'policy_late_fee_percentage' => '10',
+            'policy_delivery_base_fee' => '30',
+            'policy_delivery_per_mile' => '2',
+            'policy_delivery_change_fee' => '15',
+            'policy_pickup_hours' => '10:00am – 4:00pm',
+            'policy_closed_days' => 'Sundays or Mondays',
+            'policy_extra_layer_fee' => '20',
         ];
     }
 

@@ -26,9 +26,7 @@
             <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.menu') }}">Menu</a>
             <a href="{{ route('storefront.gallery') }}" class="active">Gallery</a>
-            @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
                 <a href="{{ route('storefront.policy') }}">Policy</a>
-            @endif
             @if(Auth::check() && Auth::user()->tenant_id === $tenant->id)
                 @php
                     $navBakerSub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
@@ -106,9 +104,7 @@
         <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
         <a href="{{ route('storefront.menu') }}" class="footer-link">Menu</a>
         <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
-        @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
             <a href="{{ route('storefront.policy') }}" class="footer-link">Policy</a>
-        @endif
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
             $bakerPortalUrl = request()->is('site/*') 

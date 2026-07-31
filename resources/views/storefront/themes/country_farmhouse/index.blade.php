@@ -30,9 +30,7 @@
             <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.menu') }}">Menu</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
-            @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
                 <a href="{{ route('storefront.policy') }}">Policy</a>
-            @endif
             @if(Auth::check() && Auth::user()->tenant_id === $tenant->id)
                 @php
                     $navBakerSub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
@@ -76,7 +74,7 @@
                 <h1>{{ $tenant->getSiteContent('hero_headline', $tenant->name ?? 'Artisanal Bakehouse') }}</h1>
                 <div class="hero-buttons">
                     <button onclick="openOrderModal()" class="btn btn-primary">{{ $tenant->getSiteContent('hero_cta_primary', 'Custom Order') }}</button>
-                    <a href="{{ route('storefront.gallery') }}" class="btn btn-secondary">Our Treats</a>
+                    <a href="{{ route('storefront.gallery') }}" class="btn btn-secondary">{{ $tenant->getSiteContent('hero_cta_secondary', 'Our Treats') }}</a>
                 </div>
                 <div class="farmhouse-scroll-cue">
                     <span class="material-symbols-outlined">expand_more</span>
@@ -175,13 +173,17 @@
                     <span class="farmhouse-contact-phone">{{ $tenant->phone }}</span>
                 @endif
                 <div class="farmhouse-social-row">
-                    @if(!empty($tenant->getSiteContent('contact_facebook')))
-                        <a href="{{ $tenant->getSiteContent('contact_facebook') }}" target="_blank" class="farmhouse-social-icon" aria-label="Facebook">
+                    @php
+                        $fbUrl = $tenant->facebook_url ?: $tenant->getSiteContent('contact_facebook');
+                        $igUrl = $tenant->instagram_url ?: $tenant->getSiteContent('contact_instagram');
+                    @endphp
+                    @if(!empty($fbUrl))
+                        <a href="{{ $fbUrl }}" target="_blank" class="farmhouse-social-icon" aria-label="Facebook">
                             <span class="material-symbols-outlined" style="font-size:1.2rem;">thumb_up</span>
                         </a>
                     @endif
-                    @if(!empty($tenant->getSiteContent('contact_instagram')))
-                        <a href="{{ $tenant->getSiteContent('contact_instagram') }}" target="_blank" class="farmhouse-social-icon" aria-label="Instagram">
+                    @if(!empty($igUrl))
+                        <a href="{{ $igUrl }}" target="_blank" class="farmhouse-social-icon" aria-label="Instagram">
                             <span class="material-symbols-outlined" style="font-size:1.2rem;">photo_camera</span>
                         </a>
                     @endif
@@ -210,7 +212,7 @@
     @if(!empty($sections['cta_banner']['enabled']))
         <!-- Closing CTA banner -->
         @php
-            $ctaBg = $tenant->getSiteContent('cta_bg_image_url');
+            $ctaBg = $tenant->getSiteContent('cta_banner_url') ?: $tenant->getSiteContent('cta_bg_image_url');
         @endphp
         <section class="cta-video-banner" style="position:relative; background: {{ !empty($ctaBg) ? 'linear-gradient(135deg, rgba(43,33,23,0.82) 0%, rgba(193,129,10,0.55) 100%), url(' . asset($ctaBg) . ') center/cover no-repeat' : 'linear-gradient(135deg, #2b2117 0%, #c1810a 100%)' }}; padding: 70px 25px; text-align: center;">
             <div class="cta-content" style="max-width:750px; margin:0 auto; position:relative; z-index:2;">
@@ -246,9 +248,7 @@
         <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
         <a href="{{ route('storefront.menu') }}" class="footer-link">Menu</a>
         <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
-        @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
             <a href="{{ route('storefront.policy') }}" class="footer-link">Policy</a>
-        @endif
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
             $bakerPortalUrl = request()->is('site/*')

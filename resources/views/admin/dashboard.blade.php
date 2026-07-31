@@ -528,6 +528,9 @@
 
                                         @elseif($secId === 'reviews')
                                             @php $revList = data_get($siteContent, 'reviews', []); @endphp
+                                            @if($reviews->isNotEmpty())
+                                                <p style="font-size:0.82rem; color:#92400e; background:#fef3c7; padding:8px 12px; border-radius:8px; margin-bottom:10px;">You have real reviews in the <strong>Client Reviews</strong> tab — those are shown on your site instead of the placeholders below. Edit or add reviews there instead.</p>
+                                            @endif
                                             <div id="accordion-reviews-list" style="display:flex; flex-direction:column; gap:10px;">
                                                 @foreach($revList as $rIdx => $rev)
                                                     <div class="accordion-review-item" style="padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;">
@@ -996,6 +999,115 @@
                             </form>
                         </div>
                     </div>
+                </div>
+
+                <!-- BUSINESS INFO & SEO CARD -->
+                <div class="form-builder-card" style="border:2px solid #059669; background:#f0fdf4; margin-bottom:20px;">
+                    <h4 style="color:#065f46; margin-bottom:6px;">Business Info &amp; SEO</h4>
+                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Contact details shown on your storefront, plus the title &amp; description search engines show for your site.</p>
+
+                    <div id="business-info-msg" style="display:none; margin-bottom:14px; background:#d1fae5; color:#065f46; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #a7f3d0;"></div>
+
+                    <form id="business-info-form">
+                        @csrf
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:16px;">
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Business Hours</label>
+                                <input type="text" name="contact_hours" value="{{ data_get($siteContent, 'contact_hours') }}" placeholder="Mon-Sat: 8:00 AM - 6:00 PM" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Service Area / Pickup Note</label>
+                                <input type="text" name="contact_location" value="{{ data_get($siteContent, 'contact_location') }}" placeholder="Local Delivery & Pickup Available" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Phone</label>
+                                <input type="text" name="phone" value="{{ $tenant->phone }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Address Line 1</label>
+                                <input type="text" name="address_line1" value="{{ $tenant->address_line1 }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Address Line 2</label>
+                                <input type="text" name="address_line2" value="{{ $tenant->address_line2 }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">City</label>
+                                <input type="text" name="city" value="{{ $tenant->city }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">State</label>
+                                <input type="text" name="state" value="{{ $tenant->state }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">ZIP / Postal Code</label>
+                                <input type="text" name="postal_code" value="{{ $tenant->postal_code }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Instagram URL</label>
+                                <input type="text" name="instagram_url" value="{{ $tenant->instagram_url }}" placeholder="https://instagram.com/yourbakery" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                            <div>
+                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Facebook URL</label>
+                                <input type="text" name="facebook_url" value="{{ $tenant->facebook_url }}" placeholder="https://facebook.com/yourbakery" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            </div>
+                        </div>
+
+                        <div style="border-top:1px solid #a7f3d0; padding-top:14px; margin-bottom:16px;">
+                            <h5 style="font-size:0.9rem; color:#065f46; margin-bottom:10px;">Search Engine (SEO)</h5>
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Page Title</label>
+                                    <input type="text" name="seo_title" value="{{ data_get($siteContent, 'seo_title') }}" placeholder="{{ $tenant->name }} | Custom Cakes & Baked Goods" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Meta Description</label>
+                                    <input type="text" name="seo_description" value="{{ data_get($siteContent, 'seo_description') }}" placeholder="Custom cakes, cupcakes & desserts made fresh to order." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border-top:1px solid #a7f3d0; padding-top:14px; margin-bottom:16px;">
+                            <h5 style="font-size:0.9rem; color:#065f46; margin-bottom:4px;">Policy Page Numbers</h5>
+                            <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Used on your <a href="{{ route('storefront.policy') }}" target="_blank" style="color:#059669; text-decoration:underline;">Policy page</a> — the rest of that page's wording is shared, but these numbers are yours to correct.</p>
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Deposit %</label>
+                                    <input type="text" name="policy_deposit_percentage" value="{{ data_get($siteContent, 'policy_deposit_percentage', '50') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Late Fee %</label>
+                                    <input type="text" name="policy_late_fee_percentage" value="{{ data_get($siteContent, 'policy_late_fee_percentage', '10') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Delivery Base Fee ($)</label>
+                                    <input type="text" name="policy_delivery_base_fee" value="{{ data_get($siteContent, 'policy_delivery_base_fee', '30') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Delivery Rate ($/mile)</label>
+                                    <input type="text" name="policy_delivery_per_mile" value="{{ data_get($siteContent, 'policy_delivery_per_mile', '2') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Delivery Change Fee ($)</label>
+                                    <input type="text" name="policy_delivery_change_fee" value="{{ data_get($siteContent, 'policy_delivery_change_fee', '15') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Pickup Hours</label>
+                                    <input type="text" name="policy_pickup_hours" value="{{ data_get($siteContent, 'policy_pickup_hours', '10:00am – 4:00pm') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Closed Days</label>
+                                    <input type="text" name="policy_closed_days" value="{{ data_get($siteContent, 'policy_closed_days', 'Sundays or Mondays') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Extra Cake Layer Fee ($)</label>
+                                    <input type="text" name="policy_extra_layer_fee" value="{{ data_get($siteContent, 'policy_extra_layer_fee', '20') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" onclick="saveBusinessInfoForm()" style="background:#059669; border-color:#059669;">Save Business Info & SEO</button>
+                    </form>
                 </div>
 
                 <!-- CURATED BAKERY THEMES CARD -->

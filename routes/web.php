@@ -146,7 +146,7 @@ Route::middleware(['auth', 'tenant.owner'])->prefix('dashboard')->group(function
     Route::post('/settings/booking', [AdminController::class, 'saveBookingSettings'])->name('admin.settings.booking.save');
     Route::post('/settings/email', [AdminController::class, 'saveEmailRouting'])->name('admin.settings.email.save');
     Route::post('/theme', [AdminController::class, 'saveTheme'])->name('admin.theme.save');
-    Route::post('/content', [AdminController::class, 'saveContent'])->name('admin.content.save');
+    Route::post('/settings/business', [AdminController::class, 'saveBusinessInfo'])->name('admin.settings.business');
     Route::post('/sections', [AdminController::class, 'saveSectionSettings'])->name('admin.sections.save');
     Route::post('/upload-media', [AdminController::class, 'uploadMedia'])->name('admin.media.upload');
 

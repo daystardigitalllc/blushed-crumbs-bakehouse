@@ -30,9 +30,7 @@
             <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.menu') }}">Menu</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
-            @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
                 <a href="{{ route('storefront.policy') }}">Policy</a>
-            @endif
             @if(Auth::check() && Auth::user()->tenant_id === $tenant->id)
                 @php
                     $navBakerSub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
@@ -78,6 +76,7 @@
                         <p>{{ $tenant->getSiteContent('about_bio', 'Handcrafted baked goods, made fresh and delivered right to your door.') }}</p>
                         <div class="hero-buttons">
                             <button onclick="openOrderModal()" class="btn btn-primary">{{ $tenant->getSiteContent('hero_cta_primary', 'Order Now') }}</button>
+                        <a href="{{ route('storefront.gallery') }}" class="btn btn-secondary">{{ $tenant->getSiteContent('hero_cta_secondary', 'Our Treats') }}</a>
                         </div>
                     </div>
                 </section>
@@ -118,8 +117,9 @@
             @elseif($secId === 'promo_video')
                 <!-- Promo, re-purposed as a centered "Premium Spotlight" callout -->
                 @php
-                    $promoVid = $tenant->getSiteContent('promo_video_url');
-                    $promoBg = $tenant->getSiteContent('promo_bg_image_url');
+                    $promoMedia = $tenant->getSiteContent('promo_video_url') ?: $tenant->getSiteContent('promo_bg_image_url');
+                    $promoVid = (!empty($promoMedia) && str_ends_with(strtolower($promoMedia), '.mp4')) ? $promoMedia : null;
+                    $promoBg = (!empty($promoMedia) && !$promoVid) ? $promoMedia : null;
                     $spotlightProduct = isset($products) ? $products->first() : null;
                 @endphp
                 @if(!empty($promoVid))
@@ -292,7 +292,7 @@
             @elseif($secId === 'cta_banner')
                 <!-- Closing CTA banner -->
                 @php
-                    $ctaBg = $tenant->getSiteContent('cta_bg_image_url');
+                    $ctaBg = $tenant->getSiteContent('cta_banner_url') ?: $tenant->getSiteContent('cta_bg_image_url');
                 @endphp
                 <section class="cta-video-banner" style="position:relative; background: {{ !empty($ctaBg) ? 'url(' . asset($ctaBg) . ') center/cover no-repeat' : 'linear-gradient(135deg, #0f2438 0%, #14304a 100%)' }}; padding: 70px 25px; text-align: center;">
                     <div class="cta-content" style="max-width:750px; margin:0 auto; position:relative; z-index:2;">
@@ -330,9 +330,7 @@
         <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
         <a href="{{ route('storefront.menu') }}" class="footer-link">Menu</a>
         <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
-        @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
             <a href="{{ route('storefront.policy') }}" class="footer-link">Policy</a>
-        @endif
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
             $bakerPortalUrl = request()->is('site/*')

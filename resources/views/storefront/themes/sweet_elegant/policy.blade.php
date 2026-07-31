@@ -120,9 +120,7 @@
             <a href="{{ route('storefront.about') }}">About</a>
             <a href="{{ route('storefront.menu') }}">Menu</a>
             <a href="{{ route('storefront.gallery') }}">Gallery</a>
-            @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
                 <a href="{{ route('storefront.policy') }}" class="active">Policy</a>
-            @endif
             @if(Auth::check() && Auth::user()->tenant_id === $tenant->id)
                 @php
                     $navBakerSub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
@@ -160,9 +158,9 @@
                 <h3>Payment Terms</h3>
             </div>
             <ul class="policy-list">
-                <li><strong>50% Deposit Required:</strong> Due immediately upon receipt of invoice to lock in your date.</li>
+                <li><strong>{{ $tenant->getSiteContent('policy_deposit_percentage', '50') }}% Deposit Required:</strong> Due immediately upon receipt of invoice to lock in your date.</li>
                 <li><strong>Final Balance:</strong> Due 2 days before pickup or delivery.</li>
-                <li><strong>Late Payment Fee:</strong> There is a 1-day grace period for late payments on final balances. If balance is not met after grace period, an additional 10% late fee will be charged.</li>
+                <li><strong>Late Payment Fee:</strong> There is a 1-day grace period for late payments on final balances. If balance is not met after grace period, an additional {{ $tenant->getSiteContent('policy_late_fee_percentage', '10') }}% late fee will be charged.</li>
                 <li><strong>Pricing Terms:</strong> All prices listed are base pricing and are subject to change due to sales tax, labor, delivery, decor, or intricate custom elements.</li>
             </ul>
         </div>
@@ -192,8 +190,8 @@
             </div>
             <ul class="policy-list">
                 <li><strong>Default Option:</strong> All orders are pickup by default.</li>
-                <li><strong>Delivery Rates:</strong> Delivery starts at <strong>$30 plus $2 per mile</strong>. Send your event address when ordering to confirm the exact delivery fee.</li>
-                <li><strong>Advance Scheduling:</strong> Delivery must be arranged when placing your order. Switching from pickup to delivery within 4 days of your event incurs a <strong>$15 change fee</strong>.</li>
+                <li><strong>Delivery Rates:</strong> Delivery starts at <strong>${{ $tenant->getSiteContent('policy_delivery_base_fee', '30') }} plus ${{ $tenant->getSiteContent('policy_delivery_per_mile', '2') }} per mile</strong>. Send your event address when ordering to confirm the exact delivery fee.</li>
+                <li><strong>Advance Scheduling:</strong> Delivery must be arranged when placing your order. Switching from pickup to delivery within 4 days of your event incurs a <strong>${{ $tenant->getSiteContent('policy_delivery_change_fee', '15') }} change fee</strong>.</li>
             </ul>
         </div>
 
@@ -230,11 +228,11 @@
                 <h3>Pickup Rules &amp; Schedule</h3>
             </div>
             <ul class="policy-list">
-                <li><strong>Pickup Hours:</strong> Pickup is available only between <strong>10:00am – 4:00pm</strong>.</li>
+                <li><strong>Pickup Hours:</strong> Pickup is available only between <strong>{{ $tenant->getSiteContent('policy_pickup_hours', '10:00am – 4:00pm') }}</strong>.</li>
                 <li><strong>Time Approval:</strong> Your pickup date and exact time must be approved in advance and is not guaranteed until confirmed.</li>
                 <li><strong>Punctuality:</strong> Please arrive on time within your agreed window.</li>
                 <li><strong>Transport Liability:</strong> I am not responsible for any damage once the order has left my kitchen/hands.</li>
-                <li><strong>Closed Days:</strong> Pickup and delivery orders are not accepted on Sundays or Mondays.</li>
+                <li><strong>Closed Days:</strong> Pickup and delivery orders are not accepted on {{ $tenant->getSiteContent('policy_closed_days', 'Sundays or Mondays') }}.</li>
                 <li><strong>Unclaimed Orders:</strong> Orders not picked up within 30 minutes of the set time frame will need to be rescheduled. If not rescheduled, they will be donated without refund.</li>
             </ul>
         </div>
@@ -246,7 +244,7 @@
                 <h3>Cakes &amp; Allergy Disclosure</h3>
             </div>
             <ul class="policy-list">
-                <li><strong>Layer Construction:</strong> All standard cakes start at 2 layers. For taller cakes, additional layers can be added for <strong>$20 per layer</strong>.</li>
+                <li><strong>Layer Construction:</strong> All standard cakes start at 2 layers. For taller cakes, additional layers can be added for <strong>${{ $tenant->getSiteContent('policy_extra_layer_fee', '20') }} per layer</strong>.</li>
                 <li><strong>Internal Support:</strong> All tiered and large custom cakes include internal dowels and bubble straws for structural support. Please be mindful of internal supports when cutting &amp; serving.</li>
                 <li><strong>Allergy Responsibility:</strong> It is your sole responsibility to state ANY food allergies when placing your order. We will NOT be held responsible for any allergy-related issues if not properly stated in the order form.</li>
             </ul>
@@ -271,9 +269,7 @@
         <a href="{{ route('storefront.about') }}" class="footer-link">About</a>
         <a href="{{ route('storefront.menu') }}" class="footer-link">Menu</a>
         <a href="{{ route('storefront.gallery') }}" class="footer-link">Gallery</a>
-        @if(isset($tenant) && $tenant->subdomain === 'blushedcrumbs')
             <a href="{{ route('storefront.policy') }}" class="footer-link">Policy</a>
-        @endif
         @php
             $sub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
             $bakerPortalUrl = request()->is('site/*') 
