@@ -379,6 +379,16 @@
                                                 </div>
                                             </div>
 
+                                        @elseif($secId === 'about')
+                                            <div>
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Title</label>
+                                                <input type="text" name="about_title" value="{{ data_get($siteContent, 'about_title') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; margin-bottom:12px;">
+                                            </div>
+                                            <div>
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Story / Bio</label>
+                                                <textarea name="about_bio" rows="4" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;">{{ data_get($siteContent, 'about_bio') }}</textarea>
+                                            </div>
+
                                         @elseif($secId === 'highlights')
                                             @php $hlList = data_get($siteContent, 'highlights', []); @endphp
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">

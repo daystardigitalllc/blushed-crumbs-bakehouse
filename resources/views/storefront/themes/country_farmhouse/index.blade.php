@@ -86,28 +86,31 @@
         </section>
     @endif
 
-    <!-- About teaser — always shown, uses the same about_bio/about_title
-         fields the About page reads (this reference treats About as a
-         homepage section, not a separate nav destination) -->
-    <section class="farmhouse-about">
-        <div class="farmhouse-about-media">
-            @php
-                $aboutImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : (!empty($tenant->logo_path) ? asset($tenant->logo_path) : null);
-            @endphp
-            @if($aboutImg)
-                <img src="{{ $aboutImg }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
-            @else
-                <div class="farmhouse-about-placeholder">
-                    <span class="material-symbols-outlined" style="font-size:3.5rem; color:#ffffff;">storefront</span>
-                </div>
-            @endif
-        </div>
-        <div class="farmhouse-about-copy">
-            <h2>{{ $tenant->getSiteContent('about_title', 'About Us') }}</h2>
-            <p>{{ $tenant->getSiteContent('about_bio', 'Welcome to ' . ($tenant->name ?? 'our bakehouse') . '! We specialize in artisanal baked goods, made fresh daily with real ingredients and a whole lot of care.') }}</p>
-            <a href="{{ route('storefront.about') }}" class="btn btn-primary">Read Our Story</a>
-        </div>
-    </section>
+    @if(!empty($sections['about']['enabled']))
+        <!-- About teaser — its own toggleable Page Builder section, uses the
+             same about_bio/about_title fields the About page reads (this
+             reference treats About as a homepage section, not a separate
+             nav destination) -->
+        <section class="farmhouse-about">
+            <div class="farmhouse-about-media">
+                @php
+                    $aboutImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : (!empty($tenant->logo_path) ? asset($tenant->logo_path) : null);
+                @endphp
+                @if($aboutImg)
+                    <img src="{{ $aboutImg }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
+                @else
+                    <div class="farmhouse-about-placeholder">
+                        <span class="material-symbols-outlined" style="font-size:3.5rem; color:#ffffff;">storefront</span>
+                    </div>
+                @endif
+            </div>
+            <div class="farmhouse-about-copy">
+                <h2>{{ $tenant->getSiteContent('about_title', 'About Us') }}</h2>
+                <p>{{ $tenant->getSiteContent('about_bio', 'Welcome to ' . ($tenant->name ?? 'our bakehouse') . '! We specialize in artisanal baked goods, made fresh daily with real ingredients and a whole lot of care.') }}</p>
+                <a href="{{ route('storefront.about') }}" class="btn btn-primary">Read Our Story</a>
+            </div>
+        </section>
+    @endif
 
     @if(!empty($sections['categories']['enabled']))
         <!-- Categories — quick-nav "menu index": photo + stacked tabs, list alongside -->
