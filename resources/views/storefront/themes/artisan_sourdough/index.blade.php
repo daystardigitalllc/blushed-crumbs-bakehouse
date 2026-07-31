@@ -88,10 +88,10 @@
                         @endif
                     </div>
                 </section>
-
-                <!-- About teaser, always shown - matches the reference's
-                     text/photo second section, using the same about_bio/
-                     about_title fields the About page reads -->
+            @elseif($secId === 'about')
+                <!-- About teaser - matches the reference's text/photo second
+                     section, using the same about_bio/about_title fields the
+                     About page reads. Its own toggleable Page Builder section. -->
                 <section class="petal-about">
                     <div class="petal-about-copy">
                         <span class="subheading">Our Story</span>

@@ -334,7 +334,11 @@ class AdminController extends Controller
                 'id' => $secId,
                 'name' => $defaultSec['name'],
                 'enabled' => filter_var($incoming['enabled'] ?? true, FILTER_VALIDATE_BOOLEAN),
-                'order' => isset($incoming['order']) ? (int) $incoming['order'] : ($defaultSec['order'] ?? 1),
+                // (float), not (int) — the 'about' section defaults to order
+                // 1.5 (between hero=1 and highlights=2) so it can be inserted
+                // without renumbering every other section's already-persisted
+                // order; truncating to int on save would tie it with hero.
+                'order' => isset($incoming['order']) ? (float) $incoming['order'] : ($defaultSec['order'] ?? 1),
             ];
         }
 
@@ -449,6 +453,8 @@ class AdminController extends Controller
             'hero_cta_primary' => $request->input('hero_cta_primary', $currentContent['hero_cta_primary'] ?? ''),
             'hero_cta_secondary' => $request->input('hero_cta_secondary', $currentContent['hero_cta_secondary'] ?? ''),
             'hero_bg_url' => $request->input('hero_bg_url', $currentContent['hero_bg_url'] ?? ''),
+            'about_title' => $request->input('about_title', $currentContent['about_title'] ?? ''),
+            'about_bio' => $request->input('about_bio', $currentContent['about_bio'] ?? ''),
             'categories' => !empty($processedCategories) ? $processedCategories : ($currentContent['categories'] ?? []),
             'highlights' => !empty($processedHighlights) ? $processedHighlights : ($currentContent['highlights'] ?? []),
             'promo_video_url' => $request->input('promo_video_url', $currentContent['promo_video_url'] ?? ''),
