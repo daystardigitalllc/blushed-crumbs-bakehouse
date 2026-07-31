@@ -420,6 +420,47 @@ class Tenant extends Model implements TenancyContract
     }
 
     /**
+     * FAQPage JSON-LD for the homepage — reuses the same faqs site_content
+     * every theme's FAQ accordion already renders, so this only ever mirrors
+     * what's actually visible on the page (Google penalizes structured data
+     * that doesn't match on-page content). Returns null whenever there's
+     * nothing to mark up: the FAQ Page Builder section is toggled off, there
+     * are no real Q&A pairs, or the active theme doesn't render an FAQ
+     * section at all (country_farmhouse doesn't, as of this writing).
+     */
+    public function faqPageSchema(): ?array
+    {
+        if ($this->theme_id === 'country_farmhouse') {
+            return null;
+        }
+
+        if (!($this->getOrderedSections()['faq']['enabled'] ?? false)) {
+            return null;
+        }
+
+        $faqs = collect($this->getSiteContent('faqs', []))
+            ->filter(fn ($faq) => !empty($faq['q']) && !empty($faq['a']))
+            ->values();
+
+        if ($faqs->isEmpty()) {
+            return null;
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'FAQPage',
+            'mainEntity' => $faqs->map(fn ($faq) => [
+                '@type' => 'Question',
+                'name' => trim(strip_tags($faq['q'])),
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => trim(strip_tags($faq['a'])),
+                ],
+            ])->all(),
+        ];
+    }
+
+    /**
      * Get Starter (Free) themes available for onboarding.
      */
     public static function getStarterThemes(): array

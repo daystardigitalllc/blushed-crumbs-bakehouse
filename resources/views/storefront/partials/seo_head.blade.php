@@ -37,3 +37,9 @@
 <meta name="twitter:image" content="{{ $seoImage }}">
 
 <script type="application/ld+json">{!! json_encode($tenant->localBusinessSchema(), JSON_UNESCAPED_SLASHES) !!}</script>
+@if($seoPage === 'home')
+    @php $seoFaqSchema = $tenant->faqPageSchema(); @endphp
+    @if($seoFaqSchema)
+<script type="application/ld+json">{!! json_encode($seoFaqSchema, JSON_UNESCAPED_SLASHES) !!}</script>
+    @endif
+@endif
