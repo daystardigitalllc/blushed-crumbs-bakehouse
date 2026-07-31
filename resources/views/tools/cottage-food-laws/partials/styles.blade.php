@@ -96,6 +96,48 @@
     .nav-dropdown-menu a:hover { background: var(--input-bg); color: var(--primary-pink-dark); }
     .nav-dropdown-menu a.active { color: var(--primary-pink-dark); font-weight: 700; }
 
+    /* Mobile hamburger menu */
+    .nav-hamburger {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        font-size: 1.5rem;
+        line-height: 1;
+        color: var(--dark-section);
+    }
+    @media (max-width: 768px) {
+        .nav-hamburger { display: block; }
+        .nav-links {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            flex-direction: column;
+            align-items: stretch;
+            gap: 4px;
+            padding: 16px 24px 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            border-top: 1px solid var(--border-color);
+        }
+        .nav-links.open { display: flex; }
+        .nav-links .nav-login { padding: 10px 0; }
+        .nav-links a.btn { text-align: center; margin-top: 8px; }
+        .nav-dropdown { width: 100%; }
+        .nav-dropdown-toggle { width: 100%; justify-content: space-between; padding: 10px 0; }
+        .nav-dropdown-menu {
+            position: static;
+            box-shadow: none;
+            border: none;
+            padding: 0 0 0 14px;
+            margin-top: 0;
+            min-width: 0;
+        }
+    }
+
     /* Hero */
     .tool-hero { padding: 48px 0 20px; text-align: center; }
     .tool-hero h1 { font-size: 2.3rem; margin-bottom: 14px; }

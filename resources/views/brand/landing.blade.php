@@ -208,6 +208,48 @@
             color: var(--primary-pink-dark);
         }
 
+        /* Mobile hamburger menu */
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.5rem;
+            line-height: 1;
+            color: var(--dark-section);
+        }
+        @media (max-width: 768px) {
+            .nav-hamburger { display: block; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding: 16px 24px 24px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+                border-top: 1px solid rgba(0, 0, 0, 0.06);
+            }
+            .nav-links.open { display: flex; }
+            .nav-links .nav-login { padding: 10px 0; }
+            .nav-links a.btn { text-align: center; margin-top: 8px; }
+            .nav-dropdown { width: 100%; }
+            .nav-dropdown-toggle { width: 100%; justify-content: space-between; padding: 10px 0; }
+            .nav-dropdown-menu {
+                position: static;
+                box-shadow: none;
+                border: none;
+                padding: 0 0 0 14px;
+                margin-top: 0;
+                min-width: 0;
+            }
+        }
+
         /* Hero Section */
         .hero {
             padding: 180px 0 140px;
@@ -964,7 +1006,8 @@
             <a href="/" class="nav-logo">
                 <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo" style="height: 65px; width: auto; object-fit: contain;">
             </a>
-            <div class="nav-links">
+            <button type="button" class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">☰</button>
+            <div class="nav-links" id="nav-links">
                 @if(\App\Http\Controllers\ToolsController::isAllowedHost(request()->getHost()))
                     <div class="nav-dropdown" id="free-tools-dropdown">
                         <button type="button" class="nav-login nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">
@@ -1606,6 +1649,29 @@
                     if (e.key === "Escape") {
                         dropdown.classList.remove("open");
                         toggle.setAttribute("aria-expanded", "false");
+                    }
+                });
+            }
+
+            // Mobile hamburger menu
+            const hamburger = document.getElementById("nav-hamburger");
+            const navLinks = document.getElementById("nav-links");
+            if (hamburger && navLinks) {
+                hamburger.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const isOpen = navLinks.classList.toggle("open");
+                    hamburger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+                });
+                document.addEventListener("click", (e) => {
+                    if (!navLinks.contains(e.target) && e.target !== hamburger) {
+                        navLinks.classList.remove("open");
+                        hamburger.setAttribute("aria-expanded", "false");
+                    }
+                });
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") {
+                        navLinks.classList.remove("open");
+                        hamburger.setAttribute("aria-expanded", "false");
                     }
                 });
             }

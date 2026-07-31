@@ -3,7 +3,8 @@
         <a href="/" class="nav-logo">
             <img src="{{ asset('images/doughmain_logo.png') }}" alt="Doughmain.pro Logo">
         </a>
-        <div class="nav-links">
+        <button type="button" class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false">☰</button>
+        <div class="nav-links" id="nav-links">
             <div class="nav-dropdown" id="free-tools-dropdown">
                 <button type="button" class="nav-login nav-dropdown-toggle{{ isset($active) ? ' active' : '' }}" aria-haspopup="true" aria-expanded="false">
                     Free Tools <span class="caret">▾</span>
