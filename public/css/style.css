@@ -3887,6 +3887,740 @@ body.theme-clean_minimal .midnight-ingredient-row p {
     }
 }
 
+/* 8. ☀️ SUNNY WHISK THEME — playful diagonal color-block layout: sky blue,
+   mustard yellow, bubblegum pink & white bands cut on the skew, bold rounded
+   Poppins type. Pro tier (see Tenant::getStarterThemes()). */
+body.theme-sunny_whisk {
+    --primary: #ff4f9e;
+    --primary-hover: #e63e8c;
+    --pink-bg: #eaf8fc;
+    --dark-text: #14213d;
+    --theme-heading-font: 'Poppins', sans-serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #bdeaf5;
+    --theme-accent-bg: #14213d;
+    --sw-sky: #7dd8ea;
+    --sw-sky-light: #bdeaf5;
+    --sw-mustard: #f5c518;
+    --sw-mustard-dark: #e0af0a;
+    --sw-pink: #ffb6d5;
+    --sw-pink-dark: #ff8fc0;
+    --sw-ink: #14213d;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #eaf8fc;
+}
+
+body.theme-sunny_whisk h1,
+body.theme-sunny_whisk h2,
+body.theme-sunny_whisk h3,
+body.theme-sunny_whisk .section-title-script,
+body.theme-sunny_whisk .whimsical-col-right h2 {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 800 !important;
+    color: #14213d !important;
+    letter-spacing: 0;
+}
+
+body.theme-sunny_whisk .subheading {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ff4f9e !important;
+    font-size: 0.95rem !important;
+}
+
+body.theme-sunny_whisk .hero-cloud-elementor-top,
+body.theme-sunny_whisk .hero-cloud-elementor-bottom,
+body.theme-sunny_whisk .raining-cake {
+    display: none !important;
+}
+
+body.theme-sunny_whisk .site-header {
+    background: transparent !important;
+}
+
+body.theme-sunny_whisk .icon,
+body.theme-sunny_whisk .sw-icon {
+    color: var(--primary);
+}
+
+body.theme-sunny_whisk .btn-primary,
+body.theme-sunny_whisk .nav-order-btn {
+    background: #ff4f9e !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 25px rgba(255, 79, 158, 0.35) !important;
+}
+
+body.theme-sunny_whisk .hero-buttons .btn-secondary {
+    background: rgba(20, 33, 61, 0.08) !important;
+    color: #14213d !important;
+    border: 2px solid #14213d !important;
+    box-shadow: none !important;
+}
+
+body.theme-sunny_whisk .hero-buttons .btn-secondary:hover {
+    background: #14213d !important;
+    color: #ffffff !important;
+}
+
+/* ── Diagonal band system ──
+   Every homepage/page section on this theme is a `.sw-section` whose color
+   comes from a `.sw-band-*` modifier applied to a clipped ::before layer,
+   not the section itself — so the skewed edges never distort the text/
+   content sitting in normal flow above it (z-index:1). */
+body.theme-sunny_whisk .sw-section {
+    position: relative;
+    overflow: hidden;
+    padding: 90px 25px;
+    z-index: 0;
+}
+
+body.theme-sunny_whisk .sw-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+body.theme-sunny_whisk .sw-section::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    z-index: 0;
+    clip-path: polygon(0 5%, 100% 0%, 100% 95%, 0% 100%);
+}
+
+body.theme-sunny_whisk .sw-band-sky::before {
+    background: var(--sw-sky-light);
+}
+
+body.theme-sunny_whisk .sw-band-mustard::before {
+    background: var(--sw-mustard);
+}
+
+body.theme-sunny_whisk .sw-band-pink::before {
+    background: var(--sw-pink);
+}
+
+body.theme-sunny_whisk .sw-band-white::before {
+    background: #ffffff;
+}
+
+body.theme-sunny_whisk .sw-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--sw-ink);
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+body.theme-sunny_whisk .sw-kicker {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+}
+
+/* Hero — sky-blue diagonal band behind an offset white photo card */
+body.theme-sunny_whisk .sw-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 130px 40px 100px 40px;
+}
+
+body.theme-sunny_whisk .sw-hero-band {
+    position: absolute;
+    inset: 0;
+    background: var(--sw-sky);
+    clip-path: polygon(0 0, 100% 0, 100% 82%, 0 100%);
+    z-index: 0;
+}
+
+body.theme-sunny_whisk .sw-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+body.theme-sunny_whisk .sw-hero-copy h1 {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 30px;
+}
+
+body.theme-sunny_whisk .sw-hero-media {
+    background: #ffffff;
+    border-radius: 28px;
+    padding: 14px;
+    box-shadow: 0 25px 60px rgba(20, 33, 61, 0.25);
+    border: 4px solid var(--sw-mustard);
+    transform: rotate(1.5deg);
+}
+
+body.theme-sunny_whisk .sw-hero-media img,
+body.theme-sunny_whisk .sw-hero-media video {
+    width: 100%;
+    display: block;
+    border-radius: 18px;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+body.theme-sunny_whisk .sw-hero-media-placeholder {
+    aspect-ratio: 4 / 3;
+    border-radius: 18px;
+    background: var(--sw-sky-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sw-ink);
+}
+
+/* About / Our Story — floating white card over the sky band */
+body.theme-sunny_whisk .sw-about-card {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 28px;
+    padding: 50px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
+    align-items: center;
+    box-shadow: 0 20px 50px rgba(20, 33, 61, 0.18);
+    border: 3px solid var(--sw-mustard);
+}
+
+body.theme-sunny_whisk .sw-about-copy p {
+    line-height: 1.75;
+    margin-bottom: 18px;
+    color: var(--sw-ink);
+}
+
+body.theme-sunny_whisk .sw-text-link {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+body.theme-sunny_whisk .sw-about-media img {
+    width: 100%;
+    border-radius: 20px;
+    object-fit: cover;
+    aspect-ratio: 4 / 3;
+}
+
+body.theme-sunny_whisk .sw-about-media-placeholder {
+    aspect-ratio: 4 / 3;
+    border-radius: 20px;
+    background: var(--sw-sky-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sw-ink);
+}
+
+/* Highlights, repurposed as "The Process" */
+body.theme-sunny_whisk .sw-process {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+body.theme-sunny_whisk .sw-process-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin: 24px 0 34px 0;
+}
+
+body.theme-sunny_whisk .sw-process-row {
+    text-align: left;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--sw-sky-light);
+    padding: 20px;
+    border-radius: 18px;
+}
+
+body.theme-sunny_whisk .sw-process-emoji {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+body.theme-sunny_whisk .sw-process-row h4 {
+    margin-bottom: 4px;
+    color: var(--sw-ink);
+}
+
+body.theme-sunny_whisk .sw-process-row p {
+    font-size: 0.92rem;
+    color: #444;
+}
+
+/* Categories shelf row */
+body.theme-sunny_whisk .sw-shelf-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+body.theme-sunny_whisk .sw-shelf-card {
+    text-align: center;
+    max-width: 260px;
+}
+
+body.theme-sunny_whisk .sw-shelf-frame {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 16px auto;
+    border: 5px solid #ffffff;
+    box-shadow: 0 10px 25px rgba(20, 33, 61, 0.2);
+    background: var(--sw-mustard);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-sunny_whisk .sw-shelf-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-sunny_whisk .sw-shelf-card h3 {
+    color: var(--sw-ink);
+    margin-bottom: 6px;
+}
+
+body.theme-sunny_whisk .sw-shelf-card p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Whimsical section — deep navy band */
+body.theme-sunny_whisk .sw-whimsical {
+    background-color: var(--sw-ink) !important;
+    color: #ffffff !important;
+}
+
+body.theme-sunny_whisk .sw-whimsical h2 {
+    color: var(--sw-mustard) !important;
+}
+
+body.theme-sunny_whisk .sw-whimsical-img img {
+    width: 100%;
+    border-radius: 20px;
+}
+
+/* How It Works — numbered steps */
+body.theme-sunny_whisk .sw-steps-list {
+    max-width: 750px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    counter-reset: sw-step;
+}
+
+body.theme-sunny_whisk .sw-step-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    counter-increment: sw-step;
+}
+
+body.theme-sunny_whisk .sw-step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--primary);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-sunny_whisk .sw-step-num::before {
+    content: counter(sw-step);
+    color: #ffffff;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+}
+
+body.theme-sunny_whisk .sw-step-copy h3 {
+    color: var(--sw-ink);
+    margin-bottom: 4px;
+}
+
+body.theme-sunny_whisk .sw-step-copy p {
+    color: #555;
+    font-size: 0.95rem;
+}
+
+/* Reviews */
+body.theme-sunny_whisk .sw-review-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 30px auto 0 auto;
+}
+
+body.theme-sunny_whisk .sw-review-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 320px;
+    box-shadow: 0 12px 30px rgba(20, 33, 61, 0.12);
+    border-top: 5px solid var(--primary);
+}
+
+body.theme-sunny_whisk .sw-review-card p {
+    font-style: italic;
+    color: #333;
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+body.theme-sunny_whisk .sw-review-card h4 {
+    color: var(--primary) !important;
+    font-weight: 700;
+}
+
+/* FAQ */
+body.theme-sunny_whisk .sw-faq-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    border-left: 5px solid var(--sw-mustard);
+    box-shadow: 0 6px 18px rgba(20, 33, 61, 0.06);
+}
+
+body.theme-sunny_whisk .sw-faq-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--sw-ink);
+    margin-bottom: 6px;
+}
+
+body.theme-sunny_whisk .sw-faq-card p {
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Featured gallery — the big mustard diagonal photo grid */
+body.theme-sunny_whisk .sw-featured-grid .gallery-card-img-wrap {
+    aspect-ratio: 1 / 1;
+    border: 4px solid #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(20, 33, 61, 0.15);
+    overflow: hidden;
+}
+
+/* CTA banner */
+body.theme-sunny_whisk .cta-video-banner::before {
+    background: linear-gradient(135deg, rgba(20, 33, 61, 0.55) 0%, rgba(255, 182, 213, 0.45) 100%) !important;
+}
+
+body.theme-sunny_whisk .cta-video-banner h2,
+body.theme-sunny_whisk .cta-video-banner p,
+body.theme-sunny_whisk .video-overlay-content h2,
+body.theme-sunny_whisk .video-overlay-content p {
+    color: #ffffff !important;
+}
+
+/* Page hero (About / Gallery) */
+body.theme-sunny_whisk .sw-page-hero {
+    text-align: center;
+    padding: 130px 25px 60px 25px;
+    background: var(--sw-sky-light);
+}
+
+body.theme-sunny_whisk .sw-page-hero-kicker {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--primary);
+    font-weight: 800;
+    display: block;
+    margin-bottom: 10px;
+}
+
+body.theme-sunny_whisk .sw-page-hero-title {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--sw-ink);
+}
+
+/* About page — meet the baker */
+body.theme-sunny_whisk .sw-meet-baker {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+body.theme-sunny_whisk .sw-meet-baker-img img {
+    width: 100%;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(20, 33, 61, 0.15);
+    object-fit: cover;
+    aspect-ratio: 1;
+}
+
+body.theme-sunny_whisk .sw-meet-baker-placeholder {
+    aspect-ratio: 1;
+    border-radius: 24px;
+    background: var(--sw-sky-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--sw-ink);
+    text-align: center;
+    padding: 20px;
+}
+
+body.theme-sunny_whisk .sw-meet-baker h2 {
+    margin-bottom: 14px;
+}
+
+body.theme-sunny_whisk .sw-meet-baker p {
+    line-height: 1.75;
+    margin-bottom: 20px;
+    color: var(--sw-ink);
+}
+
+body.theme-sunny_whisk .sw-quote-card {
+    background: var(--sw-sky-light);
+    border-left: 5px solid var(--primary);
+    padding: 20px 24px;
+    border-radius: 12px;
+}
+
+body.theme-sunny_whisk .sw-quote-card p {
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+body.theme-sunny_whisk .sw-quote-card span {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+body.theme-sunny_whisk .sw-ingredients-list {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+}
+
+body.theme-sunny_whisk .sw-ingredient-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+body.theme-sunny_whisk .sw-icon-circle {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+body.theme-sunny_whisk .sw-ingredient-row h3 {
+    margin-bottom: 6px;
+    color: var(--sw-ink);
+}
+
+body.theme-sunny_whisk .sw-ingredient-row p {
+    font-size: 0.92rem;
+    color: #444;
+}
+
+body.theme-sunny_whisk .sw-specialties-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 26px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+body.theme-sunny_whisk .sw-specialty-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 320px;
+    text-align: left;
+    box-shadow: 0 12px 30px rgba(20, 33, 61, 0.12);
+    border-top: 5px solid var(--sw-mustard);
+}
+
+body.theme-sunny_whisk .sw-specialty-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--primary);
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+/* ── Admin dashboard, themed to match (same approach as playful_treats) ── */
+body.theme-sunny_whisk .admin-mobile-header {
+    background: #14213d !important;
+}
+
+body.theme-sunny_whisk .admin-main-content input[type="text"],
+body.theme-sunny_whisk .admin-main-content input[type="number"],
+body.theme-sunny_whisk .admin-main-content input[type="email"],
+body.theme-sunny_whisk .admin-main-content input[type="tel"],
+body.theme-sunny_whisk .admin-main-content input[type="url"],
+body.theme-sunny_whisk .admin-main-content select,
+body.theme-sunny_whisk .admin-main-content textarea {
+    border: 1.5px solid #7dd8ea !important;
+    background-color: #ffffff !important;
+    color: #14213d !important;
+}
+
+body.theme-sunny_whisk .admin-main-content input:focus,
+body.theme-sunny_whisk .admin-main-content select:focus,
+body.theme-sunny_whisk .admin-main-content textarea:focus {
+    border-color: #ff4f9e !important;
+    box-shadow: 0 0 0 4px rgba(255, 79, 158, 0.2) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-sunny_whisk .admin-main-content label {
+    color: #14213d !important;
+}
+
+body.theme-sunny_whisk .status-select:focus {
+    border-color: #ff4f9e;
+    box-shadow: 0 0 0 3px rgba(255, 79, 158, 0.2);
+}
+
+body.theme-sunny_whisk .btn-outline {
+    background: transparent !important;
+    border: 2px solid #ff4f9e !important;
+    color: #ff4f9e !important;
+}
+
+body.theme-sunny_whisk .btn-outline:hover {
+    background: #ffe3ef !important;
+}
+
+body.theme-sunny_whisk .reorder-btn {
+    background: #bdeaf5 !important;
+    border: 1px solid #7dd8ea !important;
+    color: #14213d !important;
+}
+
+body.theme-sunny_whisk .reorder-btn:hover:not(:disabled) {
+    background: #ff4f9e !important;
+    border-color: #ff4f9e !important;
+    color: #fff !important;
+}
+
+body.theme-sunny_whisk .category-card-exact,
+body.theme-sunny_whisk .cloud-review-card,
+body.theme-sunny_whisk .category-image-frame,
+body.theme-sunny_whisk .form-builder-card,
+body.theme-sunny_whisk .order-card,
+body.theme-sunny_whisk .add-review-box,
+body.theme-sunny_whisk .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #7dd8ea;
+}
+
+body.theme-sunny_whisk .order-modal-card {
+    border-radius: 28px !important;
+    border: 3px solid #7dd8ea !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(20, 33, 61, 0.2) !important;
+}
+
+body.theme-sunny_whisk .sticky-order-summary-bar {
+    background: #bdeaf5 !important;
+    border: 2px solid #7dd8ea !important;
+}
+
+body.theme-sunny_whisk .product,
+body.theme-sunny_whisk .option-chip {
+    border-radius: 20px !important;
+    border: 2px solid #7dd8ea !important;
+    background: #ffffff !important;
+    color: #14213d !important;
+}
+
+body.theme-sunny_whisk .product.selected,
+body.theme-sunny_whisk .option-chip.selected {
+    background: #ff4f9e !important;
+    color: #ffffff !important;
+    border-color: #14213d !important;
+    box-shadow: 0 8px 20px rgba(255, 79, 158, 0.4) !important;
+}
+
+body.theme-sunny_whisk .next-btn {
+    background: #ff4f9e !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 25px rgba(255, 79, 158, 0.35) !important;
+}
+
+@media (max-width: 860px) {
+    body.theme-sunny_whisk .sw-hero-inner,
+    body.theme-sunny_whisk .sw-about-card,
+    body.theme-sunny_whisk .sw-meet-baker {
+        grid-template-columns: 1fr;
+    }
+
+    body.theme-sunny_whisk .sw-hero {
+        text-align: center;
+        padding: 100px 25px 60px 25px;
+    }
+
+    body.theme-sunny_whisk .sw-hero-media {
+        max-width: 380px;
+        margin: 0 auto;
+        transform: none;
+    }
+
+    body.theme-sunny_whisk .sw-about-card {
+        padding: 32px 24px;
+    }
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -4649,6 +5383,17 @@ body.theme-clean_minimal {
     --footer-link-font: 'Playfair Display', serif;
     --footer-link-size: 1rem;
     --footer-link-weight: 600;
+}
+
+/* ─── Sunny Whisk (diagonal sky/mustard/pink) ─── */
+body.theme-sunny_whisk {
+    --footer-bg: #14213d;
+    --footer-text: #bdeaf5;
+    --footer-border-top: 4px dashed #f5c518;
+    --footer-link-color: #ff4f9e;
+    --footer-link-font: 'Poppins', sans-serif;
+    --footer-link-size: 1.05rem;
+    --footer-link-weight: 700;
 }
 
 /* POPUP ORDER FORM MODAL STYLING */

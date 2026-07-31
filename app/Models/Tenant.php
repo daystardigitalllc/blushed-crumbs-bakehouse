@@ -526,6 +526,13 @@ class Tenant extends Model implements TenancyContract
                 'preview_bg' => '#f7f5f1',
                 'preview_accent' => '#b8935a',
             ],
+            'sunny_whisk' => [
+                'id' => 'sunny_whisk',
+                'name' => '☀️ Sunny Whisk',
+                'subtitle' => 'Playful diagonal color blocks — sky blue, mustard yellow & bubblegum pink',
+                'preview_bg' => '#bdeaf5',
+                'preview_accent' => '#f5c518',
+            ],
         ];
     }
 
