@@ -11,6 +11,11 @@ use App\Http\Controllers\OnboardingUploadController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\ToolsController;
 use App\Http\Controllers\CottageFoodLawsController;
+use App\Http\Controllers\SitemapController;
+
+// ─── SEO: sitemap.xml / robots.txt (host-aware — main domain vs. tenant) ───
+Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 // ─── Authentication Routes ───
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
