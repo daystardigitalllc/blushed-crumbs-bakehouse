@@ -1,0 +1,585 @@
+/* Auto-split from style.css — theme block: rustic_kitchen (lines 47-630) */
+/* 2. 🪵 RUSTIC KITCHEN THEME — "Rimberio" brand board
+   (cream #F8F3EA / tan #CFBBA2 / terracotta #BF895C / warm brown #9D7052 /
+   deep chocolate #723F18) */
+body.theme-rustic_kitchen {
+    --primary: #9D7052;
+    --primary-hover: #723F18;
+    --pink-bg: #F8F3EA;
+    --dark-text: #723F18;
+    --theme-heading-font: 'Great Vibes', cursive;
+    --theme-card-bg: #fffaf2;
+    --theme-section-bg: #F8F3EA;
+    --theme-accent-bg: #723F18;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background:
+        repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.025) 0px, transparent 3px, transparent 7px),
+        linear-gradient(180deg, #F8F3EA 0%, #F1E4D3 100%);
+}
+
+/* Decorative-icon color default for rustic_kitchen's Material Symbols
+   glyphs (see resources/views/storefront/themes/rustic_kitchen/*.blade.php
+   for where these are used) — individual instances override font-size and
+   vertical-align inline to match the space the emoji they replaced used. */
+body.theme-rustic_kitchen .rustic-icon {
+    color: #9D7052;
+}
+
+body.theme-rustic_kitchen .ingredient-icon-circle .material-symbols-outlined {
+    font-size: 2.2rem;
+    color: #9D7052;
+}
+
+/* Big display headings match the brand board's script "Large Heading"
+   sample. h3 is deliberately excluded below — a calligraphy face at
+   card-title size (category names, step titles) reads poorly. */
+body.theme-rustic_kitchen h1,
+body.theme-rustic_kitchen h2,
+body.theme-rustic_kitchen .section-title-script,
+body.theme-rustic_kitchen .whimsical-col-right h2 {
+    font-family: 'Great Vibes', cursive !important;
+    color: #723F18 !important;
+    letter-spacing: 0.5px;
+}
+
+body.theme-rustic_kitchen h3 {
+    font-family: 'Georgia', serif !important;
+    color: #723F18 !important;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+/* Small eyebrow/kicker text matches the board's "SUBHEADING" sample —
+   bold, uppercase, tracked sans — not script. */
+body.theme-rustic_kitchen .subheading {
+    font-family: 'Poppins', sans-serif !important;
+    color: #9D7052 !important;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+body.theme-rustic_kitchen .hero-cloud-elementor-top,
+body.theme-rustic_kitchen .hero-cloud-elementor-bottom,
+body.theme-rustic_kitchen .raining-cake {
+    display: none !important;
+}
+
+body.theme-rustic_kitchen .site-header {
+    background: transparent !important;
+}
+
+body.theme-rustic_kitchen .hero-section {
+    background-color: #CFBBA2 !important;
+    position: relative;
+}
+
+/* The hero photo itself is set inline per-tenant with a plain white wash
+   (needed so any random photo stays legible) — that wash reads as flat
+   gray, not rustic. This warm scrim sits on top of it (not replacing the
+   photo) so the same image reads sepia/amber instead of washed-out. */
+body.theme-rustic_kitchen .hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(114, 63, 24, 0.12) 0%, rgba(114, 63, 24, 0.38) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Scoped to the hero specifically — .btn-secondary is reused inside the
+   admin dashboard (transparent outline cancel/secondary buttons) and
+   shouldn't inherit this photo-legibility treatment. */
+body.theme-rustic_kitchen .hero-buttons .btn-secondary {
+    background: rgba(114, 63, 24, 0.55) !important;
+    color: #fff8ec !important;
+    border: 2px solid #fff8ec !important;
+    box-shadow: none !important;
+}
+
+body.theme-rustic_kitchen .hero-buttons .btn-secondary:hover {
+    background: rgba(114, 63, 24, 0.8) !important;
+}
+
+body.theme-rustic_kitchen .categories-section,
+body.theme-rustic_kitchen .reviews-section {
+    background:
+        repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.03) 0px, transparent 3px, transparent 7px),
+        #F8F3EA !important;
+}
+
+body.theme-rustic_kitchen .how-it-works-section {
+    background-image: repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.035) 0px, transparent 3px, transparent 7px) !important;
+}
+
+/* ── rustic_kitchen's own page layout (real HTML structure, not just a
+   CSS reskin of the shared template) — hero as an image-left/text-right
+   split panel, categories as a horizontal shelf row, how-it-works as a
+   vertical numbered list, gallery as true masonry columns. Markup lives in
+   resources/views/storefront/themes/rustic_kitchen/*.blade.php. ── */
+
+/* Hero split panel */
+body.theme-rustic_kitchen .rustic-hero-split {
+    display: flex;
+    align-items: stretch;
+    min-height: 70vh;
+    background: #CFBBA2;
+}
+
+body.theme-rustic_kitchen .rustic-hero-media {
+    flex: 1 1 45%;
+    position: relative;
+    overflow: hidden;
+    border-right: 6px solid #723F18;
+}
+
+body.theme-rustic_kitchen .rustic-hero-media img,
+body.theme-rustic_kitchen .rustic-hero-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+body.theme-rustic_kitchen .rustic-hero-media-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    background: linear-gradient(160deg, #9D7052 0%, #723F18 100%);
+}
+
+body.theme-rustic_kitchen .rustic-hero-copy {
+    flex: 1 1 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px;
+    text-align: left;
+}
+
+body.theme-rustic_kitchen .rustic-hero-copy .hero-buttons {
+    justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+    body.theme-rustic_kitchen .rustic-hero-split {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    body.theme-rustic_kitchen .rustic-hero-media {
+        min-height: 260px;
+        border-right: none;
+        border-bottom: 6px solid #723F18;
+    }
+
+    body.theme-rustic_kitchen .rustic-hero-copy {
+        padding: 40px 25px;
+        align-items: center;
+        text-align: center;
+    }
+
+    body.theme-rustic_kitchen .rustic-hero-copy .hero-buttons {
+        justify-content: center;
+    }
+}
+
+/* Categories — horizontal shelf row instead of a grid */
+body.theme-rustic_kitchen .rustic-shelf-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 22px;
+    padding: 10px 4px 20px 4px;
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+body.theme-rustic_kitchen .rustic-shelf-card {
+    flex: 0 0 260px;
+    scroll-snap-align: start;
+    background: #fffaf2;
+    border: 1px solid #CFBBA2;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 8px 22px rgba(114, 63, 24, 0.1);
+}
+
+body.theme-rustic_kitchen .rustic-shelf-frame {
+    width: 100%;
+    height: 170px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #F8F3EA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+body.theme-rustic_kitchen .rustic-shelf-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-rustic_kitchen .rustic-shelf-emoji {
+    font-size: 3rem;
+}
+
+body.theme-rustic_kitchen .rustic-shelf-card p {
+    font-size: 0.88rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* How It Works — vertical numbered list instead of a 3-card grid */
+body.theme-rustic_kitchen .rustic-steps-list {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    text-align: left;
+    counter-reset: rustic-step-v;
+}
+
+body.theme-rustic_kitchen .rustic-step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    counter-increment: rustic-step-v;
+}
+
+body.theme-rustic_kitchen .rustic-step-num {
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #9D7052 0%, #723F18 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 16px rgba(114, 63, 24, 0.35);
+}
+
+body.theme-rustic_kitchen .rustic-step-num::before {
+    content: counter(rustic-step-v);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff8ec;
+    font-family: 'Georgia', serif;
+}
+
+body.theme-rustic_kitchen .rustic-step-copy h3 {
+    margin-bottom: 4px;
+}
+
+body.theme-rustic_kitchen .rustic-step-copy p {
+    font-size: 0.92rem;
+    color: #666;
+}
+
+/* about.blade.php — ingredients as a two-column list instead of a 6-card grid */
+body.theme-rustic_kitchen .rustic-ingredients-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+@media (max-width: 700px) {
+    body.theme-rustic_kitchen .rustic-ingredients-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+body.theme-rustic_kitchen .rustic-ingredient-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    text-align: left;
+}
+
+body.theme-rustic_kitchen .rustic-ingredient-row h3 {
+    margin-bottom: 4px;
+}
+
+/* menu.blade.php — "recipe card" list instead of a pricing grid */
+body.theme-rustic_kitchen .rustic-recipe-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+body.theme-rustic_kitchen .rustic-recipe-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    background: #fffaf2;
+    border-left: 4px solid #9D7052;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(114, 63, 24, 0.08);
+}
+
+body.theme-rustic_kitchen .rustic-recipe-price {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #9D7052;
+}
+
+/* gallery.blade.php — true masonry columns instead of a uniform grid.
+   Stacked onto .gallery-masonry-grid (kept for the filter/add-photo JS,
+   which selects by that class name) rather than replacing it. */
+body.theme-rustic_kitchen .rustic-masonry-grid {
+    column-count: 3;
+    column-gap: 22px;
+    display: block;
+}
+
+@media (max-width: 900px) {
+    body.theme-rustic_kitchen .rustic-masonry-grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 560px) {
+    body.theme-rustic_kitchen .rustic-masonry-grid {
+        column-count: 1;
+    }
+}
+
+body.theme-rustic_kitchen .rustic-masonry-grid .gallery-card {
+    break-inside: avoid;
+    margin-bottom: 22px;
+    width: 100%;
+    display: inline-block;
+}
+
+body.theme-rustic_kitchen .rustic-masonry-grid .gallery-card-img-wrap {
+    height: auto !important;
+}
+
+body.theme-rustic_kitchen .rustic-masonry-grid .gallery-card-img-wrap img {
+    height: auto;
+    display: block;
+}
+
+body.theme-rustic_kitchen .faq-policies-section {
+    background:
+        repeating-linear-gradient(115deg, rgba(114, 63, 24, 0.03) 0px, transparent 3px, transparent 7px),
+        #F8F3EA !important;
+}
+
+/* cta-video-banner already has a themeable ::before scrim (see base rule
+   below) — recolor it warm brown instead of the default black so it mutes
+   the sweet_elegant-pink gradient baked into the section's own inline
+   background, rather than replacing the tenant's approved photo outright. */
+body.theme-rustic_kitchen .cta-video-banner::before {
+    background: linear-gradient(135deg, rgba(114, 63, 24, 0.68) 0%, rgba(157, 112, 82, 0.62) 100%) !important;
+}
+
+body.theme-rustic_kitchen .cta-video-banner h2,
+body.theme-rustic_kitchen .cta-video-banner p {
+    color: #fff8ec !important;
+}
+
+body.theme-rustic_kitchen .highlights-bar {
+    background: linear-gradient(90deg, #723F18 0%, #9D7052 100%) !important;
+}
+
+body.theme-rustic_kitchen .video-promo-banner h2,
+body.theme-rustic_kitchen .video-overlay-content h2 {
+    color: #ffffff !important;
+}
+
+body.theme-rustic_kitchen .whimsical-section {
+    background:
+        repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.025) 0px, transparent 3px, transparent 7px),
+        #723F18 !important;
+    color: #F8F3EA !important;
+}
+
+body.theme-rustic_kitchen .whimsical-section h2 {
+    color: #F8F3EA !important;
+}
+
+body.theme-rustic_kitchen .btn-primary,
+body.theme-rustic_kitchen .nav-order-btn {
+    background: linear-gradient(160deg, #9D7052 0%, #723F18 100%) !important;
+    color: #fff8ec !important;
+    border-color: #723F18 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 6px 18px rgba(114, 63, 24, 0.35) !important;
+}
+
+body.theme-rustic_kitchen .category-card-exact,
+body.theme-rustic_kitchen .cloud-review-card,
+body.theme-rustic_kitchen .category-image-frame {
+    border-radius: 10px !important;
+    border: 1px solid #CFBBA2 !important;
+    background: #fffaf2 !important;
+    box-shadow: 0 8px 22px rgba(114, 63, 24, 0.1) !important;
+}
+
+/* Order Form Modal Theme Rules - Rustic Kitchen */
+body.theme-rustic_kitchen .order-modal-card {
+    border-radius: 14px !important;
+    border: 2px solid #9D7052 !important;
+    background: #fffaf2 !important;
+    box-shadow: 0 16px 40px rgba(114, 63, 24, 0.2) !important;
+}
+
+body.theme-rustic_kitchen .sticky-order-summary-bar {
+    background: #F8F3EA !important;
+    border: 2px solid #CFBBA2 !important;
+}
+
+body.theme-rustic_kitchen .product,
+body.theme-rustic_kitchen .option-chip {
+    border-radius: 8px !important;
+    border: 1px solid #CFBBA2 !important;
+    background: #fffaf2 !important;
+    color: #723F18 !important;
+}
+
+body.theme-rustic_kitchen .product.selected,
+body.theme-rustic_kitchen .option-chip.selected {
+    background: #9D7052 !important;
+    color: #fff8ec !important;
+    border-color: #723F18 !important;
+    box-shadow: 0 6px 16px rgba(114, 63, 24, 0.4) !important;
+}
+
+body.theme-rustic_kitchen .next-btn {
+    background: linear-gradient(160deg, #9D7052 0%, #723F18 100%) !important;
+    color: #fff8ec !important;
+    border-radius: 8px !important;
+    box-shadow: 0 6px 18px rgba(114, 63, 24, 0.35) !important;
+}
+
+/* ── Admin dashboard, themed to match ──
+   .admin-sidebar / .admin-nav-item.active / .admin-main-content already
+   read --theme-accent-bg / --primary / --theme-section-bg (set above), so
+   the sidebar, active nav tab, and page background re-skin automatically
+   for every tab. What's left is the form controls and cards each tab's
+   content actually uses, which are hard-coded pink/plum in the base admin
+   styles regardless of theme. */
+body.theme-rustic_kitchen .admin-mobile-header {
+    background: #723F18 !important;
+}
+
+body.theme-rustic_kitchen .admin-main-content input[type="text"],
+body.theme-rustic_kitchen .admin-main-content input[type="number"],
+body.theme-rustic_kitchen .admin-main-content input[type="email"],
+body.theme-rustic_kitchen .admin-main-content input[type="tel"],
+body.theme-rustic_kitchen .admin-main-content input[type="url"],
+body.theme-rustic_kitchen .admin-main-content select,
+body.theme-rustic_kitchen .admin-main-content textarea {
+    border: 1.5px solid #CFBBA2 !important;
+    background-color: #fffaf2 !important;
+    color: #723F18 !important;
+}
+
+body.theme-rustic_kitchen .admin-main-content input:focus,
+body.theme-rustic_kitchen .admin-main-content select:focus,
+body.theme-rustic_kitchen .admin-main-content textarea:focus {
+    border-color: #9D7052 !important;
+    box-shadow: 0 0 0 4px rgba(157, 112, 82, 0.25) !important;
+    background-color: #fffaf2 !important;
+}
+
+body.theme-rustic_kitchen .admin-main-content label {
+    color: #723F18 !important;
+}
+
+body.theme-rustic_kitchen .status-select:focus {
+    border-color: #9D7052;
+    box-shadow: 0 0 0 3px rgba(157, 112, 82, 0.25);
+}
+
+body.theme-rustic_kitchen .btn-outline {
+    background: transparent !important;
+    border: 2px solid #9D7052 !important;
+    color: #9D7052 !important;
+}
+
+body.theme-rustic_kitchen .btn-outline:hover {
+    background: #F8F3EA !important;
+}
+
+body.theme-rustic_kitchen .reorder-btn {
+    background: #F8F3EA !important;
+    border: 1px solid #CFBBA2 !important;
+    color: #723F18 !important;
+}
+
+body.theme-rustic_kitchen .reorder-btn:hover:not(:disabled) {
+    background: #9D7052 !important;
+    border-color: #9D7052 !important;
+    color: #fff !important;
+}
+
+body.theme-rustic_kitchen .form-builder-card,
+body.theme-rustic_kitchen .order-card,
+body.theme-rustic_kitchen .add-review-box,
+body.theme-rustic_kitchen .payment-methods-card {
+    background: #fffaf2 !important;
+    border: 1px solid #CFBBA2;
+}
+
+/* ── Page Builder / Section Studio tab ──
+   This tab's accordion is almost entirely hard-coded violet inline styles
+   in the blade template with no shared classes for most of it — attribute
+   selectors catch the repeated inline hex values without touching the
+   template. .btn-outline and .btn-primary (used for its buttons) are
+   already covered by the theme rules above. */
+body.theme-rustic_kitchen #tab-page-builder .form-builder-card {
+    border-color: #9D7052 !important;
+}
+
+body.theme-rustic_kitchen #tab-page-builder h4,
+body.theme-rustic_kitchen #tab-page-builder h6,
+body.theme-rustic_kitchen #tab-page-builder strong {
+    color: #723F18 !important;
+}
+
+body.theme-rustic_kitchen #tab-page-builder .section-manager-row {
+    border-color: #CFBBA2 !important;
+}
+
+body.theme-rustic_kitchen #tab-page-builder .section-accordion-header {
+    background: #fffaf2 !important;
+}
+
+body.theme-rustic_kitchen #tab-page-builder .section-accordion-body {
+    border-top-color: #CFBBA2 !important;
+}
+
+body.theme-rustic_kitchen #tab-page-builder .drag-handle,
+body.theme-rustic_kitchen #tab-page-builder .accordion-arrow {
+    color: #9D7052 !important;
+}
+
+body.theme-rustic_kitchen #tab-page-builder [style*="border:1px solid #eee"] {
+    background: #fffaf2 !important;
+    border-color: #CFBBA2 !important;
+}
+
+body.theme-rustic_kitchen #section-manager-msg {
+    background: #fffaf2 !important;
+    color: #723F18 !important;
+    border-color: #CFBBA2 !important;
+}
+

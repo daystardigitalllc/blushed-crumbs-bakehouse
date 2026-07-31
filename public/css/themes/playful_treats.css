@@ -1,0 +1,864 @@
+/* Auto-split from style.css — theme block: playful_treats (lines 1269-2131) */
+/* 4. 🧁 PLAYFUL TREATS THEME — "Pastry Corner" reference site
+   (teal #1AD1CB / hot pink #FF4FA0 / orange #F2A93D / navy #1A1A2E / white)
+   Pro tier (see Tenant::getStarterThemes()). */
+body.theme-playful_treats {
+    --primary: #FF4FA0;
+    --primary-hover: #E63E8C;
+    --pink-bg: #FFD9EC;
+    --dark-text: #1A1A2E;
+    --theme-heading-font: 'Oswald', sans-serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #FFD9EC;
+    --theme-accent-bg: #1A1A2E;
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(180deg, #FFEAF4 0%, #E6FBFA 100%);
+}
+
+/* The reference uses one bold navy color for every heading level (hero
+   headline and section titles alike), reserving orange specifically for
+   the lighter tagline/kicker text underneath each heading. */
+body.theme-playful_treats h1,
+body.theme-playful_treats h3 {
+    font-family: 'Oswald', sans-serif !important;
+    font-weight: 700 !important;
+    color: #1A1A2E !important;
+}
+
+body.theme-playful_treats h2,
+body.theme-playful_treats .section-title-script,
+body.theme-playful_treats .whimsical-col-right h2 {
+    font-family: 'Oswald', sans-serif !important;
+    font-weight: 700 !important;
+    color: #1A1A2E !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+body.theme-playful_treats .subheading {
+    font-family: 'Open Sans', sans-serif !important;
+    font-weight: 700 !important;
+    color: #F2A93D !important;
+    font-size: 1.05rem;
+}
+
+body.theme-playful_treats .hero-cloud-elementor-top,
+body.theme-playful_treats .hero-cloud-elementor-bottom {
+    display: none !important;
+}
+
+body.theme-playful_treats .site-header {
+    background: transparent !important;
+}
+
+body.theme-playful_treats .hero-section {
+    background-color: #1AD1CB !important;
+    position: relative;
+}
+
+/* Same fix as rustic_kitchen: the hero photo's plain white legibility wash
+   reads flat/washed-out regardless of theme — this navy scrim sits on top
+   of it (photo untouched) so it reads on-brand instead of gray. */
+body.theme-playful_treats .hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(26, 26, 46, 0.12) 0%, rgba(26, 26, 46, 0.38) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Scoped to the hero specifically — .btn-secondary is reused inside the
+   admin dashboard's transparent outline/cancel buttons. */
+body.theme-playful_treats .hero-buttons .btn-secondary {
+    background: rgba(26, 26, 46, 0.55) !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: none !important;
+}
+
+body.theme-playful_treats .hero-buttons .btn-secondary:hover {
+    background: rgba(26, 26, 46, 0.8) !important;
+}
+
+body.theme-playful_treats .categories-section,
+body.theme-playful_treats .reviews-section {
+    background: #FFD9EC !important;
+}
+
+/* "How Custom Ordering Works" step numbers are hard-coded 1️⃣2️⃣3️⃣ emoji —
+   same fix as rustic_kitchen: a themed numbered badge via CSS counter
+   instead of the OS's native (off-brand) keycap emoji glyph. */
+body.theme-playful_treats .how-it-works-section {
+    counter-reset: playful-step;
+}
+
+body.theme-playful_treats .how-it-works-section .category-card-exact {
+    counter-increment: playful-step;
+}
+
+body.theme-playful_treats .how-it-works-section .category-card-exact > span:first-child {
+    font-size: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #F2A93D 0%, #FF4FA0 100%) !important;
+    margin: 0 auto 14px auto !important;
+    box-shadow: 0 6px 16px rgba(26, 26, 46, 0.25);
+}
+
+body.theme-playful_treats .how-it-works-section .category-card-exact > span:first-child::before {
+    content: counter(playful-step);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: 'Oswald', sans-serif;
+}
+
+body.theme-playful_treats .faq-policies-section {
+    background: #D8F7F5 !important;
+}
+
+/* cta-video-banner already has a themeable ::before scrim — recolor it to
+   match instead of the default black, muting whatever gradient is baked
+   into the section's own inline background. */
+body.theme-playful_treats .cta-video-banner::before {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.65) 0%, rgba(255, 79, 160, 0.55) 100%) !important;
+}
+
+body.theme-playful_treats .cta-video-banner h2,
+body.theme-playful_treats .cta-video-banner p {
+    color: #ffffff !important;
+}
+
+body.theme-playful_treats .highlights-bar {
+    background: linear-gradient(90deg, #F2A93D 0%, #FF4FA0 100%) !important;
+}
+
+body.theme-playful_treats .video-promo-banner h2,
+body.theme-playful_treats .video-overlay-content h2 {
+    color: #ffffff !important;
+}
+
+body.theme-playful_treats .whimsical-section {
+    background-color: #1A1A2E !important;
+    color: #FFD9EC !important;
+}
+
+body.theme-playful_treats .whimsical-section h2 {
+    color: #F2A93D !important;
+}
+
+body.theme-playful_treats .btn-primary,
+body.theme-playful_treats .nav-order-btn {
+    background: #FF4FA0 !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 25px rgba(255, 79, 160, 0.35) !important;
+}
+
+body.theme-playful_treats .category-card-exact,
+body.theme-playful_treats .cloud-review-card,
+body.theme-playful_treats .category-image-frame {
+    border-radius: 24px !important;
+    border: 3px solid #1AD1CB !important;
+    background: #ffffff !important;
+    box-shadow: 0 12px 30px rgba(26, 26, 46, 0.15) !important;
+}
+
+/* Order Form Modal Theme Rules - Playful Treats */
+body.theme-playful_treats .order-modal-card {
+    border-radius: 28px !important;
+    border: 3px solid #1AD1CB !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(26, 26, 46, 0.2) !important;
+}
+
+body.theme-playful_treats .sticky-order-summary-bar {
+    background: #FFD9EC !important;
+    border: 2px solid #1AD1CB !important;
+}
+
+body.theme-playful_treats .product,
+body.theme-playful_treats .option-chip {
+    border-radius: 20px !important;
+    border: 2px solid #1AD1CB !important;
+    background: #ffffff !important;
+    color: #1A1A2E !important;
+}
+
+body.theme-playful_treats .product.selected,
+body.theme-playful_treats .option-chip.selected {
+    background: #FF4FA0 !important;
+    color: #ffffff !important;
+    border-color: #1A1A2E !important;
+    box-shadow: 0 8px 20px rgba(255, 79, 160, 0.4) !important;
+}
+
+body.theme-playful_treats .next-btn {
+    background: #FF4FA0 !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 25px rgba(255, 79, 160, 0.35) !important;
+}
+
+/* ── Admin dashboard, themed to match (same approach as rustic_kitchen) ──
+   .admin-sidebar / .admin-nav-item.active / .admin-main-content already
+   read --theme-accent-bg / --primary / --theme-section-bg (set above), so
+   the sidebar, active nav tab, and page background re-skin automatically
+   for every tab. What's left is the form controls and cards each tab's
+   content actually uses, which are hard-coded pink/plum in the base admin
+   styles regardless of theme. */
+body.theme-playful_treats .admin-mobile-header {
+    background: #1A1A2E !important;
+}
+
+body.theme-playful_treats .admin-main-content input[type="text"],
+body.theme-playful_treats .admin-main-content input[type="number"],
+body.theme-playful_treats .admin-main-content input[type="email"],
+body.theme-playful_treats .admin-main-content input[type="tel"],
+body.theme-playful_treats .admin-main-content input[type="url"],
+body.theme-playful_treats .admin-main-content select,
+body.theme-playful_treats .admin-main-content textarea {
+    border: 1.5px solid #1AD1CB !important;
+    background-color: #ffffff !important;
+    color: #1A1A2E !important;
+}
+
+body.theme-playful_treats .admin-main-content input:focus,
+body.theme-playful_treats .admin-main-content select:focus,
+body.theme-playful_treats .admin-main-content textarea:focus {
+    border-color: #FF4FA0 !important;
+    box-shadow: 0 0 0 4px rgba(255, 79, 160, 0.2) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-playful_treats .admin-main-content label {
+    color: #1A1A2E !important;
+}
+
+body.theme-playful_treats .status-select:focus {
+    border-color: #FF4FA0;
+    box-shadow: 0 0 0 3px rgba(255, 79, 160, 0.2);
+}
+
+body.theme-playful_treats .btn-outline {
+    background: transparent !important;
+    border: 2px solid #FF4FA0 !important;
+    color: #FF4FA0 !important;
+}
+
+body.theme-playful_treats .btn-outline:hover {
+    background: #FFD9EC !important;
+}
+
+body.theme-playful_treats .reorder-btn {
+    background: #FFD9EC !important;
+    border: 1px solid #1AD1CB !important;
+    color: #1A1A2E !important;
+}
+
+body.theme-playful_treats .reorder-btn:hover:not(:disabled) {
+    background: #FF4FA0 !important;
+    border-color: #FF4FA0 !important;
+    color: #fff !important;
+}
+
+body.theme-playful_treats .form-builder-card,
+body.theme-playful_treats .order-card,
+body.theme-playful_treats .add-review-box,
+body.theme-playful_treats .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #1AD1CB;
+}
+
+/* ── Page Builder / Section Studio tab ──
+   This tab's accordion is almost entirely hard-coded violet inline styles
+   in the blade template with no shared classes for most of it — attribute
+   selectors catch the repeated inline hex values without touching the
+   template. .btn-outline and .btn-primary (used for its buttons) are
+   already covered by the theme rules above. */
+body.theme-playful_treats #tab-page-builder .form-builder-card {
+    border-color: #1AD1CB !important;
+}
+
+body.theme-playful_treats #tab-page-builder h4,
+body.theme-playful_treats #tab-page-builder h6,
+body.theme-playful_treats #tab-page-builder strong {
+    color: #1A1A2E !important;
+}
+
+body.theme-playful_treats #tab-page-builder .section-manager-row {
+    border-color: #F7C3DE !important;
+}
+
+body.theme-playful_treats #tab-page-builder .section-accordion-header {
+    background: #FFF3F8 !important;
+}
+
+body.theme-playful_treats #tab-page-builder .section-accordion-body {
+    border-top-color: #F7C3DE !important;
+}
+
+body.theme-playful_treats #tab-page-builder .drag-handle,
+body.theme-playful_treats #tab-page-builder .accordion-arrow {
+    color: #1AD1CB !important;
+}
+
+body.theme-playful_treats #tab-page-builder [style*="border:1px solid #eee"] {
+    background: #FFF3F8 !important;
+    border-color: #F7C3DE !important;
+}
+
+body.theme-playful_treats #section-manager-msg {
+    background: #FFF3F8 !important;
+    color: #1A1A2E !important;
+    border-color: #F7C3DE !important;
+}
+
+/* --- playful_treats own per-theme layout (resources/views/storefront/themes/playful_treats/*.blade.php) ---
+   Organic-blob, badge-cluster storefront in the spirit of a scrapbook-style
+   indie bakery site: soft asymmetric photo shapes, a floating badge row,
+   a bold callout card, and a swipeable testimonial carousel. Every class
+   below is scoped to body.theme-playful_treats and only used by this
+   theme's own templates, same convention as rustic_kitchen's .rustic-*
+   classes. */
+
+body.theme-playful_treats .playful-icon {
+    color: var(--primary);
+}
+
+/* Hero: soft blob shapes floating behind an asymmetric-radius photo frame */
+body.theme-playful_treats .playful-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 90px 40px 60px 40px;
+    overflow: hidden;
+}
+
+body.theme-playful_treats .playful-hero-blob {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+    filter: blur(2px);
+}
+
+body.theme-playful_treats .playful-hero-blob-1 {
+    width: 260px;
+    height: 260px;
+    background: #F2A93D;
+    top: -60px;
+    left: 8%;
+}
+
+body.theme-playful_treats .playful-hero-blob-2 {
+    width: 200px;
+    height: 200px;
+    background: #1AD1CB;
+    bottom: -40px;
+    right: 6%;
+}
+
+body.theme-playful_treats .playful-hero-blob-3 {
+    width: 140px;
+    height: 140px;
+    background: #FF4FA0;
+    top: 45%;
+    left: -40px;
+    opacity: 0.4;
+}
+
+body.theme-playful_treats .playful-hero-media {
+    position: relative;
+    z-index: 1;
+    aspect-ratio: 1 / 1;
+    border-radius: 42% 58% 63% 37% / 47% 40% 60% 53%;
+    overflow: hidden;
+    box-shadow: 0 20px 45px rgba(26, 26, 46, 0.22);
+    border: 6px solid #ffffff;
+}
+
+body.theme-playful_treats .playful-hero-media img,
+body.theme-playful_treats .playful-hero-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-playful_treats .playful-hero-media-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #1AD1CB 0%, #FF4FA0 100%);
+}
+
+body.theme-playful_treats .playful-hero-copy {
+    position: relative;
+    z-index: 1;
+}
+
+body.theme-playful_treats .playful-hero-copy .hero-buttons {
+    justify-content: flex-start;
+}
+
+/* Highlights re-purposed as a floating badge cluster that overlaps the
+   hero's bottom edge, evoking a "voted best" award-badge stack. */
+body.theme-playful_treats .playful-badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    max-width: 1100px;
+    margin: -35px auto 0 auto;
+    padding: 0 30px 60px 30px;
+    position: relative;
+    z-index: 2;
+}
+
+body.theme-playful_treats .playful-badge-circle {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 22px 20px;
+    width: 220px;
+    text-align: center;
+    box-shadow: 0 14px 34px rgba(26, 26, 46, 0.14);
+    border: 1px solid rgba(26, 26, 46, 0.05);
+}
+
+body.theme-playful_treats .playful-badge-circle .playful-badge-emoji {
+    display: block;
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+}
+
+body.theme-playful_treats .playful-badge-circle h4 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+body.theme-playful_treats .playful-badge-circle p {
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Categories — a shelf row of blob-framed cards */
+body.theme-playful_treats .playful-shelf-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 26px;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 10px 20px 20px 20px;
+}
+
+body.theme-playful_treats .playful-shelf-card {
+    width: 230px;
+    text-align: center;
+}
+
+body.theme-playful_treats .playful-shelf-frame {
+    aspect-ratio: 1 / 1;
+    border-radius: 45% 55% 52% 48% / 55% 45% 55% 45%;
+    overflow: hidden;
+    background: linear-gradient(160deg, #FFD9EC 0%, #D8F7F5 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 26px rgba(26, 26, 46, 0.12);
+    margin-bottom: 14px;
+}
+
+body.theme-playful_treats .playful-shelf-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-playful_treats .playful-shelf-frame .playful-icon {
+    font-size: 3rem;
+}
+
+/* Whimsical section's image gets the same organic blob mask as the hero */
+body.theme-playful_treats .playful-whimsical-img {
+    border-radius: 42% 58% 63% 37% / 47% 40% 60% 53%;
+    overflow: hidden;
+    border: 6px solid rgba(255, 255, 255, 0.5);
+}
+
+body.theme-playful_treats .playful-whimsical-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* How It Works — one bold callout blob card next to the numbered steps,
+   instead of a 3-up grid */
+body.theme-playful_treats .how-it-works-section.playful-order-section {
+    display: grid;
+    grid-template-columns: minmax(260px, 380px) 1fr;
+    align-items: center;
+    gap: 50px;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 70px 25px;
+}
+
+body.theme-playful_treats .playful-order-callout {
+    background: linear-gradient(160deg, #FF4FA0 0%, #F2A93D 100%);
+    border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    color: #ffffff;
+    box-shadow: 0 20px 40px rgba(255, 79, 160, 0.3);
+}
+
+body.theme-playful_treats .playful-order-callout .material-symbols-outlined {
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+}
+
+body.theme-playful_treats .playful-order-callout h2 {
+    color: #ffffff !important;
+    font-size: 1.9rem;
+    margin-bottom: 8px;
+}
+
+body.theme-playful_treats .playful-order-callout p {
+    font-size: 0.95rem;
+    opacity: 0.95;
+}
+
+body.theme-playful_treats .playful-steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+body.theme-playful_treats .playful-step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+body.theme-playful_treats .playful-steps-list {
+    counter-reset: playful-order-step;
+}
+
+body.theme-playful_treats .playful-step-num {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #1AD1CB;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-family: 'Oswald', sans-serif;
+    counter-increment: playful-order-step;
+}
+
+body.theme-playful_treats .playful-step-num::before {
+    content: counter(playful-order-step);
+}
+
+body.theme-playful_treats .playful-step-copy h3 {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+body.theme-playful_treats .playful-step-copy p {
+    font-size: 0.92rem;
+    color: #555;
+}
+
+/* Reviews — swipeable carousel instead of a static 3-card grid */
+body.theme-playful_treats .playful-carousel {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+body.theme-playful_treats .playful-carousel-track {
+    display: flex;
+    gap: 22px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+    padding: 10px 4px 20px 4px;
+}
+
+body.theme-playful_treats .playful-review-card {
+    flex: 0 0 300px;
+    scroll-snap-align: start;
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 26px 24px;
+    box-shadow: 0 10px 26px rgba(26, 26, 46, 0.08);
+}
+
+body.theme-playful_treats .playful-review-card p {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+body.theme-playful_treats .playful-review-card h4 {
+    font-size: 0.95rem;
+    color: var(--primary) !important;
+}
+
+body.theme-playful_treats .playful-carousel-btn {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: #1A1A2E;
+    color: #ffffff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-playful_treats .playful-carousel-btn:hover {
+    background: var(--primary);
+}
+
+/* FAQ cards */
+body.theme-playful_treats .playful-faq-card {
+    background: #ffffff;
+    padding: 20px 22px;
+    border-radius: 16px;
+    border-left: 5px solid #1AD1CB;
+}
+
+/* Gallery/Instagram-style square grid */
+body.theme-playful_treats .playful-instagrid .gallery-card-img-wrap {
+    aspect-ratio: 1 / 1;
+}
+
+/* Rounded top corners on the final CTA banner, like a card floated over
+   the page rather than a full-bleed strip */
+body.theme-playful_treats .playful-cta-banner {
+    border-radius: 48px 48px 0 0;
+    margin: 0 20px;
+}
+
+/* Shared page-intro kicker + title used at the top of about/gallery */
+body.theme-playful_treats .playful-page-hero {
+    text-align: center;
+    padding: 90px 20px 50px 20px;
+}
+
+body.theme-playful_treats .playful-page-hero-kicker {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
+    color: #F2A93D;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+}
+
+body.theme-playful_treats .playful-page-hero-title {
+    font-size: 3rem;
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+/* About — "Meet the baker" split section */
+body.theme-playful_treats .playful-meet-baker {
+    display: grid;
+    grid-template-columns: minmax(240px, 380px) 1fr;
+    align-items: center;
+    gap: 50px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 25px 70px 25px;
+}
+
+body.theme-playful_treats .playful-meet-baker-img {
+    aspect-ratio: 1 / 1;
+    border-radius: 42% 58% 63% 37% / 47% 40% 60% 53%;
+    overflow: hidden;
+    box-shadow: 0 20px 45px rgba(26, 26, 46, 0.18);
+    border: 6px solid #ffffff;
+}
+
+body.theme-playful_treats .playful-meet-baker-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-playful_treats .playful-meet-baker-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #1AD1CB 0%, #FF4FA0 100%);
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+}
+
+body.theme-playful_treats .playful-quote-card {
+    background: #FFD9EC;
+    border-radius: 18px;
+    padding: 20px 22px;
+    margin-top: 20px;
+}
+
+body.theme-playful_treats .playful-quote-card p {
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+body.theme-playful_treats .playful-quote-card span {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* About — ingredients/why-us icon list */
+body.theme-playful_treats .playful-ingredients-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 25px 70px 25px;
+}
+
+body.theme-playful_treats .playful-ingredient-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+body.theme-playful_treats .playful-icon-circle {
+    flex-shrink: 0;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #F2A93D 0%, #FF4FA0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-playful_treats .playful-icon-circle .material-symbols-outlined {
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+body.theme-playful_treats .playful-ingredient-row h3 {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+}
+
+body.theme-playful_treats .playful-ingredient-row p {
+    font-size: 0.88rem;
+    color: #555;
+}
+
+/* About — specialties cards */
+body.theme-playful_treats .playful-specialties-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 22px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 25px 80px 25px;
+}
+
+body.theme-playful_treats .playful-specialty-card {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 26px 22px;
+    text-align: center;
+    box-shadow: 0 10px 26px rgba(26, 26, 46, 0.08);
+    position: relative;
+}
+
+body.theme-playful_treats .playful-specialty-badge {
+    display: inline-block;
+    background: #1AD1CB;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+@media (max-width: 860px) {
+    body.theme-playful_treats .playful-hero {
+        grid-template-columns: 1fr;
+        padding: 70px 25px 40px 25px;
+        text-align: center;
+    }
+
+    body.theme-playful_treats .playful-hero-copy .hero-buttons {
+        justify-content: center;
+    }
+
+    body.theme-playful_treats .playful-hero-media {
+        max-width: 320px;
+        margin: 0 auto;
+    }
+
+    body.theme-playful_treats .how-it-works-section.playful-order-section,
+    body.theme-playful_treats .playful-meet-baker {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    body.theme-playful_treats .playful-order-callout {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    body.theme-playful_treats .playful-meet-baker-img {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    body.theme-playful_treats .playful-step-row {
+        text-align: left;
+    }
+}
+

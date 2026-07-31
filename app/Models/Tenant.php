@@ -280,6 +280,18 @@ class Tenant extends Model implements TenancyContract
     }
 
     /**
+     * The asset path for this tenant's theme-specific CSS (public/css/style.css
+     * split per theme so a storefront page only downloads its own theme's
+     * rules plus the shared base, instead of every theme's CSS on every
+     * page). Same missing/bad theme_id fallback as themeView().
+     */
+    public function themeCssPath(): string
+    {
+        $path = "css/themes/{$this->theme_id}.css";
+        return file_exists(public_path($path)) ? $path : 'css/themes/sweet_elegant.css';
+    }
+
+    /**
      * The tenant's one canonical public URL: their verified custom domain
      * if they have one, otherwise their {subdomain}.{brand domain}. Used
      * anywhere we need to point *at* the live site (redirects, "view site"
@@ -417,6 +429,47 @@ class Tenant extends Model implements TenancyContract
         }
 
         return $schema;
+    }
+
+    /**
+     * FAQPage JSON-LD for the homepage — reuses the same faqs site_content
+     * every theme's FAQ accordion already renders, so this only ever mirrors
+     * what's actually visible on the page (Google penalizes structured data
+     * that doesn't match on-page content). Returns null whenever there's
+     * nothing to mark up: the FAQ Page Builder section is toggled off, there
+     * are no real Q&A pairs, or the active theme doesn't render an FAQ
+     * section at all (country_farmhouse doesn't, as of this writing).
+     */
+    public function faqPageSchema(): ?array
+    {
+        if ($this->theme_id === 'country_farmhouse') {
+            return null;
+        }
+
+        if (!($this->getOrderedSections()['faq']['enabled'] ?? false)) {
+            return null;
+        }
+
+        $faqs = collect($this->getSiteContent('faqs', []))
+            ->filter(fn ($faq) => !empty($faq['q']) && !empty($faq['a']))
+            ->values();
+
+        if ($faqs->isEmpty()) {
+            return null;
+        }
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'FAQPage',
+            'mainEntity' => $faqs->map(fn ($faq) => [
+                '@type' => 'Question',
+                'name' => trim(strip_tags($faq['q'])),
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => trim(strip_tags($faq['a'])),
+                ],
+            ])->all(),
+        ];
     }
 
     /**
