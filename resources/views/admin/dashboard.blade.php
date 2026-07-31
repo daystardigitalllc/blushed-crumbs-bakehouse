@@ -1005,7 +1005,7 @@
                             <h4 style="color:#5c1d37; margin:0;">Storefront Theme</h4>
                             <p style="font-size:0.88rem; color:#666; margin-top:4px;">Pick a design template. Colors and layout update automatically.</p>
                         </div>
-                        <a href="/site/{{ $tenant->subdomain }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:#e67399; color:#e67399;">View Live Storefront ↗</a>
+                        <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:#e67399; color:#e67399;">View Live Storefront ↗</a>
                     </div>
 
                     <div id="theme-status-msg" style="display:none; margin-bottom:14px; background:#d4edda; color:#155724; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c3e6cb;"></div>

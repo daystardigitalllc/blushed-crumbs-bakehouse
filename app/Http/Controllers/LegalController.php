@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Tenant;
 
 class LegalController extends Controller
 {
@@ -122,22 +121,6 @@ class LegalController extends Controller
         $tenant = $request->attributes->get('tenant');
 
         return view('legal.index', compact('tenant', 'documents', 'document', 'slug'));
-    }
-
-    /**
-     * Tenant preview version of a specific legal document by slug.
-     */
-    public function previewShow(Request $request, string $subdomain, string $slug)
-    {
-        $tenant = Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
-        if (!$tenant) {
-            abort(404, 'Bakery website not found.');
-        }
-
-        $request->attributes->set('tenant', $tenant);
-        app()->instance('tenant', $tenant);
-
-        return $this->show($request, $slug);
     }
 
     /**

@@ -3,15 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }}</title>
-    <!-- Favicon -->
-    @if(isset($tenant) && $tenant->logo_path)
-        <link rel="icon" href="{{ asset($tenant->logo_path) }}">
-    @else
-        <link rel="icon" href="{{ asset('images/favicon.png') }}">
-    @endif
-    <meta name="description" content="Learn about {{ $tenant->name ?? 'Blushed Crumbs Bakehouse' }}, our story, and our passion for artisanal baking.">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('storefront.partials.seo_head', ['page' => 'about'])
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,7 +61,7 @@
                 $founderImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : (!empty($tenant->logo_path) ? asset($tenant->logo_path) : null);
             @endphp
             @if($founderImg)
-                <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}">
+                <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}" loading="lazy" decoding="async">
             @else
                 <div class="petal-about-placeholder">
                     <span class="material-symbols-outlined" style="font-size:3.5rem; color:#ffffff;">cake</span>

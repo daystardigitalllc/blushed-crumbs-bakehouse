@@ -11,6 +11,11 @@ use App\Http\Controllers\OnboardingUploadController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\ToolsController;
 use App\Http\Controllers\CottageFoodLawsController;
+use App\Http\Controllers\SitemapController;
+
+// ─── SEO: sitemap.xml / robots.txt (host-aware — main domain vs. tenant) ───
+Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 // ─── Authentication Routes ───
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -27,7 +32,6 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 // ─── Legal Hub & Policy Routes ───
 Route::get('/legal', [LegalController::class, 'index'])->name('legal.index');
 Route::get('/legal/{slug}', [LegalController::class, 'show'])->name('legal.show');
-Route::get('/site/{subdomain}/legal/{slug}', [LegalController::class, 'previewShow'])->name('legal.preview');
 
 // ───  SaaS Landing Page ───
 Route::get('/landing', [BrandController::class, 'landing'])->name('brand.landing');
@@ -42,7 +46,6 @@ Route::get('/cottage-food-laws/{state}', [CottageFoodLawsController::class, 'sho
 
 // ─── Storefront Routes (Public Bakery Website) ───
 Route::get('/', [StorefrontController::class, 'index'])->name('storefront.index');
-Route::get('/site/{subdomain}', [StorefrontController::class, 'preview'])->name('storefront.preview');
 // Auth + tenant.owner required - these render the real baker admin
 // dashboard (orders, customers, settings), not a public preview, despite
 // living under /site/{subdomain}/*.
@@ -50,12 +53,27 @@ Route::middleware(['auth', 'tenant.owner'])->group(function () {
     Route::get('/site/{subdomain}/dashboard', [AdminController::class, 'dashboard'])->name('storefront.preview.dashboard');
     Route::get('/site/{subdomain}/admin', [AdminController::class, 'dashboard']);
 });
-Route::get('/site/{subdomain}/about', [StorefrontController::class, 'previewAbout'])->name('storefront.preview.about');
-Route::get('/site/{subdomain}/menu', [StorefrontController::class, 'previewMenu'])->name('storefront.preview.menu');
-Route::get('/site/{subdomain}/gallery', [StorefrontController::class, 'previewGallery'])->name('storefront.preview.gallery');
-Route::get('/site/{subdomain}/policy', [StorefrontController::class, 'previewPolicy'])->name('storefront.preview.policy');
-Route::get('/site/{subdomain}/privacy', [StorefrontController::class, 'previewPrivacy'])->name('storefront.preview.privacy');
-Route::get('/site/{subdomain}/terms', [StorefrontController::class, 'previewTerms'])->name('storefront.preview.terms');
+// Every /site/{subdomain}/... public storefront URL (index/about/menu/gallery/
+// policy/privacy/terms/legal docs) used to render a second, fully indexable
+// copy of a tenant's site alongside their real subdomain.doughmain.pro (or
+// custom domain) — duplicate content that splits SEO ranking signal. The
+// real site is the only copy we want crawled/ranked now, so anything else
+// under /site/{subdomain}/* 301s to the tenant's canonical publicUrl(),
+// preserving any old bookmarks/backlinks instead of 404ing them. This must
+// stay below the dashboard/admin routes above so those keep matching first.
+Route::get('/site/{subdomain}/{path?}', function (\Illuminate\Http\Request $request, string $subdomain, string $path = '') {
+    $tenant = \App\Models\Tenant::where('subdomain', $subdomain)->orWhere('slug', $subdomain)->where('is_active', true)->first();
+    if (!$tenant) {
+        abort(404, 'Bakery website not found.');
+    }
+
+    $target = $tenant->publicUrl($path);
+    if ($query = $request->getQueryString()) {
+        $target .= '?' . $query;
+    }
+
+    return redirect()->away($target, 301);
+})->where('path', '.*')->name('storefront.preview.redirect');
 Route::get('/about', [StorefrontController::class, 'about'])->name('storefront.about');
 Route::get('/menu', [StorefrontController::class, 'menu'])->name('storefront.menu');
 Route::get('/gallery', [StorefrontController::class, 'gallery'])->name('storefront.gallery');

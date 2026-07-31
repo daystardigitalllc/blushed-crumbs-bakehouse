@@ -3,15 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $tenant->name ?? 'Artisanal Bakehouse' }} | {{ $tenant->getSiteContent('hero_subheading', 'Where Every Celebration Gets Its Sweet Ending') }}</title>
-    <!-- Favicon -->
-    @if(isset($tenant) && $tenant->logo_path)
-        <link rel="icon" href="{{ asset($tenant->logo_path) }}">
-    @else
-        <link rel="icon" href="{{ asset('images/favicon.png') }}">
-    @endif
-    <meta name="description" content="{{ $tenant->getSiteContent('about_bio', 'Custom artisanal cakes, cupcakes, treat boxes & wedding baking. Order custom cakes online with ease.') }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('storefront.partials.seo_head', ['page' => 'home'])
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -82,7 +74,7 @@
                                 <source src="{{ asset($heroBg) }}" type="video/mp4">
                             </video>
                         @elseif(!empty($heroBg))
-                            <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}">
+                            <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}" fetchpriority="high">
                         @else
                             <div class="petal-hero-media-placeholder"><span class="material-symbols-outlined" style="font-size:5rem; color:#fff;">bakery_dining</span></div>
                         @endif
@@ -104,7 +96,7 @@
                             $aboutImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : null;
                         @endphp
                         @if($aboutImg)
-                            <img src="{{ $aboutImg }}" alt="{{ $tenant->name }}">
+                            <img src="{{ $aboutImg }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
                         @else
                             <div class="petal-about-placeholder">
                                 <span class="material-symbols-outlined" style="font-size:3.5rem; color:#ffffff;">cake</span>
@@ -143,7 +135,7 @@
                             <div class="petal-pick-card">
                                 <div class="petal-pick-frame">
                                     @if($catImg)
-                                        <img src="{{ asset($catImg) }}" alt="{{ $cat['title'] ?? 'Category' }}">
+                                        <img src="{{ asset($catImg) }}" alt="{{ $cat['title'] ?? ($tenant->name . ' Bakery Category') }}" loading="lazy" decoding="async">
                                     @else
                                         <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #8b5a45 0%, #2b2118 100%);">
                                             <span class="material-symbols-outlined" style="font-size:2.5rem; color:#ffffff;">cake</span>
@@ -183,7 +175,7 @@
                         <p style="max-width:520px; margin:14px auto 0 auto; color:#4a3e33;">{{ $tenant->getSiteContent('promo_subtext', 'Order online directly from our kitchen for your upcoming celebration.') }}</p>
                         <div class="petal-promo-media">
                             @if(!empty($promoBg))
-                                <img src="{{ asset($promoBg) }}" alt="{{ $tenant->name }}">
+                                <img src="{{ asset($promoBg) }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
                             @else
                                 <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #8b5a45 0%, #2b2118 100%);">
                                     <span class="material-symbols-outlined" style="font-size:3rem; color:#ffffff;">redeem</span>
@@ -205,7 +197,7 @@
                                 }
                             @endphp
                             @if($wImg)
-                                <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation" style="border-radius:20px;">
+                                <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation" style="border-radius:20px;" loading="lazy" decoding="async">
                             @else
                                 <div style="text-align:center; padding:40px 20px; background:rgba(255,255,255,0.4); border-radius:20px;">
                                     <span class="material-symbols-outlined" style="font-size:4rem; display:block; margin-bottom:12px; color:#2b2118;">auto_awesome</span>
@@ -292,7 +284,7 @@
                                 @if($fSrc)
                                     <div class="gallery-card" onclick="openLightbox(@js(asset($fSrc)), @js($fImg['title'] ?? ''))">
                                         <div class="gallery-card-img-wrap">
-                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? 'Featured Creation' }}">
+                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? ($tenant->name . ' Featured Cake Creation') }}" loading="lazy" decoding="async">
                                         </div>
                                         @if(!empty($fImg['title']))
                                             <div class="gallery-card-info">
@@ -328,7 +320,7 @@
 <div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
         <button class="modal-close-btn" onclick="closeLightbox()"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-2px;">close</span></button>
-        <img id="lightbox-img" src="" alt="Gallery Preview">
+        <img id="lightbox-img" src="" alt="Gallery Preview" loading="lazy" decoding="async">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 </div>

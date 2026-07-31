@@ -3,15 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $tenant->name ?? 'Artisanal Bakehouse' }} | {{ $tenant->getSiteContent('hero_subheading', 'Where Every Celebration Gets Its Sweet Ending') }}</title>
-    <!-- Favicon -->
-    @if(isset($tenant) && $tenant->logo_path)
-        <link rel="icon" href="{{ asset($tenant->logo_path) }}">
-    @else
-        <link rel="icon" href="{{ asset('images/favicon.png') }}">
-    @endif
-    <meta name="description" content="{{ $tenant->getSiteContent('about_bio', 'Custom artisanal cakes, cupcakes, treat boxes & wedding baking. Order custom cakes online with ease.') }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('storefront.partials.seo_head', ['page' => 'home'])
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,7 +70,7 @@
                                 <source src="{{ asset($heroBg) }}" type="video/mp4">
                             </video>
                         @elseif(!empty($heroBg))
-                            <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}">
+                            <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}" fetchpriority="high">
                         @else
                             <div class="playful-hero-media-placeholder"><span class="material-symbols-outlined" style="font-size:5rem; color:#fff;">bakery_dining</span></div>
                         @endif
@@ -152,7 +144,7 @@
                             <div class="playful-shelf-card">
                                 <div class="playful-shelf-frame">
                                     @if($imgUrl)
-                                        <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? 'Category' }}">
+                                        <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? ($tenant->name . ' Bakery Category') }}" loading="lazy" decoding="async">
                                     @else
                                         <span class="material-symbols-outlined playful-icon">cake</span>
                                     @endif
@@ -178,7 +170,7 @@
                             @endphp
                             @if($wImg)
                                 <div class="playful-whimsical-img">
-                                    <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation">
+                                    <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation" loading="lazy" decoding="async">
                                 </div>
                             @else
                                 <div style="text-align:center; padding:40px 20px; background:rgba(255,255,255,0.15); border-radius:24px;">
@@ -275,7 +267,7 @@
                                 @if($fSrc)
                                     <div class="gallery-card" onclick="openLightbox(@js(asset($fSrc)), @js($fImg['title'] ?? ''))">
                                         <div class="gallery-card-img-wrap">
-                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? 'Featured Creation' }}">
+                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? ($tenant->name . ' Featured Cake Creation') }}" loading="lazy" decoding="async">
                                         </div>
                                         @if(!empty($fImg['title']))
                                             <div class="gallery-card-info">
@@ -311,7 +303,7 @@
 <div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
         <button class="modal-close-btn" onclick="closeLightbox()"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-2px;">close</span></button>
-        <img id="lightbox-img" src="" alt="Gallery Preview">
+        <img id="lightbox-img" src="" alt="Gallery Preview" loading="lazy" decoding="async">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 </div>
