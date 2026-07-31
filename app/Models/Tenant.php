@@ -313,6 +313,26 @@ class Tenant extends Model implements TenancyContract
     }
 
     /**
+     * "123 Main St, Nashville, TN 37201" (or a shorter version if some
+     * fields are missing) — the human-readable NAP address line every
+     * storefront footer renders. Google (and users) want the same
+     * name/address/phone visible as page text, not just inside JSON-LD;
+     * this is the single source both use. Null when there's nothing on
+     * file yet, so the footer partial can skip rendering entirely.
+     */
+    public function napAddressLine(): ?string
+    {
+        $cityStateZip = trim(collect([
+            trim(($this->city ?: '') . ($this->city && $this->state ? ', ' . $this->state : ($this->state ?: ''))),
+            $this->postal_code,
+        ])->filter()->implode(' '));
+
+        $line = collect([$this->address_line1, $cityStateZip])->filter()->implode(', ');
+
+        return $line !== '' ? $line : null;
+    }
+
+    /**
      * "{city}, {state}" (or just city, or null) — the fragment every
      * seoTitle()/seoDescription()/localBusinessSchema() variant below builds
      * around, so a baker who's filled in an address ranks for
@@ -411,6 +431,22 @@ class Tenant extends Model implements TenancyContract
                 'addressRegion' => $this->state,
                 'postalCode' => $this->postal_code,
                 'addressCountry' => $this->country_code ?: 'US',
+            ]);
+        }
+
+        // Explicitly declares "we serve this city" to search engines — the
+        // schema.org mechanism for local-search relevance that doesn't
+        // require a dedicated landing page per city. Only the tenant's own
+        // city, since that's the only service area we actually have data
+        // for; inventing a list of nearby towns would misrepresent reach.
+        if ($this->city) {
+            $schema['areaServed'] = array_filter([
+                '@type' => 'City',
+                'name' => $this->city,
+                'containedInPlace' => $this->state ? [
+                    '@type' => 'State',
+                    'name' => $this->state,
+                ] : null,
             ]);
         }
 

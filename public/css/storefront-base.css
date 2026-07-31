@@ -418,6 +418,17 @@
     margin-top: 12px;
 }
 
+.footer-nap {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    margin-top: 8px;
+}
+
+.footer-nap-phone {
+    font-family: inherit;
+    font-size: inherit;
+}
+
 /* ─── Sweet & Elegant (default — deep plum) ─── */
 body.theme-sweet_elegant {
     --footer-bg: #401829;
