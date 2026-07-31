@@ -1,0 +1,14 @@
+/* Auto-split from style.css — theme block: sweet_elegant (lines 34-46) */
+/* 1. 🌸 SWEET & ELEGANT THEME (Default Romantic Vintage Pink) */
+body.theme-sweet_elegant {
+    --primary: #e67399;
+    --primary-hover: #d25a82;
+    --pink-bg: #fcebf1;
+    --dark-text: #4a2133;
+    --theme-heading-font: 'Great Vibes', cursive;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #fcebf1;
+    --theme-accent-bg: #401829;
+    background-color: #fcebf1;
+}
+

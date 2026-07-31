@@ -280,6 +280,18 @@ class Tenant extends Model implements TenancyContract
     }
 
     /**
+     * The asset path for this tenant's theme-specific CSS (public/css/style.css
+     * split per theme so a storefront page only downloads its own theme's
+     * rules plus the shared base, instead of every theme's CSS on every
+     * page). Same missing/bad theme_id fallback as themeView().
+     */
+    public function themeCssPath(): string
+    {
+        $path = "css/themes/{$this->theme_id}.css";
+        return file_exists(public_path($path)) ? $path : 'css/themes/sweet_elegant.css';
+    }
+
+    /**
      * The tenant's one canonical public URL: their verified custom domain
      * if they have one, otherwise their {subdomain}.{brand domain}. Used
      * anywhere we need to point *at* the live site (redirects, "view site"

@@ -1,0 +1,634 @@
+/* Auto-split from style.css — theme block: clean_minimal (lines 3257-3889) */
+/* 7. 🌙 MIDNIGHT BAKEHOUSE THEME — deep navy & brushed gold, elegant
+   serif editorial luxury feel. Pro tier (see Tenant::getStarterThemes()). */
+body.theme-clean_minimal {
+    --primary: #b8935a;
+    --primary-hover: #9c7a45;
+    --pink-bg: #f7f5f1;
+    --dark-text: #14304a;
+    --theme-heading-font: 'Playfair Display', serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #f7f5f1;
+    --theme-accent-bg: #0f2438;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f7f5f1;
+}
+
+body.theme-clean_minimal h1,
+body.theme-clean_minimal h2,
+body.theme-clean_minimal h3,
+body.theme-clean_minimal .section-title-script,
+body.theme-clean_minimal .whimsical-col-right h2 {
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 700 !important;
+    color: #14304a !important;
+    letter-spacing: 0;
+}
+
+body.theme-clean_minimal .subheading {
+    font-family: 'Great Vibes', cursive !important;
+    font-weight: 400 !important;
+    color: #b8935a !important;
+    font-size: 1.7rem !important;
+}
+
+body.theme-clean_minimal .hero-cloud-elementor-top,
+body.theme-clean_minimal .hero-cloud-elementor-bottom,
+body.theme-clean_minimal .raining-cake {
+    display: none !important;
+}
+
+body.theme-clean_minimal .site-header {
+    background: transparent !important;
+}
+
+/* Header text needs to be white only while it's actually floating over
+   the dark navy hero (via the shared :has() overlap rule above) - if
+   hero is ever disabled the header sits on the page's own cream
+   background instead, where white text would disappear. */
+body.theme-clean_minimal .site-header:has(+ #storefront-view .midnight-hero) .nav-links a,
+body.theme-clean_minimal .site-header:has(+ #storefront-view .midnight-hero) .logo span {
+    color: #ffffff !important;
+}
+
+body.theme-clean_minimal .site-header:has(+ #storefront-view .midnight-hero) .nav-links a:hover {
+    color: #b8935a !important;
+}
+
+body.theme-clean_minimal .categories-section,
+body.theme-clean_minimal .reviews-section {
+    background: #f7f5f1 !important;
+}
+
+body.theme-clean_minimal .highlights-bar {
+    background: #f7f5f1 !important;
+}
+
+body.theme-clean_minimal .video-promo-banner h2,
+body.theme-clean_minimal .video-overlay-content h2 {
+    color: #ffffff !important;
+}
+
+/* Without this, the theme-wide "h1,h2,h3{color:dark}" rule above (more
+   specific than the base .cta-content h2{color:#fff}, since it's
+   body.theme-X h2 vs .cta-content h2) wins and renders the CTA banner's
+   headline in dark navy on its own dark scrim - unreadable. */
+body.theme-clean_minimal .cta-video-banner h2,
+body.theme-clean_minimal .cta-video-banner p {
+    color: #ffffff !important;
+}
+
+body.theme-clean_minimal .whimsical-section {
+    background-color: #0f2438 !important;
+    color: #f7f5f1 !important;
+}
+
+body.theme-clean_minimal .whimsical-section h2 {
+    color: #ffffff !important;
+}
+
+body.theme-clean_minimal .btn-primary,
+body.theme-clean_minimal .nav-order-btn {
+    background: transparent !important;
+    color: #14304a !important;
+    border: 1px solid #14304a !important;
+    border-radius: 2px !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem !important;
+    box-shadow: none !important;
+}
+
+body.theme-clean_minimal .btn-primary:hover,
+body.theme-clean_minimal .nav-order-btn:hover {
+    background: #14304a !important;
+    color: #ffffff !important;
+}
+
+body.theme-clean_minimal .category-card-exact,
+body.theme-clean_minimal .cloud-review-card,
+body.theme-clean_minimal .category-image-frame {
+    border-radius: 4px !important;
+    border: 1px solid #e5ded0 !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(15, 36, 56, 0.06) !important;
+}
+
+/* cta-video-banner's shared ::before scrim is a flat 18-32% black wash -
+   not enough contrast for a bright photo behind white headline text.
+   Several other themes already override this for the same reason. */
+body.theme-clean_minimal .cta-video-banner::before {
+    background: linear-gradient(135deg, rgba(15, 36, 56, 0.85) 0%, rgba(15, 36, 56, 0.62) 100%) !important;
+}
+
+/* Order Form Modal Theme Rules - Midnight Bakehouse */
+body.theme-clean_minimal .order-modal-card {
+    border-radius: 6px !important;
+    border: 1px solid #e5ded0 !important;
+    background: #ffffff !important;
+    box-shadow: 0 10px 40px rgba(15, 36, 56, 0.12) !important;
+}
+
+body.theme-clean_minimal .sticky-order-summary-bar {
+    background: #f7f5f1 !important;
+    border: 1px solid #e5ded0 !important;
+}
+
+body.theme-clean_minimal .product,
+body.theme-clean_minimal .option-chip {
+    border-radius: 4px !important;
+    border: 1px solid #e5ded0 !important;
+    background: #ffffff !important;
+    color: #14304a !important;
+}
+
+body.theme-clean_minimal .product.selected,
+body.theme-clean_minimal .option-chip.selected {
+    background: #14304a !important;
+    color: #ffffff !important;
+    border-color: #14304a !important;
+    box-shadow: 0 2px 8px rgba(15, 36, 56, 0.15) !important;
+}
+
+body.theme-clean_minimal .next-btn {
+    background: #14304a !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+/* --- clean_minimal's own per-theme layout (resources/views/storefront/themes/clean_minimal/*.blade.php) ---
+   Modeled on an elegant navy/gold premium-food reference site: an oval-
+   clipped hero photo on a deep navy band, a cream "what's included"
+   icon row, a white process card floating on navy, a product spotlight,
+   a full-bleed dark editorial section, and a two-column feature list.
+   Class names scoped to body.theme-clean_minimal, same convention as
+   the other themes' .rustic-*/.playful-*/.modern-*/.farmhouse-* classes. */
+
+body.theme-clean_minimal .midnight-icon {
+    color: #b8935a;
+}
+
+/* Hero — navy band, oval photo left, copy right */
+body.theme-clean_minimal .midnight-hero {
+    background: linear-gradient(120deg, #0f2438 0%, #14304a 55%, #1c3d5a 100%);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 50px;
+    padding: 90px 40px;
+}
+
+body.theme-clean_minimal .midnight-hero-media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    max-width: 460px;
+    margin: 0 auto;
+    border-radius: 50% / 55%;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+}
+
+body.theme-clean_minimal .midnight-hero-media img,
+body.theme-clean_minimal .midnight-hero-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-clean_minimal .midnight-hero-media-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #b8935a 0%, #14304a 100%);
+}
+
+body.theme-clean_minimal .midnight-hero-copy .subheading {
+    display: block;
+}
+
+body.theme-clean_minimal .midnight-hero-copy h1 {
+    color: #ffffff !important;
+    font-size: clamp(2rem, 3.6vw, 2.8rem);
+    line-height: 1.2;
+    margin: 8px 0 18px 0;
+}
+
+body.theme-clean_minimal .midnight-hero-copy p {
+    color: rgba(247, 245, 241, 0.85);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 26px;
+    max-width: 460px;
+}
+
+body.theme-clean_minimal .midnight-hero-copy .btn-primary {
+    border-color: #ffffff !important;
+    color: #ffffff !important;
+}
+
+body.theme-clean_minimal .midnight-hero-copy .btn-primary:hover {
+    background: #ffffff !important;
+    color: #14304a !important;
+}
+
+/* Highlights, re-purposed as "What's Included" - cream bg, icon row */
+body.theme-clean_minimal .midnight-included {
+    text-align: center;
+    padding: 80px 25px 60px 25px;
+}
+
+body.theme-clean_minimal .midnight-included-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+    max-width: 1000px;
+    margin: 40px auto 0 auto;
+}
+
+body.theme-clean_minimal .midnight-included-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid #e5ded0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+}
+
+body.theme-clean_minimal .midnight-included-grid h4 {
+    font-family: 'Playfair Display', serif;
+    color: #14304a;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+}
+
+body.theme-clean_minimal .midnight-included-grid p {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* How It Works, re-purposed as a white process card floating on navy */
+body.theme-clean_minimal .midnight-process-wrap {
+    background: #0f2438;
+    padding: 80px 25px;
+}
+
+body.theme-clean_minimal .midnight-process-card {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 4px;
+    padding: 55px 45px;
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+body.theme-clean_minimal .midnight-process-card .subheading {
+    display: block;
+    margin-bottom: 6px;
+}
+
+body.theme-clean_minimal .midnight-process-card > p {
+    color: #555;
+    font-size: 0.92rem;
+    margin-bottom: 34px;
+}
+
+body.theme-clean_minimal .midnight-process-step {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-align: left;
+    padding: 18px 0;
+    border-top: 1px solid #eee;
+}
+
+body.theme-clean_minimal .midnight-process-step:first-of-type {
+    border-top: none;
+}
+
+body.theme-clean_minimal .midnight-process-num {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #f7f5f1;
+    border: 1px solid #b8935a;
+    color: #b8935a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+body.theme-clean_minimal .midnight-process-step h3 {
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+}
+
+body.theme-clean_minimal .midnight-process-step p {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+body.theme-clean_minimal .midnight-process-step .material-symbols-outlined {
+    margin-left: auto;
+    color: #b8935a;
+}
+
+/* Promo, re-purposed as a centered "Premium Spotlight" product callout */
+body.theme-clean_minimal .midnight-spotlight {
+    text-align: center;
+    padding: 90px 25px;
+    background: #ffffff;
+}
+
+body.theme-clean_minimal .midnight-spotlight-media {
+    max-width: 260px;
+    margin: 30px auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+body.theme-clean_minimal .midnight-spotlight-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-clean_minimal .midnight-spotlight-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: #14304a;
+    margin-bottom: 24px;
+    display: block;
+}
+
+body.theme-clean_minimal .midnight-trust-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-top: 45px;
+}
+
+body.theme-clean_minimal .midnight-trust-row > div {
+    text-align: center;
+    max-width: 180px;
+}
+
+body.theme-clean_minimal .midnight-trust-row .material-symbols-outlined {
+    display: block;
+    margin: 0 auto 8px auto;
+    color: #b8935a;
+    font-size: 1.6rem;
+}
+
+body.theme-clean_minimal .midnight-trust-row p {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Categories, re-purposed as a "Featured Recipes"-style card grid */
+body.theme-clean_minimal .midnight-recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 26px;
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+body.theme-clean_minimal .midnight-recipe-card-frame {
+    aspect-ratio: 4 / 3;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+body.theme-clean_minimal .midnight-recipe-card-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-clean_minimal .midnight-recipe-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #ffffff;
+    color: #b8935a;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* Whimsical, re-purposed as a full-bleed dark editorial section */
+body.theme-clean_minimal .midnight-editorial {
+    position: relative;
+    padding: 100px 25px;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+}
+
+body.theme-clean_minimal .midnight-editorial::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15, 36, 56, 0.88) 0%, rgba(15, 36, 56, 0.72) 100%);
+}
+
+body.theme-clean_minimal .midnight-editorial-content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+body.theme-clean_minimal .midnight-editorial-content h2 {
+    color: #ffffff !important;
+    margin-bottom: 20px;
+}
+
+body.theme-clean_minimal .midnight-editorial-content p {
+    color: rgba(247, 245, 241, 0.85);
+    font-size: 1.02rem;
+    line-height: 1.8;
+}
+
+/* FAQ, re-purposed as a two-column "Why Choose Us" feature list */
+body.theme-clean_minimal .midnight-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+body.theme-clean_minimal .midnight-features-col {
+    padding: 70px 50px;
+}
+
+body.theme-clean_minimal .midnight-features-col:first-child {
+    background: #f7f5f1;
+}
+
+body.theme-clean_minimal .midnight-features-col h3 {
+    margin-bottom: 26px;
+}
+
+body.theme-clean_minimal .midnight-feature-item {
+    margin-bottom: 20px;
+}
+
+body.theme-clean_minimal .midnight-feature-item h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #14304a;
+    margin-bottom: 4px;
+}
+
+body.theme-clean_minimal .midnight-feature-item p {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Gallery — clean rectangular grid */
+body.theme-clean_minimal .midnight-grid .gallery-card-img-wrap {
+    aspect-ratio: 4 / 3;
+}
+
+/* Shared page-intro kicker + title for about/gallery */
+body.theme-clean_minimal .midnight-page-hero {
+    text-align: center;
+    padding: 100px 20px 55px 20px;
+    background: #0f2438;
+}
+
+body.theme-clean_minimal .midnight-page-hero .subheading {
+    display: block;
+}
+
+body.theme-clean_minimal .midnight-page-hero-title {
+    color: #ffffff !important;
+    font-size: 2.6rem;
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+/* About — founder split, ingredients list */
+body.theme-clean_minimal .midnight-about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 60px;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 90px 40px;
+}
+
+body.theme-clean_minimal .midnight-about-media {
+    aspect-ratio: 4 / 5;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 20px 45px rgba(15, 36, 56, 0.15);
+}
+
+body.theme-clean_minimal .midnight-about-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-clean_minimal .midnight-about-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #0f2438 0%, #b8935a 100%);
+}
+
+body.theme-clean_minimal .midnight-about-copy p {
+    color: #444;
+    font-size: 1.02rem;
+    line-height: 1.8;
+    margin: 18px 0 26px 0;
+}
+
+body.theme-clean_minimal .midnight-ingredients-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 25px 80px 25px;
+}
+
+body.theme-clean_minimal .midnight-ingredient-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+body.theme-clean_minimal .midnight-icon-circle {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #14304a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-clean_minimal .midnight-icon-circle .material-symbols-outlined {
+    color: #ffffff;
+    font-size: 1.35rem;
+}
+
+body.theme-clean_minimal .midnight-ingredient-row h3 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+body.theme-clean_minimal .midnight-ingredient-row p {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+@media (max-width: 860px) {
+
+    body.theme-clean_minimal .midnight-hero,
+    body.theme-clean_minimal .midnight-about,
+    body.theme-clean_minimal .midnight-features {
+        grid-template-columns: 1fr;
+    }
+
+    body.theme-clean_minimal .midnight-hero {
+        text-align: center;
+        padding: 60px 25px;
+    }
+
+    body.theme-clean_minimal .midnight-hero-copy p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    body.theme-clean_minimal .midnight-process-card {
+        padding: 40px 25px;
+    }
+}
+
