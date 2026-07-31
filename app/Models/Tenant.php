@@ -212,6 +212,11 @@ class Tenant extends Model implements TenancyContract
     {
         return [
             'hero' => ['id' => 'hero', 'name' => 'Hero Banner', 'enabled' => true, 'order' => 1],
+            // Order 1.5, not 2 — sits between hero and highlights even for
+            // tenants whose section_settings were already persisted before
+            // this section existed (getOrderedSections() only backfills
+            // missing keys, it doesn't renumber ones a tenant already saved).
+            'about' => ['id' => 'about', 'name' => 'About / Our Story', 'enabled' => true, 'order' => 1.5],
             'highlights' => ['id' => 'highlights', 'name' => 'Trust Highlights Bar', 'enabled' => true, 'order' => 2],
             'promo_video' => ['id' => 'promo_video', 'name' => 'Video/Image Promo Banner', 'enabled' => true, 'order' => 3],
             'categories' => ['id' => 'categories', 'name' => 'Category Showcase Grid', 'enabled' => false, 'order' => 4],
@@ -291,9 +296,12 @@ class Tenant extends Model implements TenancyContract
     }
 
     /**
-     * Location-aware <title> per storefront page. Falls back to the
-     * baker's own hero/section copy when there's no city on file yet
-     * (most onboarding-in-progress tenants) so nothing renders empty.
+     * Location-aware <title> per storefront page. The homepage prefers the
+     * AI-generated seo_title from onboarding (App\Services\AiContentService/
+     * DraftSynthesisService already produce one for every tenant; nothing
+     * ever read it back out until now) since that's hand-tuned per bakery,
+     * then falls back to the location-aware pattern, then the baker's own
+     * hero copy when there's no city on file yet.
      */
     public function seoTitle(string $page = 'home'): string
     {
@@ -311,15 +319,16 @@ class Tenant extends Model implements TenancyContract
                 ? "Cake Gallery | {$name} in {$location}"
                 : "Gallery | {$name}",
             'policy' => "Bakery Policy & Order Terms | {$name}",
-            default => $location
-                ? "{$name} | Custom Cakes & Bakery in {$location}"
-                : "{$name} | " . $this->getSiteContent('hero_subheading', 'Where Every Celebration Gets Its Sweet Ending'),
+            default => $this->getSiteContent('seo_title')
+                ?: ($location
+                    ? "{$name} | Custom Cakes & Bakery in {$location}"
+                    : "{$name} | " . $this->getSiteContent('hero_subheading', 'Where Every Celebration Gets Its Sweet Ending')),
         };
     }
 
     /**
-     * Location-aware meta description per storefront page. Same fallback
-     * rule as seoTitle() — no city on file yet just means no location clause.
+     * Location-aware meta description per storefront page. Same
+     * seo_description-first rule as seoTitle() for the homepage.
      */
     public function seoDescription(string $page = 'home'): string
     {
@@ -331,7 +340,8 @@ class Tenant extends Model implements TenancyContract
             'menu' => "Explore the menu, cake flavors, and pricing at {$name}{$inLocation}. Order custom cakes online.",
             'gallery' => "Browse custom cake designs and creations from {$name}{$inLocation}.",
             'policy' => "Official order terms, payment details, pickup hours, delivery rules, and allergen disclosure for {$name}.",
-            default => $this->getSiteContent('about_bio')
+            default => $this->getSiteContent('seo_description')
+                ?: $this->getSiteContent('about_bio')
                 ?: "Custom artisanal cakes, cupcakes, and treat boxes from {$name}{$inLocation}. Order custom cakes online with ease.",
         };
     }

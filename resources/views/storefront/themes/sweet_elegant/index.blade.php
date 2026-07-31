@@ -48,7 +48,7 @@
 
 <div id="storefront-view">
     <!-- Official Elementor WordPress Top Cloud Divider -->
-    <img src="{{ asset('images/clouds.svg') }}" class="hero-cloud-elementor-top" alt="Top Cloud Divider">
+    <img src="{{ asset('images/clouds.svg') }}" class="hero-cloud-elementor-top" alt="Top Cloud Divider" loading="lazy" decoding="async">
 
     @php
         $sections = $tenant->getOrderedSections();
@@ -67,11 +67,11 @@
                             <source src="{{ asset($heroBg) }}" type="video/mp4">
                         </video>
                     @endif
-                    <img src="{{ asset('images/cherry_cake-removebg-preview.png') }}" class="raining-cake hero-cake-top-right" alt="Top Right Cherry Cake">
-                    <img src="{{ asset('images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png') }}" class="raining-cake hero-cake-middle-left" alt="Middle Left Pink Crown Heart Cake">
-                    <img src="{{ asset('images/elmo_cake-removebg-preview.png') }}" class="raining-cake hero-cake-far-right" alt="Chocolate 2-Tier Ruffles Cake">
-                    <img src="{{ asset('images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png') }}" class="raining-cake hero-cake-bottom-left" alt="Bottom Left White Heart Cake">
-                    <img src="{{ asset('images/chocolatecake.png') }}" class="raining-cake hero-cake-bottom-right" alt="Bottom Right Floral Vintage Cake">
+                    <img src="{{ asset('images/cherry_cake-removebg-preview.png') }}" class="raining-cake hero-cake-top-right" alt="Top Right Cherry Cake" loading="lazy" decoding="async">
+                    <img src="{{ asset('images/4ee97017-0b48-4f55-95ed-8811da81d74d-removebg-preview.png') }}" class="raining-cake hero-cake-middle-left" alt="Middle Left Pink Crown Heart Cake" loading="lazy" decoding="async">
+                    <img src="{{ asset('images/elmo_cake-removebg-preview.png') }}" class="raining-cake hero-cake-far-right" alt="Chocolate 2-Tier Ruffles Cake" loading="lazy" decoding="async">
+                    <img src="{{ asset('images/25cfe8e0-d9bf-406c-8c2a-fdb6ef4692e6-removebg-preview.png') }}" class="raining-cake hero-cake-bottom-left" alt="Bottom Left White Heart Cake" loading="lazy" decoding="async">
+                    <img src="{{ asset('images/chocolatecake.png') }}" class="raining-cake hero-cake-bottom-right" alt="Bottom Right Floral Vintage Cake" loading="lazy" decoding="async">
 
                     <div class="hero-wrapper" style="position:relative; z-index:2;">
                         <span class="subheading">{{ $tenant->getSiteContent('hero_subheading', 'Welcome to ' . ($tenant->name ?? 'our bakehouse')) }}</span>
@@ -143,7 +143,7 @@
                             <div class="category-card-exact">
                                 <div class="category-image-frame" style="display:flex; align-items:center; justify-content:center; background:var(--pink-bg); min-height:220px;">
                                     @if($imgUrl)
-                                        <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? 'Category' }}">
+                                        <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? ($tenant->name . ' Bakery Category') }}" loading="lazy" decoding="async">
                                     @else
                                         <div style="text-align:center; padding:30px 15px;">
                                             <span style="font-size:3rem; display:block; margin-bottom:8px;">🧁</span>
@@ -173,7 +173,7 @@
                                 }
                             @endphp
                             @if($wImg)
-                                <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation">
+                                <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation" loading="lazy" decoding="async">
                             @else
                                 <div style="text-align:center; padding:40px 20px; background:rgba(255,255,255,0.15); border-radius:24px;">
                                     <span style="font-size:4rem; display:block; margin-bottom:12px;">✨</span>
@@ -260,7 +260,7 @@
                                 @if($fSrc)
                                     <div class="gallery-card" onclick="openLightbox(@js(asset($fSrc)), @js($fImg['title'] ?? ''))">
                                         <div class="gallery-card-img-wrap">
-                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? 'Featured Creation' }}">
+                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? ($tenant->name . ' Featured Cake Creation') }}" loading="lazy" decoding="async">
                                         </div>
                                         @if(!empty($fImg['title']))
                                             <div class="gallery-card-info">
@@ -296,7 +296,7 @@
 <div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
         <button class="modal-close-btn" onclick="closeLightbox()">✕</button>
-        <img id="lightbox-img" src="" alt="Gallery Preview">
+        <img id="lightbox-img" src="" alt="Gallery Preview" loading="lazy" decoding="async">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 </div>

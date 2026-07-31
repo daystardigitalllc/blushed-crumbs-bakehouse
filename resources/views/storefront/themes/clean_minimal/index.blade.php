@@ -67,7 +67,7 @@
                                 <source src="{{ asset($heroBg) }}" type="video/mp4">
                             </video>
                         @elseif(!empty($heroBg))
-                            <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}">
+                            <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}" fetchpriority="high">
                         @else
                             <div class="midnight-hero-media-placeholder"><span class="material-symbols-outlined" style="font-size:5rem; color:#fff;">bakery_dining</span></div>
                         @endif
@@ -139,7 +139,7 @@
                         <h2>{{ $tenant->getSiteContent('promo_headline', $spotlightProduct->name ?? 'Featured Creation') }}</h2>
                         <div class="midnight-spotlight-media">
                             @if(!empty($promoBg))
-                                <img src="{{ asset($promoBg) }}" alt="{{ $tenant->name }}">
+                                <img src="{{ asset($promoBg) }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
                             @else
                                 <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #14304a 0%, #b8935a 100%);">
                                     <span class="material-symbols-outlined" style="font-size:3rem; color:#ffffff;">bakery_dining</span>
@@ -186,7 +186,7 @@
                             <div>
                                 <div class="midnight-recipe-card-frame">
                                     @if($catImg)
-                                        <img src="{{ asset($catImg) }}" alt="{{ $cat['title'] ?? 'Category' }}">
+                                        <img src="{{ asset($catImg) }}" alt="{{ $cat['title'] ?? ($tenant->name . ' Bakery Category') }}" loading="lazy" decoding="async">
                                     @else
                                         <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #14304a 0%, #b8935a 100%);">
                                             <span class="material-symbols-outlined" style="font-size:2.5rem; color:#ffffff;">cake</span>
@@ -276,7 +276,7 @@
                                 @if($fSrc)
                                     <div class="gallery-card" onclick="openLightbox(@js(asset($fSrc)), @js($fImg['title'] ?? ''))">
                                         <div class="gallery-card-img-wrap">
-                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? 'Featured Creation' }}">
+                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? ($tenant->name . ' Featured Cake Creation') }}" loading="lazy" decoding="async">
                                         </div>
                                         @if(!empty($fImg['title']))
                                             <div class="gallery-card-info">
@@ -312,7 +312,7 @@
 <div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
         <button class="modal-close-btn" onclick="closeLightbox()"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-2px;">close</span></button>
-        <img id="lightbox-img" src="" alt="Gallery Preview">
+        <img id="lightbox-img" src="" alt="Gallery Preview" loading="lazy" decoding="async">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 </div>

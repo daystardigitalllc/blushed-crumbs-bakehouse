@@ -59,7 +59,7 @@
                     $founderImg = !empty($tenant->logo_path) ? asset($tenant->logo_path) : (!empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : null);
                 @endphp
                 @if($founderImg)
-                    <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}">
+                    <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}" loading="lazy" decoding="async">
                 @else
                     <div class="founder-placeholder-card">
                         <span style="font-size:3.5rem;">🧁</span>

@@ -958,6 +958,7 @@ window.openLightbox = function(imageSrc, caption) {
 
     if (modal && img) {
         img.src = imageSrc;
+        img.alt = caption || 'Gallery Preview';
         if (cap) cap.innerText = caption || '';
         modal.style.display = 'flex';
     }

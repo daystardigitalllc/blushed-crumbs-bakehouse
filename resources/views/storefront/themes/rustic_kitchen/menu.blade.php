@@ -194,7 +194,7 @@
                 @else
                     <p style="color:#666; font-size:0.92rem; margin-bottom:20px;">Click the menu image below to view full-screen</p>
                     <a href="{{ asset($imagePath) }}" target="_blank">
-                        <img src="{{ asset($imagePath) }}" alt="{{ $tenant->name }} Menu Card">
+                        <img src="{{ asset($imagePath) }}" alt="{{ $tenant->name }} Menu Card" loading="lazy" decoding="async">
                     </a>
                 @endif
             </section>

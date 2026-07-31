@@ -67,7 +67,7 @@
                                 <source src="{{ asset($heroBg) }}" type="video/mp4">
                             </video>
                         @elseif(!empty($heroBg))
-                            <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}">
+                            <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}" fetchpriority="high">
                         @else
                             <div class="modern-hero-media-placeholder"><span class="material-symbols-outlined" style="font-size:5rem; color:#fff;">bakery_dining</span></div>
                         @endif
@@ -116,7 +116,7 @@
                             <div class="modern-shop-card">
                                 <div class="modern-shop-card-frame">
                                     @if($imgUrl)
-                                        <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? 'Category' }}">
+                                        <img src="{{ $imgUrl }}" alt="{{ $cat['title'] ?? ($tenant->name . ' Bakery Category') }}" loading="lazy" decoding="async">
                                     @else
                                         <span class="material-symbols-outlined modern-icon" style="font-size:3rem;">cake</span>
                                     @endif
@@ -145,7 +145,7 @@
                             @endphp
                             @if($wImg)
                                 <div class="modern-cakes-media">
-                                    <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Custom Cake">
+                                    <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Custom Cake" loading="lazy" decoding="async">
                                 </div>
                             @else
                                 <div class="modern-cakes-media" style="display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #4338ca 0%, #ec4899 100%);">
@@ -193,7 +193,7 @@
                         </div>
                         <div class="modern-promo-media">
                             @if(!empty($promoBg))
-                                <img src="{{ asset($promoBg) }}" alt="{{ $tenant->name }} Treats">
+                                <img src="{{ asset($promoBg) }}" alt="{{ $tenant->name }} Treats" loading="lazy" decoding="async">
                             @else
                                 <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #4338ca 0%, #38bdf8 100%);">
                                     <span class="material-symbols-outlined" style="font-size:4rem; color:#ffffff;">redeem</span>
@@ -253,7 +253,7 @@
                                 $ordersImg = !empty($tenant->gallery_images[1]) ? $tenant->gallery_images[1] : (!empty($tenant->gallery_images[0]) ? $tenant->gallery_images[0] : null);
                             @endphp
                             @if($ordersImg)
-                                <img src="{{ asset($ordersImg) }}" alt="{{ $tenant->name }} Custom Orders">
+                                <img src="{{ asset($ordersImg) }}" alt="{{ $tenant->name }} Custom Orders" loading="lazy" decoding="async">
                             @else
                                 <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg, #ec4899 0%, #4338ca 100%);">
                                     <span class="material-symbols-outlined" style="font-size:4rem; color:#ffffff;">cake</span>
@@ -287,7 +287,7 @@
                                 @if($fSrc)
                                     <div class="gallery-card" onclick="openLightbox(@js(asset($fSrc)), @js($fImg['title'] ?? ''))">
                                         <div class="gallery-card-img-wrap">
-                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? 'Featured Creation' }}">
+                                            <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? ($tenant->name . ' Featured Cake Creation') }}" loading="lazy" decoding="async">
                                         </div>
                                         @if(!empty($fImg['title']))
                                             <div class="gallery-card-info">
@@ -323,7 +323,7 @@
                                 $founderImg = !empty($tenant->logo_path) ? asset($tenant->logo_path) : (!empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : null);
                             @endphp
                             @if($founderImg)
-                                <img src="{{ $founderImg }}" alt="{{ $tenant->name }}">
+                                <img src="{{ $founderImg }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
                             @else
                                 <div class="modern-meet-baker-placeholder">
                                     <span class="material-symbols-outlined" style="font-size:3.5rem; color:#ffffff;">cake</span>
@@ -348,7 +348,7 @@
 <div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
         <button class="modal-close-btn" onclick="closeLightbox()"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-2px;">close</span></button>
-        <img id="lightbox-img" src="" alt="Gallery Preview">
+        <img id="lightbox-img" src="" alt="Gallery Preview" loading="lazy" decoding="async">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 </div>

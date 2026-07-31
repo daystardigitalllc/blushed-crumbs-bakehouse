@@ -66,7 +66,7 @@
                         <source src="{{ asset($heroBg) }}" type="video/mp4">
                     </video>
                 @elseif(!empty($heroBg))
-                    <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}">
+                    <img src="{{ asset($heroBg) }}" alt="{{ $tenant->name }}" fetchpriority="high">
                 @else
                     <div style="width:100%; height:100%; background:linear-gradient(160deg, #2b2117 0%, #c1810a 100%);"></div>
                 @endif
@@ -95,7 +95,7 @@
                 $aboutImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : (!empty($tenant->logo_path) ? asset($tenant->logo_path) : null);
             @endphp
             @if($aboutImg)
-                <img src="{{ $aboutImg }}" alt="{{ $tenant->name }}">
+                <img src="{{ $aboutImg }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
             @else
                 <div class="farmhouse-about-placeholder">
                     <span class="material-symbols-outlined" style="font-size:3.5rem; color:#ffffff;">storefront</span>
@@ -129,7 +129,7 @@
             @endphp
             <div class="farmhouse-menu-index-media">
                 @if($catImg)
-                    <img src="{{ asset($catImg) }}" alt="{{ $tenant->name }} Menu">
+                    <img src="{{ asset($catImg) }}" alt="{{ $tenant->name }} Menu" loading="lazy" decoding="async">
                 @else
                     <div class="farmhouse-menu-index-media-placeholder">
                         <span class="material-symbols-outlined" style="font-size:4rem; color:#ffffff;">restaurant</span>
@@ -225,7 +225,7 @@
 <div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
         <button class="modal-close-btn" onclick="closeLightbox()"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-2px;">close</span></button>
-        <img id="lightbox-img" src="" alt="Gallery Preview">
+        <img id="lightbox-img" src="" alt="Gallery Preview" loading="lazy" decoding="async">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 </div>

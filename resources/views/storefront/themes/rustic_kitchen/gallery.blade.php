@@ -67,7 +67,7 @@
                 @php $src = $item->image_url ?? $item->image_path; @endphp
                 <div class="gallery-card" data-category="{{ $item->category }}" onclick="openLightbox('{{ asset($src) }}', '{{ $item->title }}')">
                     <div class="gallery-card-img-wrap">
-                        <img src="{{ asset($src) }}" alt="{{ $item->title }}">
+                        <img src="{{ asset($src) }}" alt="{{ $item->title ?: $tenant->name . ' Custom Cake Design' }}" loading="lazy" decoding="async">
                     </div>
                     <div class="gallery-card-info">
                         <h4>{{ $item->title }}</h4>
@@ -90,7 +90,7 @@
 <div id="lightbox-modal" class="lightbox-modal" style="display:none;" onclick="closeLightbox()">
     <div class="lightbox-content" onclick="event.stopPropagation()">
         <button class="modal-close-btn" onclick="closeLightbox()"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-2px;">close</span></button>
-        <img id="lightbox-img" src="" alt="Gallery Preview">
+        <img id="lightbox-img" src="" alt="Gallery Preview" loading="lazy" decoding="async">
         <div id="lightbox-caption" class="lightbox-caption"></div>
     </div>
 </div>

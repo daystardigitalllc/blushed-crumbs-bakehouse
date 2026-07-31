@@ -56,7 +56,7 @@
                 $founderImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : (!empty($tenant->logo_path) ? asset($tenant->logo_path) : null);
             @endphp
             @if($founderImg)
-                <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}">
+                <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}" loading="lazy" decoding="async">
             @else
                 <div class="farmhouse-about-placeholder">
                     <span class="material-symbols-outlined" style="font-size:3.5rem; color:#ffffff;">storefront</span>
