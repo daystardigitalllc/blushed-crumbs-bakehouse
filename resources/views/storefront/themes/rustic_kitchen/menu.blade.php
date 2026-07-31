@@ -3,15 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu &amp; Pricing | {{ $tenant->name ?? 'Bakery' }}</title>
-    <!-- Favicon -->
-    @if(isset($tenant) && $tenant->logo_path)
-        <link rel="icon" href="{{ asset($tenant->logo_path) }}">
-    @else
-        <link rel="icon" href="{{ asset('images/favicon.png') }}">
-    @endif
-    <meta name="description" content="Explore the menu, cake options, and pricing for {{ $tenant->name ?? 'our bakery' }}.">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('storefront.partials.seo_head', ['page' => 'menu'])
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

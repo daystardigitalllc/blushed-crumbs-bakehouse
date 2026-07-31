@@ -13,6 +13,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
  * requirement — switching a tenant's theme_id must never drop content,
  * since every theme template reads the same site_content/getOrderedSections
  * contract.
+ *
+ * Storefronts are only reachable via the tenant's real subdomain/custom
+ * domain now (/site/{subdomain} 301-redirects there instead of rendering),
+ * so these tests exercise the same StorefrontController/themeView path via
+ * ResolveTenant's `?bakery=` query-param fallback, which resolves the tenant
+ * without needing real subdomain DNS/Host routing in the test environment.
  */
 class ThemeViewResolutionTest extends TestCase
 {
@@ -43,7 +49,7 @@ class ThemeViewResolutionTest extends TestCase
             'theme_id' => 'rustic_kitchen',
         ]);
 
-        $response = $this->get('/site/rustictest');
+        $response = $this->get('/?bakery=rustictest');
 
         $response->assertStatus(200);
         $response->assertSee('rustic-hero-split', false);
@@ -58,7 +64,7 @@ class ThemeViewResolutionTest extends TestCase
             'theme_id' => 'does_not_exist',
         ]);
 
-        $response = $this->get('/site/badtheme');
+        $response = $this->get('/?bakery=badtheme');
 
         $response->assertStatus(200);
         $response->assertSee('hero-cloud-elementor-top', false);
@@ -80,7 +86,7 @@ class ThemeViewResolutionTest extends TestCase
             ],
         ]);
 
-        $before = $this->get('/site/switchtest');
+        $before = $this->get('/?bakery=switchtest');
         $before->assertStatus(200);
         $before->assertSee('Totally Unique Headline Text');
         $before->assertSee('A Very Specific Subheading');
@@ -89,7 +95,7 @@ class ThemeViewResolutionTest extends TestCase
 
         $tenant->update(['theme_id' => 'rustic_kitchen']);
 
-        $after = $this->get('/site/switchtest');
+        $after = $this->get('/?bakery=switchtest');
         $after->assertStatus(200);
         $after->assertSee('rustic-hero-split', false);
         $after->assertSee('Totally Unique Headline Text');
@@ -106,8 +112,8 @@ class ThemeViewResolutionTest extends TestCase
             'theme_id' => 'rustic_kitchen',
         ]);
 
-        $this->get('/site/rusticpages/about')->assertStatus(200);
-        $this->get('/site/rusticpages/menu')->assertStatus(200);
-        $this->get('/site/rusticpages/gallery')->assertStatus(200);
+        $this->get('/about?bakery=rusticpages')->assertStatus(200);
+        $this->get('/menu?bakery=rusticpages')->assertStatus(200);
+        $this->get('/gallery?bakery=rusticpages')->assertStatus(200);
     }
 }

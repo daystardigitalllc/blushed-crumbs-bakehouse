@@ -255,6 +255,141 @@ class Tenant extends Model implements TenancyContract
     }
 
     /**
+     * The tenant's one canonical public URL: their verified custom domain
+     * if they have one, otherwise their {subdomain}.{brand domain}. Used
+     * anywhere we need to point *at* the live site (redirects, "view site"
+     * links, canonical tags) so there's a single source of truth instead of
+     * each caller re-deriving it.
+     */
+    public function publicUrl(string $path = ''): string
+    {
+        if ($this->custom_domain && $this->custom_domain_status === 'verified') {
+            $host = $this->custom_domain;
+        } else {
+            $brandDomain = $this->brand?->domain ?? 'doughmain.pro';
+            $host = $this->subdomain . '.' . $brandDomain;
+        }
+
+        $path = $path ? '/' . ltrim($path, '/') : '';
+
+        return 'https://' . strtolower($host) . $path;
+    }
+
+    /**
+     * "{city}, {state}" (or just city, or null) — the fragment every
+     * seoTitle()/seoDescription()/localBusinessSchema() variant below builds
+     * around, so a baker who's filled in an address ranks for
+     * "[service] in [city]" searches instead of just their business name.
+     */
+    protected function locationLabel(): ?string
+    {
+        if ($this->city && $this->state) {
+            return "{$this->city}, {$this->state}";
+        }
+
+        return $this->city ?: null;
+    }
+
+    /**
+     * Location-aware <title> per storefront page. Falls back to the
+     * baker's own hero/section copy when there's no city on file yet
+     * (most onboarding-in-progress tenants) so nothing renders empty.
+     */
+    public function seoTitle(string $page = 'home'): string
+    {
+        $name = $this->name ?: 'Bakery';
+        $location = $this->locationLabel();
+
+        return match ($page) {
+            'about' => $location
+                ? "About {$name} | Bakery in {$location}"
+                : "About Us | {$name}",
+            'menu' => $location
+                ? "Menu & Pricing | {$name} in {$location}"
+                : "Menu & Pricing | {$name}",
+            'gallery' => $location
+                ? "Cake Gallery | {$name} in {$location}"
+                : "Gallery | {$name}",
+            'policy' => "Bakery Policy & Order Terms | {$name}",
+            default => $location
+                ? "{$name} | Custom Cakes & Bakery in {$location}"
+                : "{$name} | " . $this->getSiteContent('hero_subheading', 'Where Every Celebration Gets Its Sweet Ending'),
+        };
+    }
+
+    /**
+     * Location-aware meta description per storefront page. Same fallback
+     * rule as seoTitle() — no city on file yet just means no location clause.
+     */
+    public function seoDescription(string $page = 'home'): string
+    {
+        $name = $this->name ?: 'our bakery';
+        $inLocation = ($loc = $this->locationLabel()) ? " in {$loc}" : '';
+
+        return match ($page) {
+            'about' => "Learn about {$name}{$inLocation} — our founder story, our baker, and our passion for custom cakes.",
+            'menu' => "Explore the menu, cake flavors, and pricing at {$name}{$inLocation}. Order custom cakes online.",
+            'gallery' => "Browse custom cake designs and creations from {$name}{$inLocation}.",
+            'policy' => "Official order terms, payment details, pickup hours, delivery rules, and allergen disclosure for {$name}.",
+            default => $this->getSiteContent('about_bio')
+                ?: "Custom artisanal cakes, cupcakes, and treat boxes from {$name}{$inLocation}. Order custom cakes online with ease.",
+        };
+    }
+
+    /**
+     * LocalBusiness/Bakery JSON-LD for the storefront <head> — built only
+     * from real tenant data (address, phone, socials, review ratings), never
+     * invented values like a guessed price range, so it stays accurate for
+     * whatever a baker has actually filled in.
+     */
+    public function localBusinessSchema(): array
+    {
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Bakery',
+            'name' => $this->name,
+            'url' => $this->publicUrl(),
+        ];
+
+        if ($this->logo_path) {
+            $schema['image'] = asset($this->logo_path);
+        }
+        if ($this->phone) {
+            $schema['telephone'] = $this->phone;
+        }
+
+        // Only emit an address once there's a real street or city on file —
+        // otherwise this would just be a bare {addressCountry: "US"} object,
+        // which looks like real data to a schema validator but isn't.
+        if ($this->address_line1 || $this->city) {
+            $schema['address'] = array_filter([
+                '@type' => 'PostalAddress',
+                'streetAddress' => $this->address_line1,
+                'addressLocality' => $this->city,
+                'addressRegion' => $this->state,
+                'postalCode' => $this->postal_code,
+                'addressCountry' => $this->country_code ?: 'US',
+            ]);
+        }
+
+        $sameAs = array_values(array_filter([$this->instagram_url, $this->facebook_url]));
+        if ($sameAs) {
+            $schema['sameAs'] = $sameAs;
+        }
+
+        $reviewStats = $this->reviews()->selectRaw('COUNT(*) as cnt, AVG(rating) as avg_rating')->first();
+        if ($reviewStats && $reviewStats->cnt > 0) {
+            $schema['aggregateRating'] = [
+                '@type' => 'AggregateRating',
+                'ratingValue' => round((float) $reviewStats->avg_rating, 1),
+                'reviewCount' => (int) $reviewStats->cnt,
+            ];
+        }
+
+        return $schema;
+    }
+
+    /**
      * Get Starter (Free) themes available for onboarding.
      */
     public static function getStarterThemes(): array

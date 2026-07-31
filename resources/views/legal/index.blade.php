@@ -280,9 +280,10 @@
                 @foreach($documents as $docSlug => $doc)
                     @php
                         $isCurrent = (isset($slug) && $slug === $docSlug) || (!isset($slug) && $docSlug === 'terms');
-                        $linkUrl = isset($tenant) && $tenant->subdomain 
-                            ? url('/site/' . $tenant->subdomain . '/legal/' . $docSlug)
-                            : url('/legal/' . $docSlug);
+                        // Relative to the current host: on a tenant's subdomain, ResolveTenant
+                        // already binds $tenant from the Host header, so this stays on their
+                        // site; on the main domain it shows the platform's own legal docs.
+                        $linkUrl = url('/legal/' . $docSlug);
                     @endphp
                     <li class="doc-menu-item">
                         <a href="{{ $linkUrl }}" class="doc-menu-link {{ $isCurrent ? 'active' : '' }}">

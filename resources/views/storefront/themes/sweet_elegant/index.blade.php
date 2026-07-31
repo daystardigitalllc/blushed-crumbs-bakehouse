@@ -3,15 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $tenant->name ?? 'Artisanal Bakehouse' }} | {{ $tenant->getSiteContent('hero_subheading', 'Where Every Celebration Gets Its Sweet Ending') }}</title>
-    <!-- Favicon -->
-    @if(isset($tenant) && $tenant->logo_path)
-        <link rel="icon" href="{{ asset($tenant->logo_path) }}">
-    @else
-        <link rel="icon" href="{{ asset('images/favicon.png') }}">
-    @endif
-    <meta name="description" content="{{ $tenant->getSiteContent('about_bio', 'Custom artisanal cakes, cupcakes, treat boxes & wedding baking. Order custom cakes online with ease.') }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @include('storefront.partials.seo_head', ['page' => 'home'])
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
