@@ -64,6 +64,14 @@ class DemoBakeriesSeeder extends Seeder
                 ]
             );
 
+            // Without this, the subdomain never resolves — ResolveTenant only
+            // reads the domains table, it doesn't derive subdomains from the
+            // brand's domain at request time (see AuthController::register()).
+            $domainName = strtolower($b['slug'] . '.' . $brand->domain);
+            if (!\Stancl\Tenancy\Database\Models\Domain::where('domain', $domainName)->exists()) {
+                $tenant->domains()->create(['domain' => $domainName]);
+            }
+
             User::updateOrCreate(
                 ['email' => "hello@{$b['slug']}.com"],
                 [
