@@ -11,8 +11,6 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 
-use Illuminate\Mail\Mailables\Attachment;
-
 class NewOrderNotification extends Mailable
 {
     use Queueable, SerializesModels;
@@ -52,17 +50,13 @@ class NewOrderNotification extends Mailable
         );
     }
 
-    public function attachments(): array
-    {
-        $attachments = [];
-        if (!empty($this->order->inspiration_files) && is_array($this->order->inspiration_files)) {
-            foreach ($this->order->inspiration_files as $filePath) {
-                $fullPath = public_path($filePath);
-                if (file_exists($fullPath)) {
-                    $attachments[] = Attachment::fromPath($fullPath);
-                }
-            }
-        }
-        return $attachments;
-    }
+    // No attachments() override — inspiration photos render as inline public
+    // image URLs in emails.new_order instead (see that view). Brevo's
+    // attachment API has repeatedly rejected the *entire* email over a
+    // single attachment it didn't like (first CID-embedded images, then a
+    // plain .webp file), and since the request is one combined payload,
+    // there's no way to drop just the bad attachment and still send the
+    // rest — the whole notification was silently lost either way. A public
+    // URL <img> has no such failure mode: it's rendered by the recipient's
+    // mail client, not validated by Brevo at send time.
 }
