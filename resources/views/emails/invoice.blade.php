@@ -50,6 +50,33 @@
                     <span class="detail-value">{{ $invoice->order->order_number }}</span>
                 </div>
                 @endif
+                @php
+                    $hasAdjustments = ($invoice->fee_amount ?? 0) > 0 || ($invoice->discount_amount ?? 0) > 0 || ($invoice->misc_amount ?? 0) > 0;
+                @endphp
+                @if($hasAdjustments)
+                    <div class="detail-row">
+                        <span class="detail-label">Order Subtotal</span>
+                        <span class="detail-value">${{ number_format($invoice->subtotal ?? $invoice->total_amount, 2) }}</span>
+                    </div>
+                    @if(($invoice->fee_amount ?? 0) > 0)
+                        <div class="detail-row">
+                            <span class="detail-label">{{ $invoice->fee_label ?: 'Fee' }}</span>
+                            <span class="detail-value">+${{ number_format($invoice->fee_amount, 2) }}</span>
+                        </div>
+                    @endif
+                    @if(($invoice->discount_amount ?? 0) > 0)
+                        <div class="detail-row">
+                            <span class="detail-label">{{ $invoice->discount_label ?: 'Discount' }}</span>
+                            <span class="detail-value">-${{ number_format($invoice->discount_amount, 2) }}</span>
+                        </div>
+                    @endif
+                    @if(($invoice->misc_amount ?? 0) > 0)
+                        <div class="detail-row">
+                            <span class="detail-label">{{ $invoice->misc_label ?: 'Misc' }}</span>
+                            <span class="detail-value">+${{ number_format($invoice->misc_amount, 2) }}</span>
+                        </div>
+                    @endif
+                @endif
                 <div class="detail-row">
                     <span class="detail-label">Total Amount</span>
                     <span class="detail-value">${{ number_format($invoice->total_amount, 2) }}</span>

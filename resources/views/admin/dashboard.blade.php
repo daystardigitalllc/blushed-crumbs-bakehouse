@@ -919,12 +919,25 @@
                                 <th style="padding:12px 8px;">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="admin-invoices-tbody">
                             @forelse($invoices as $inv)
-                                <tr style="border-bottom:1px solid #f0e4ea;">
+                                <tr id="invoice-row-{{ $inv->id }}" style="border-bottom:1px solid #f0e4ea;" data-invoice="{{ json_encode([
+                                    'id' => $inv->id,
+                                    'order_id' => $inv->order_id,
+                                    'subtotal' => (float) ($inv->subtotal ?? $inv->total_amount),
+                                    'total_amount' => (float) $inv->total_amount,
+                                    'deposit_amount' => (float) ($inv->deposit_amount ?? 0),
+                                    'fee_amount' => (float) ($inv->fee_amount ?? 0),
+                                    'fee_label' => $inv->fee_label,
+                                    'discount_amount' => (float) ($inv->discount_amount ?? 0),
+                                    'discount_label' => $inv->discount_label,
+                                    'misc_amount' => (float) ($inv->misc_amount ?? 0),
+                                    'misc_label' => $inv->misc_label,
+                                    'notes' => $inv->notes,
+                                ]) }}">
                                     <td style="padding:12px 8px; font-family:monospace;">{{ $inv->invoice_number }}</td>
                                     <td style="padding:12px 8px;">{{ $inv->client_name }}</td>
-                                    <td style="padding:12px 8px; font-weight:700;">${{ number_format($inv->total_amount, 2) }}</td>
+                                    <td class="invoice-amount-cell" style="padding:12px 8px; font-weight:700;">${{ number_format($inv->total_amount, 2) }}</td>
                                     <td style="padding:12px 8px;">
                                         <select class="status-select status-{{ $inv->status }}" onchange="updateInvoiceStatus({{ $inv->id }}, this.value)">
                                             <option value="unpaid" {{ $inv->status == 'unpaid' ? 'selected' : '' }}>UNPAID</option>
@@ -935,13 +948,13 @@
                                     </td>
                                     <td style="padding:12px 8px;">
                                         <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $inv->invoice_number }}')">Copy Link</button>
-                                        <button class="btn btn-sm btn-outline" onclick="openInvoiceEditModal({{ $inv->id }}, {{ $inv->total_amount }}, {{ $inv->deposit_amount ?? 0 }}, '{{ addslashes($inv->notes ?? '') }}', {{ $inv->order_id ?? 'null' }})">Edit</button>
+                                        <button class="btn btn-sm btn-outline" onclick="openInvoiceEditModal(this)">Edit</button>
                                         <button class="btn btn-sm btn-primary" onclick="sendInvoice('{{ $inv->id }}')">Send</button>
                                         <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteInvoice({{ $inv->id }}, this)">Delete</button>
                                     </td>
                                 </tr>
                             @empty
-                                <tr>
+                                <tr id="no-invoices-row">
                                     <td colspan="5" style="text-align:center; padding:20px; color:#888;">No invoices created yet.</td>
                                 </tr>
                             @endforelse
@@ -2225,10 +2238,34 @@
             <form id="invoice-edit-form" onsubmit="event.preventDefault();">
                 <input type="hidden" id="edit-invoice-id">
                 <input type="hidden" id="edit-order-id">
-                
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Order Subtotal ($)</label>
+                    <input type="number" step="0.01" id="edit-invoice-subtotal" class="form-control" oninput="recalculateInvoiceTotal()" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                </div>
+
+                <div style="margin-bottom: 15px; padding:12px; background:#fafafa; border-radius:10px; border:1px solid #f0e4ea;">
+                    <p style="font-size:0.78rem; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.03em; margin:0 0 10px;">Adjustments (optional)</p>
+
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <input type="text" id="edit-invoice-fee-label" placeholder="Fee label (e.g. Delivery Fee)" style="flex:1; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem;">
+                        <input type="number" step="0.01" id="edit-invoice-fee-amount" placeholder="0.00" oninput="recalculateInvoiceTotal()" style="width:110px; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem;">
+                    </div>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <input type="text" id="edit-invoice-discount-label" placeholder="Discount label (e.g. Coupon SWEET20)" style="flex:1; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem;">
+                        <input type="number" step="0.01" id="edit-invoice-discount-amount" placeholder="0.00" oninput="recalculateInvoiceTotal()" style="width:110px; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem;">
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="edit-invoice-misc-label" placeholder="Misc label (e.g. Rush order)" style="flex:1; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem;">
+                        <input type="number" step="0.01" id="edit-invoice-misc-amount" placeholder="0.00" oninput="recalculateInvoiceTotal()" style="width:110px; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem;">
+                    </div>
+                    <p style="font-size:0.75rem; color:#999; margin:10px 0 0;">Fees and misc add to the total; discount subtracts. Leave amount at 0 to skip a row.</p>
+                </div>
+
                 <div style="margin-bottom: 15px;">
                     <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Total Amount ($)</label>
                     <input type="number" step="0.01" id="edit-invoice-total" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                    <p style="font-size:0.78rem; color:#999; margin:5px 0 0;">Auto-filled from subtotal + adjustments above — feel free to type your own final number instead.</p>
                 </div>
 
                 <div style="margin-bottom: 15px;">

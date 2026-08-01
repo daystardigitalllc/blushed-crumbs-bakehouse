@@ -2293,6 +2293,7 @@ function addCampaignRow(camp) {
 window.generateInvoiceFromOrder = function(orderId, totalAmount, depositAmount) {
     const editInvId = document.getElementById('edit-invoice-id');
     const editOrderId = document.getElementById('edit-order-id');
+    const editSubtotal = document.getElementById('edit-invoice-subtotal');
     const editTotal = document.getElementById('edit-invoice-total');
     const editDeposit = document.getElementById('edit-invoice-deposit');
     const editNotes = document.getElementById('edit-invoice-notes');
@@ -2300,11 +2301,38 @@ window.generateInvoiceFromOrder = function(orderId, totalAmount, depositAmount) 
 
     if (editInvId) editInvId.value = '';
     if (editOrderId) editOrderId.value = orderId || '';
+    if (editSubtotal) editSubtotal.value = parseFloat(totalAmount || 0).toFixed(2);
     if (editTotal) editTotal.value = parseFloat(totalAmount || 0).toFixed(2);
     if (editDeposit) editDeposit.value = parseFloat(depositAmount || (totalAmount * 0.5)).toFixed(2);
     if (editNotes) editNotes.value = '';
+    resetInvoiceAdjustmentFields();
     if (modal) modal.style.display = 'flex';
 };
+
+// Fee/Misc add to the total, Discount subtracts. Subtotal input stays the
+// source of truth so re-editing adjustments never compounds on a total that
+// already includes a previous round of adjustments.
+window.recalculateInvoiceTotal = function() {
+    const subtotal = parseFloat(document.getElementById('edit-invoice-subtotal')?.value) || 0;
+    const fee = parseFloat(document.getElementById('edit-invoice-fee-amount')?.value) || 0;
+    const discount = parseFloat(document.getElementById('edit-invoice-discount-amount')?.value) || 0;
+    const misc = parseFloat(document.getElementById('edit-invoice-misc-amount')?.value) || 0;
+    const editTotal = document.getElementById('edit-invoice-total');
+    if (editTotal) {
+        editTotal.value = (subtotal + fee - discount + misc).toFixed(2);
+    }
+};
+
+function resetInvoiceAdjustmentFields() {
+    ['edit-invoice-fee-label', 'edit-invoice-discount-label', 'edit-invoice-misc-label'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    ['edit-invoice-fee-amount', 'edit-invoice-discount-amount', 'edit-invoice-misc-amount'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+}
 
 window.sendInvoice = function(invoiceId) {
     if (!confirm('Are you sure you want to send this invoice to the client?')) return;
@@ -3059,13 +3087,23 @@ window.updateInvoiceStatus = function(invoiceId, status) {
     });
 };
 
-window.openInvoiceEditModal = function(invoiceId, totalAmount, depositAmount, notes, orderId) {
-    document.getElementById('edit-invoice-id').value = invoiceId || '';
-    document.getElementById('edit-order-id').value = orderId || '';
-    document.getElementById('edit-invoice-total').value = parseFloat(totalAmount || 0).toFixed(2);
-    document.getElementById('edit-invoice-deposit').value = parseFloat(depositAmount || 0).toFixed(2);
-    document.getElementById('edit-invoice-notes').value = notes || '';
-    
+window.openInvoiceEditModal = function(btnElement) {
+    const row = btnElement.closest('tr[data-invoice]');
+    const inv = row ? JSON.parse(row.dataset.invoice) : {};
+
+    document.getElementById('edit-invoice-id').value = inv.id || '';
+    document.getElementById('edit-order-id').value = inv.order_id || '';
+    document.getElementById('edit-invoice-subtotal').value = parseFloat(inv.subtotal || inv.total_amount || 0).toFixed(2);
+    document.getElementById('edit-invoice-total').value = parseFloat(inv.total_amount || 0).toFixed(2);
+    document.getElementById('edit-invoice-deposit').value = parseFloat(inv.deposit_amount || 0).toFixed(2);
+    document.getElementById('edit-invoice-fee-label').value = inv.fee_label || '';
+    document.getElementById('edit-invoice-fee-amount').value = inv.fee_amount ? parseFloat(inv.fee_amount).toFixed(2) : '';
+    document.getElementById('edit-invoice-discount-label').value = inv.discount_label || '';
+    document.getElementById('edit-invoice-discount-amount').value = inv.discount_amount ? parseFloat(inv.discount_amount).toFixed(2) : '';
+    document.getElementById('edit-invoice-misc-label').value = inv.misc_label || '';
+    document.getElementById('edit-invoice-misc-amount').value = inv.misc_amount ? parseFloat(inv.misc_amount).toFixed(2) : '';
+    document.getElementById('edit-invoice-notes').value = inv.notes || '';
+
     document.getElementById('invoice-edit-modal').style.display = 'flex';
 };
 
@@ -3081,12 +3119,69 @@ window.saveAndSendInvoice = function() {
     submitInvoiceEdits(true);
 };
 
+function readInvoiceFormPayload() {
+    return {
+        subtotal: document.getElementById('edit-invoice-subtotal').value,
+        total_amount: document.getElementById('edit-invoice-total').value,
+        deposit_amount: document.getElementById('edit-invoice-deposit').value,
+        fee_amount: document.getElementById('edit-invoice-fee-amount').value || 0,
+        fee_label: document.getElementById('edit-invoice-fee-label').value,
+        discount_amount: document.getElementById('edit-invoice-discount-amount').value || 0,
+        discount_label: document.getElementById('edit-invoice-discount-label').value,
+        misc_amount: document.getElementById('edit-invoice-misc-amount').value || 0,
+        misc_label: document.getElementById('edit-invoice-misc-label').value,
+        notes: document.getElementById('edit-invoice-notes').value,
+    };
+}
+
+function updateInvoiceRowInPlace(inv) {
+    const row = document.getElementById('invoice-row-' + inv.id);
+    if (!row) return;
+    row.dataset.invoice = JSON.stringify(inv);
+    const amountCell = row.querySelector('.invoice-amount-cell');
+    if (amountCell) amountCell.textContent = '$' + parseFloat(inv.total_amount).toFixed(2);
+}
+
+function addInvoiceRow(inv) {
+    const tbody = document.getElementById('admin-invoices-tbody');
+    if (!tbody) return;
+
+    const emptyRow = document.getElementById('no-invoices-row');
+    if (emptyRow) emptyRow.remove();
+
+    const row = document.createElement('tr');
+    row.id = 'invoice-row-' + inv.id;
+    row.style.borderBottom = '1px solid #f0e4ea';
+    row.dataset.invoice = JSON.stringify(inv);
+    row.innerHTML = `
+        <td style="padding:12px 8px; font-family:monospace;"></td>
+        <td style="padding:12px 8px;"></td>
+        <td class="invoice-amount-cell" style="padding:12px 8px; font-weight:700;"></td>
+        <td style="padding:12px 8px;">
+            <select class="status-select status-${inv.status}" onchange="updateInvoiceStatus(${inv.id}, this.value)">
+                <option value="unpaid" ${inv.status === 'unpaid' ? 'selected' : ''}>UNPAID</option>
+                <option value="deposit_paid" ${inv.status === 'deposit_paid' ? 'selected' : ''}>DEPOSIT PAID</option>
+                <option value="paid_in_full" ${inv.status === 'paid_in_full' ? 'selected' : ''}>PAID IN FULL</option>
+                <option value="cancelled" ${inv.status === 'cancelled' ? 'selected' : ''}>CANCELLED</option>
+            </select>
+        </td>
+        <td style="padding:12px 8px;">
+            <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('${inv.invoice_number}')">Copy Link</button>
+            <button class="btn btn-sm btn-outline" onclick="openInvoiceEditModal(this)">Edit</button>
+            <button class="btn btn-sm btn-primary" onclick="sendInvoice('${inv.id}')">Send</button>
+            <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteInvoice(${inv.id}, this)">Delete</button>
+        </td>
+    `;
+    row.querySelector('td:nth-child(1)').textContent = inv.invoice_number;
+    row.querySelector('td:nth-child(2)').textContent = inv.client_name;
+    row.querySelector('.invoice-amount-cell').textContent = '$' + parseFloat(inv.total_amount).toFixed(2);
+    tbody.prepend(row);
+}
+
 function submitInvoiceEdits(sendAfter) {
     const invoiceId = document.getElementById('edit-invoice-id').value;
     const orderId = document.getElementById('edit-order-id').value;
-    const totalAmount = document.getElementById('edit-invoice-total').value;
-    const depositAmount = document.getElementById('edit-invoice-deposit').value;
-    const notes = document.getElementById('edit-invoice-notes').value;
+    const payload = readInvoiceFormPayload();
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
     if (invoiceId) {
@@ -3096,26 +3191,20 @@ function submitInvoiceEdits(sendAfter) {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken
             },
-            body: JSON.stringify({
-                total_amount: totalAmount,
-                deposit_amount: depositAmount,
-                notes: notes
-            })
+            body: JSON.stringify(payload)
         })
         .then(res => res.json())
         .then(data => {
             if (data.success) {
                 closeInvoiceEditModal();
+                if (data.invoice) updateInvoiceRowInPlace(data.invoice);
                 if (sendAfter) {
                     if (orderId) {
                         window.updateOrderStatus(orderId, 'invoiced');
                     }
                     window.sendInvoice(invoiceId);
-                } else {
-                    if (window.showToast) {
-                        window.showToast('Invoice updated & saved!', 'success');
-                    }
-                    setTimeout(() => location.reload(), 1000);
+                } else if (window.showToast) {
+                    window.showToast('Invoice updated & saved!', 'success');
                 }
             } else {
                 alert('Error updating invoice: ' + data.message);
@@ -3133,18 +3222,13 @@ function submitInvoiceEdits(sendAfter) {
                 'X-CSRF-TOKEN': csrfToken,
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({
-                order_id: orderId,
-                total_amount: totalAmount,
-                deposit_amount: depositAmount,
-                notes: notes,
-                mark_invoiced: sendAfter
-            })
+            body: JSON.stringify({ ...payload, order_id: orderId, mark_invoiced: sendAfter })
         })
         .then(res => res.json())
         .then(data => {
             if (data.success) {
                 closeInvoiceEditModal();
+                if (data.invoice) addInvoiceRow(data.invoice);
                 if (sendAfter) {
                     if (orderId) {
                         window.updateOrderStatus(orderId, 'invoiced');
@@ -3152,11 +3236,8 @@ function submitInvoiceEdits(sendAfter) {
                     if (data.invoice && data.invoice.id) {
                         window.sendInvoice(data.invoice.id);
                     }
-                } else {
-                    if (window.showToast) {
-                        window.showToast('Invoice created & saved!', 'success');
-                    }
-                    setTimeout(() => location.reload(), 1000);
+                } else if (window.showToast) {
+                    window.showToast('Invoice created & saved!', 'success');
                 }
             } else {
                 alert('Error creating invoice: ' + data.message);

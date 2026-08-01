@@ -17,12 +17,28 @@ class Invoice extends Model
         'invoice_number',
         'client_name',
         'client_email',
+        'subtotal',
         'total_amount',
+        'fee_amount',
+        'fee_label',
+        'discount_amount',
+        'discount_label',
+        'misc_amount',
+        'misc_label',
         'deposit_amount',
         'status',
         'payment_method_used',
         'due_date',
         'notes',
+    ];
+
+    protected $casts = [
+        'subtotal' => 'decimal:2',
+        'total_amount' => 'decimal:2',
+        'fee_amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'misc_amount' => 'decimal:2',
+        'deposit_amount' => 'decimal:2',
     ];
 
     protected static function boot()

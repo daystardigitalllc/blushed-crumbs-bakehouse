@@ -324,6 +324,35 @@
 
         <!-- TOTALS BREAKDOWN -->
         <div class="totals-box">
+            @php
+                $hasAdjustments = ($invoice->fee_amount ?? 0) > 0 || ($invoice->discount_amount ?? 0) > 0 || ($invoice->misc_amount ?? 0) > 0;
+            @endphp
+
+            @if($hasAdjustments)
+                <div class="total-row">
+                    <span>Order Subtotal</span>
+                    <span>${{ number_format($invoice->subtotal ?? $invoice->total_amount, 2) }}</span>
+                </div>
+                @if(($invoice->fee_amount ?? 0) > 0)
+                    <div class="total-row">
+                        <span>{{ $invoice->fee_label ?: 'Fee' }}</span>
+                        <span>+${{ number_format($invoice->fee_amount, 2) }}</span>
+                    </div>
+                @endif
+                @if(($invoice->discount_amount ?? 0) > 0)
+                    <div class="total-row" style="color:#52c41a;">
+                        <span>{{ $invoice->discount_label ?: 'Discount' }}</span>
+                        <span>-${{ number_format($invoice->discount_amount, 2) }}</span>
+                    </div>
+                @endif
+                @if(($invoice->misc_amount ?? 0) > 0)
+                    <div class="total-row">
+                        <span>{{ $invoice->misc_label ?: 'Misc' }}</span>
+                        <span>+${{ number_format($invoice->misc_amount, 2) }}</span>
+                    </div>
+                @endif
+            @endif
+
             <div class="total-row">
                 <span>Total Order Amount</span>
                 <span>${{ number_format($invoice->total_amount, 2) }}</span>

@@ -677,8 +677,15 @@ class AdminController extends Controller
 
         $validated = $request->validate([
             'order_id' => 'required|exists:orders,id',
+            'subtotal' => 'nullable|numeric|min:0',
             'total_amount' => 'nullable|numeric|min:0',
             'deposit_amount' => 'nullable|numeric|min:0',
+            'fee_amount' => 'nullable|numeric|min:0',
+            'fee_label' => 'nullable|string|max:100',
+            'discount_amount' => 'nullable|numeric|min:0',
+            'discount_label' => 'nullable|string|max:100',
+            'misc_amount' => 'nullable|numeric|min:0',
+            'misc_label' => 'nullable|string|max:100',
             'notes' => 'nullable|string|max:2000',
             'mark_invoiced' => 'nullable|boolean',
         ]);
@@ -686,6 +693,7 @@ class AdminController extends Controller
         $order = Order::where('tenant_id', $tenant->id)->findOrFail($validated['order_id']);
 
         $invoiceNumber = 'INV-' . strtoupper(Str::random(6));
+        $subtotal = $validated['subtotal'] ?? $order->total_price;
 
         $invoice = Invoice::create([
             'tenant_id' => $tenant->id,
@@ -693,7 +701,20 @@ class AdminController extends Controller
             'invoice_number' => $invoiceNumber,
             'client_name' => $order->client_name,
             'client_email' => $order->client_email,
-            'total_amount' => $validated['total_amount'] ?? $order->total_price,
+            'subtotal' => $subtotal,
+            // Total defaults to the plain subtotal+adjustments math, but the
+            // baker can still submit their own total_amount to override it —
+            // the fields are assistive, not a locked formula, since the whole
+            // point is giving them freedom to adjust the final number.
+            'total_amount' => $validated['total_amount'] ?? (
+                $subtotal + ($validated['fee_amount'] ?? 0) - ($validated['discount_amount'] ?? 0) + ($validated['misc_amount'] ?? 0)
+            ),
+            'fee_amount' => $validated['fee_amount'] ?? 0,
+            'fee_label' => $validated['fee_label'] ?? null,
+            'discount_amount' => $validated['discount_amount'] ?? 0,
+            'discount_label' => $validated['discount_label'] ?? null,
+            'misc_amount' => $validated['misc_amount'] ?? 0,
+            'misc_label' => $validated['misc_label'] ?? null,
             'deposit_amount' => $validated['deposit_amount'] ?? $order->deposit_amount,
             'status' => 'unpaid',
             'due_date' => $order->due_date,
@@ -758,14 +779,28 @@ class AdminController extends Controller
         }
 
         $validated = $request->validate([
+            'subtotal' => 'nullable|numeric|min:0',
             'total_amount' => 'required|numeric|min:0',
             'deposit_amount' => 'required|numeric|min:0',
+            'fee_amount' => 'nullable|numeric|min:0',
+            'fee_label' => 'nullable|string|max:100',
+            'discount_amount' => 'nullable|numeric|min:0',
+            'discount_label' => 'nullable|string|max:100',
+            'misc_amount' => 'nullable|numeric|min:0',
+            'misc_label' => 'nullable|string|max:100',
             'notes' => 'nullable|string|max:2000',
         ]);
 
         $invoice->update([
+            'subtotal' => $validated['subtotal'] ?? $invoice->subtotal,
             'total_amount' => $validated['total_amount'],
             'deposit_amount' => $validated['deposit_amount'],
+            'fee_amount' => $validated['fee_amount'] ?? 0,
+            'fee_label' => $validated['fee_label'] ?? null,
+            'discount_amount' => $validated['discount_amount'] ?? 0,
+            'discount_label' => $validated['discount_label'] ?? null,
+            'misc_amount' => $validated['misc_amount'] ?? 0,
+            'misc_label' => $validated['misc_label'] ?? null,
             'notes' => $validated['notes'] ?? null,
         ]);
 
