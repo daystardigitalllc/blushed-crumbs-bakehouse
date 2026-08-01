@@ -1020,6 +1020,7 @@
                     </div>
                 @endif
                 <a href="{{ route('examples') }}" class="nav-login">Examples</a>
+                <a href="/blog" class="nav-login">Blog</a>
                 <a href="/login" class="nav-login">Login</a>
                 <a href="/register" class="btn btn-primary">Build Your Free Site →</a>
             </div>
@@ -1552,7 +1553,7 @@
                 <a href="/register" class="btn btn-light" style="font-size: 1.15rem; padding: 18px 36px;">Build Your Free Bakery Site →</a>
             </div>
             <div class="copyright fade-in" style="line-height: 1.8;">
-                &copy; 2026 Doughmain Pro Platform, a <a href="https://daystardigital.co" style="color:inherit; text-decoration:underline;">Daystar Digital LLC</a> product. &middot; <a href="/legal" style="color:inherit; text-decoration:underline; font-weight: 600;">Legal Center &amp; Policies</a> &middot; <a href="/legal/terms" style="color:inherit; text-decoration:underline;">Terms of Service</a> &middot; <a href="/legal/privacy" style="color:inherit; text-decoration:underline;">Privacy Policy</a> &middot; <a href="/legal/acceptable-use" style="color:inherit; text-decoration:underline;">Acceptable Use</a>
+                &copy; 2026 Doughmain Pro Platform, a <a href="https://daystardigital.co" style="color:inherit; text-decoration:underline;">Daystar Digital LLC</a> product. &middot; <a href="/blog" style="color:inherit; text-decoration:underline; font-weight: 600;">Blog</a> &middot; <a href="/legal" style="color:inherit; text-decoration:underline; font-weight: 600;">Legal Center &amp; Policies</a> &middot; <a href="/legal/terms" style="color:inherit; text-decoration:underline;">Terms of Service</a> &middot; <a href="/legal/privacy" style="color:inherit; text-decoration:underline;">Privacy Policy</a> &middot; <a href="/legal/acceptable-use" style="color:inherit; text-decoration:underline;">Acceptable Use</a>
             </div>
         </div>
     </footer>

@@ -3,6 +3,35 @@
 @section('title', $post['title'] . ' | Doughmain Blog')
 @section('meta_description', $post['description'])
 
+@section('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ $post['title'] }}",
+  "description": "{{ $post['description'] }}",
+  "image": "{{ asset('images/og_image.jpg') }}",
+  "author": {
+    "@type": "Organization",
+    "name": "Doughmain"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Doughmain",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ asset('images/doughmain_logo.png') }}"
+    }
+  },
+  "datePublished": "2026-07-19",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ url()->current() }}"
+  }
+}
+</script>
+@endsection
+
 @section('content')
 <div class="blog-post-container">
     <div class="blog-post-header">

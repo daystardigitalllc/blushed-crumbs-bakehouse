@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') | Doughmain.pro</title>
+    <title>@yield('title', 'Doughmain.pro — Build, Host, & Manage Your Bakery Website')</title>
     <meta name="description" content="@yield('meta_description')">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="@yield('title') | Doughmain.pro">
+    <meta property="og:title" content="@yield('title', 'Doughmain.pro — Build, Host, & Manage Your Bakery Website')">
     <meta property="og:description" content="@yield('meta_description')">
     <meta property="og:image" content="{{ asset('images/og_image.jpg') }}">
     
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('title') | Doughmain.pro">
+    <meta name="twitter:title" content="@yield('title', 'Doughmain.pro — Build, Host, & Manage Your Bakery Website')">
     <meta name="twitter:description" content="@yield('meta_description')">
     <meta name="twitter:image" content="{{ asset('images/og_image.jpg') }}">
+    
+    <!-- Google Schema Markup -->
+    @yield('schema')
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon.png') }}">
