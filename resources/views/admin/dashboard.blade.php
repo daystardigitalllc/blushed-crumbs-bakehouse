@@ -80,9 +80,6 @@
                 <button class="admin-nav-item" data-tab="tab-settings">
                     Settings
                 </button>
-                <button class="admin-nav-item" data-tab="tab-subscription-support">
-                    Subscription &amp; Support
-                </button>
                 @if(($tenant->plan_tier ?? 'free') !== 'pro')
                     <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
                         Upgrade to Pro ($29/mo)
@@ -1295,6 +1292,134 @@
                         <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary); align-self:flex-start;">Send Support Request</button>
                     </form>
                 </div>
+
+                <!-- Subscription & Support was its own sidebar tab; merged in here to cut down the nav. -->
+                <div class="section-header" style="margin-top:32px; border-top:1px solid #f0e4ea; padding-top:24px;">
+                    <h3>Subscription &amp; Support</h3>
+                    <p class="subtitle">Manage your plan and get help from Doughmain.pro.</p>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px;">
+                    <!-- CHANGE PASSWORD CARD -->
+                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Account Security</h4>
+                        <form action="{{ route('admin.settings.password') }}" method="POST">
+                            @csrf
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Current Password</label>
+                                <input type="password" name="current_password" required class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                                @error('current_password') <span style="color:#ef4444; font-size:0.8rem;">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">New Password</label>
+                                <input type="password" name="new_password" required minlength="8" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                                @error('new_password') <span style="color:#ef4444; font-size:0.8rem;">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="form-group" style="margin-bottom:16px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Confirm New Password</label>
+                                <input type="password" name="new_password_confirmation" required minlength="8" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">
+                                Update Password
+                            </button>
+                            @if(session('success'))
+                                <div style="margin-top:10px; color:#059669; font-size:0.9rem; font-weight:600; text-align:center;">{{ session('success') }}</div>
+                            @endif
+                        </form>
+                    </div>
+
+                    <!-- SUBSCRIPTION CARD -->
+                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Bakery Plan &amp; Billing</h4>
+                        <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <span style="font-weight:600; color:#475569;">Current Plan:</span>
+                                <span style="font-weight:800; color:var(--primary); text-transform:uppercase;">{{ $tenant->plan_tier === 'pro' ? 'PRO ($29/mo)' : 'FREE ($0/mo)' }}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:600; color:#475569;">Account Status:</span>
+                                <span style="color:#059669; font-weight:700;">● {{ $tenant->is_active ? 'Active' : 'Suspended/Canceled' }}</span>
+                            </div>
+                        </div>
+
+                        @if(($tenant->plan_tier ?? 'free') !== 'pro')
+                            <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid var(--primary); padding:20px; border-radius:14px; margin-bottom:16px;">
+                                <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Unlock All Features</span>
+                                <h4 style="color:var(--dark-text); margin-top:8px; font-size:1.3rem;">Upgrade to Doughmain Pro ($29/month)</h4>
+                                <p style="font-size:0.9rem; color:#555; margin-top:4px; margin-bottom:16px;">Unlock all 7 premium themes, custom domain support, and priority baker support.</p>
+
+                    <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6) !important; color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
+                        Upgrade to Pro ($29/mo)
+                    </a>
+
+
+                            </div>
+                        @endif
+                        <form onsubmit="handleCancelSubscription(event)">
+                            <button type="submit" class="btn" style="background:#ef4444; color:#fff; width:100%; padding:12px; font-weight:600; border-radius:10px; border:none; cursor:pointer;">
+                                End Subscription / Cancel Account
+                            </button>
+                        </form>
+                    </div>
+                        @if(($tenant->plan_tier ?? 'free') == 'pro')
+
+                    <!-- CUSTOM DOMAIN CARD -->
+                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Custom Domain Connection</h4>
+                        <p style="font-size:0.9rem; color:#555; margin-bottom:18px;">If you&rsquo;re on Doughmain Pro, connect your own domain so your bakery appears on a branded address like <strong>blushedcrumbsbakehouse.com</strong>.</p>
+                        <div style="display:flex; flex-direction:column; gap:14px;"
+                             data-custom-domain-status="{{ $tenant->custom_domain_status ?? 'unverified' }}"
+                             data-custom-domain-token="{{ $tenant->custom_domain_token ?? '' }}">
+                            <input type="text" id="custom-domain-input" value="{{ $tenant->custom_domain ?? '' }}" placeholder="yourbakery.com" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1;">
+                            <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                                <button type="button" class="btn btn-primary" onclick="saveCustomDomain()" style="padding:12px 18px;">Save Domain</button>
+                                <button type="button" class="btn btn-outline" onclick="verifyCustomDomain()" style="padding:12px 18px;">Verify DNS</button>
+                                <span id="custom-domain-status" style="font-size:0.9rem; color:#475569;"></span>
+                            </div>
+                            <div id="custom-domain-txt-instructions" style="background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:14px; {{ $tenant->custom_domain_token ? '' : 'display:none;' }}">
+                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 1 — Prove you own this domain</p>
+                                <p style="font-size:0.82rem; color:#475569; margin:0 0 8px 0;">Add this TXT record at your domain registrar (GoDaddy, Namecheap, etc.):</p>
+                                <p style="font-size:0.8rem; color:#334155; margin:0;">Host: <code>_doughmain-verify</code></p>
+                                <p style="font-size:0.8rem; color:#334155; margin:4px 0 0 0;">Value: <code id="custom-domain-txt-value">doughmain-verify={{ $tenant->custom_domain_token }}</code></p>
+                            </div>
+                            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
+                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 2 — Point the domain at us</p>
+                                <ul style="font-size:0.85rem; color:#475569; line-height:1.6; margin:0; padding-left:18px;">
+                                    <li><strong>www</strong> CNAME → <code>{{ $tenant->subdomain }}.doughmain.pro</code></li>
+                                    <li><strong>@</strong> root A record → follow your registrar's instructions for root domains, or use their "ALIAS"/"ANAME" option pointed at the same address</li>
+                                </ul>
+                                <p style="font-size:0.82rem; color:#64748b; margin:10px 0 0 0;">After adding both records, click Verify DNS. This checks in the background and can take a few minutes — DNS changes aren't always instant.</p>
+                            </div>
+                        </div>
+                    </div>
+@endif
+                    <!-- SUPPORT TICKET FORM CARD -->
+                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Submit Support Ticket</h4>
+                        <form onsubmit="handleSubmitSupportTicket(event)">
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Ticket Subject</label>
+                                <input type="text" id="ticket_subject" name="subject" required class="form-input" placeholder="e.g. Need help updating custom domain" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                            </div>
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Category</label>
+                                <select id="ticket_type" name="type" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
+                                    <option value="support">General Support</option>
+                                    <option value="billing">Billing &amp; Subscription</option>
+                                    <option value="custom_code">Theme &amp; Customization</option>
+                                    <option value="feature_request">Feature Request</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:16px;">
+                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Describe Your Request</label>
+                                <textarea id="ticket_message" name="message" required rows="4" class="form-input" placeholder="Tell our support team how we can assist your bakery..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">
+                                Submit Support Ticket
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <!-- TAB: Calendar & Availability Manager -->
@@ -1420,135 +1545,6 @@
                 </div>
             </div>
 
-            <!-- TAB 9: Subscription & Support -->
-            <div id="tab-subscription-support" class="tab-content">
-                <div class="section-header">
-                    <h3>Subscription &amp; Support</h3>
-                    <p class="subtitle">Manage your plan and get help from Doughmain.pro.</p>
-                </div>
-
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px;">
-                    <!-- CHANGE PASSWORD CARD -->
-                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
-                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Account Security</h4>
-                        <form action="{{ route('admin.settings.password') }}" method="POST">
-                            @csrf
-                            <div class="form-group" style="margin-bottom:12px;">
-                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Current Password</label>
-                                <input type="password" name="current_password" required class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-                                @error('current_password') <span style="color:#ef4444; font-size:0.8rem;">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="form-group" style="margin-bottom:12px;">
-                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">New Password</label>
-                                <input type="password" name="new_password" required minlength="8" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-                                @error('new_password') <span style="color:#ef4444; font-size:0.8rem;">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="form-group" style="margin-bottom:16px;">
-                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Confirm New Password</label>
-                                <input type="password" name="new_password_confirmation" required minlength="8" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">
-                                Update Password
-                            </button>
-                            @if(session('success'))
-                                <div style="margin-top:10px; color:#059669; font-size:0.9rem; font-weight:600; text-align:center;">{{ session('success') }}</div>
-                            @endif
-                        </form>
-                    </div>
-
-                    <!-- SUBSCRIPTION CARD -->
-                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
-                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Bakery Plan &amp; Billing</h4>
-                        <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:16px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                <span style="font-weight:600; color:#475569;">Current Plan:</span>
-                                <span style="font-weight:800; color:var(--primary); text-transform:uppercase;">{{ $tenant->plan_tier === 'pro' ? 'PRO ($29/mo)' : 'FREE ($0/mo)' }}</span>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-weight:600; color:#475569;">Account Status:</span>
-                                <span style="color:#059669; font-weight:700;">● {{ $tenant->is_active ? 'Active' : 'Suspended/Canceled' }}</span>
-                            </div>
-                        </div>
-
-                        @if(($tenant->plan_tier ?? 'free') !== 'pro')
-                            <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid var(--primary); padding:20px; border-radius:14px; margin-bottom:16px;">
-                                <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Unlock All Features</span>
-                                <h4 style="color:var(--dark-text); margin-top:8px; font-size:1.3rem;">Upgrade to Doughmain Pro ($29/month)</h4>
-                                <p style="font-size:0.9rem; color:#555; margin-top:4px; margin-bottom:16px;">Unlock all 7 premium themes, custom domain support, and priority baker support.</p>
-                                 
-                    <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6) !important; color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
-                        Upgrade to Pro ($29/mo)
-                    </a>
-                    
-                     
-                            </div>
-                        @endif
-                        <form onsubmit="handleCancelSubscription(event)">
-                            <button type="submit" class="btn" style="background:#ef4444; color:#fff; width:100%; padding:12px; font-weight:600; border-radius:10px; border:none; cursor:pointer;">
-                                End Subscription / Cancel Account
-                            </button>
-                        </form>
-                    </div>
-                        @if(($tenant->plan_tier ?? 'free') == 'pro')
-
-                    <!-- CUSTOM DOMAIN CARD -->
-                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
-                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Custom Domain Connection</h4>
-                        <p style="font-size:0.9rem; color:#555; margin-bottom:18px;">If you&rsquo;re on Doughmain Pro, connect your own domain so your bakery appears on a branded address like <strong>blushedcrumbsbakehouse.com</strong>.</p>
-                        <div style="display:flex; flex-direction:column; gap:14px;"
-                             data-custom-domain-status="{{ $tenant->custom_domain_status ?? 'unverified' }}"
-                             data-custom-domain-token="{{ $tenant->custom_domain_token ?? '' }}">
-                            <input type="text" id="custom-domain-input" value="{{ $tenant->custom_domain ?? '' }}" placeholder="yourbakery.com" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1;">
-                            <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
-                                <button type="button" class="btn btn-primary" onclick="saveCustomDomain()" style="padding:12px 18px;">Save Domain</button>
-                                <button type="button" class="btn btn-outline" onclick="verifyCustomDomain()" style="padding:12px 18px;">Verify DNS</button>
-                                <span id="custom-domain-status" style="font-size:0.9rem; color:#475569;"></span>
-                            </div>
-                            <div id="custom-domain-txt-instructions" style="background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:14px; {{ $tenant->custom_domain_token ? '' : 'display:none;' }}">
-                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 1 — Prove you own this domain</p>
-                                <p style="font-size:0.82rem; color:#475569; margin:0 0 8px 0;">Add this TXT record at your domain registrar (GoDaddy, Namecheap, etc.):</p>
-                                <p style="font-size:0.8rem; color:#334155; margin:0;">Host: <code>_doughmain-verify</code></p>
-                                <p style="font-size:0.8rem; color:#334155; margin:4px 0 0 0;">Value: <code id="custom-domain-txt-value">doughmain-verify={{ $tenant->custom_domain_token }}</code></p>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
-                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 2 — Point the domain at us</p>
-                                <ul style="font-size:0.85rem; color:#475569; line-height:1.6; margin:0; padding-left:18px;">
-                                    <li><strong>www</strong> CNAME → <code>{{ $tenant->subdomain }}.doughmain.pro</code></li>
-                                    <li><strong>@</strong> root A record → follow your registrar's instructions for root domains, or use their "ALIAS"/"ANAME" option pointed at the same address</li>
-                                </ul>
-                                <p style="font-size:0.82rem; color:#64748b; margin:10px 0 0 0;">After adding both records, click Verify DNS. This checks in the background and can take a few minutes — DNS changes aren't always instant.</p>
-                            </div>
-                        </div>
-                    </div>
-@endif
-                    <!-- SUPPORT TICKET FORM CARD -->
-                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
-                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Submit Support Ticket</h4>
-                        <form onsubmit="handleSubmitSupportTicket(event)">
-                            <div class="form-group" style="margin-bottom:12px;">
-                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Ticket Subject</label>
-                                <input type="text" id="ticket_subject" name="subject" required class="form-input" placeholder="e.g. Need help updating custom domain" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-                            </div>
-                            <div class="form-group" style="margin-bottom:12px;">
-                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Category</label>
-                                <select id="ticket_type" name="type" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-                                    <option value="support">General Support</option>
-                                    <option value="billing">Billing &amp; Subscription</option>
-                                    <option value="custom_code">Theme &amp; Customization</option>
-                                    <option value="feature_request">Feature Request</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="margin-bottom:16px;">
-                                <label style="font-weight:600; font-size:0.85rem; color:#475569;">Describe Your Request</label>
-                                <textarea id="ticket_message" name="message" required rows="4" class="form-input" placeholder="Tell our support team how we can assist your bakery..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">
-                                Submit Support Ticket
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
 
         </main>
 
