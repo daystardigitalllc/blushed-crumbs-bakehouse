@@ -518,6 +518,76 @@
     font-size: inherit;
 }
 
+.footer-newsletter {
+    margin-top: 24px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.footer-newsletter-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.9;
+    margin-bottom: 10px;
+}
+
+.footer-newsletter-fields {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.footer-newsletter-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--footer-text, #ffffff);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+}
+
+.footer-newsletter-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-newsletter-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    background: var(--primary, #e67399);
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+}
+
+.footer-newsletter-btn:hover {
+    opacity: 0.85;
+}
+
+.footer-newsletter-success {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.footer-newsletter-error {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: #fca5a5;
+    margin-top: 6px;
+}
+
 /* ─── Sweet & Elegant (default — deep plum) ─── */
 body.theme-sweet_elegant {
     --footer-bg: #401829;
