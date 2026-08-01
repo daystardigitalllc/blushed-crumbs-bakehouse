@@ -213,31 +213,31 @@ body.theme-sweet_elegant .hero-cake-bottom-right {
     /* Spreading cakes out to the margins on mobile */
     body.theme-sweet_elegant .hero-cake-top-right {
         top: 15px !important;
-        right: -15px !important;
+        right: 24px !important;
         width: 85px !important;
     }
     
     body.theme-sweet_elegant .hero-cake-middle-left {
         top: 18% !important;
-        left: -15px !important;
+        left: 6px !important;
         width: 95px !important;
     }
     
     body.theme-sweet_elegant .hero-cake-far-right {
         top: 38% !important;
-        right: -20px !important;
+        right: 6px !important;
         width: 80px !important;
     }
     
     body.theme-sweet_elegant .hero-cake-bottom-left {
         bottom: 15px !important;
-        left: -15px !important;
+        left: 6px !important;
         width: 85px !important;
     }
     
     body.theme-sweet_elegant .hero-cake-bottom-right {
         bottom: 15px !important;
-        right: -15px !important;
+        right: 6px !important;
         width: 90px !important;
     }
 
