@@ -191,9 +191,25 @@ body.theme-sweet_elegant .hero-cake-bottom-right {
     }
 }
 
-/* Mobile responsive fixes for Sweet & Elegant raining cakes */
+/* Mobile responsive fixes for Sweet & Elegant */
 @media (max-width: 768px) {
     body.theme-sweet_elegant .raining-cake {
         width: 140px !important;
+    }
+    
+    body.theme-sweet_elegant .hero-buttons {
+        flex-direction: row !important;
+        max-width: 100% !important;
+        justify-content: center !important;
+        gap: 10px !important;
+    }
+    
+    body.theme-sweet_elegant .hero-buttons .btn {
+        width: auto !important;
+        flex: 1 !important;
+        max-width: 160px !important;
+        padding: 10px 15px !important;
+        font-size: 0.85rem !important;
+        white-space: nowrap !important;
     }
 }
