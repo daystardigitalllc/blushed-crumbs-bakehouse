@@ -126,12 +126,16 @@
             <p style="font-size:0.9rem; color:#666; margin-bottom:12px;">Client uploaded {{ count($order->inspiration_files) }} inspiration photo(s):</p>
             <div style="margin-bottom:18px;">
                 @foreach($order->inspiration_files as $idx => $filePath)
-                    @php
-                        $fullPath = public_path($filePath);
-                    @endphp
-                    @if(file_exists($fullPath))
+                    @if(file_exists(public_path($filePath)))
                         <div style="margin-bottom:16px; text-align:center;">
-                            <img src="{{ $message->embed($fullPath) }}" alt="Inspiration Photo {{ $idx + 1 }}" style="max-width:100%; max-height:380px; border-radius:14px; border:2px solid #f8c6d7; box-shadow:0 6px 16px rgba(92,29,55,0.1); display:block; margin:0 auto 6px auto;">
+                            {{-- Public URL, not $message->embed() — Brevo's HTTP API transport (see
+                                 app/Mail/PromoEmail.php's docblock context) doesn't support CID-embedded
+                                 inline images: it silently mishandles them, Brevo can't determine a
+                                 filename/format for the embedded part, and rejects the ENTIRE email with
+                                 "Unsupported file format: {random}" — which was blocking every order
+                                 notification that had an inspiration photo attached, regardless of file
+                                 size or type. A plain public image URL works with any mail transport. --}}
+                            <img src="{{ asset($filePath) }}" alt="Inspiration Photo {{ $idx + 1 }}" style="max-width:100%; max-height:380px; border-radius:14px; border:2px solid #f8c6d7; box-shadow:0 6px 16px rgba(92,29,55,0.1); display:block; margin:0 auto 6px auto;">
                             <span style="font-size:0.8rem; font-weight:700; color:#7a2b4a;">Inspiration Photo #{{ $idx + 1 }}</span>
                         </div>
                     @endif
