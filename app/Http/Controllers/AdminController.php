@@ -96,11 +96,49 @@ class AdminController extends Controller
         $serverBookingSettings = $tenant->booking_settings ?? [];
         $siteContent = $tenant->site_content ?? \App\Models\Tenant::getDefaultSiteContent();
 
+        // "Finish setting up your site" checklist — each step is derived from
+        // real data the baker has actually saved, not a fragile client-side
+        // flag, so it stays correct across devices/sessions and for anyone
+        // who set these up before this checklist existed. calendar is the one
+        // exception: booking_settings auto-populates with hardcoded defaults
+        // on first dashboard load (above), so its mere presence can't signal
+        // intent — calendar_configured_at is only set inside
+        // saveBookingSettings() itself, when a baker actually saves something.
+        $onboardingChecklist = [
+            'order_form' => [
+                'label' => 'Set up your custom order form',
+                'done' => !empty($tenant->form_schema),
+                'tab' => 'tab-form-builder',
+            ],
+            'product' => [
+                'label' => 'Add a product to your menu',
+                'done' => $products->isNotEmpty(),
+                'tab' => 'tab-products',
+            ],
+            'gallery' => [
+                'label' => 'Upload a photo to your gallery',
+                'done' => $gallery->isNotEmpty(),
+                'tab' => 'tab-gallery-manager',
+            ],
+            'page_builder' => [
+                'label' => 'Customize your Page Builder sections',
+                'done' => !is_null($tenant->section_settings),
+                'tab' => 'tab-page-builder',
+            ],
+            'calendar' => [
+                'label' => 'Set up your availability calendar',
+                'done' => !is_null($tenant->calendar_configured_at),
+                'tab' => 'tab-calendar',
+            ],
+        ];
+        $onboardingComplete = collect($onboardingChecklist)->every(fn ($step) => $step['done']);
+
         return view('admin.dashboard', compact(
             'tenant', 'urgentOrders', 'allOrders', 'invoices',
             'products', 'reviews', 'gallery', 'supportTickets',
             'customers', 'totalRevenue', 'pendingOrders', 'customerCount',
-            'serverBookingSettings', 'siteContent', 'emailSubscribers', 'emailCampaigns'
+            'serverBookingSettings', 'siteContent', 'emailSubscribers', 'emailCampaigns',
+            'onboardingChecklist', 'onboardingComplete'
         ));
     }
 
@@ -133,6 +171,9 @@ class AdminController extends Controller
         ];
 
         $tenant->booking_settings = $settings;
+        if (!$tenant->calendar_configured_at) {
+            $tenant->calendar_configured_at = now();
+        }
         $tenant->save();
 
         return response()->json([

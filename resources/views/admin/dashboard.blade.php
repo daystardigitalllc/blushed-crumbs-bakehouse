@@ -101,6 +101,56 @@
         <main class="admin-main-content">
             <!-- TAB 1: Orders -->
             <div id="tab-orders" class="tab-content active">
+                @unless($onboardingComplete)
+                    @php
+                        $onboardingDoneCount = collect($onboardingChecklist)->where('done', true)->count();
+                        $onboardingTotal = count($onboardingChecklist);
+                    @endphp
+                    <div id="onboarding-checklist-card" class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa); margin-bottom:24px; position:relative;">
+                        <button type="button" onclick="dismissOnboardingChecklist()" title="Hide this checklist" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.1rem; color:#999; cursor:pointer; line-height:1;">✕</button>
+                        <h4 style="color:var(--dark-text); margin-bottom:4px;">🚀 Finish Setting Up Your Website</h4>
+                        <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">
+                            {{ $onboardingDoneCount }} of {{ $onboardingTotal }} steps done — a few quick things make your site usable for real customers.
+                        </p>
+                        <div style="background:#eee; border-radius:20px; height:8px; overflow:hidden; margin-bottom:18px;">
+                            <div style="background:var(--primary); height:100%; width:{{ $onboardingTotal > 0 ? round(($onboardingDoneCount / $onboardingTotal) * 100) : 0 }}%; transition:width 0.3s ease;"></div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:10px;">
+                            @foreach($onboardingChecklist as $step)
+                                <div class="onboarding-checklist-item" data-tab-target="{{ $step['tab'] }}" style="display:flex; align-items:center; gap:12px; background:white; padding:12px 16px; border-radius:12px; border:1px solid #f0e4ea; {{ $step['done'] ? '' : 'cursor:pointer;' }}" @if(!$step['done']) onclick="goToOnboardingTab('{{ $step['tab'] }}')" @endif>
+                                    <span style="width:22px; height:22px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; {{ $step['done'] ? 'background:#059669; color:#fff;' : 'background:#f0e4ea; color:#999;' }}">
+                                        {{ $step['done'] ? '✓' : '' }}
+                                    </span>
+                                    <span style="flex:1; font-size:0.92rem; font-weight:600; color:{{ $step['done'] ? '#999' : '#5c1d37' }}; {{ $step['done'] ? 'text-decoration:line-through;' : '' }}">{{ $step['label'] }}</span>
+                                    @if(!$step['done'])
+                                        <span style="font-size:0.8rem; font-weight:700; color:var(--primary);">Go →</span>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <script>
+                        (function () {
+                            var dismissKey = 'onboarding_checklist_dismissed_{{ $tenant->id }}';
+                            if (localStorage.getItem(dismissKey) === '1') {
+                                var card = document.getElementById('onboarding-checklist-card');
+                                if (card) card.style.display = 'none';
+                            }
+                            window.dismissOnboardingChecklist = function () {
+                                localStorage.setItem(dismissKey, '1');
+                                var card = document.getElementById('onboarding-checklist-card');
+                                if (card) card.style.display = 'none';
+                            };
+                        })();
+
+                        window.goToOnboardingTab = function (tabId) {
+                            var btn = document.querySelector('.admin-sidebar-nav .admin-nav-item[data-tab="' + tabId + '"]');
+                            if (btn) btn.click();
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        };
+                    </script>
+                @endunless
+
                 <div class="section-header">
                     <h3>Orders</h3>
                     <p class="subtitle">Sorted by due date, soonest first.</p>

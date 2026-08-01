@@ -70,6 +70,7 @@ class Tenant extends Model implements TenancyContract
         'site_content',
         'section_settings',
         'booking_settings',
+        'calendar_configured_at',
         'ai_generated_content',
         'onboarding_completed',
         'onboarding_flow_version',
@@ -94,6 +95,7 @@ class Tenant extends Model implements TenancyContract
         'onboarding_completed_at' => 'datetime',
         'is_active' => 'boolean',
         'is_demo' => 'boolean',
+        'calendar_configured_at' => 'datetime',
         'custom_domain_verified_at' => 'datetime',
         'custom_domain_last_checked_at' => 'datetime',
     ];
