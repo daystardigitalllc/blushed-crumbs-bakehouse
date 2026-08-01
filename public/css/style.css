@@ -4621,6 +4621,179 @@ body.theme-sunny_whisk .next-btn {
     }
 }
 
+/* 9. 🖤 THE DAILY BATCH THEME — admin dashboard only. The storefront's own
+   mustard/black CSS lives in public/css/themes/daily_batch.css (loaded only
+   by storefront pages); the Baker Admin Portal (resources/views/admin/
+   dashboard.blade.php) extends layouts/app.blade.php, which only loads this
+   file — so it needs its own copy of the theme's variables to re-skin.
+   --theme-accent-bg stays dark (every theme's .admin-sidebar hardcodes
+   white text, so a bright sidebar would be illegible) while --primary and
+   --theme-section-bg carry mustard through as the dominant color across the
+   sidebar's active state, buttons, focus rings, and the main content
+   background. Pro tier (see Tenant::getStarterThemes()). */
+body.theme-daily_batch {
+    --primary: #f2d310;
+    --primary-hover: #d9bc00;
+    --pink-bg: #fffbe0;
+    --dark-text: #14140f;
+    --theme-heading-font: 'Poppins', sans-serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #fffbe0;
+    --theme-accent-bg: #14140f;
+    font-family: 'Inter', sans-serif;
+    background-color: #fffbe0;
+}
+
+/* .admin-nav-item.active and .badge-pro both read var(--primary) for their
+   background but hardcode white text — fine against the pink/navy/etc.
+   --primary of every other theme, unreadable against mustard yellow. */
+body.theme-daily_batch .admin-nav-item.active,
+body.theme-daily_batch .admin-sidebar-brand .badge-pro {
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .admin-mobile-header {
+    background: #14140f !important;
+}
+
+body.theme-daily_batch .admin-main-content input[type="text"],
+body.theme-daily_batch .admin-main-content input[type="number"],
+body.theme-daily_batch .admin-main-content input[type="email"],
+body.theme-daily_batch .admin-main-content input[type="tel"],
+body.theme-daily_batch .admin-main-content input[type="url"],
+body.theme-daily_batch .admin-main-content select,
+body.theme-daily_batch .admin-main-content textarea {
+    border: 1.5px solid #ecdd8f !important;
+    background-color: #ffffff !important;
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .admin-main-content input:focus,
+body.theme-daily_batch .admin-main-content select:focus,
+body.theme-daily_batch .admin-main-content textarea:focus {
+    border-color: #f2d310 !important;
+    box-shadow: 0 0 0 4px rgba(242, 211, 16, 0.35) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-daily_batch .admin-main-content label {
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .status-select:focus {
+    border-color: #f2d310;
+    box-shadow: 0 0 0 3px rgba(242, 211, 16, 0.35);
+}
+
+body.theme-daily_batch .btn-outline {
+    background: transparent !important;
+    border: 2px solid #d9bc00 !important;
+    color: #8a7400 !important;
+}
+
+body.theme-daily_batch .btn-outline:hover {
+    background: #fff6c2 !important;
+}
+
+body.theme-daily_batch .reorder-btn {
+    background: #fff6c2 !important;
+    border: 1px solid #ecdd8f !important;
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .reorder-btn:hover:not(:disabled) {
+    background: #f2d310 !important;
+    border-color: #f2d310 !important;
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .category-card-exact,
+body.theme-daily_batch .cloud-review-card,
+body.theme-daily_batch .category-image-frame,
+body.theme-daily_batch .form-builder-card,
+body.theme-daily_batch .order-card,
+body.theme-daily_batch .add-review-box,
+body.theme-daily_batch .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #ecdd8f;
+}
+
+body.theme-daily_batch .order-modal-card {
+    border-radius: 28px !important;
+    border: 3px solid #f2d310 !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(20, 20, 15, 0.2) !important;
+}
+
+body.theme-daily_batch .sticky-order-summary-bar {
+    background: #fff6c2 !important;
+    border: 2px solid #f2d310 !important;
+}
+
+body.theme-daily_batch .product,
+body.theme-daily_batch .option-chip {
+    border-radius: 20px !important;
+    border: 2px solid #ecdd8f !important;
+    background: #ffffff !important;
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .product.selected,
+body.theme-daily_batch .option-chip.selected {
+    background: #f2d310 !important;
+    color: #14140f !important;
+    border-color: #14140f !important;
+    box-shadow: 0 8px 20px rgba(242, 211, 16, 0.45) !important;
+}
+
+body.theme-daily_batch .next-btn {
+    background: #f2d310 !important;
+    color: #14140f !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 20px rgba(242, 211, 16, 0.35) !important;
+}
+
+/* ── Page Builder / Section Studio tab ──
+   Same approach as playful_treats: attribute selectors catch the repeated
+   inline hex values in that tab's mostly hard-coded template. */
+body.theme-daily_batch #tab-page-builder .form-builder-card {
+    border-color: #ecdd8f !important;
+}
+
+body.theme-daily_batch #tab-page-builder h4,
+body.theme-daily_batch #tab-page-builder h6,
+body.theme-daily_batch #tab-page-builder strong {
+    color: #14140f !important;
+}
+
+body.theme-daily_batch #tab-page-builder .section-manager-row {
+    border-color: #ecdd8f !important;
+}
+
+body.theme-daily_batch #tab-page-builder .section-accordion-header {
+    background: #fffbe0 !important;
+}
+
+body.theme-daily_batch #tab-page-builder .section-accordion-body {
+    border-top-color: #ecdd8f !important;
+}
+
+body.theme-daily_batch #tab-page-builder .drag-handle,
+body.theme-daily_batch #tab-page-builder .accordion-arrow {
+    color: #d9bc00 !important;
+}
+
+body.theme-daily_batch #tab-page-builder [style*="border:1px solid #eee"] {
+    background: #fffbe0 !important;
+    border-color: #ecdd8f !important;
+}
+
+body.theme-daily_batch #section-manager-msg {
+    background: #fffbe0 !important;
+    color: #14140f !important;
+    border-color: #ecdd8f !important;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
