@@ -14,21 +14,16 @@
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 
-<header class="site-header">
-    <div class="header-container">
-        <a href="{{ route('storefront.index') }}" class="logo">
-            @if(!empty($tenant->logo_path))
-                <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
-            @else
-                <span class="lb-logo-stamp"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-3px;">local_florist</span> {{ $tenant->name }}</span>
-            @endif
-        </a>
-        <nav class="nav-links">
-            <a href="{{ route('storefront.index') }}">Home</a>
-            <a href="{{ route('storefront.about') }}">About</a>
-            <a href="{{ route('storefront.menu') }}">Menu</a>
-            <a href="{{ route('storefront.gallery') }}" class="active">Gallery</a>
-                <a href="{{ route('storefront.policy') }}">Policy</a>
+<header class="site-header lb-two-tier-header">
+    <div class="lb-header-top">
+        <div class="header-container">
+            <a href="{{ route('storefront.index') }}" class="logo">
+                @if(!empty($tenant->logo_path))
+                    <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:48px; width:auto; object-fit:contain;">
+                @else
+                    <span class="lb-logo-stamp"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-3px;">local_florist</span> {{ $tenant->name }}</span>
+                @endif
+            </a>
             @if(Auth::check() && Auth::user()->tenant_id === $tenant->id)
                 @php
                     $navBakerSub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
@@ -36,10 +31,21 @@
                         ? url('/site/' . $navBakerSub . '/dashboard')
                         : route('baker.dashboard');
                 @endphp
-                <a href="{{ $navBakerPortalUrl }}">Dashboard</a>
+                <a href="{{ $navBakerPortalUrl }}" class="lb-header-dashboard-link">Dashboard</a>
             @endif
-            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
-        </nav>
+        </div>
+    </div>
+    <div class="lb-header-nav-band">
+        <div class="lb-header-nav-inner">
+            <nav class="nav-links">
+                <a href="{{ route('storefront.index') }}">Home</a>
+                <a href="{{ route('storefront.about') }}">About</a>
+                <a href="{{ route('storefront.menu') }}">Menu</a>
+                <a href="{{ route('storefront.gallery') }}" class="active">Gallery</a>
+                <a href="{{ route('storefront.policy') }}">Policy</a>
+                <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
+            </nav>
+        </div>
     </div>
 </header>
 

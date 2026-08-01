@@ -17,21 +17,16 @@
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 
-<header class="site-header">
-    <div class="header-container">
-        <a href="{{ route('storefront.index') }}" class="logo">
-            @if(!empty($tenant->logo_path))
-                <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
-            @else
-                <span class="lb-logo-stamp"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-3px;">local_florist</span> {{ $tenant->name }}</span>
-            @endif
-        </a>
-        <nav class="nav-links">
-            <a href="{{ route('storefront.index') }}">Home</a>
-            <a href="{{ route('storefront.about') }}">About</a>
-            <a href="{{ route('storefront.menu') }}">Menu</a>
-            <a href="{{ route('storefront.gallery') }}">Gallery</a>
-                <a href="{{ route('storefront.policy') }}">Policy</a>
+<header class="site-header lb-two-tier-header">
+    <div class="lb-header-top">
+        <div class="header-container">
+            <a href="{{ route('storefront.index') }}" class="logo">
+                @if(!empty($tenant->logo_path))
+                    <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:48px; width:auto; object-fit:contain;">
+                @else
+                    <span class="lb-logo-stamp"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-3px;">local_florist</span> {{ $tenant->name }}</span>
+                @endif
+            </a>
             @if(Auth::check() && Auth::user()->tenant_id === $tenant->id)
                 @php
                     $navBakerSub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
@@ -39,10 +34,21 @@
                         ? url('/site/' . $navBakerSub . '/dashboard')
                         : route('baker.dashboard');
                 @endphp
-                <a href="{{ $navBakerPortalUrl }}">Dashboard</a>
+                <a href="{{ $navBakerPortalUrl }}" class="lb-header-dashboard-link">Dashboard</a>
             @endif
-            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
-        </nav>
+        </div>
+    </div>
+    <div class="lb-header-nav-band">
+        <div class="lb-header-nav-inner">
+            <nav class="nav-links">
+                <a href="{{ route('storefront.index') }}" class="active">Home</a>
+                <a href="{{ route('storefront.about') }}">About</a>
+                <a href="{{ route('storefront.menu') }}">Menu</a>
+                <a href="{{ route('storefront.gallery') }}">Gallery</a>
+                <a href="{{ route('storefront.policy') }}">Policy</a>
+                <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
+            </nav>
+        </div>
     </div>
 </header>
 
@@ -83,20 +89,24 @@
                     </div>
                 </section>
             @elseif($secId === 'about')
-                <!-- About / Our Story — rounded square photo left, bio right -->
-                <section class="lb-section lb-band-white">
+                <!-- About / Our Story — offset dual-layer photo frame + copy card -->
+                <section class="lb-section lb-band-lavender">
                     <div class="lb-about-row">
-                        <div class="lb-about-photo">
-                            @php
-                                $aboutImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : (!empty($tenant->logo_path) ? asset($tenant->logo_path) : null);
-                            @endphp
-                            @if($aboutImg)
-                                <img src="{{ $aboutImg }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
-                            @else
-                                <div class="lb-photo-placeholder"><span class="material-symbols-outlined" style="font-size:3rem;">cake</span></div>
-                            @endif
+                        <div class="lb-about-photo-wrap">
+                            <div class="lb-about-photo-backdrop"></div>
+                            <div class="lb-about-photo">
+                                @php
+                                    $aboutImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : (!empty($tenant->logo_path) ? asset($tenant->logo_path) : null);
+                                @endphp
+                                @if($aboutImg)
+                                    <img src="{{ $aboutImg }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
+                                @else
+                                    <div class="lb-photo-placeholder"><span class="material-symbols-outlined" style="font-size:3rem;">cake</span></div>
+                                @endif
+                            </div>
                         </div>
-                        <div class="lb-about-copy">
+                        <div class="lb-about-copy-card">
+                            <span class="lb-about-kicker">Our Story</span>
                             <h2>{{ $tenant->getSiteContent('about_title', 'About Our Bakery') }}</h2>
                             <p>{{ $tenant->getSiteContent('about_bio', 'Welcome to ' . ($tenant->name ?? 'our bakehouse') . '! We specialize in custom artisanal cakes, gourmet treats, and unforgettable dessert experiences crafted with premium ingredients and passion.') }}</p>
                             <a href="{{ route('storefront.about') }}" class="lb-text-link">Read our full story →</a>
@@ -105,7 +115,7 @@
                 </section>
             @elseif($secId === 'highlights')
                 <!-- Highlights — horizontal trust bar, 4 icon columns -->
-                <section class="lb-section lb-band-lavender">
+                <section class="lb-section lb-band-white">
                     <div class="lb-highlight-strip">
                         @php $highlights = $tenant->getSiteContent('highlights', []); @endphp
                         @foreach($highlights as $hl)
@@ -177,61 +187,52 @@
                     </div>
                 </section>
             @elseif($secId === 'whimsical')
-                <!-- Whimsical Section — solid purple band -->
+                <!-- Whimsical Section — light band, checklist-chip grid (not a photo/text mirror) -->
+                @php
+                    $wImg = $tenant->getSiteContent('whimsical_image_url');
+                    if (empty($wImg) && !empty($tenant->gallery_images[0])) {
+                        $wImg = $tenant->gallery_images[0];
+                    }
+                @endphp
                 <section class="whimsical-section lb-whimsical">
-                    <div class="whimsical-two-column">
-                        <div class="whimsical-col-left">
+                    <div class="lb-whimsical-inner">
+                        @if($wImg)
+                            <div class="lb-whimsical-badge">
+                                <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation" loading="lazy" decoding="async">
+                            </div>
+                        @endif
+                        <h2>{{ $tenant->getSiteContent('whimsical_title', 'Whimsical Creations for Every Milestone') }}</h2>
+                        <div class="lb-whimsical-grid">
                             @php
-                                $wImg = $tenant->getSiteContent('whimsical_image_url');
-                                if (empty($wImg) && !empty($tenant->gallery_images[0])) {
-                                    $wImg = $tenant->gallery_images[0];
-                                }
+                                $bullets = $tenant->getSiteContent('whimsical_bullets', []);
                             @endphp
-                            @if($wImg)
-                                <div class="lb-whimsical-img">
-                                    <img src="{{ asset($wImg) }}" alt="{{ $tenant->name }} Whimsical Creation" loading="lazy" decoding="async">
+                            @foreach($bullets as $bullet)
+                                <div class="lb-whimsical-chip">
+                                    <span class="material-symbols-outlined">check_circle</span>
+                                    <span>{{ $bullet }}</span>
                                 </div>
-                            @else
-                                <div style="text-align:center; padding:40px 20px; background:rgba(255,255,255,0.1); border-radius:24px;">
-                                    <span class="material-symbols-outlined" style="font-size:4rem; display:block; margin-bottom:12px; color:#f3d9ff;">auto_awesome</span>
-                                    <h3 style="color:#ffffff;">Handcrafted Excellence</h3>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="whimsical-col-right">
-                            <h2>{{ $tenant->getSiteContent('whimsical_title', 'Whimsical Creations for Every Milestone') }}</h2>
-                            <ul class="whimsical-bullet-list">
-                                @php
-                                    $bullets = $tenant->getSiteContent('whimsical_bullets', []);
-                                @endphp
-                                @foreach($bullets as $bullet)
-                                    <li>{{ $bullet }}</li>
-                                @endforeach
-                            </ul>
-                            <hr class="whimsical-hr">
+                            @endforeach
                         </div>
                     </div>
                 </section>
             @elseif($secId === 'how_it_works')
-                <!-- How It Works — numbered steps -->
-                <section class="how-it-works-section lb-section lb-band-lavender">
+                <!-- How It Works — horizontal step-card grid -->
+                <section class="how-it-works-section lb-section lb-band-white">
                     <h2 class="lb-section-title" style="text-align:center;">How To Order</h2>
-                    <div class="lb-steps-list">
+                    <div class="lb-steps-grid">
                         @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp
                         @foreach($steps as $idx => $step)
-                            <div class="lb-step-row">
-                                <span class="lb-step-num"></span>
-                                <div class="lb-step-copy">
-                                    <h3>{{ $step['title'] ?? '' }}</h3>
-                                    <p>{{ $step['desc'] ?? '' }}</p>
-                                </div>
+                            <div class="lb-step-card">
+                                <span class="lb-step-num">{{ $idx + 1 }}</span>
+                                <h3>{{ $step['title'] ?? '' }}</h3>
+                                <p>{{ $step['desc'] ?? '' }}</p>
                             </div>
                         @endforeach
                     </div>
                 </section>
             @elseif($secId === 'reviews')
                 <!-- Reviews -->
-                <section id="reviews" class="reviews-section lb-section lb-band-white">
+                <section id="reviews" class="reviews-section lb-section lb-band-lavender">
                     <h2 class="lb-section-title">Sweet Words from Our Customers</h2>
                     <div class="lb-review-row">
                         @php
@@ -254,7 +255,7 @@
                 </section>
             @elseif($secId === 'faq')
                 <!-- FAQ & Bakery Policies -->
-                <section class="faq-policies-section lb-section lb-band-lavender">
+                <section class="faq-policies-section lb-section lb-band-white">
                     <h2 class="lb-section-title" style="text-align:center; margin-bottom:15px;">Frequently Asked Questions</h2>
                     <div style="max-width:850px; margin:0 auto; text-align:left; display:flex; flex-direction:column; gap:18px;">
                         @php $faqs = $tenant->getSiteContent('faqs', []); @endphp

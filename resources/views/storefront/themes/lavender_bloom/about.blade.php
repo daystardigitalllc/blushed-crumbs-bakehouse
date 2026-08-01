@@ -14,21 +14,16 @@
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 
-<header class="site-header">
-    <div class="header-container">
-        <a href="{{ route('storefront.index') }}" class="logo">
-            @if(!empty($tenant->logo_path))
-                <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:52px; width:auto; object-fit:contain;">
-            @else
-                <span class="lb-logo-stamp"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-3px;">local_florist</span> {{ $tenant->name }}</span>
-            @endif
-        </a>
-        <nav class="nav-links">
-            <a href="{{ route('storefront.index') }}">Home</a>
-            <a href="{{ route('storefront.about') }}" class="active">About</a>
-            <a href="{{ route('storefront.menu') }}">Menu</a>
-            <a href="{{ route('storefront.gallery') }}">Gallery</a>
-                <a href="{{ route('storefront.policy') }}">Policy</a>
+<header class="site-header lb-two-tier-header">
+    <div class="lb-header-top">
+        <div class="header-container">
+            <a href="{{ route('storefront.index') }}" class="logo">
+                @if(!empty($tenant->logo_path))
+                    <img src="{{ asset($tenant->logo_path) }}" alt="{{ $tenant->name }} Logo" style="max-height:48px; width:auto; object-fit:contain;">
+                @else
+                    <span class="lb-logo-stamp"><span class="material-symbols-outlined" style="font-size:1.2rem; vertical-align:-3px;">local_florist</span> {{ $tenant->name }}</span>
+                @endif
+            </a>
             @if(Auth::check() && Auth::user()->tenant_id === $tenant->id)
                 @php
                     $navBakerSub = request()->route('subdomain') ?? $tenant->subdomain ?? $tenant->slug;
@@ -36,10 +31,21 @@
                         ? url('/site/' . $navBakerSub . '/dashboard')
                         : route('baker.dashboard');
                 @endphp
-                <a href="{{ $navBakerPortalUrl }}">Dashboard</a>
+                <a href="{{ $navBakerPortalUrl }}" class="lb-header-dashboard-link">Dashboard</a>
             @endif
-            <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
-        </nav>
+        </div>
+    </div>
+    <div class="lb-header-nav-band">
+        <div class="lb-header-nav-inner">
+            <nav class="nav-links">
+                <a href="{{ route('storefront.index') }}">Home</a>
+                <a href="{{ route('storefront.about') }}" class="active">About</a>
+                <a href="{{ route('storefront.menu') }}">Menu</a>
+                <a href="{{ route('storefront.gallery') }}">Gallery</a>
+                <a href="{{ route('storefront.policy') }}">Policy</a>
+                <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
+            </nav>
+        </div>
     </div>
 </header>
 
@@ -50,22 +56,25 @@
         <h1 class="lb-page-hero-title">Meet {{ $tenant->name }}</h1>
     </section>
 
-    <!-- MEET THE BAKER — rounded photo + bio + testimonial quote -->
-    <section class="lb-section lb-band-white">
+    <!-- MEET THE BAKER — offset dual-layer photo frame + copy card -->
+    <section class="lb-section lb-band-lavender">
         <div class="lb-meet-baker">
-            <div class="lb-meet-baker-img">
-                @php
-                    $founderImg = !empty($tenant->logo_path) ? asset($tenant->logo_path) : (!empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : null);
-                @endphp
-                @if($founderImg)
-                    <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}" loading="lazy" decoding="async">
-                @else
-                    <div class="lb-photo-placeholder">
-                        <span class="material-symbols-outlined" style="font-size:3.5rem;">cake</span>
-                    </div>
-                @endif
+            <div class="lb-meet-baker-img-wrap">
+                <div class="lb-meet-baker-img-backdrop"></div>
+                <div class="lb-meet-baker-img">
+                    @php
+                        $founderImg = !empty($tenant->logo_path) ? asset($tenant->logo_path) : (!empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : null);
+                    @endphp
+                    @if($founderImg)
+                        <img src="{{ $founderImg }}" alt="About {{ $tenant->name }}" loading="lazy" decoding="async">
+                    @else
+                        <div class="lb-photo-placeholder">
+                            <span class="material-symbols-outlined" style="font-size:3.5rem;">cake</span>
+                        </div>
+                    @endif
+                </div>
             </div>
-            <div>
+            <div class="lb-meet-baker-copy-card">
                 <h2>{{ $tenant->getSiteContent('about_title', 'About Our Bakery') }}</h2>
                 <p>{{ $tenant->getSiteContent('about_bio', 'Welcome to ' . ($tenant->name ?? 'our bakehouse') . '! We specialize in artisanal custom cakes, gourmet treats, and unforgettable dessert experiences. Every order is baked fresh with love and attention to detail.') }}</p>
                 <div class="lb-quote-card">
@@ -76,56 +85,44 @@
         </div>
     </section>
 
-    <!-- WHY US — icon list -->
-    <section class="lb-section lb-band-lavender">
+    <!-- WHY US — icon-topped card grid (not icon-left rows) -->
+    <section class="lb-section lb-band-white">
         <h2 class="lb-section-title" style="text-align:center;">The Ingredients Behind {{ $tenant->name }}</h2>
-        <div class="lb-ingredients-list">
-            <div class="lb-ingredient-row">
+        <div class="lb-ingredients-grid">
+            <div class="lb-ingredient-card">
                 <div class="lb-icon-circle"><span class="material-symbols-outlined">home</span></div>
-                <div>
-                    <h3>100% Homemade</h3>
-                    <p>Baked completely from scratch using traditional family techniques and premium real ingredients.</p>
-                </div>
+                <h3>100% Homemade</h3>
+                <p>Baked completely from scratch using traditional family techniques and premium real ingredients.</p>
             </div>
-            <div class="lb-ingredient-row">
+            <div class="lb-ingredient-card">
                 <div class="lb-icon-circle"><span class="material-symbols-outlined">cake</span></div>
-                <div>
-                    <h3>Custom Design</h3>
-                    <p>Every cake is designed uniquely to match your vision, theme, and celebration style.</p>
-                </div>
+                <h3>Custom Design</h3>
+                <p>Every cake is designed uniquely to match your vision, theme, and celebration style.</p>
             </div>
-            <div class="lb-ingredient-row">
+            <div class="lb-ingredient-card">
                 <div class="lb-icon-circle"><span class="material-symbols-outlined">eco</span></div>
-                <div>
-                    <h3>Fresh Flavors</h3>
-                    <p>Real fruit preserves, rich cocoa, real vanilla beans, and signature velvet frostings.</p>
-                </div>
+                <h3>Fresh Flavors</h3>
+                <p>Real fruit preserves, rich cocoa, real vanilla beans, and signature velvet frostings.</p>
             </div>
-            <div class="lb-ingredient-row">
+            <div class="lb-ingredient-card">
                 <div class="lb-icon-circle"><span class="material-symbols-outlined">event</span></div>
-                <div>
-                    <h3>Reliable Booking</h3>
-                    <p>Easy custom order scheduling with guaranteed calendar availability for your date.</p>
-                </div>
+                <h3>Reliable Booking</h3>
+                <p>Easy custom order scheduling with guaranteed calendar availability for your date.</p>
             </div>
-            <div class="lb-ingredient-row">
+            <div class="lb-ingredient-card">
                 <div class="lb-icon-circle"><span class="material-symbols-outlined">auto_awesome</span></div>
-                <div>
-                    <h3>Attention to Detail</h3>
-                    <p>Intricate piping, elegant edible details, and perfection in every single bite.</p>
-                </div>
+                <h3>Attention to Detail</h3>
+                <p>Intricate piping, elegant edible details, and perfection in every single bite.</p>
             </div>
-            <div class="lb-ingredient-row">
+            <div class="lb-ingredient-card">
                 <div class="lb-icon-circle"><span class="material-symbols-outlined">chat</span></div>
-                <div>
-                    <h3>Personalized Service</h3>
-                    <p>Direct communication with the baker to ensure your event dessert is stress-free.</p>
-                </div>
+                <h3>Personalized Service</h3>
+                <p>Direct communication with the baker to ensure your event dessert is stress-free.</p>
             </div>
         </div>
     </section>
 
-    <!-- SPECIALTIES -->
+    <!-- SPECIALTIES — solid gradient cards, not white-card-top-border -->
     <section class="lb-section lb-band-purple">
         <h2 class="lb-section-title" style="text-align:center;">What We Bake Best</h2>
         <div class="lb-specialties-row">

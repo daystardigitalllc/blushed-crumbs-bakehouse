@@ -46,9 +46,68 @@ body.theme-lavender_bloom .raining-cake {
     display: none !important;
 }
 
+/* Two-tier header — white utility row + solid purple nav band, replacing
+   the single transparent-over-hero bar every other theme uses. */
 body.theme-lavender_bloom .site-header {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+body.theme-lavender_bloom .lb-header-top {
+    background: #ffffff;
+    padding: 14px 0;
+}
+
+body.theme-lavender_bloom .lb-header-top .header-container {
+    padding: 0 30px;
+}
+
+body.theme-lavender_bloom .lb-header-dashboard-link {
+    color: var(--lb-purple) !important;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+body.theme-lavender_bloom .lb-header-nav-band {
+    background: var(--lb-purple);
+    box-shadow: 0 4px 14px rgba(94, 44, 120, 0.18);
+}
+
+body.theme-lavender_bloom .lb-header-nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+body.theme-lavender_bloom .lb-header-nav-band .nav-links {
+    justify-content: center;
+    gap: 32px;
+    padding: 14px 0;
+}
+
+body.theme-lavender_bloom .lb-header-nav-band .nav-links a:not(.nav-order-btn) {
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+body.theme-lavender_bloom .lb-header-nav-band .nav-links a:not(.nav-order-btn):hover,
+body.theme-lavender_bloom .lb-header-nav-band .nav-links a.active {
+    color: #f3d9ff !important;
+}
+
+body.theme-lavender_bloom .lb-header-nav-band .nav-order-btn {
+    margin-left: auto;
     background: #ffffff !important;
-    box-shadow: 0 2px 12px rgba(94, 44, 120, 0.08);
+    color: var(--lb-purple) !important;
+    box-shadow: none !important;
+}
+
+body.theme-lavender_bloom .lb-header-nav-band .nav-order-btn:hover {
+    background: #f3d9ff !important;
 }
 
 body.theme-lavender_bloom .icon,
@@ -64,14 +123,6 @@ body.theme-lavender_bloom .lb-logo-stamp {
     font-weight: 700;
     font-size: 1.4rem;
     color: var(--lb-ink);
-}
-
-body.theme-lavender_bloom .nav-links a:not(.nav-order-btn) {
-    color: var(--lb-ink) !important;
-}
-
-body.theme-lavender_bloom .nav-links a:not(.nav-order-btn):hover {
-    color: var(--lb-purple) !important;
 }
 
 body.theme-lavender_bloom .btn-primary,
@@ -191,25 +242,43 @@ body.theme-lavender_bloom .lb-hero-media-placeholder {
     color: var(--lb-purple);
 }
 
-/* About row — rounded-square photo + copy */
+/* About row — offset dual-layer photo frame + floating copy card */
 body.theme-lavender_bloom .lb-about-row {
     max-width: 1100px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: 60px;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
     align-items: center;
 }
 
-body.theme-lavender_bloom .lb-about-photo {
+body.theme-lavender_bloom .lb-about-photo-wrap,
+body.theme-lavender_bloom .lb-meet-baker-img-wrap {
+    position: relative;
+}
+
+body.theme-lavender_bloom .lb-about-photo-backdrop,
+body.theme-lavender_bloom .lb-meet-baker-img-backdrop {
+    position: absolute;
+    inset: 24px -24px -24px 24px;
+    background: var(--lb-lavender-deep);
+    border-radius: 28px;
+    z-index: 0;
+}
+
+body.theme-lavender_bloom .lb-about-photo,
+body.theme-lavender_bloom .lb-meet-baker-img {
+    position: relative;
+    z-index: 1;
     aspect-ratio: 1;
     border-radius: 28px;
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(94, 44, 120, 0.16);
-    border: 6px solid var(--lb-lavender);
+    box-shadow: 0 20px 50px rgba(94, 44, 120, 0.2);
+    border: 6px solid #ffffff;
 }
 
-body.theme-lavender_bloom .lb-about-photo img {
+body.theme-lavender_bloom .lb-about-photo img,
+body.theme-lavender_bloom .lb-meet-baker-img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -225,7 +294,26 @@ body.theme-lavender_bloom .lb-photo-placeholder {
     color: var(--lb-purple);
 }
 
-body.theme-lavender_bloom .lb-about-copy p {
+body.theme-lavender_bloom .lb-about-copy-card,
+body.theme-lavender_bloom .lb-meet-baker-copy-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 12px 30px rgba(94, 44, 120, 0.1);
+}
+
+body.theme-lavender_bloom .lb-about-kicker {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--lb-purple);
+    margin-bottom: 10px;
+}
+
+body.theme-lavender_bloom .lb-about-copy-card p,
+body.theme-lavender_bloom .lb-meet-baker-copy-card p {
     line-height: 1.75;
     margin-bottom: 10px;
     color: var(--lb-ink);
@@ -306,65 +394,105 @@ body.theme-lavender_bloom .lb-category-banner {
     font-size: 0.9rem;
 }
 
-/* Whimsical section — solid purple gradient band */
+/* Whimsical section — light band, centered checklist-chip grid (not a
+   dark photo/bullet-list mirror row) */
 body.theme-lavender_bloom .lb-whimsical {
-    background: linear-gradient(135deg, #3b1f47 0%, #8e4fa3 100%) !important;
-    color: #ffffff !important;
+    background: var(--lb-lavender-deep) !important;
+}
+
+body.theme-lavender_bloom .lb-whimsical-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
 }
 
 body.theme-lavender_bloom .lb-whimsical h2 {
-    color: #f3d9ff !important;
+    margin-bottom: 34px;
 }
 
-body.theme-lavender_bloom .lb-whimsical-img img {
+body.theme-lavender_bloom .lb-whimsical-badge {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 20px auto;
+    border: 4px solid #ffffff;
+    box-shadow: 0 10px 25px rgba(94, 44, 120, 0.16);
+}
+
+body.theme-lavender_bloom .lb-whimsical-badge img {
     width: 100%;
-    border-radius: 20px;
+    height: 100%;
+    object-fit: cover;
 }
 
-/* How It Works — numbered steps */
-body.theme-lavender_bloom .lb-steps-list {
-    max-width: 750px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    counter-reset: lb-step;
+body.theme-lavender_bloom .lb-whimsical-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    text-align: left;
 }
 
-body.theme-lavender_bloom .lb-step-row {
+body.theme-lavender_bloom .lb-whimsical-chip {
     display: flex;
-    gap: 20px;
     align-items: flex-start;
-    counter-increment: lb-step;
+    gap: 10px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 8px 20px rgba(94, 44, 120, 0.1);
+    color: var(--lb-ink);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+body.theme-lavender_bloom .lb-whimsical-chip .material-symbols-outlined {
+    color: var(--lb-purple);
+    flex-shrink: 0;
+}
+
+/* How It Works — horizontal step-card grid (not a vertical numbered list) */
+body.theme-lavender_bloom .lb-steps-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 26px;
+}
+
+body.theme-lavender_bloom .lb-step-card {
+    background: var(--lb-lavender);
+    border-radius: 20px;
+    padding: 34px 26px;
+    text-align: center;
+    box-shadow: 0 10px 26px rgba(94, 44, 120, 0.1);
 }
 
 body.theme-lavender_bloom .lb-step-num {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--lb-purple);
-    flex-shrink: 0;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-}
-
-body.theme-lavender_bloom .lb-step-num::before {
-    content: counter(lb-step);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--lb-purple);
     color: #ffffff;
     font-weight: 800;
     font-family: 'Poppins', sans-serif;
     font-size: 1.2rem;
+    margin-bottom: 16px;
 }
 
-body.theme-lavender_bloom .lb-step-copy h3 {
+body.theme-lavender_bloom .lb-step-card h3 {
     color: var(--lb-ink);
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    font-size: 1.15rem;
 }
 
-body.theme-lavender_bloom .lb-step-copy p {
+body.theme-lavender_bloom .lb-step-card p {
     color: #5c4267;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
 }
 
 /* Reviews */
@@ -475,38 +603,19 @@ body.theme-lavender_bloom .lb-page-hero-title {
     color: var(--lb-ink);
 }
 
-/* About page — meet the baker */
+/* About page — meet the baker (photo/backdrop styling shared with the
+   home "about" row rules above) */
 body.theme-lavender_bloom .lb-meet-baker {
     max-width: 1100px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: 60px;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
     align-items: center;
 }
 
-body.theme-lavender_bloom .lb-meet-baker-img {
-    aspect-ratio: 1;
-    border-radius: 28px;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba(94, 44, 120, 0.16);
-    border: 6px solid var(--lb-lavender);
-}
-
-body.theme-lavender_bloom .lb-meet-baker-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-body.theme-lavender_bloom .lb-meet-baker h2 {
+body.theme-lavender_bloom .lb-meet-baker-copy-card h2 {
     margin-bottom: 14px;
-}
-
-body.theme-lavender_bloom .lb-meet-baker p {
-    line-height: 1.75;
-    margin-bottom: 20px;
-    color: var(--lb-ink);
 }
 
 body.theme-lavender_bloom .lb-quote-card {
@@ -527,18 +636,20 @@ body.theme-lavender_bloom .lb-quote-card span {
     font-size: 0.9rem;
 }
 
-body.theme-lavender_bloom .lb-ingredients-list {
-    max-width: 1000px;
+/* Why Us — icon-topped cards (not icon-left rows) */
+body.theme-lavender_bloom .lb-ingredients-grid {
+    max-width: 1100px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
 }
 
-body.theme-lavender_bloom .lb-ingredient-row {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
+body.theme-lavender_bloom .lb-ingredient-card {
+    background: var(--lb-lavender);
+    border-radius: 20px;
+    padding: 30px 24px;
+    text-align: center;
 }
 
 body.theme-lavender_bloom .lb-icon-circle {
@@ -550,19 +661,22 @@ body.theme-lavender_bloom .lb-icon-circle {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    margin: 0 auto 14px auto;
 }
 
-body.theme-lavender_bloom .lb-ingredient-row h3 {
+body.theme-lavender_bloom .lb-ingredient-card h3 {
     margin-bottom: 6px;
     color: var(--lb-ink);
+    font-size: 1.05rem;
 }
 
-body.theme-lavender_bloom .lb-ingredient-row p {
-    font-size: 0.92rem;
+body.theme-lavender_bloom .lb-ingredient-card p {
+    font-size: 0.9rem;
     color: #5c4267;
+    line-height: 1.55;
 }
 
+/* Specialties — solid gradient cards (not white-card-top-border) */
 body.theme-lavender_bloom .lb-specialties-row {
     display: flex;
     flex-wrap: wrap;
@@ -573,13 +687,13 @@ body.theme-lavender_bloom .lb-specialties-row {
 }
 
 body.theme-lavender_bloom .lb-specialty-card {
-    background: #ffffff;
+    background: linear-gradient(160deg, #ffffff 0%, var(--lb-lavender) 100%);
     border-radius: 20px;
     padding: 30px;
     max-width: 320px;
     text-align: left;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
-    border-top: 5px solid #f3d9ff;
+    box-shadow: 0 14px 34px rgba(94, 44, 120, 0.16);
+    border: 1px solid var(--lb-lavender-deep);
 }
 
 body.theme-lavender_bloom .lb-specialty-card h3,
@@ -716,11 +830,21 @@ body.theme-lavender_bloom .next-btn {
 
     body.theme-lavender_bloom .lb-hero-media {
         max-width: 340px;
+        margin: 0 auto;
     }
 
-    body.theme-lavender_bloom .lb-about-photo,
-    body.theme-lavender_bloom .lb-meet-baker-img {
-        max-width: 340px;
-        margin: 0 auto;
+    body.theme-lavender_bloom .lb-about-photo-wrap,
+    body.theme-lavender_bloom .lb-meet-baker-img-wrap {
+        max-width: 320px;
+        margin: 0 auto 20px auto;
+    }
+
+    body.theme-lavender_bloom .lb-header-nav-band .nav-links {
+        flex-wrap: wrap;
+        gap: 16px 24px;
+    }
+
+    body.theme-lavender_bloom .lb-header-nav-band .nav-order-btn {
+        margin-left: 0;
     }
 }
