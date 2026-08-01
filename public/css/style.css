@@ -4652,6 +4652,28 @@ body.theme-daily_batch .admin-sidebar-brand .badge-pro {
     color: #14140f !important;
 }
 
+/* Every other theme already carries this override (left over from before
+   the storefront CSS split, when body.theme-X .btn-primary also styled the
+   storefront). daily_batch never got one, so its plain .btn-primary/
+   .nav-order-btn buttons — "Add Product to Catalog", "Save Menu & Pricing
+   Settings", block-date controls, and every other un-inline-styled button
+   across the dashboard — fell through to the generic pink !important rule
+   regardless of theme. White text (used by every other theme's override)
+   would be unreadable on mustard, so this uses dark text instead. */
+body.theme-daily_batch .btn-primary,
+body.theme-daily_batch .nav-order-btn {
+    background: #f2d310 !important;
+    color: #14140f !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 20px rgba(242, 211, 16, 0.35) !important;
+}
+
+body.theme-daily_batch .btn-primary:hover,
+body.theme-daily_batch .nav-order-btn:hover {
+    background: #d9bc00 !important;
+    color: #14140f !important;
+}
+
 body.theme-daily_batch .admin-mobile-header {
     background: #14140f !important;
 }
