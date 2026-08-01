@@ -26,7 +26,7 @@ class PromoEmail extends Mailable
     public function envelope(): Envelope
     {
         $tenantPrefix = !empty($this->tenant->slug) ? preg_replace('/[^a-z0-9_-]/i', '', $this->tenant->slug) : 'orders';
-        $fromAddress = strtolower($tenantPrefix) . '@daystardigital.co';
+        $fromAddress = strtolower($tenantPrefix) . '@' . config('mail.tenant_from_domain');
         $fromName = !empty($this->tenant->name) ? $this->tenant->name : config('app.name', 'Bakehouse Platform');
 
         return new Envelope(

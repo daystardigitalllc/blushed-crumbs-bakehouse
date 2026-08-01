@@ -108,6 +108,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Per-Tenant "From" Domain
+    |--------------------------------------------------------------------------
+    |
+    | NewOrderNotification and PromoEmail build a per-tenant from address as
+    | "{tenant-slug}@{this domain}" — one place to change it rather than two
+    | duplicated hardcoded strings. Whatever domain this is set to must have
+    | SPF/DKIM authenticated in Brevo (Settings > Senders & IP > Domains) or
+    | mail sent "from" it risks landing in spam / showing "via sendinblue.com".
+    |
+    */
+
+    'tenant_from_domain' => env('MAIL_TENANT_FROM_DOMAIN', 'doughmain.pro'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Global "From" Address
     |--------------------------------------------------------------------------
     |
