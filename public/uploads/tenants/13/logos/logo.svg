@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+    <!-- Background Card -->
+    <rect width="180" height="180" rx="28" fill="#0f172a"/>
+    
+    <!-- Vector Illustration Icon -->
+    <g>
+        
+                    <!-- Bowl -->
+                    <path d="M60 70 L120 70 C120 95 60 95 60 70 Z" fill="#06b6d4" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+                    <!-- Sparkles -->
+                    <path d="M90 35 L93 42 L100 45 L93 48 L90 55 L87 48 L80 45 L87 42 Z" fill="#ec4899"/>
+                    <path d="M112 48 L114 51 L118 52 L114 53 L112 56 L110 53 L106 52 L110 51 Z" fill="#22d3ee"/>
+                
+    </g>
+    
+    <!-- Wordmark Typographical Layout -->
+    <g>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="#f8fafc" text-anchor="middle" letter-spacing="0.02em">The Sugar Studio</text>
+        <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="#f8fafc" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">C U S T O M   B A K E S H O P</text>
+    </g>
+</svg>

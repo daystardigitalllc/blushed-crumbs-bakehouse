@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+    <!-- Background Card -->
+    <rect width="180" height="180" rx="28" fill="#fff1f2"/>
+    
+    <!-- Vector Illustration Icon -->
+    <g>
+        
+                    <!-- Leaves -->
+                    <path d="M90 85 C65 105 60 75 90 85 Z" fill="#10b981" opacity="0.7"/>
+                    <path d="M90 85 C115 105 120 75 90 85 Z" fill="#10b981" opacity="0.7"/>
+                    <!-- Flower Petals -->
+                    <path d="M90 75 C75 52 105 52 90 75 Z" fill="#ec4899" opacity="0.85"/>
+                    <path d="M90 75 C60 65 72 95 90 75 Z" fill="#f43f5e" opacity="0.85"/>
+                    <path d="M90 75 C120 65 108 95 90 75 Z" fill="#f43f5e" opacity="0.85"/>
+                    <path d="M90 75 C70 98 110 98 90 75 Z" fill="#ec4899" opacity="0.85"/>
+                    <circle cx="90" cy="75" r="7" fill="#fef08a" stroke="#d97706" stroke-width="1"/>
+                
+    </g>
+    
+    <!-- Wordmark Typographical Layout -->
+    <g>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="#4c0519" text-anchor="middle" letter-spacing="0.02em">Sweet Magnolia Bakery</text>
+        <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="#4c0519" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">S O U T H E R N   S T Y L E</text>
+    </g>
+</svg>

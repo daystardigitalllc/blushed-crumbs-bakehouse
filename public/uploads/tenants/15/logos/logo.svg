@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+    <!-- Background Card -->
+    <rect width="180" height="180" rx="28" fill="#1a0a2e"/>
+    
+    <!-- Vector Illustration Icon -->
+    <g>
+        
+                    <!-- Balloon Whisk -->
+                    <path d="M90 105 C75 75 75 40 90 40 C105 40 105 75 90 105 Z" fill="none" stroke="#fbbf24" stroke-width="2.5"/>
+                    <path d="M90 105 C82 75 82 40 90 40 C98 40 98 75 90 105 Z" fill="none" stroke="#fbbf24" stroke-width="2"/>
+                    <path d="M90 105 C90 75 90 40 90 40" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+                    <rect x="85" y="105" width="10" height="8" fill="#d97706" rx="1"/>
+                    <rect x="87" y="113" width="6" height="22" fill="#fbbf24" rx="2"/>
+                    <!-- Whisk sparkles -->
+                    <path d="M65 55 L67 59 L71 60 L67 61 L65 65 L63 61 L59 60 L63 59 Z" fill="#fef08a"/>
+                    <path d="M115 50 L117 54 L121 55 L117 56 L115 60 L113 56 L109 55 L113 54 Z" fill="#fef08a"/>
+                
+    </g>
+    
+    <!-- Wordmark Typographical Layout -->
+    <g>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="#fef08a" text-anchor="middle" letter-spacing="0.02em">Golden Whisk Bakehouse</text>
+        <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="#fef08a" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">P R E M I U M   P A S T R I E S</text>
+    </g>
+</svg>

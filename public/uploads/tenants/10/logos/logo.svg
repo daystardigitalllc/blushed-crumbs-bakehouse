@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+    <!-- Background Card -->
+    <rect width="180" height="180" rx="28" fill="#fdf6e2"/>
+    
+    <!-- Vector Illustration Icon -->
+    <g>
+        
+                    <!-- Cottage walls -->
+                    <rect x="72" y="82" width="36" height="28" fill="#faf6f0" stroke="#7c2d12" stroke-width="2"/>
+                    <!-- Cookie roof -->
+                    <path d="M55 82 A35 35 0 0 1 125 82 Z" fill="#d97706" stroke="#7c2d12" stroke-width="3"/>
+                    <circle cx="70" cy="68" r="2.5" fill="#431407"/>
+                    <circle cx="90" cy="60" r="3" fill="#431407"/>
+                    <circle cx="110" cy="70" r="2.5" fill="#431407"/>
+                    <!-- Cottage Door -->
+                    <rect x="86" y="93" width="8" height="17" fill="#7c2d12" rx="1"/>
+                
+    </g>
+    
+    <!-- Wordmark Typographical Layout -->
+    <g>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="#431407" text-anchor="middle" letter-spacing="0.02em">The Cookie Cottage</text>
+        <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="#431407" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">F R E S H   C O O K I E S</text>
+    </g>
+</svg>

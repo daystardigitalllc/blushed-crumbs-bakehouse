@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+    <!-- Background Card -->
+    <rect width="180" height="180" rx="28" fill="#ffffff"/>
+    
+    <!-- Vector Illustration Icon -->
+    <g>
+        
+                    <!-- Marigold Flower -->
+                    <path d="M90 40 L97 58 L115 50 L102 65 L120 70 L102 75 L115 90 L97 82 L90 100 L83 82 L65 90 L78 75 L60 70 L78 65 L65 50 L83 58 Z" fill="#f97316"/>
+                    <circle cx="90" cy="70" r="16" fill="#fbbf24" opacity="0.9"/>
+                    <circle cx="90" cy="70" r="8" fill="#ea580c"/>
+                
+    </g>
+    
+    <!-- Wordmark Typographical Layout -->
+    <g>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="#1a1a1a" text-anchor="middle" letter-spacing="0.02em">Marigold Pastry Co.</text>
+        <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="#1a1a1a" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">P A S T R Y   S H O P</text>
+    </g>
+</svg>

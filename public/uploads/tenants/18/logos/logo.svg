@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+    <!-- Background Card -->
+    <rect width="180" height="180" rx="28" fill="#fdfbf7"/>
+    
+    <!-- Vector Illustration Icon -->
+    <g>
+        
+                    <!-- Copper kettle -->
+                    <path d="M55 105 C55 75 125 75 125 105 Z" fill="#c2410c"/>
+                    <path d="M65 77 C75 70 105 70 115 77" fill="none" stroke="#7c2d12" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="90" cy="72" r="5" fill="#7c2d12"/>
+                    <path d="M120 90 Q145 90 140 70" fill="none" stroke="#c2410c" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M70 75 C70 45 110 45 110 75" fill="none" stroke="#7c2d12" stroke-width="5" stroke-linecap="round"/>
+                    <!-- Steam -->
+                    <path d="M135 60 C138 52 132 48 135 40" fill="none" stroke="#a16207" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M142 58 C145 50 139 46 142 38" fill="none" stroke="#a16207" stroke-width="2" stroke-linecap="round"/>
+                
+    </g>
+    
+    <!-- Wordmark Typographical Layout -->
+    <g>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="#3f2f25" text-anchor="middle" letter-spacing="0.02em">Copper Kettle Bakery</text>
+        <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="#3f2f25" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">B A K E D   W I T H   L O V E</text>
+    </g>
+</svg>

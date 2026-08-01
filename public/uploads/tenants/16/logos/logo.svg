@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+    <!-- Background Card -->
+    <rect width="180" height="180" rx="28" fill="#4c0519"/>
+    
+    <!-- Vector Illustration Icon -->
+    <g>
+        
+                    <!-- Velvet cake layers -->
+                    <rect x="68" y="85" width="44" height="22" fill="#831843" rx="2"/>
+                    <rect x="77" y="67" width="26" height="18" fill="#831843" rx="2"/>
+                    <!-- Vine wrapping -->
+                    <path d="M62 98 Q78 108 90 90 T118 73" fill="none" stroke="#a3e635" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M118 73 C122 68 128 70 125 77 C120 81 116 76 118 73 Z" fill="#84cc16"/>
+                
+    </g>
+    
+    <!-- Wordmark Typographical Layout -->
+    <g>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="#fbcfe8" text-anchor="middle" letter-spacing="0.02em">Velvet & Vine Cakery</text>
+        <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="#fbcfe8" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">C U S T O M   C A K E S</text>
+    </g>
+</svg>

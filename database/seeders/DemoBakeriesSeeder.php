@@ -150,14 +150,183 @@ class DemoBakeriesSeeder extends Seeder
      */
     private function writeLogo(int $tenantId, string $name, string $accent): string
     {
-        $words = preg_split('/\s+/', trim(preg_replace('/[^A-Za-z\s]/', ' ', $name)));
-        $words = array_values(array_filter($words, fn ($w) => !in_array(strtolower($w), ['the', 'and', 'co', 'a'])));
-        $initials = strtoupper(substr($words[0] ?? 'B', 0, 1) . substr($words[1] ?? '', 0, 1));
+        $slug = \Illuminate\Support\Str::slug($name);
+
+        // Define custom styles and SVG paths based on the bakery slug
+        $bg = '#fff7fa';
+        $textColor = '#1a0a2e';
+        $icon = '';
+        $subtext = 'B A K E R Y';
+
+        switch ($slug) {
+            case 'sweet-magnolia-bakery':
+                $bg = '#fff1f2';
+                $textColor = '#4c0519';
+                $subtext = 'S O U T H E R N   S T Y L E';
+                $icon = '
+                    <!-- Leaves -->
+                    <path d="M90 85 C65 105 60 75 90 85 Z" fill="#10b981" opacity="0.7"/>
+                    <path d="M90 85 C115 105 120 75 90 85 Z" fill="#10b981" opacity="0.7"/>
+                    <!-- Flower Petals -->
+                    <path d="M90 75 C75 52 105 52 90 75 Z" fill="#ec4899" opacity="0.85"/>
+                    <path d="M90 75 C60 65 72 95 90 75 Z" fill="#f43f5e" opacity="0.85"/>
+                    <path d="M90 75 C120 65 108 95 90 75 Z" fill="#f43f5e" opacity="0.85"/>
+                    <path d="M90 75 C70 98 110 98 90 75 Z" fill="#ec4899" opacity="0.85"/>
+                    <circle cx="90" cy="75" r="7" fill="#fef08a" stroke="#d97706" stroke-width="1"/>
+                ';
+                break;
+
+            case 'the-cookie-cottage':
+                $bg = '#fdf6e2';
+                $textColor = '#431407';
+                $subtext = 'F R E S H   C O O K I E S';
+                $icon = '
+                    <!-- Cottage walls -->
+                    <rect x="72" y="82" width="36" height="28" fill="#faf6f0" stroke="#7c2d12" stroke-width="2"/>
+                    <!-- Cookie roof -->
+                    <path d="M55 82 A35 35 0 0 1 125 82 Z" fill="#d97706" stroke="#7c2d12" stroke-width="3"/>
+                    <circle cx="70" cy="68" r="2.5" fill="#431407"/>
+                    <circle cx="90" cy="60" r="3" fill="#431407"/>
+                    <circle cx="110" cy="70" r="2.5" fill="#431407"/>
+                    <!-- Cottage Door -->
+                    <rect x="86" y="93" width="8" height="17" fill="#7c2d12" rx="1"/>
+                ';
+                break;
+
+            case 'rustic-crumb-bakery':
+                $bg = '#f5ebe0';
+                $textColor = '#451a03';
+                $subtext = 'A R T I S A N A L   B R E A D';
+                $icon = '
+                    <!-- Scored sourdough round loaf -->
+                    <ellipse cx="90" cy="75" rx="34" ry="22" fill="#d97706" stroke="#78350f" stroke-width="3"/>
+                    <path d="M70 70 Q90 64 110 70 M66 80 Q90 74 114 80 M74 60 Q90 54 106 60" fill="none" stroke="#f5ebe0" stroke-width="2.5" stroke-linecap="round"/>
+                ';
+                break;
+
+            case 'honey-butter-cakes':
+                $bg = '#fef3c7';
+                $textColor = '#78350f';
+                $subtext = 'S I G N A T U R E   C A K E S';
+                $icon = '
+                    <!-- Hexagon backdrop -->
+                    <polygon points="90,42 105,51 105,69 90,78 75,69 75,51" fill="#fffbeb" stroke="#fbbf24" stroke-width="1.5"/>
+                    <polygon points="110,75 125,84 125,102 110,111 95,102 95,84" fill="#fffbeb" stroke="#fbbf24" stroke-width="1.5"/>
+                    <!-- Bee -->
+                    <ellipse cx="90" cy="80" rx="12" ry="16" fill="#fbbf24" transform="rotate(30 90 80)"/>
+                    <circle cx="100" cy="71" r="5" fill="#78350f"/>
+                    <ellipse cx="80" cy="72" rx="7" ry="11" fill="#e0f2fe" opacity="0.8" transform="rotate(-20 80 72)"/>
+                    <ellipse cx="92" cy="65" rx="6" ry="10" fill="#e0f2fe" opacity="0.8" transform="rotate(40 92 65)"/>
+                    <path d="M82 82 L94 72 M85 88 L97 78" stroke="#78350f" stroke-width="3"/>
+                ';
+                break;
+
+            case 'the-sugar-studio':
+                $bg = '#0f172a';
+                $textColor = '#f8fafc';
+                $subtext = 'C U S T O M   B A K E S H O P';
+                $icon = '
+                    <!-- Bowl -->
+                    <path d="M60 70 L120 70 C120 95 60 95 60 70 Z" fill="#06b6d4" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round"/>
+                    <!-- Sparkles -->
+                    <path d="M90 35 L93 42 L100 45 L93 48 L90 55 L87 48 L80 45 L87 42 Z" fill="#ec4899"/>
+                    <path d="M112 48 L114 51 L118 52 L114 53 L112 56 L110 53 L106 52 L110 51 Z" fill="#22d3ee"/>
+                ';
+                break;
+
+            case 'wildflower-wedding-cakes':
+                $bg = '#faf5ff';
+                $textColor = '#4c1d95';
+                $subtext = 'L U X U R Y   D E S I G N S';
+                $icon = '
+                    <!-- Wedding cake -->
+                    <rect x="76" y="88" width="28" height="16" fill="#ffffff" stroke="#4c1d95" stroke-width="1.5" rx="1"/>
+                    <rect x="80" y="74" width="20" height="14" fill="#ffffff" stroke="#4c1d95" stroke-width="1.5" rx="1"/>
+                    <rect x="84" y="62" width="12" height="12" fill="#ffffff" stroke="#4c1d95" stroke-width="1.5" rx="1"/>
+                    <!-- Wildflowers wrapping -->
+                    <path d="M72 100 Q65 72 78 62" fill="none" stroke="#059669" stroke-width="1" stroke-linecap="round"/>
+                    <circle cx="78" cy="62" r="2.5" fill="#c084fc"/>
+                    <path d="M108 100 Q112 82 102 70" fill="none" stroke="#059669" stroke-width="1" stroke-linecap="round"/>
+                    <circle cx="102" cy="70" r="2.5" fill="#f472b6"/>
+                ';
+                break;
+
+            case 'golden-whisk-bakehouse':
+                $bg = '#1a0a2e';
+                $textColor = '#fef08a';
+                $subtext = 'P R E M I U M   P A S T R I E S';
+                $icon = '
+                    <!-- Balloon Whisk -->
+                    <path d="M90 105 C75 75 75 40 90 40 C105 40 105 75 90 105 Z" fill="none" stroke="#fbbf24" stroke-width="2.5"/>
+                    <path d="M90 105 C82 75 82 40 90 40 C98 40 98 75 90 105 Z" fill="none" stroke="#fbbf24" stroke-width="2"/>
+                    <path d="M90 105 C90 75 90 40 90 40" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+                    <rect x="85" y="105" width="10" height="8" fill="#d97706" rx="1"/>
+                    <rect x="87" y="113" width="6" height="22" fill="#fbbf24" rx="2"/>
+                    <!-- Whisk sparkles -->
+                    <path d="M65 55 L67 59 L71 60 L67 61 L65 65 L63 61 L59 60 L63 59 Z" fill="#fef08a"/>
+                    <path d="M115 50 L117 54 L121 55 L117 56 L115 60 L113 56 L109 55 L113 54 Z" fill="#fef08a"/>
+                ';
+                break;
+
+            case 'velvet-vine-cakery':
+                $bg = '#4c0519';
+                $textColor = '#fbcfe8';
+                $subtext = 'C U S T O M   C A K E S';
+                $icon = '
+                    <!-- Velvet cake layers -->
+                    <rect x="68" y="85" width="44" height="22" fill="#831843" rx="2"/>
+                    <rect x="77" y="67" width="26" height="18" fill="#831843" rx="2"/>
+                    <!-- Vine wrapping -->
+                    <path d="M62 98 Q78 108 90 90 T118 73" fill="none" stroke="#a3e635" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M118 73 C122 68 128 70 125 77 C120 81 116 76 118 73 Z" fill="#84cc16"/>
+                ';
+                break;
+
+            case 'marigold-pastry-co':
+                $bg = '#ffffff';
+                $textColor = '#1a1a1a';
+                $subtext = 'P A S T R Y   S H O P';
+                $icon = '
+                    <!-- Marigold Flower -->
+                    <path d="M90 40 L97 58 L115 50 L102 65 L120 70 L102 75 L115 90 L97 82 L90 100 L83 82 L65 90 L78 75 L60 70 L78 65 L65 50 L83 58 Z" fill="#f97316"/>
+                    <circle cx="90" cy="70" r="16" fill="#fbbf24" opacity="0.9"/>
+                    <circle cx="90" cy="70" r="8" fill="#ea580c"/>
+                ';
+                break;
+
+            case 'copper-kettle-bakery':
+                $bg = '#fdfbf7';
+                $textColor = '#3f2f25';
+                $subtext = 'B A K E D   W I T H   L O V E';
+                $icon = '
+                    <!-- Copper kettle -->
+                    <path d="M55 105 C55 75 125 75 125 105 Z" fill="#c2410c"/>
+                    <path d="M65 77 C75 70 105 70 115 77" fill="none" stroke="#7c2d12" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="90" cy="72" r="5" fill="#7c2d12"/>
+                    <path d="M120 90 Q145 90 140 70" fill="none" stroke="#c2410c" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M70 75 C70 45 110 45 110 75" fill="none" stroke="#7c2d12" stroke-width="5" stroke-linecap="round"/>
+                    <!-- Steam -->
+                    <path d="M135 60 C138 52 132 48 135 40" fill="none" stroke="#a16207" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M142 58 C145 50 139 46 142 38" fill="none" stroke="#a16207" stroke-width="2" stroke-linecap="round"/>
+                ';
+                break;
+        }
 
         $svg = <<<SVG
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
-    <circle cx="80" cy="80" r="78" fill="{$accent}" stroke="#ffffff" stroke-width="4"/>
-    <text x="80" y="98" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700" fill="#ffffff" text-anchor="middle">{$initials}</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+    <!-- Background Card -->
+    <rect width="180" height="180" rx="28" fill="{$bg}"/>
+    
+    <!-- Vector Illustration Icon -->
+    <g>
+        {$icon}
+    </g>
+    
+    <!-- Wordmark Typographical Layout -->
+    <g>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="{$textColor}" text-anchor="middle" letter-spacing="0.02em">{$name}</text>
+        <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="{$textColor}" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">{$subtext}</text>
+    </g>
 </svg>
 SVG;
 
