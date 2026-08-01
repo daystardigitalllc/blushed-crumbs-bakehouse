@@ -1,0 +1,712 @@
+/* 9. 🖤 THE DAILY BATCH THEME — bold mustard & jet black, circular photo
+   frames, bakery-meets-agency editorial energy. Pro tier (see
+   Tenant::getStarterThemes()). */
+body.theme-daily_batch {
+    --primary: #14140f;
+    --primary-hover: #2b2b26;
+    --pink-bg: #f2f2ef;
+    --dark-text: #14140f;
+    --theme-heading-font: 'Poppins', sans-serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #f2f2ef;
+    --theme-accent-bg: #14140f;
+    --db-mustard: #f2d310;
+    --db-mustard-dark: #d9bc00;
+    --db-ink: #14140f;
+    --db-gray: #f2f2ef;
+    --db-pink: #ffd9ea;
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
+}
+
+body.theme-daily_batch h1,
+body.theme-daily_batch h2,
+body.theme-daily_batch h3,
+body.theme-daily_batch .section-title-script,
+body.theme-daily_batch .whimsical-col-right h2 {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 800 !important;
+    color: #14140f !important;
+    letter-spacing: 0;
+}
+
+body.theme-daily_batch .subheading {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #14140f !important;
+    font-size: 0.85rem !important;
+    opacity: 0.65;
+}
+
+body.theme-daily_batch .hero-cloud-elementor-top,
+body.theme-daily_batch .hero-cloud-elementor-bottom,
+body.theme-daily_batch .raining-cake {
+    display: none !important;
+}
+
+body.theme-daily_batch .site-header {
+    background: transparent !important;
+}
+
+body.theme-daily_batch .icon,
+body.theme-daily_batch .db-icon {
+    color: var(--db-ink);
+}
+
+body.theme-daily_batch .db-logo-stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--db-ink);
+}
+
+body.theme-daily_batch .btn-primary,
+body.theme-daily_batch .nav-order-btn {
+    background: #14140f !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    box-shadow: 0 8px 20px rgba(20, 20, 15, 0.25) !important;
+}
+
+body.theme-daily_batch .btn-primary:hover,
+body.theme-daily_batch .nav-order-btn:hover {
+    background: #2b2b26 !important;
+}
+
+body.theme-daily_batch .hero-buttons .btn-secondary {
+    background: transparent !important;
+    color: #14140f !important;
+    border: 2px solid #14140f !important;
+    box-shadow: none !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+}
+
+body.theme-daily_batch .hero-buttons .btn-secondary:hover {
+    background: #14140f !important;
+    color: #ffffff !important;
+}
+
+/* ── Section band system ── */
+body.theme-daily_batch .db-section {
+    padding: 90px 25px;
+}
+
+body.theme-daily_batch .db-band-white {
+    background: #ffffff;
+}
+
+body.theme-daily_batch .db-band-gray {
+    background: var(--db-gray);
+}
+
+body.theme-daily_batch .db-band-mustard {
+    background: var(--db-mustard);
+}
+
+body.theme-daily_batch .db-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    color: var(--db-ink);
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+body.theme-daily_batch .db-text-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--db-ink);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Hero — solid mustard band, big bold headline, offset circular photo */
+body.theme-daily_batch .db-hero {
+    background: var(--db-mustard);
+    padding: 130px 40px 100px 40px;
+}
+
+body.theme-daily_batch .db-hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+body.theme-daily_batch .db-hero-copy h1 {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 30px;
+}
+
+body.theme-daily_batch .db-hero-media {
+    aspect-ratio: 1;
+    max-width: 420px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(20, 20, 15, 0.35);
+    border: 6px solid #14140f;
+    transform: rotate(-2deg);
+}
+
+body.theme-daily_batch .db-hero-media img,
+body.theme-daily_batch .db-hero-media video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+body.theme-daily_batch .db-hero-media-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: var(--db-ink);
+}
+
+/* Circular photo + copy alternating rows (About / Highlights) */
+body.theme-daily_batch .db-about-row {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+}
+
+body.theme-daily_batch .db-about-row-reverse {
+    grid-template-columns: 1.2fr 0.8fr;
+}
+
+body.theme-daily_batch .db-about-row-reverse .db-about-circle {
+    order: 2;
+}
+
+body.theme-daily_batch .db-about-circle {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(20, 20, 15, 0.18);
+    border: 6px solid var(--db-mustard);
+}
+
+body.theme-daily_batch .db-about-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-daily_batch .db-circle-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--db-gray);
+    color: var(--db-ink);
+}
+
+body.theme-daily_batch .db-about-copy p {
+    line-height: 1.75;
+    margin-bottom: 10px;
+    color: var(--db-ink);
+}
+
+body.theme-daily_batch .db-highlight-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+body.theme-daily_batch .db-highlight-list li {
+    color: var(--db-ink);
+    line-height: 1.6;
+}
+
+body.theme-daily_batch .db-highlight-emoji {
+    font-size: 1.2rem;
+    margin-right: 4px;
+}
+
+/* Categories shelf row */
+body.theme-daily_batch .db-shelf-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+body.theme-daily_batch .db-shelf-card {
+    text-align: center;
+    max-width: 260px;
+}
+
+body.theme-daily_batch .db-shelf-frame {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 16px auto;
+    border: 5px solid #14140f;
+    box-shadow: 0 10px 25px rgba(20, 20, 15, 0.2);
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-daily_batch .db-shelf-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-daily_batch .db-shelf-card h3 {
+    color: var(--db-ink);
+    margin-bottom: 6px;
+}
+
+body.theme-daily_batch .db-shelf-card p {
+    font-size: 0.9rem;
+    color: #444;
+}
+
+/* Whimsical section — solid black band */
+body.theme-daily_batch .db-whimsical {
+    background-color: var(--db-ink) !important;
+    color: #ffffff !important;
+}
+
+body.theme-daily_batch .db-whimsical h2 {
+    color: var(--db-mustard) !important;
+}
+
+body.theme-daily_batch .db-whimsical-img img {
+    width: 100%;
+    border-radius: 20px;
+}
+
+/* How It Works — numbered steps */
+body.theme-daily_batch .db-steps-list {
+    max-width: 750px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    counter-reset: db-step;
+}
+
+body.theme-daily_batch .db-step-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    counter-increment: db-step;
+}
+
+body.theme-daily_batch .db-step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--db-ink);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-daily_batch .db-step-num::before {
+    content: counter(db-step);
+    color: var(--db-mustard);
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+}
+
+body.theme-daily_batch .db-step-copy h3 {
+    color: var(--db-ink);
+    margin-bottom: 4px;
+}
+
+body.theme-daily_batch .db-step-copy p {
+    color: #555;
+    font-size: 0.95rem;
+}
+
+/* Reviews */
+body.theme-daily_batch .db-review-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 30px auto 0 auto;
+}
+
+body.theme-daily_batch .db-review-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 320px;
+    box-shadow: 0 12px 30px rgba(20, 20, 15, 0.1);
+    border-top: 5px solid var(--db-mustard);
+}
+
+body.theme-daily_batch .db-review-card p {
+    font-style: italic;
+    color: #333;
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+body.theme-daily_batch .db-review-card h4 {
+    color: var(--db-ink) !important;
+    font-weight: 700;
+}
+
+/* FAQ */
+body.theme-daily_batch .db-faq-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    border-left: 5px solid var(--db-mustard);
+    box-shadow: 0 6px 18px rgba(20, 20, 15, 0.06);
+}
+
+body.theme-daily_batch .db-faq-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--db-ink);
+    margin-bottom: 6px;
+}
+
+body.theme-daily_batch .db-faq-card p {
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Featured gallery — pink-backed photo card grid ("Treats of the Week") */
+body.theme-daily_batch .db-featured-grid .gallery-card {
+    background: var(--db-pink);
+    border-radius: 18px;
+    padding: 14px 14px 18px 14px;
+}
+
+body.theme-daily_batch .db-featured-grid .gallery-card-img-wrap {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+body.theme-daily_batch .db-featured-grid .gallery-card-info h4 {
+    color: var(--db-ink);
+    font-weight: 700;
+}
+
+/* CTA banner */
+body.theme-daily_batch .cta-video-banner::before {
+    background: linear-gradient(135deg, rgba(20, 20, 15, 0.55) 0%, rgba(20, 20, 15, 0.35) 100%) !important;
+}
+
+body.theme-daily_batch .cta-video-banner h2 {
+    color: var(--db-mustard) !important;
+}
+
+body.theme-daily_batch .cta-video-banner p,
+body.theme-daily_batch .video-overlay-content h2,
+body.theme-daily_batch .video-overlay-content p {
+    color: #ffffff !important;
+}
+
+/* Page hero (About / Gallery) */
+body.theme-daily_batch .db-page-hero {
+    text-align: center;
+    padding: 130px 25px 60px 25px;
+    background: var(--db-mustard);
+}
+
+body.theme-daily_batch .db-page-hero-kicker {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--db-ink);
+    opacity: 0.65;
+    font-weight: 800;
+    display: block;
+    margin-bottom: 10px;
+}
+
+body.theme-daily_batch .db-page-hero-title {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--db-ink);
+}
+
+/* About page — meet the baker */
+body.theme-daily_batch .db-meet-baker {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+}
+
+body.theme-daily_batch .db-meet-baker-img {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(20, 20, 15, 0.18);
+    border: 6px solid var(--db-mustard);
+}
+
+body.theme-daily_batch .db-meet-baker-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-daily_batch .db-meet-baker h2 {
+    margin-bottom: 14px;
+}
+
+body.theme-daily_batch .db-meet-baker p {
+    line-height: 1.75;
+    margin-bottom: 20px;
+    color: var(--db-ink);
+}
+
+body.theme-daily_batch .db-quote-card {
+    background: var(--db-gray);
+    border-left: 5px solid var(--db-mustard);
+    padding: 20px 24px;
+    border-radius: 12px;
+}
+
+body.theme-daily_batch .db-quote-card p {
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+body.theme-daily_batch .db-quote-card span {
+    font-weight: 700;
+    color: var(--db-ink);
+    font-size: 0.9rem;
+}
+
+body.theme-daily_batch .db-ingredients-list {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+}
+
+body.theme-daily_batch .db-ingredient-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+body.theme-daily_batch .db-icon-circle {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--db-ink);
+    color: var(--db-mustard);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+body.theme-daily_batch .db-ingredient-row h3 {
+    margin-bottom: 6px;
+    color: var(--db-ink);
+}
+
+body.theme-daily_batch .db-ingredient-row p {
+    font-size: 0.92rem;
+    color: #444;
+}
+
+body.theme-daily_batch .db-specialties-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 26px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+body.theme-daily_batch .db-specialty-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 320px;
+    text-align: left;
+    box-shadow: 0 12px 30px rgba(20, 20, 15, 0.1);
+    border-top: 5px solid var(--db-ink);
+}
+
+body.theme-daily_batch .db-specialty-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--db-ink);
+    color: var(--db-mustard);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+/* ── Admin dashboard, themed to match ── */
+body.theme-daily_batch .admin-mobile-header {
+    background: #14140f !important;
+}
+
+body.theme-daily_batch .admin-main-content input[type="text"],
+body.theme-daily_batch .admin-main-content input[type="number"],
+body.theme-daily_batch .admin-main-content input[type="email"],
+body.theme-daily_batch .admin-main-content input[type="tel"],
+body.theme-daily_batch .admin-main-content input[type="url"],
+body.theme-daily_batch .admin-main-content select,
+body.theme-daily_batch .admin-main-content textarea {
+    border: 1.5px solid #d9d9d0 !important;
+    background-color: #ffffff !important;
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .admin-main-content input:focus,
+body.theme-daily_batch .admin-main-content select:focus,
+body.theme-daily_batch .admin-main-content textarea:focus {
+    border-color: #f2d310 !important;
+    box-shadow: 0 0 0 4px rgba(242, 211, 16, 0.3) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-daily_batch .admin-main-content label {
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .status-select:focus {
+    border-color: #f2d310;
+    box-shadow: 0 0 0 3px rgba(242, 211, 16, 0.3);
+}
+
+body.theme-daily_batch .btn-outline {
+    background: transparent !important;
+    border: 2px solid #14140f !important;
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .btn-outline:hover {
+    background: #f2d310 !important;
+}
+
+body.theme-daily_batch .reorder-btn {
+    background: #f2f2ef !important;
+    border: 1px solid #d9d9d0 !important;
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .reorder-btn:hover:not(:disabled) {
+    background: #14140f !important;
+    border-color: #14140f !important;
+    color: #f2d310 !important;
+}
+
+body.theme-daily_batch .category-card-exact,
+body.theme-daily_batch .cloud-review-card,
+body.theme-daily_batch .category-image-frame,
+body.theme-daily_batch .form-builder-card,
+body.theme-daily_batch .order-card,
+body.theme-daily_batch .add-review-box,
+body.theme-daily_batch .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #d9d9d0;
+}
+
+body.theme-daily_batch .order-modal-card {
+    border-radius: 28px !important;
+    border: 3px solid #14140f !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(20, 20, 15, 0.25) !important;
+}
+
+body.theme-daily_batch .sticky-order-summary-bar {
+    background: #f2f2ef !important;
+    border: 2px solid #14140f !important;
+}
+
+body.theme-daily_batch .product,
+body.theme-daily_batch .option-chip {
+    border-radius: 20px !important;
+    border: 2px solid #d9d9d0 !important;
+    background: #ffffff !important;
+    color: #14140f !important;
+}
+
+body.theme-daily_batch .product.selected,
+body.theme-daily_batch .option-chip.selected {
+    background: #14140f !important;
+    color: #f2d310 !important;
+    border-color: #14140f !important;
+    box-shadow: 0 8px 20px rgba(20, 20, 15, 0.35) !important;
+}
+
+body.theme-daily_batch .next-btn {
+    background: #14140f !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 20px rgba(20, 20, 15, 0.25) !important;
+}
+
+@media (max-width: 860px) {
+    body.theme-daily_batch .db-hero-inner,
+    body.theme-daily_batch .db-about-row,
+    body.theme-daily_batch .db-about-row-reverse,
+    body.theme-daily_batch .db-meet-baker {
+        grid-template-columns: 1fr;
+    }
+
+    body.theme-daily_batch .db-about-row-reverse .db-about-circle {
+        order: 0;
+    }
+
+    body.theme-daily_batch .db-hero {
+        text-align: center;
+        padding: 100px 25px 60px 25px;
+    }
+
+    body.theme-daily_batch .db-hero-media {
+        max-width: 300px;
+        transform: none;
+    }
+
+    body.theme-daily_batch .db-about-circle,
+    body.theme-daily_batch .db-meet-baker-img {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+}

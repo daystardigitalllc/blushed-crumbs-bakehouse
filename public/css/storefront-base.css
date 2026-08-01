@@ -522,6 +522,17 @@ body.theme-sunny_whisk {
     --footer-link-weight: 700;
 }
 
+/* ─── The Daily Batch (mustard & jet black) ─── */
+body.theme-daily_batch {
+    --footer-bg: #14140f;
+    --footer-text: #f2f2ef;
+    --footer-border-top: 4px solid #f2d310;
+    --footer-link-color: #f2d310;
+    --footer-link-font: 'Poppins', sans-serif;
+    --footer-link-size: 1rem;
+    --footer-link-weight: 700;
+}
+
 /* POPUP ORDER FORM MODAL STYLING */
 .order-modal-overlay {
     position: fixed;

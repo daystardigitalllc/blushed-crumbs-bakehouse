@@ -622,6 +622,13 @@ class Tenant extends Model implements TenancyContract
                 'preview_bg' => '#bdeaf5',
                 'preview_accent' => '#f5c518',
             ],
+            'daily_batch' => [
+                'id' => 'daily_batch',
+                'name' => '🖤 The Daily Batch',
+                'subtitle' => 'Bold mustard & jet black, circular photo frames, bakery-meets-agency energy',
+                'preview_bg' => '#f2d310',
+                'preview_accent' => '#14140f',
+            ],
         ];
     }
 
