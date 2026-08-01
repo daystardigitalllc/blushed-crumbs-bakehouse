@@ -1,0 +1,726 @@
+/* 10. 🪻 LAVENDER BLOOM THEME — orchid purple & soft lavender, boutique
+   product-tile grid, craft-shop editorial energy. Pro tier (see
+   Tenant::getStarterThemes()). */
+body.theme-lavender_bloom {
+    --primary: #8e4fa3;
+    --primary-hover: #7a3f8d;
+    --pink-bg: #f6eefa;
+    --dark-text: #3b1f47;
+    --theme-heading-font: 'Playfair Display', serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #f6eefa;
+    --theme-accent-bg: #3b1f47;
+    --lb-purple: #8e4fa3;
+    --lb-purple-dark: #6b3480;
+    --lb-ink: #3b1f47;
+    --lb-lavender: #f6eefa;
+    --lb-lavender-deep: #ecdcf5;
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffffff;
+}
+
+body.theme-lavender_bloom h1,
+body.theme-lavender_bloom h2,
+body.theme-lavender_bloom h3,
+body.theme-lavender_bloom .section-title-script,
+body.theme-lavender_bloom .whimsical-col-right h2 {
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 700 !important;
+    color: #3b1f47 !important;
+    letter-spacing: 0;
+}
+
+body.theme-lavender_bloom .subheading {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #8e4fa3 !important;
+    font-size: 0.85rem !important;
+    opacity: 0.85;
+}
+
+body.theme-lavender_bloom .hero-cloud-elementor-top,
+body.theme-lavender_bloom .hero-cloud-elementor-bottom,
+body.theme-lavender_bloom .raining-cake {
+    display: none !important;
+}
+
+body.theme-lavender_bloom .site-header {
+    background: #ffffff !important;
+    box-shadow: 0 2px 12px rgba(94, 44, 120, 0.08);
+}
+
+body.theme-lavender_bloom .icon,
+body.theme-lavender_bloom .lb-icon {
+    color: var(--lb-purple);
+}
+
+body.theme-lavender_bloom .lb-logo-stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--lb-ink);
+}
+
+body.theme-lavender_bloom .nav-links a {
+    color: var(--lb-ink) !important;
+}
+
+body.theme-lavender_bloom .nav-links a:hover {
+    color: var(--lb-purple) !important;
+}
+
+body.theme-lavender_bloom .btn-primary,
+body.theme-lavender_bloom .nav-order-btn {
+    background: #8e4fa3 !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    box-shadow: 0 8px 20px rgba(142, 79, 163, 0.3) !important;
+}
+
+body.theme-lavender_bloom .btn-primary:hover,
+body.theme-lavender_bloom .nav-order-btn:hover {
+    background: #7a3f8d !important;
+}
+
+body.theme-lavender_bloom .hero-buttons .btn-secondary {
+    background: transparent !important;
+    color: #8e4fa3 !important;
+    border: 2px solid #8e4fa3 !important;
+    box-shadow: none !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+}
+
+body.theme-lavender_bloom .hero-buttons .btn-secondary:hover {
+    background: #8e4fa3 !important;
+    color: #ffffff !important;
+}
+
+/* ── Section band system ── */
+body.theme-lavender_bloom .lb-section {
+    padding: 90px 25px;
+}
+
+body.theme-lavender_bloom .lb-band-white {
+    background: #ffffff;
+}
+
+body.theme-lavender_bloom .lb-band-lavender {
+    background: var(--lb-lavender);
+}
+
+body.theme-lavender_bloom .lb-band-purple {
+    background: linear-gradient(135deg, #6b3480 0%, #8e4fa3 100%);
+}
+
+body.theme-lavender_bloom .lb-band-purple .lb-section-title,
+body.theme-lavender_bloom .lb-band-purple h2 {
+    color: #ffffff !important;
+}
+
+body.theme-lavender_bloom .lb-section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--lb-ink);
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+body.theme-lavender_bloom .lb-text-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--lb-purple);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Hero — soft lavender gradient band, rounded-rectangle photo frame */
+body.theme-lavender_bloom .lb-hero {
+    background: linear-gradient(120deg, #f6eefa 0%, #ffffff 55%, #f0e0f7 100%);
+    padding: 130px 40px 100px 40px;
+}
+
+body.theme-lavender_bloom .lb-hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+body.theme-lavender_bloom .lb-hero-copy h1 {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.15;
+    margin-bottom: 30px;
+}
+
+body.theme-lavender_bloom .lb-hero-media {
+    aspect-ratio: 4 / 3;
+    max-width: 480px;
+    margin: 0 auto;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(94, 44, 120, 0.22);
+    border: 6px solid #ffffff;
+}
+
+body.theme-lavender_bloom .lb-hero-media img,
+body.theme-lavender_bloom .lb-hero-media video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+body.theme-lavender_bloom .lb-hero-media-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--lb-lavender-deep);
+    color: var(--lb-purple);
+}
+
+/* About row — rounded-square photo + copy */
+body.theme-lavender_bloom .lb-about-row {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+}
+
+body.theme-lavender_bloom .lb-about-photo {
+    aspect-ratio: 1;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(94, 44, 120, 0.16);
+    border: 6px solid var(--lb-lavender);
+}
+
+body.theme-lavender_bloom .lb-about-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-lavender_bloom .lb-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--lb-lavender-deep);
+    color: var(--lb-purple);
+}
+
+body.theme-lavender_bloom .lb-about-copy p {
+    line-height: 1.75;
+    margin-bottom: 10px;
+    color: var(--lb-ink);
+}
+
+/* Highlights — horizontal trust strip */
+body.theme-lavender_bloom .lb-highlight-strip {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+    text-align: center;
+}
+
+body.theme-lavender_bloom .lb-highlight-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #ffffff;
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+    box-shadow: 0 10px 25px rgba(94, 44, 120, 0.12);
+}
+
+body.theme-lavender_bloom .lb-highlight-item h4 {
+    color: var(--lb-ink);
+    margin-bottom: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+
+body.theme-lavender_bloom .lb-highlight-item p {
+    font-size: 0.9rem;
+    color: #5c4267;
+}
+
+/* Categories — photo tiles with purple bottom banner label */
+body.theme-lavender_bloom .lb-category-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 26px;
+}
+
+body.theme-lavender_bloom .lb-category-tile {
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(94, 44, 120, 0.14);
+}
+
+body.theme-lavender_bloom .lb-category-frame {
+    aspect-ratio: 4 / 3;
+    background: var(--lb-lavender-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-lavender_bloom .lb-category-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-lavender_bloom .lb-category-banner {
+    background: var(--lb-purple);
+    color: #ffffff;
+    text-align: center;
+    padding: 14px 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+/* Whimsical section — solid purple gradient band */
+body.theme-lavender_bloom .lb-whimsical {
+    background: linear-gradient(135deg, #3b1f47 0%, #8e4fa3 100%) !important;
+    color: #ffffff !important;
+}
+
+body.theme-lavender_bloom .lb-whimsical h2 {
+    color: #f3d9ff !important;
+}
+
+body.theme-lavender_bloom .lb-whimsical-img img {
+    width: 100%;
+    border-radius: 20px;
+}
+
+/* How It Works — numbered steps */
+body.theme-lavender_bloom .lb-steps-list {
+    max-width: 750px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    counter-reset: lb-step;
+}
+
+body.theme-lavender_bloom .lb-step-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    counter-increment: lb-step;
+}
+
+body.theme-lavender_bloom .lb-step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--lb-purple);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-lavender_bloom .lb-step-num::before {
+    content: counter(lb-step);
+    color: #ffffff;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+}
+
+body.theme-lavender_bloom .lb-step-copy h3 {
+    color: var(--lb-ink);
+    margin-bottom: 4px;
+}
+
+body.theme-lavender_bloom .lb-step-copy p {
+    color: #5c4267;
+    font-size: 0.95rem;
+}
+
+/* Reviews */
+body.theme-lavender_bloom .lb-review-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 30px auto 0 auto;
+}
+
+body.theme-lavender_bloom .lb-review-card {
+    background: var(--lb-lavender);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 320px;
+    box-shadow: 0 12px 30px rgba(94, 44, 120, 0.08);
+    border-top: 5px solid var(--lb-purple);
+}
+
+body.theme-lavender_bloom .lb-review-card p {
+    font-style: italic;
+    color: #3b1f47;
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+body.theme-lavender_bloom .lb-review-card h4 {
+    color: var(--lb-purple) !important;
+    font-weight: 700;
+}
+
+/* FAQ */
+body.theme-lavender_bloom .lb-faq-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    border-left: 5px solid var(--lb-purple);
+    box-shadow: 0 6px 18px rgba(94, 44, 120, 0.08);
+}
+
+body.theme-lavender_bloom .lb-faq-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--lb-ink);
+    margin-bottom: 6px;
+}
+
+body.theme-lavender_bloom .lb-faq-card p {
+    font-size: 0.92rem;
+    color: #5c4267;
+    line-height: 1.6;
+}
+
+/* Featured gallery — "Featured Products" style photo card grid */
+body.theme-lavender_bloom .lb-featured-grid .gallery-card {
+    background: var(--lb-lavender);
+    border-radius: 18px;
+    padding: 14px 14px 18px 14px;
+}
+
+body.theme-lavender_bloom .lb-featured-grid .gallery-card-img-wrap {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+body.theme-lavender_bloom .lb-featured-grid .gallery-card-info h4 {
+    color: var(--lb-ink);
+    font-weight: 700;
+}
+
+/* CTA banner */
+body.theme-lavender_bloom .cta-video-banner::before {
+    background: linear-gradient(135deg, rgba(59, 31, 71, 0.4) 0%, rgba(142, 79, 163, 0.25) 100%) !important;
+}
+
+body.theme-lavender_bloom .cta-video-banner h2 {
+    color: #ffffff !important;
+}
+
+body.theme-lavender_bloom .cta-video-banner p,
+body.theme-lavender_bloom .video-overlay-content h2,
+body.theme-lavender_bloom .video-overlay-content p {
+    color: #ffffff !important;
+}
+
+/* Page hero (About / Gallery) */
+body.theme-lavender_bloom .lb-page-hero {
+    text-align: center;
+    padding: 130px 25px 60px 25px;
+    background: var(--lb-lavender);
+}
+
+body.theme-lavender_bloom .lb-page-hero-kicker {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--lb-purple);
+    opacity: 0.9;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 10px;
+}
+
+body.theme-lavender_bloom .lb-page-hero-title {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--lb-ink);
+}
+
+/* About page — meet the baker */
+body.theme-lavender_bloom .lb-meet-baker {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+}
+
+body.theme-lavender_bloom .lb-meet-baker-img {
+    aspect-ratio: 1;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(94, 44, 120, 0.16);
+    border: 6px solid var(--lb-lavender);
+}
+
+body.theme-lavender_bloom .lb-meet-baker-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-lavender_bloom .lb-meet-baker h2 {
+    margin-bottom: 14px;
+}
+
+body.theme-lavender_bloom .lb-meet-baker p {
+    line-height: 1.75;
+    margin-bottom: 20px;
+    color: var(--lb-ink);
+}
+
+body.theme-lavender_bloom .lb-quote-card {
+    background: var(--lb-lavender);
+    border-left: 5px solid var(--lb-purple);
+    padding: 20px 24px;
+    border-radius: 12px;
+}
+
+body.theme-lavender_bloom .lb-quote-card p {
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+body.theme-lavender_bloom .lb-quote-card span {
+    font-weight: 700;
+    color: var(--lb-purple);
+    font-size: 0.9rem;
+}
+
+body.theme-lavender_bloom .lb-ingredients-list {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+}
+
+body.theme-lavender_bloom .lb-ingredient-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+body.theme-lavender_bloom .lb-icon-circle {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--lb-purple);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+body.theme-lavender_bloom .lb-ingredient-row h3 {
+    margin-bottom: 6px;
+    color: var(--lb-ink);
+}
+
+body.theme-lavender_bloom .lb-ingredient-row p {
+    font-size: 0.92rem;
+    color: #5c4267;
+}
+
+body.theme-lavender_bloom .lb-specialties-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 26px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+body.theme-lavender_bloom .lb-specialty-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 320px;
+    text-align: left;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+    border-top: 5px solid #f3d9ff;
+}
+
+body.theme-lavender_bloom .lb-specialty-card h3,
+body.theme-lavender_bloom .lb-specialty-card p {
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .lb-specialty-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--lb-purple);
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+/* ── Admin dashboard, themed to match ── */
+body.theme-lavender_bloom .admin-mobile-header {
+    background: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .admin-main-content input[type="text"],
+body.theme-lavender_bloom .admin-main-content input[type="number"],
+body.theme-lavender_bloom .admin-main-content input[type="email"],
+body.theme-lavender_bloom .admin-main-content input[type="tel"],
+body.theme-lavender_bloom .admin-main-content input[type="url"],
+body.theme-lavender_bloom .admin-main-content select,
+body.theme-lavender_bloom .admin-main-content textarea {
+    border: 1.5px solid #e2cdec !important;
+    background-color: #ffffff !important;
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .admin-main-content input:focus,
+body.theme-lavender_bloom .admin-main-content select:focus,
+body.theme-lavender_bloom .admin-main-content textarea:focus {
+    border-color: #8e4fa3 !important;
+    box-shadow: 0 0 0 4px rgba(142, 79, 163, 0.25) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-lavender_bloom .admin-main-content label {
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .status-select:focus {
+    border-color: #8e4fa3;
+    box-shadow: 0 0 0 3px rgba(142, 79, 163, 0.25);
+}
+
+body.theme-lavender_bloom .btn-outline {
+    background: transparent !important;
+    border: 2px solid #8e4fa3 !important;
+    color: #8e4fa3 !important;
+}
+
+body.theme-lavender_bloom .btn-outline:hover {
+    background: #f6eefa !important;
+}
+
+body.theme-lavender_bloom .reorder-btn {
+    background: #f6eefa !important;
+    border: 1px solid #e2cdec !important;
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .reorder-btn:hover:not(:disabled) {
+    background: #8e4fa3 !important;
+    border-color: #8e4fa3 !important;
+    color: #ffffff !important;
+}
+
+body.theme-lavender_bloom .category-card-exact,
+body.theme-lavender_bloom .cloud-review-card,
+body.theme-lavender_bloom .category-image-frame,
+body.theme-lavender_bloom .form-builder-card,
+body.theme-lavender_bloom .order-card,
+body.theme-lavender_bloom .add-review-box,
+body.theme-lavender_bloom .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #e2cdec;
+}
+
+body.theme-lavender_bloom .order-modal-card {
+    border-radius: 28px !important;
+    border: 3px solid #8e4fa3 !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(94, 44, 120, 0.22) !important;
+}
+
+body.theme-lavender_bloom .sticky-order-summary-bar {
+    background: #f6eefa !important;
+    border: 2px solid #8e4fa3 !important;
+}
+
+body.theme-lavender_bloom .product,
+body.theme-lavender_bloom .option-chip {
+    border-radius: 20px !important;
+    border: 2px solid #e2cdec !important;
+    background: #ffffff !important;
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .product.selected,
+body.theme-lavender_bloom .option-chip.selected {
+    background: #8e4fa3 !important;
+    color: #ffffff !important;
+    border-color: #8e4fa3 !important;
+    box-shadow: 0 8px 20px rgba(142, 79, 163, 0.35) !important;
+}
+
+body.theme-lavender_bloom .next-btn {
+    background: #8e4fa3 !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 20px rgba(142, 79, 163, 0.3) !important;
+}
+
+@media (max-width: 860px) {
+    body.theme-lavender_bloom .lb-hero-inner,
+    body.theme-lavender_bloom .lb-about-row,
+    body.theme-lavender_bloom .lb-meet-baker {
+        grid-template-columns: 1fr;
+    }
+
+    body.theme-lavender_bloom .lb-hero {
+        text-align: center;
+        padding: 100px 25px 60px 25px;
+    }
+
+    body.theme-lavender_bloom .lb-hero-media {
+        max-width: 340px;
+    }
+
+    body.theme-lavender_bloom .lb-about-photo,
+    body.theme-lavender_bloom .lb-meet-baker-img {
+        max-width: 340px;
+        margin: 0 auto;
+    }
+}

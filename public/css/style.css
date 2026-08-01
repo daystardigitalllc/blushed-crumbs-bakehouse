@@ -4816,6 +4816,185 @@ body.theme-daily_batch #section-manager-msg {
     border-color: #ecdd8f !important;
 }
 
+/* 10. 🪻 LAVENDER BLOOM THEME — admin dashboard only. The storefront's own
+   orchid/lavender CSS lives in public/css/themes/lavender_bloom.css (loaded
+   only by storefront pages); the Baker Admin Portal (resources/views/admin/
+   dashboard.blade.php) extends layouts/app.blade.php, which only loads this
+   file — so it needs its own copy of the theme's variables to re-skin.
+   --theme-accent-bg stays dark (every theme's .admin-sidebar hardcodes
+   white text, so a light sidebar would be illegible) while --primary and
+   --theme-section-bg carry purple through as the dominant color across the
+   sidebar's active state, buttons, focus rings, and the main content
+   background. Pro tier (see Tenant::getStarterThemes()). */
+body.theme-lavender_bloom {
+    --primary: #8e4fa3;
+    --primary-hover: #7a3f8d;
+    --pink-bg: #f6eefa;
+    --dark-text: #3b1f47;
+    --theme-heading-font: 'Playfair Display', serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #f6eefa;
+    --theme-accent-bg: #3b1f47;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f6eefa;
+}
+
+body.theme-lavender_bloom .btn-primary,
+body.theme-lavender_bloom .nav-order-btn {
+    background: #8e4fa3 !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 20px rgba(142, 79, 163, 0.3) !important;
+}
+
+body.theme-lavender_bloom .btn-primary:hover,
+body.theme-lavender_bloom .nav-order-btn:hover {
+    background: #7a3f8d !important;
+    color: #ffffff !important;
+}
+
+body.theme-lavender_bloom .admin-mobile-header {
+    background: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .admin-main-content input[type="text"],
+body.theme-lavender_bloom .admin-main-content input[type="number"],
+body.theme-lavender_bloom .admin-main-content input[type="email"],
+body.theme-lavender_bloom .admin-main-content input[type="tel"],
+body.theme-lavender_bloom .admin-main-content input[type="url"],
+body.theme-lavender_bloom .admin-main-content select,
+body.theme-lavender_bloom .admin-main-content textarea {
+    border: 1.5px solid #e2cdec !important;
+    background-color: #ffffff !important;
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .admin-main-content input:focus,
+body.theme-lavender_bloom .admin-main-content select:focus,
+body.theme-lavender_bloom .admin-main-content textarea:focus {
+    border-color: #8e4fa3 !important;
+    box-shadow: 0 0 0 4px rgba(142, 79, 163, 0.25) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-lavender_bloom .admin-main-content label {
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .status-select:focus {
+    border-color: #8e4fa3;
+    box-shadow: 0 0 0 3px rgba(142, 79, 163, 0.25);
+}
+
+body.theme-lavender_bloom .btn-outline {
+    background: transparent !important;
+    border: 2px solid #8e4fa3 !important;
+    color: #8e4fa3 !important;
+}
+
+body.theme-lavender_bloom .btn-outline:hover {
+    background: #f6eefa !important;
+}
+
+body.theme-lavender_bloom .reorder-btn {
+    background: #f6eefa !important;
+    border: 1px solid #e2cdec !important;
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .reorder-btn:hover:not(:disabled) {
+    background: #8e4fa3 !important;
+    border-color: #8e4fa3 !important;
+    color: #ffffff !important;
+}
+
+body.theme-lavender_bloom .category-card-exact,
+body.theme-lavender_bloom .cloud-review-card,
+body.theme-lavender_bloom .category-image-frame,
+body.theme-lavender_bloom .form-builder-card,
+body.theme-lavender_bloom .order-card,
+body.theme-lavender_bloom .add-review-box,
+body.theme-lavender_bloom .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #e2cdec;
+}
+
+body.theme-lavender_bloom .order-modal-card {
+    border-radius: 28px !important;
+    border: 3px solid #8e4fa3 !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(94, 44, 120, 0.22) !important;
+}
+
+body.theme-lavender_bloom .sticky-order-summary-bar {
+    background: #f6eefa !important;
+    border: 2px solid #8e4fa3 !important;
+}
+
+body.theme-lavender_bloom .product,
+body.theme-lavender_bloom .option-chip {
+    border-radius: 20px !important;
+    border: 2px solid #e2cdec !important;
+    background: #ffffff !important;
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom .product.selected,
+body.theme-lavender_bloom .option-chip.selected {
+    background: #8e4fa3 !important;
+    color: #ffffff !important;
+    border-color: #8e4fa3 !important;
+    box-shadow: 0 8px 20px rgba(142, 79, 163, 0.45) !important;
+}
+
+body.theme-lavender_bloom .next-btn {
+    background: #8e4fa3 !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 20px rgba(142, 79, 163, 0.3) !important;
+}
+
+/* ── Page Builder / Section Studio tab ──
+   Same approach as daily_batch: attribute selectors catch the repeated
+   inline hex values in that tab's mostly hard-coded template. */
+body.theme-lavender_bloom #tab-page-builder .form-builder-card {
+    border-color: #e2cdec !important;
+}
+
+body.theme-lavender_bloom #tab-page-builder h4,
+body.theme-lavender_bloom #tab-page-builder h6,
+body.theme-lavender_bloom #tab-page-builder strong {
+    color: #3b1f47 !important;
+}
+
+body.theme-lavender_bloom #tab-page-builder .section-manager-row {
+    border-color: #e2cdec !important;
+}
+
+body.theme-lavender_bloom #tab-page-builder .section-accordion-header {
+    background: #f6eefa !important;
+}
+
+body.theme-lavender_bloom #tab-page-builder .section-accordion-body {
+    border-top-color: #e2cdec !important;
+}
+
+body.theme-lavender_bloom #tab-page-builder .drag-handle,
+body.theme-lavender_bloom #tab-page-builder .accordion-arrow {
+    color: #8e4fa3 !important;
+}
+
+body.theme-lavender_bloom #tab-page-builder [style*="border:1px solid #eee"] {
+    background: #f6eefa !important;
+    border-color: #e2cdec !important;
+}
+
+body.theme-lavender_bloom #section-manager-msg {
+    background: #f6eefa !important;
+    color: #3b1f47 !important;
+    border-color: #e2cdec !important;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;

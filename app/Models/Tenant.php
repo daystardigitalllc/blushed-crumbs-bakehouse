@@ -629,6 +629,13 @@ class Tenant extends Model implements TenancyContract
                 'preview_bg' => '#f2d310',
                 'preview_accent' => '#14140f',
             ],
+            'lavender_bloom' => [
+                'id' => 'lavender_bloom',
+                'name' => '🪻 Lavender Bloom',
+                'subtitle' => 'Orchid purple & soft lavender, boutique product tiles, craft-shop editorial energy',
+                'preview_bg' => '#f6eefa',
+                'preview_accent' => '#8e4fa3',
+            ],
         ];
     }
 
