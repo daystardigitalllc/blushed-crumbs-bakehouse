@@ -1019,6 +1019,7 @@
                         </div>
                     </div>
                 @endif
+                <a href="{{ route('examples') }}" class="nav-login">Examples</a>
                 <a href="/login" class="nav-login">Login</a>
                 <a href="/register" class="btn btn-primary">Build Your Free Site →</a>
             </div>

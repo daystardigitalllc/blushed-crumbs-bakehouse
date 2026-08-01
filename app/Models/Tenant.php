@@ -78,6 +78,7 @@ class Tenant extends Model implements TenancyContract
         'active_onboarding_draft_id',
         'max_reviews_display',
         'is_active',
+        'is_demo',
     ];
 
     protected $casts = [
@@ -92,6 +93,7 @@ class Tenant extends Model implements TenancyContract
         'onboarding_started_at' => 'datetime',
         'onboarding_completed_at' => 'datetime',
         'is_active' => 'boolean',
+        'is_demo' => 'boolean',
         'custom_domain_verified_at' => 'datetime',
         'custom_domain_last_checked_at' => 'datetime',
     ];

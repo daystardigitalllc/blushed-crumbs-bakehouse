@@ -12,10 +12,14 @@ use App\Http\Controllers\LegalController;
 use App\Http\Controllers\ToolsController;
 use App\Http\Controllers\CottageFoodLawsController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\ExamplesController;
 
 // ─── SEO: sitemap.xml / robots.txt (host-aware — main domain vs. tenant) ───
 Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+
+// ─── Marketing: showcase of demo bakery websites built with Doughmain ───
+Route::get('/examples', [ExamplesController::class, 'index'])->name('examples');
 
 // ─── Authentication Routes ───
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

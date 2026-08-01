@@ -275,5 +275,7 @@ class DatabaseSeeder extends Seeder
             'deposit_paid' => false,
             'status' => 'new',
         ]);
+
+        $this->call(DemoBakeriesSeeder::class);
     }
 }
