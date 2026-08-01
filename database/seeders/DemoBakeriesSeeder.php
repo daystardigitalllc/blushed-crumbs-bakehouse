@@ -148,7 +148,7 @@ class DemoBakeriesSeeder extends Seeder
      * object/person) to stand in for a logo, and avoids any font-file/GD
      * dependency since it's plain SVG text.
      */
-    private function writeLogo(int $tenantId, string $name, string $accent): string
+    public function writeLogo(int $tenantId, string $name, string $accent): string
     {
         $slug = \Illuminate\Support\Str::slug($name);
 

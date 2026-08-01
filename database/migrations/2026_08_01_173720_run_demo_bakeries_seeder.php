@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Artisan;
 
 return new class extends Migration
 {
@@ -10,10 +9,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Artisan::call('db:seed', [
-            '--class' => 'DemoBakeriesSeeder',
-            '--force' => true
-        ]);
+        // Reverted to empty to prevent conflicts. Real logic is in the new force_logo_regeneration migration.
     }
 
     /**
