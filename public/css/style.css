@@ -581,7 +581,7 @@ body.theme-rustic_kitchen .order-card,
 body.theme-rustic_kitchen .add-review-box,
 body.theme-rustic_kitchen .payment-methods-card {
     background: #fffaf2 !important;
-    border: 1px solid #CFBBA2;
+    border: 1px solid #CFBBA2 !important;
 }
 
 /* ── Page Builder / Section Studio tab ──
@@ -1539,7 +1539,7 @@ body.theme-playful_treats .order-card,
 body.theme-playful_treats .add-review-box,
 body.theme-playful_treats .payment-methods-card {
     background: #ffffff !important;
-    border: 1px solid #1AD1CB;
+    border: 1px solid #1AD1CB !important;
 }
 
 /* ── Page Builder / Section Studio tab ──
@@ -4560,7 +4560,7 @@ body.theme-sunny_whisk .order-card,
 body.theme-sunny_whisk .add-review-box,
 body.theme-sunny_whisk .payment-methods-card {
     background: #ffffff !important;
-    border: 1px solid #7dd8ea;
+    border: 1px solid #7dd8ea !important;
 }
 
 body.theme-sunny_whisk .order-modal-card {
@@ -4737,7 +4737,7 @@ body.theme-daily_batch .order-card,
 body.theme-daily_batch .add-review-box,
 body.theme-daily_batch .payment-methods-card {
     background: #ffffff !important;
-    border: 1px solid #ecdd8f;
+    border: 1px solid #ecdd8f !important;
 }
 
 body.theme-daily_batch .order-modal-card {
@@ -4916,7 +4916,7 @@ body.theme-lavender_bloom .order-card,
 body.theme-lavender_bloom .add-review-box,
 body.theme-lavender_bloom .payment-methods-card {
     background: #ffffff !important;
-    border: 1px solid #e2cdec;
+    border: 1px solid #e2cdec !important;
 }
 
 body.theme-lavender_bloom .order-modal-card {

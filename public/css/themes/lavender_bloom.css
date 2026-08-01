@@ -66,11 +66,11 @@ body.theme-lavender_bloom .lb-logo-stamp {
     color: var(--lb-ink);
 }
 
-body.theme-lavender_bloom .nav-links a {
+body.theme-lavender_bloom .nav-links a:not(.nav-order-btn) {
     color: var(--lb-ink) !important;
 }
 
-body.theme-lavender_bloom .nav-links a:hover {
+body.theme-lavender_bloom .nav-links a:not(.nav-order-btn):hover {
     color: var(--lb-purple) !important;
 }
 
