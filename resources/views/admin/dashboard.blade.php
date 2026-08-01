@@ -995,7 +995,10 @@
                             </form>
                             <button type="button" class="btn btn-outline" onclick="importCustomersToSubscribers()" style="width:100%; margin-bottom:14px;">Import All Customers With Emails</button>
 
-                            <div id="admin-subscribers-list" style="display:flex; flex-direction:column; gap:8px; max-height:320px; overflow-y:auto;">
+                            {{-- Fixed height (not max-height) so this box is always the same size —
+                                 whether there are 0 subscribers or 500, the card around it never grows;
+                                 ~3 rows fit before the list itself scrolls. --}}
+                            <div id="admin-subscribers-list" style="display:flex; flex-direction:column; gap:8px; height:190px; overflow-y:auto; padding-right:4px;">
                                 @forelse($emailSubscribers as $sub)
                                     <div class="subscriber-item-row" data-id="{{ $sub->id }}" style="background:white; padding:10px 14px; border-radius:10px; border:1px solid #f0e4ea; display:flex; justify-content:space-between; align-items:center; gap:10px;">
                                         <div style="overflow:hidden;">
