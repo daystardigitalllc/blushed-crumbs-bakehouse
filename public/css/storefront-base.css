@@ -30,6 +30,95 @@
     -webkit-font-smoothing: antialiased;
 }
 
+/* Site Header — was dropped from every theme's split file except whichever
+   one happened to sit last in the pre-split monolith (sunny_whisk,
+   clean_minimal, country_farmhouse, artisan_sourdough still carry a
+   duplicate copy of this block; playful_treats, modern_bakery,
+   rustic_kitchen, sweet_elegant and daily_batch never had it at all,
+   which is why their live header/nav rendered unstyled and un-overlaid
+   above the hero instead of floating transparently on top of it).
+   Restored here as the single canonical copy every theme should read. */
+.site-header {
+    background-color: transparent;
+    padding: 15px 0 0 0;
+    position: relative;
+    z-index: 100;
+}
+
+.site-header:has(+ #storefront-view .hero-section),
+.site-header:has(+ #storefront-view .playful-hero),
+.site-header:has(+ #storefront-view .farmhouse-hero),
+.site-header:has(+ #storefront-view .midnight-hero),
+.site-header:has(+ #storefront-view .petal-hero),
+.site-header:has(+ #storefront-view .sw-hero),
+.site-header:has(+ #storefront-view .db-hero) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.logo img {
+    height: 75px;
+    width: auto;
+    display: block;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--dark-text, #4a2133);
+    font-weight: 600;
+    font-size: 1.05rem;
+    cursor: pointer;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+.admin-btn {
+    background-color: white;
+    color: var(--primary) !important;
+    padding: 8px 22px;
+    border-radius: 25px;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.nav-order-btn {
+    background: linear-gradient(135deg, #ff8dae 0%, #e67399 100%);
+    color: white !important;
+    padding: 10px 28px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 14px rgba(230, 115, 153, 0.4);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.nav-order-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(230, 115, 153, 0.55);
+    color: white !important;
+    opacity: 1 !important;
+}
+
 /* ==========================================================================
    Entrance Animations (all themes)
    - Hero content animates in on load via CSS.

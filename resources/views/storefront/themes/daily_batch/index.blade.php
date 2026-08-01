@@ -109,7 +109,7 @@
                     <div class="db-about-row db-about-row-reverse">
                         <div class="db-about-circle">
                             @php
-                                $hlImg = !empty($tenant->gallery_images[1]) ? asset($tenant->gallery_images[1]) : (!empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : null);
+                                $hlImg = !empty($tenant->gallery_images[1]) ? asset($tenant->gallery_images[1]) : (!empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : (!empty($tenant->logo_path) ? asset($tenant->logo_path) : null));
                             @endphp
                             @if($hlImg)
                                 <img src="{{ $hlImg }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async">
