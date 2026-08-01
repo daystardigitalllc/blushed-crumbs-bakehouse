@@ -1095,7 +1095,7 @@
                                     <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Coupon Code (optional)</label>
                                     <input type="text" id="campaign-coupon" placeholder="e.g. SWEET20" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
                                 </div>
-                                <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Send to {{ $emailSubscribers->count() }} Subscriber{{ $emailSubscribers->count() === 1 ? '' : 's' }}</button>
+                                <button type="submit" id="send-campaign-btn" class="btn btn-primary" style="align-self:flex-start;">Send to {{ $emailSubscribers->count() }} Subscriber{{ $emailSubscribers->count() === 1 ? '' : 's' }}</button>
                             </form>
                         </div>
                     </div>
@@ -2201,14 +2201,12 @@
                     const data = await res.json();
                     if (data.success) {
                         alert(data.message);
-                        window.location.reload();
                     } else {
                         alert(data.message || 'Error saving menu settings.');
                     }
                 } catch(err) {
                     console.error(err);
-                    alert('Menu settings saved!');
-                    window.location.reload();
+                    alert('An error occurred while saving menu settings.');
                 } finally {
                     btn.disabled = false;
                     btn.innerText = 'Save Menu & Pricing Settings';

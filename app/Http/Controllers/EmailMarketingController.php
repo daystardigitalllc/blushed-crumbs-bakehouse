@@ -93,7 +93,7 @@ class EmailMarketingController extends Controller
             ->where('email', '!=', '')
             ->get();
 
-        $imported = 0;
+        $importedSubscribers = collect();
         foreach ($customers as $customer) {
             $email = strtolower($customer->email);
             $existing = EmailSubscriber::where('tenant_id', $tenant->id)->where('email', $email)->first();
@@ -101,18 +101,20 @@ class EmailMarketingController extends Controller
                 continue;
             }
 
-            EmailSubscriber::create([
+            $importedSubscribers->push(EmailSubscriber::create([
                 'tenant_id' => $tenant->id,
                 'email' => $email,
                 'name' => $customer->name,
                 'source' => 'customer_import',
-            ]);
-            $imported++;
+            ]));
         }
+
+        $imported = $importedSubscribers->count();
 
         return response()->json([
             'success' => true,
             'imported' => $imported,
+            'subscribers' => $importedSubscribers->values(),
             'message' => $imported > 0
                 ? "Imported {$imported} customer" . ($imported === 1 ? '' : 's') . " into your subscriber list."
                 : 'No new customers to import — everyone with an email is already on your list.',

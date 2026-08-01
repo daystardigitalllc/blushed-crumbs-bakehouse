@@ -1991,9 +1991,34 @@ window.deleteProduct = async function(productId, btnElement) {
             })
             .then(res => res.json())
             .then(data => {
-                if(data.success) {
-                    alert('Review published directly to storefront!');
-                    window.location.reload();
+                if (data.success && data.review) {
+                    const rev = data.review;
+                    const list = document.getElementById('admin-reviews-list');
+                    if (list) {
+                        const emptyMsg = list.querySelector('p');
+                        if (emptyMsg) emptyMsg.remove();
+
+                        const row = document.createElement('div');
+                        row.className = 'review-item-row';
+                        row.dataset.id = rev.id;
+                        row.style.cssText = 'background:white; padding:16px; border-radius:12px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:flex-start; gap:15px;';
+                        row.innerHTML = `
+                            <div>
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                                    <strong style="color:#5c1d37; font-size:1rem;"></strong>
+                                    <span style="color:#ffc107; font-size:0.9rem;">★★★★★</span>
+                                </div>
+                                <p style="font-size:0.9rem; color:#555; margin:0; line-height:1.5;"></p>
+                            </div>
+                            <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteReview(${rev.id}, this)">Delete</button>
+                        `;
+                        row.querySelector('strong').textContent = rev.client_name;
+                        row.querySelector('p').textContent = `"${rev.review_text}"`;
+                        list.prepend(row);
+                    }
+                    revForm.reset();
+                    if (window.showToast) window.showToast('Review published directly to storefront!', 'success');
+                    else alert('Review published directly to storefront!');
                 } else {
                     alert('Failed to save review.');
                 }
@@ -2010,8 +2035,10 @@ window.deleteProduct = async function(productId, btnElement) {
     if (subForm) {
         subForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = document.getElementById('sub-email').value;
-            const name = document.getElementById('sub-name').value;
+            const emailInput = document.getElementById('sub-email');
+            const nameInput = document.getElementById('sub-name');
+            const email = emailInput.value;
+            const name = nameInput.value;
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
             fetch('/dashboard/email-marketing/subscribers', {
@@ -2025,8 +2052,11 @@ window.deleteProduct = async function(productId, btnElement) {
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    window.location.reload();
+                if (data.success && data.subscriber) {
+                    addSubscriberRows([data.subscriber]);
+                    emailInput.value = '';
+                    nameInput.value = '';
+                    if (window.showToast) window.showToast('Subscriber added!', 'success');
                 } else {
                     alert(data.message || 'Could not add subscriber.');
                 }
@@ -2045,9 +2075,9 @@ window.deleteProduct = async function(productId, btnElement) {
             e.preventDefault();
             if (!confirm('Send this offer to all your active subscribers now?')) return;
 
-            const subject = document.getElementById('campaign-subject').value;
-            const body = document.getElementById('campaign-body').value;
-            const coupon_code = document.getElementById('campaign-coupon').value;
+            const subjectInput = document.getElementById('campaign-subject');
+            const bodyInput = document.getElementById('campaign-body');
+            const couponInput = document.getElementById('campaign-coupon');
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
             const submitBtn = campaignForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
@@ -2061,17 +2091,25 @@ window.deleteProduct = async function(productId, btnElement) {
                     'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ subject, body, coupon_code })
+                body: JSON.stringify({
+                    subject: subjectInput.value,
+                    body: bodyInput.value,
+                    coupon_code: couponInput.value,
+                })
             })
             .then(res => res.json())
             .then(data => {
-                alert(data.message || (data.success ? 'Campaign sent!' : 'Could not send campaign.'));
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalText;
+                if (window.showToast) window.showToast(data.message || (data.success ? 'Campaign sent!' : 'Could not send campaign.'), data.success ? 'success' : 'error');
+                else alert(data.message || (data.success ? 'Campaign sent!' : 'Could not send campaign.'));
+
+                if (data.success && data.campaign) {
+                    addCampaignRow(data.campaign);
+                    subjectInput.value = '';
+                    bodyInput.value = '';
+                    couponInput.value = '';
                 }
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             })
             .catch(err => {
                 console.error('Error sending campaign:', err);
@@ -2081,6 +2119,83 @@ window.deleteProduct = async function(productId, btnElement) {
             });
         });
     }
+}
+
+window.deleteReview = function(id, btnElement) {
+    if (!confirm('Delete this review from your storefront?')) return;
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+    fetch('/dashboard/reviews/' + id, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const row = btnElement ? btnElement.closest('.review-item-row') : document.querySelector(`.review-item-row[data-id="${id}"]`);
+            if (row) row.remove();
+        } else {
+            alert(data.message || 'Could not delete review.');
+        }
+    })
+    .catch(err => {
+        console.error('Error deleting review:', err);
+        alert('An error occurred.');
+    });
+};
+
+// Shared by add-subscriber-form, importCustomersToSubscribers, and
+// deleteSubscriber so the subscriber count text and the campaign send
+// button's "Send to N Subscribers" label always match the visible list,
+// without needing a page reload to resync them.
+function subscriberCountDelta(delta) {
+    const countEl = document.getElementById('email-subscriber-count');
+    const sendBtn = document.getElementById('send-campaign-btn');
+    const current = countEl ? parseInt(countEl.textContent, 10) || 0 : 0;
+    const next = Math.max(0, current + delta);
+
+    if (countEl) {
+        countEl.textContent = next;
+        const label = countEl.nextSibling;
+        if (label && label.nodeType === Node.TEXT_NODE) {
+            label.textContent = next === 1 ? ' active subscriber' : ' active subscribers';
+        }
+    }
+    if (sendBtn) {
+        sendBtn.textContent = `Send to ${next} Subscriber${next === 1 ? '' : 's'}`;
+    }
+}
+
+function addSubscriberRows(subscribers) {
+    const list = document.getElementById('admin-subscribers-list');
+    if (!list) return;
+
+    const emptyMsg = document.getElementById('no-subscribers-msg');
+    if (emptyMsg) emptyMsg.remove();
+
+    subscribers.forEach(sub => {
+        const row = document.createElement('div');
+        row.className = 'subscriber-item-row';
+        row.dataset.id = sub.id;
+        row.style.cssText = 'background:white; padding:10px 14px; border-radius:10px; border:1px solid #f0e4ea; display:flex; justify-content:space-between; align-items:center; gap:10px;';
+        row.innerHTML = `
+            <div style="overflow:hidden;">
+                <strong style="font-size:0.9rem; color:#5c1d37;"></strong>
+                ${sub.name ? '<div style="font-size:0.78rem; color:#888;"></div>' : ''}
+            </div>
+            <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteSubscriber(${sub.id}, this)">Remove</button>
+        `;
+        row.querySelector('strong').textContent = sub.name || sub.email;
+        const emailDiv = row.querySelector('div > div');
+        if (emailDiv) emailDiv.textContent = sub.email;
+        list.prepend(row);
+    });
+
+    subscriberCountDelta(subscribers.length);
 }
 
 window.deleteSubscriber = function(id, btnElement) {
@@ -2100,6 +2215,16 @@ window.deleteSubscriber = function(id, btnElement) {
         if (data.success) {
             const row = btnElement ? btnElement.closest('.subscriber-item-row') : document.querySelector(`.subscriber-item-row[data-id="${id}"]`);
             if (row) row.remove();
+            subscriberCountDelta(-1);
+
+            const list = document.getElementById('admin-subscribers-list');
+            if (list && !list.querySelector('.subscriber-item-row')) {
+                const emptyMsg = document.createElement('p');
+                emptyMsg.id = 'no-subscribers-msg';
+                emptyMsg.style.cssText = 'color:#888; text-align:center; padding:16px;';
+                emptyMsg.textContent = 'No subscribers yet. Add one above or import your customers.';
+                list.appendChild(emptyMsg);
+            }
         } else {
             alert(data.message || 'Could not remove subscriber.');
         }
@@ -2122,9 +2247,11 @@ window.importCustomersToSubscribers = function() {
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message || 'Import complete.');
-        if (data.success && data.imported > 0) {
-            window.location.reload();
+        if (window.showToast) window.showToast(data.message || 'Import complete.', data.success ? 'success' : 'error');
+        else alert(data.message || 'Import complete.');
+
+        if (data.success && data.subscribers && data.subscribers.length > 0) {
+            addSubscriberRows(data.subscribers);
         }
     })
     .catch(err => {
@@ -2132,6 +2259,36 @@ window.importCustomersToSubscribers = function() {
         alert('An error occurred.');
     });
 };
+
+function addCampaignRow(camp) {
+    const list = document.getElementById('admin-campaigns-list');
+    if (!list) return;
+
+    const emptyMsg = document.getElementById('no-campaigns-msg');
+    if (emptyMsg) emptyMsg.remove();
+
+    const statusColors = {
+        sent: ['#d1fae5', '#065f46'],
+        failed: ['#fee2e2', '#b91c1c'],
+        sending: ['#f3f4f6', '#374151'],
+    };
+    const [bg, fg] = statusColors[camp.status] || statusColors.sending;
+    const statusLabel = camp.status.charAt(0).toUpperCase() + camp.status.slice(1);
+
+    const row = document.createElement('div');
+    row.dataset.id = camp.id;
+    row.style.cssText = 'background:white; padding:14px 16px; border-radius:10px; border:1px solid #f0e4ea; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;';
+    row.innerHTML = `
+        <div>
+            <strong style="font-size:0.92rem; color:#5c1d37;"></strong>
+            <div style="font-size:0.78rem; color:#888;"></div>
+        </div>
+        <span style="font-size:0.78rem; font-weight:700; padding:4px 10px; border-radius:12px; background:${bg}; color:${fg};">${statusLabel} — ${camp.sent_count}/${camp.recipient_count}</span>
+    `;
+    row.querySelector('strong').textContent = camp.subject;
+    row.querySelector('div > div').textContent = new Date(camp.created_at).toLocaleString(undefined, { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    list.prepend(row);
+}
 
 window.generateInvoiceFromOrder = function(orderId, totalAmount, depositAmount) {
     const editInvId = document.getElementById('edit-invoice-id');
