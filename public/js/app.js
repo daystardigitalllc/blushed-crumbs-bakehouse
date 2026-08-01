@@ -2000,7 +2000,134 @@ window.deleteProduct = async function(productId, btnElement) {
             });
         });
     }
+
+    // Add Subscriber Form (Email Marketing tab)
+    const subForm = document.getElementById('add-subscriber-form');
+    if (subForm) {
+        subForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('sub-email').value;
+            const name = document.getElementById('sub-name').value;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+            fetch('/dashboard/email-marketing/subscribers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ email, name })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Could not add subscriber.');
+                }
+            })
+            .catch(err => {
+                console.error('Error adding subscriber:', err);
+                alert('An error occurred.');
+            });
+        });
+    }
+
+    // Send Campaign Form (Email Marketing tab)
+    const campaignForm = document.getElementById('send-campaign-form');
+    if (campaignForm) {
+        campaignForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!confirm('Send this offer to all your active subscribers now?')) return;
+
+            const subject = document.getElementById('campaign-subject').value;
+            const body = document.getElementById('campaign-body').value;
+            const coupon_code = document.getElementById('campaign-coupon').value;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            const submitBtn = campaignForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+
+            fetch('/dashboard/email-marketing/campaigns', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ subject, body, coupon_code })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message || (data.success ? 'Campaign sent!' : 'Could not send campaign.'));
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            })
+            .catch(err => {
+                console.error('Error sending campaign:', err);
+                alert('An error occurred.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            });
+        });
+    }
 }
+
+window.deleteSubscriber = function(id, btnElement) {
+    if (!confirm('Remove this subscriber from your list?')) return;
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+    fetch('/dashboard/email-marketing/subscribers/' + id, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const row = btnElement ? btnElement.closest('.subscriber-item-row') : document.querySelector(`.subscriber-item-row[data-id="${id}"]`);
+            if (row) row.remove();
+        } else {
+            alert(data.message || 'Could not remove subscriber.');
+        }
+    })
+    .catch(err => {
+        console.error('Error removing subscriber:', err);
+        alert('An error occurred.');
+    });
+};
+
+window.importCustomersToSubscribers = function() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+    fetch('/dashboard/email-marketing/import-customers', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message || 'Import complete.');
+        if (data.success && data.imported > 0) {
+            window.location.reload();
+        }
+    })
+    .catch(err => {
+        console.error('Error importing customers:', err);
+        alert('An error occurred.');
+    });
+};
 
 window.generateInvoiceFromOrder = function(orderId, totalAmount, depositAmount) {
     const editInvId = document.getElementById('edit-invoice-id');

@@ -98,6 +98,8 @@ Route::get('/privacy', [StorefrontController::class, 'privacy'])->name('storefro
 Route::get('/terms', [StorefrontController::class, 'terms'])->name('storefront.terms');
 Route::post('/order', [StorefrontController::class, 'submitOrder'])->name('storefront.order.submit');
 Route::get('/invoices/{invoiceNumber}', [StorefrontController::class, 'showInvoice'])->name('invoices.show');
+Route::post('/newsletter/subscribe', [\App\Http\Controllers\EmailMarketingController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\EmailMarketingController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
 
 Route::get('/stripe/callback', [OnboardingController::class, 'stripeCallback'])->name('stripe.callback');
 
@@ -190,6 +192,12 @@ Route::middleware(['auth', 'tenant.owner'])->prefix('dashboard')->group(function
     Route::delete('/site/{subdomain}/products/{id}', [AdminController::class, 'destroyProduct']);
     Route::post('/subscription/cancel', [AdminController::class, 'cancelSubscription'])->name('admin.subscription.cancel');
     Route::post('/support/ticket', [AdminController::class, 'submitSupportTicket'])->name('admin.support.ticket');
+
+    // ─── Email Marketing (Pro only — enforced in the controller, same pattern as custom domains) ───
+    Route::post('/email-marketing/subscribers', [\App\Http\Controllers\EmailMarketingController::class, 'storeSubscriber'])->name('admin.email-marketing.subscribers.store');
+    Route::delete('/email-marketing/subscribers/{subscriber}', [\App\Http\Controllers\EmailMarketingController::class, 'destroySubscriber'])->name('admin.email-marketing.subscribers.destroy');
+    Route::post('/email-marketing/import-customers', [\App\Http\Controllers\EmailMarketingController::class, 'importCustomers'])->name('admin.email-marketing.import-customers');
+    Route::post('/email-marketing/campaigns', [\App\Http\Controllers\EmailMarketingController::class, 'storeCampaign'])->name('admin.email-marketing.campaigns.store');
 });
 
 // Alias for backwards compatibility

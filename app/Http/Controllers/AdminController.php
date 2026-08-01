@@ -81,6 +81,8 @@ class AdminController extends Controller
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
         $supportTickets = SupportTicket::where('tenant_id', $tenant->id)->latest()->get();
         $customers = Customer::where('tenant_id', $tenant->id)->orderBy('total_spent', 'desc')->get();
+        $emailSubscribers = \App\Models\EmailSubscriber::where('tenant_id', $tenant->id)->active()->latest()->get();
+        $emailCampaigns = \App\Models\EmailCampaign::where('tenant_id', $tenant->id)->latest()->get();
 
         // Revenue stats
         $totalRevenue = Order::where('tenant_id', $tenant->id)
@@ -95,10 +97,10 @@ class AdminController extends Controller
         $siteContent = $tenant->site_content ?? \App\Models\Tenant::getDefaultSiteContent();
 
         return view('admin.dashboard', compact(
-            'tenant', 'urgentOrders', 'allOrders', 'invoices', 
+            'tenant', 'urgentOrders', 'allOrders', 'invoices',
             'products', 'reviews', 'gallery', 'supportTickets',
             'customers', 'totalRevenue', 'pendingOrders', 'customerCount',
-            'serverBookingSettings', 'siteContent'
+            'serverBookingSettings', 'siteContent', 'emailSubscribers', 'emailCampaigns'
         ));
     }
 

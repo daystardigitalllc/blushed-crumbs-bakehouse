@@ -696,6 +696,16 @@ class Tenant extends Model implements TenancyContract
         return $this->hasMany(GalleryItem::class);
     }
 
+    public function emailSubscribers()
+    {
+        return $this->hasMany(EmailSubscriber::class);
+    }
+
+    public function emailCampaigns()
+    {
+        return $this->hasMany(EmailCampaign::class);
+    }
+
     public function supportTickets()
     {
         return $this->hasMany(SupportTicket::class);
