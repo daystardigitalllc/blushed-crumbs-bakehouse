@@ -193,10 +193,54 @@ body.theme-sweet_elegant .hero-cake-bottom-right {
 
 /* Mobile responsive fixes for Sweet & Elegant */
 @media (max-width: 768px) {
-    body.theme-sweet_elegant .raining-cake {
-        width: 140px !important;
+    /* Cloud Dividers stretch full width without zoom-cropping */
+    body.theme-sweet_elegant .hero-cloud-elementor-top {
+        height: 60px !important;
+        object-fit: fill !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 100% !important;
     }
     
+    body.theme-sweet_elegant .hero-cloud-elementor-bottom {
+        height: 65px !important;
+        object-fit: fill !important;
+        left: 0 !important;
+        transform: rotate(180deg) !important;
+        width: 100% !important;
+    }
+    
+    /* Spreading cakes out to the margins on mobile */
+    body.theme-sweet_elegant .hero-cake-top-right {
+        top: 15px !important;
+        right: -15px !important;
+        width: 85px !important;
+    }
+    
+    body.theme-sweet_elegant .hero-cake-middle-left {
+        top: 18% !important;
+        left: -15px !important;
+        width: 95px !important;
+    }
+    
+    body.theme-sweet_elegant .hero-cake-far-right {
+        top: 38% !important;
+        right: -20px !important;
+        width: 80px !important;
+    }
+    
+    body.theme-sweet_elegant .hero-cake-bottom-left {
+        bottom: 15px !important;
+        left: -15px !important;
+        width: 85px !important;
+    }
+    
+    body.theme-sweet_elegant .hero-cake-bottom-right {
+        bottom: 15px !important;
+        right: -15px !important;
+        width: 90px !important;
+    }
+
     body.theme-sweet_elegant .hero-buttons {
         flex-direction: row !important;
         max-width: 100% !important;
