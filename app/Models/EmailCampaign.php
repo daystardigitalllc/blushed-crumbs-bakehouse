@@ -19,6 +19,7 @@ class EmailCampaign extends Model
         'status',
         'recipient_count',
         'sent_count',
+        'failed_count',
         'sent_at',
     ];
 

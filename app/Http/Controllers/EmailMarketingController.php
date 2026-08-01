@@ -3,24 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use App\Models\Tenant;
 use App\Models\Customer;
 use App\Models\EmailSubscriber;
 use App\Models\EmailCampaign;
-use App\Mail\PromoEmail;
+use App\Jobs\SendPromoEmailJob;
 
 class EmailMarketingController extends Controller
 {
     /**
-     * A hard cap on synchronous sends per request. No confirmed queue
-     * worker consumes the default queue on this server (only `ingest` and
-     * `ai-import` have a daemon), so campaigns are sent inline like
-     * NewOrderNotification rather than assuming a queue drains them. This
-     * cap keeps a large list from timing out the HTTP request; anything
-     * larger should be split into multiple sends.
+     * Sanity ceiling, not a technical one — sends are queued (see the
+     * dedicated `emails` Forge daemon), so list size no longer risks an
+     * HTTP timeout. This just stops one campaign from silently queuing an
+     * unreasonable number of jobs in one shot.
      */
-    private const MAX_SYNC_RECIPIENTS = 500;
+    private const MAX_RECIPIENTS = 20000;
 
     private function tenant(Request $request): Tenant
     {
@@ -123,9 +120,10 @@ class EmailMarketingController extends Controller
     }
 
     /**
-     * Compose + immediately send a promo campaign to every active
-     * subscriber. Sent synchronously in a loop (see MAX_SYNC_RECIPIENTS) —
-     * one failed address doesn't stop the rest.
+     * Compose a campaign and queue one SendPromoEmailJob per active
+     * subscriber (see the `emails` Forge daemon) — the request returns as
+     * soon as the jobs are queued; sent_count/failed_count/status update
+     * asynchronously as the worker processes them.
      */
     public function storeCampaign(Request $request)
     {
@@ -149,10 +147,10 @@ class EmailMarketingController extends Controller
             ], 422);
         }
 
-        if ($subscribers->count() > self::MAX_SYNC_RECIPIENTS) {
+        if ($subscribers->count() > self::MAX_RECIPIENTS) {
             return response()->json([
                 'success' => false,
-                'message' => "Your list has {$subscribers->count()} subscribers, above the " . self::MAX_SYNC_RECIPIENTS . " per-send limit. Contact support to send larger campaigns.",
+                'message' => "Your list has {$subscribers->count()} subscribers, above the " . self::MAX_RECIPIENTS . " per-send limit. Contact support to send larger campaigns.",
             ], 422);
         }
 
@@ -165,26 +163,14 @@ class EmailMarketingController extends Controller
             'recipient_count' => $subscribers->count(),
         ]);
 
-        $sent = 0;
         foreach ($subscribers as $subscriber) {
-            try {
-                Mail::to($subscriber->email)->send(new PromoEmail($tenant, $campaign, $subscriber));
-                $sent++;
-            } catch (\Throwable $e) {
-                report($e);
-            }
+            SendPromoEmailJob::dispatch($tenant->id, $campaign->id, $subscriber->id)->onQueue('emails');
         }
-
-        $campaign->update([
-            'status' => $sent > 0 ? 'sent' : 'failed',
-            'sent_count' => $sent,
-            'sent_at' => now(),
-        ]);
 
         return response()->json([
             'success' => true,
             'campaign' => $campaign,
-            'message' => "Sent to {$sent} of {$subscribers->count()} subscribers.",
+            'message' => "Sending to {$subscribers->count()} subscribers now — refresh in a moment to see delivery status.",
         ]);
     }
 
