@@ -603,6 +603,78 @@ body.theme-lavender_bloom .lb-page-hero-title {
     color: var(--lb-ink);
 }
 
+/* Policy page — card list */
+body.theme-lavender_bloom .lb-policy-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+body.theme-lavender_bloom .lb-policy-card {
+    background: #ffffff;
+    border: 1px solid var(--lb-lavender-deep);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 10px 30px rgba(94, 44, 120, 0.06);
+}
+
+body.theme-lavender_bloom .lb-policy-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 2px dashed var(--lb-purple);
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+}
+
+body.theme-lavender_bloom .lb-policy-card-header h3 {
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+body.theme-lavender_bloom .lb-policy-card-icon {
+    font-size: 1.8rem;
+    color: var(--lb-purple);
+}
+
+body.theme-lavender_bloom .lb-policy-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+body.theme-lavender_bloom .lb-policy-list li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 14px;
+    font-size: 0.98rem;
+    color: var(--lb-ink);
+    line-height: 1.65;
+}
+
+body.theme-lavender_bloom .lb-policy-list li::before {
+    content: "•";
+    position: absolute;
+    left: 6px;
+    top: 0;
+    color: var(--lb-purple);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+body.theme-lavender_bloom .lb-policy-note-box {
+    background: var(--lb-lavender);
+    border: 1px solid var(--lb-lavender-deep);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: var(--lb-ink);
+    font-style: italic;
+}
+
 /* About page — meet the baker (photo/backdrop styling shared with the
    home "about" row rules above) */
 body.theme-lavender_bloom .lb-meet-baker {
