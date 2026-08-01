@@ -19,7 +19,7 @@
     
     <!-- Wordmark Typographical Layout -->
     <g>
-        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="#78350f" text-anchor="middle" letter-spacing="0.02em">Honey & Butter Cakes</text>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="#78350f" text-anchor="middle" letter-spacing="0.02em">Honey &amp; Butter Cakes</text>
         <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="#78350f" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">S I G N A T U R E   C A K E S</text>
     </g>
 </svg>

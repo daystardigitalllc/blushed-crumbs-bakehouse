@@ -312,6 +312,8 @@ class DemoBakeriesSeeder extends Seeder
                 break;
         }
 
+        $escapedName = htmlspecialchars($name, ENT_QUOTES | ENT_XML1, 'UTF-8');
+
         $svg = <<<SVG
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
     <!-- Background Card -->
@@ -324,7 +326,7 @@ class DemoBakeriesSeeder extends Seeder
     
     <!-- Wordmark Typographical Layout -->
     <g>
-        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="{$textColor}" text-anchor="middle" letter-spacing="0.02em">{$name}</text>
+        <text x="90" y="142" font-family="'Outfit', 'Inter', sans-serif" font-size="12" font-weight="700" fill="{$textColor}" text-anchor="middle" letter-spacing="0.02em">{$escapedName}</text>
         <text x="90" y="156" font-family="'Inter', sans-serif" font-size="7.5" font-weight="600" fill="{$textColor}" opacity="0.6" text-anchor="middle" letter-spacing="0.12em">{$subtext}</text>
     </g>
 </svg>
