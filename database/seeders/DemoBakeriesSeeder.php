@@ -332,7 +332,7 @@ SVG;
 
         $dir = "uploads/tenants/{$tenantId}/logos";
         @mkdir(public_path($dir), 0755, true);
-        $relativePath = "{$dir}/logo.svg";
+        $relativePath = "{$dir}/logo_v2.svg";
         file_put_contents(public_path($relativePath), $svg);
 
         return $relativePath;
