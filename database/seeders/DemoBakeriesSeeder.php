@@ -15,8 +15,10 @@ use Illuminate\Support\Facades\Hash;
  * Seeds ~10 fictional bakery tenants used purely as showcase/demo sites for
  * doughmain.pro's marketing (/examples page + sales conversations). Every
  * name, address, phone, and review below is invented — none of these are
- * real businesses. Photos are placeholder stock images (loremflickr), not
- * AI-generated or scraped from a real bakery's real photos.
+ * real businesses. Gallery/hero photos are real, verified-on-topic stock
+ * photos (curated Unsplash photo IDs, licensed for free use), not AI images
+ * or anything scraped from a real bakery. Logos are generated locally as
+ * simple SVG wordmarks — no photo of an object/person stands in for a logo.
  */
 class DemoBakeriesSeeder extends Seeder
 {
@@ -35,6 +37,8 @@ class DemoBakeriesSeeder extends Seeder
                 'is_active' => true,
             ]
         );
+
+        $themes = Tenant::getAllThemes();
 
         foreach ($this->bakeries() as $i => $b) {
             $tenant = Tenant::updateOrCreate(
@@ -57,6 +61,7 @@ class DemoBakeriesSeeder extends Seeder
                         'stripe_enabled' => false,
                     ],
                     'site_content' => $this->siteContent($b),
+                    'form_schema' => $this->formSchema($b),
                     'onboarding_completed' => true,
                     'max_reviews_display' => 3,
                     'is_active' => true,
@@ -71,6 +76,9 @@ class DemoBakeriesSeeder extends Seeder
             if (!\Stancl\Tenancy\Database\Models\Domain::where('domain', $domainName)->exists()) {
                 $tenant->domains()->create(['domain' => $domainName]);
             }
+
+            $accent = $themes[$b['theme']]['preview_accent'] ?? '#e67399';
+            $tenant->update(['logo_path' => $this->writeLogo($tenant->id, $b['name'], $accent)]);
 
             User::updateOrCreate(
                 ['email' => "hello@{$b['slug']}.com"],
@@ -106,14 +114,14 @@ class DemoBakeriesSeeder extends Seeder
             }
 
             GalleryItem::where('tenant_id', $tenant->id)->delete();
-            foreach ($b['gallery_tags'] as $gIndex => $tag) {
-                $lock = ($i * 100) + $gIndex + 1;
+            foreach ($b['photos'] as $gIndex => $photo) {
+                [$photoId, $label] = $photo;
                 GalleryItem::create([
                     'tenant_id' => $tenant->id,
-                    'title' => ucfirst(str_replace('-', ' ', $tag)),
+                    'title' => $label,
                     'category' => $b['gallery_category'],
-                    'image_url' => "https://loremflickr.com/800/600/{$tag}/all?lock={$lock}",
-                    'alt_text' => "{$b['name']} — " . str_replace('-', ' ', $tag),
+                    'image_url' => $this->unsplashUrl($photoId, 800, 600),
+                    'alt_text' => "{$b['name']} — {$label}",
                     'sort_order' => $gIndex,
                     'is_hero' => $gIndex === 0,
                     'is_visible' => true,
@@ -123,22 +131,61 @@ class DemoBakeriesSeeder extends Seeder
         }
     }
 
+    /**
+     * Real Unsplash CDN image at a given crop size — every photo ID used
+     * below was hand-verified (via Unsplash's own alt text) to actually
+     * depict the food item it's assigned to, not a random tag match.
+     */
+    private function unsplashUrl(string $photoId, int $w, int $h): string
+    {
+        return "https://images.unsplash.com/{$photoId}?w={$w}&h={$h}&fit=crop&auto=format&q=80";
+    }
+
+    /**
+     * A simple colored-circle SVG wordmark (bakery initials) written to this
+     * tenant's uploads folder — same convention real tenants use
+     * (public/uploads/tenants/{id}/logos/...). Avoids needing a photo (of an
+     * object/person) to stand in for a logo, and avoids any font-file/GD
+     * dependency since it's plain SVG text.
+     */
+    private function writeLogo(int $tenantId, string $name, string $accent): string
+    {
+        $words = preg_split('/\s+/', trim(preg_replace('/[^A-Za-z\s]/', ' ', $name)));
+        $words = array_values(array_filter($words, fn ($w) => !in_array(strtolower($w), ['the', 'and', 'co', 'a'])));
+        $initials = strtoupper(substr($words[0] ?? 'B', 0, 1) . substr($words[1] ?? '', 0, 1));
+
+        $svg = <<<SVG
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+    <circle cx="80" cy="80" r="78" fill="{$accent}" stroke="#ffffff" stroke-width="4"/>
+    <text x="80" y="98" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700" fill="#ffffff" text-anchor="middle">{$initials}</text>
+</svg>
+SVG;
+
+        $dir = "uploads/tenants/{$tenantId}/logos";
+        @mkdir(public_path($dir), 0755, true);
+        $relativePath = "{$dir}/logo.svg";
+        file_put_contents(public_path($relativePath), $svg);
+
+        return $relativePath;
+    }
+
     private function siteContent(array $b): array
     {
         $defaults = Tenant::getDefaultSiteContent($b['name']);
+        $photos = $b['photos'];
 
         return array_merge($defaults, [
             'hero_subheading' => $b['tagline'],
             'hero_headline' => $b['name'],
-            'hero_bg_url' => "https://loremflickr.com/1600/900/{$b['gallery_tags'][0]}/all?lock=" . crc32($b['slug'] . '-hero'),
+            'hero_bg_url' => $this->unsplashUrl($photos[0][0], 1600, 900),
             'promo_headline' => $b['promo_headline'],
             'promo_subtext' => $b['promo_subtext'],
-            'promo_bg_image_url' => "https://loremflickr.com/1600/900/{$b['gallery_tags'][1]}/all?lock=" . crc32($b['slug'] . '-promo'),
+            'promo_bg_image_url' => $this->unsplashUrl($photos[1][0], 1600, 900),
             'whimsical_title' => $b['whimsical_title'],
             'whimsical_bullets' => $b['whimsical_bullets'],
-            'whimsical_image_url' => "https://loremflickr.com/900/1100/{$b['gallery_tags'][2]}/all?lock=" . crc32($b['slug'] . '-whimsical'),
+            'whimsical_image_url' => $this->unsplashUrl($photos[2][0], 900, 1100),
             'reviews' => array_map(fn ($r) => ['name' => $r[0], 'quote' => $r[1], 'stars' => 5], $b['reviews']),
-            'cta_bg_image_url' => "https://loremflickr.com/1600/700/{$b['gallery_tags'][0]}/all?lock=" . crc32($b['slug'] . '-cta'),
+            'cta_bg_image_url' => $this->unsplashUrl($photos[3][0], 1600, 700),
             'cta_headline' => $b['cta_headline'],
             'about_title' => 'About ' . $b['name'],
             'about_bio' => $b['about_bio'],
@@ -148,6 +195,68 @@ class DemoBakeriesSeeder extends Seeder
             'seo_title' => "{$b['name']} | Custom Cakes & Bakery in {$b['city']}, {$b['state']}",
             'seo_description' => $b['about_bio'],
         ]);
+    }
+
+    /**
+     * Order-form steps matching the shape AdminController::saveFormSchema()
+     * persists and storefront/partials/order_modal.blade.php renders —
+     * hand-written per bakery type since there's no AI onboarding pipeline
+     * behind these demo tenants to generate one.
+     */
+    private function formSchema(array $b): array
+    {
+        $step = fn (string $title, string $type, string $options = '', string $subtext = '') => [
+            'id' => 'step_' . uniqid(),
+            'title' => $title,
+            'subtext' => $subtext,
+            'type' => $type,
+            'options' => $options,
+            'description' => '',
+        ];
+
+        return match ($b['order_flow']) {
+            'cake' => [
+                $step('Choose Your Size', 'products', '', 'Pick the item you\'d like to order'),
+                $step('Pick Your Flavor', 'flavors', $b['flavor_options']),
+                $step('Choose Your Frosting', 'frosting', 'Buttercream, Cream Cheese (+$5.00), Fondant (+$15.00)'),
+                $step('Select Fillings', 'fillings', 'Fruit Filling (+$4.00), Chocolate Ganache (+$4.00), None'),
+                $step('Pickup or Delivery', 'fulfillment'),
+                $step('Upload Inspiration Photos', 'file_upload', '', 'Optional — share a photo of the style you want'),
+                $step('Any Allergies We Should Know About?', 'allergies'),
+                $step('Your Contact Information', 'contact_info'),
+                $step('Deposit & Order Terms', 'terms'),
+            ],
+            'cookie' => [
+                $step('Choose Your Item', 'products'),
+                $step('Pick Your Flavors', 'flavors', $b['flavor_options']),
+                $step('Add a Custom Message', 'textarea', '', 'Optional — for decorated cookies or cookie cakes'),
+                $step('Pickup or Delivery', 'fulfillment'),
+                $step('Upload Inspiration Photos', 'file_upload', '', 'Optional'),
+                $step('Any Allergies We Should Know About?', 'allergies'),
+                $step('Your Contact Information', 'contact_info'),
+                $step('Deposit & Order Terms', 'terms'),
+            ],
+            'bakeshop' => [
+                $step('Choose Your Item', 'products'),
+                $step('Pick Your Flavors', 'flavors', $b['flavor_options']),
+                $step('Pickup or Delivery', 'fulfillment'),
+                $step('Any Allergies We Should Know About?', 'allergies'),
+                $step('Your Contact Information', 'contact_info'),
+                $step('Order Terms', 'terms'),
+            ],
+            'wedding' => [
+                $step('Choose Your Package', 'products'),
+                $step('Pick Your Flavors', 'flavors', $b['flavor_options']),
+                $step('Choose Your Frosting', 'frosting', 'Buttercream, Fondant (+$15.00), Naked Cake (-$10.00)'),
+                $step('Select Fillings', 'fillings', 'Fruit Filling (+$4.00), Chocolate Ganache (+$4.00), Lemon Curd (+$4.00)'),
+                $step('Event Date & Fulfillment', 'fulfillment'),
+                $step('Upload Inspiration Photos', 'file_upload', '', 'Share pictures of your venue, florals, or dress for design matching'),
+                $step('Any Allergies We Should Know About?', 'allergies'),
+                $step('Your Contact Information', 'contact_info'),
+                $step('Deposit & Order Terms', 'terms'),
+            ],
+            default => [],
+        };
     }
 
     private function bakeries(): array
@@ -174,7 +283,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "Sweet Magnolia Bakery has been baking Southern-style cakes and pies out of our Nashville kitchen since day one. Every cake starts with a family recipe and finishes with hand-piped buttercream.",
                 'hours' => 'Tue-Sat: 8:00 AM - 5:00 PM | Sun-Mon: Closed',
                 'gallery_category' => 'Cakes',
-                'gallery_tags' => ['caramel-cake', 'wedding-cake', 'hummingbird-cake', 'buttercream', 'pie', 'cupcakes'],
+                'order_flow' => 'cake',
+                'flavor_options' => 'Caramel, Hummingbird (+$3.00), Red Velvet (+$3.00), Lemon, Chocolate',
+                'photos' => [
+                    ['photo-1558301211-0d8c8ddee6ec', 'Fondant celebration cake'],
+                    ['photo-1623428454614-abaf00244e52', 'Wedding cake with fresh flowers'],
+                    ['photo-1602351447937-745cb720612f', 'Chocolate cake with white icing'],
+                    ['photo-1562007908-17c67e878c88', 'Fresh baked pie slice'],
+                    ['photo-1519869325930-281384150729', 'Cupcakes on display'],
+                    ['photo-1606890737304-57a1ca8a5b62', 'Chocolate cake with strawberry'],
+                ],
                 'products' => [
                     ['6" Caramel Cake', 68, 'Signature Cakes'],
                     ['8" Hummingbird Cake', 82, 'Signature Cakes'],
@@ -213,7 +331,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "The Cookie Cottage started as a Franklin farmers market stand and grew into a full cottage bakery specializing in giant stuffed cookies and custom cookie cakes.",
                 'hours' => 'Mon-Sat: 9:00 AM - 6:00 PM | Sun: Closed',
                 'gallery_category' => 'Cookies',
-                'gallery_tags' => ['cookies', 'cookie-cake', 'sugar-cookies', 'cookie-box', 'chocolate-chip-cookie', 'bakery'],
+                'order_flow' => 'cookie',
+                'flavor_options' => "Chocolate Chip, S'mores (+$1.00), Red Velvet (+$1.00), Birthday Cake, Peanut Butter",
+                'photos' => [
+                    ['photo-1633362218447-b80f27dc2ada', 'Fresh baked cookies'],
+                    ['photo-1672351883507-212c1c70f9e9', 'Frosted cookie tray'],
+                    ['photo-1734180206659-ad037b2024fe', 'Decorated sugar cookies'],
+                    ['photo-1608069431017-9821bbbf0038', 'Heart-shaped cookies'],
+                    ['photo-1480215529400-2995f91ddb96', 'Lining cookies on a baking sheet'],
+                    ['photo-1703633294266-9a5992c3b37e', 'Assorted cookies'],
+                ],
                 'products' => [
                     ['Single Giant Cookie', 6, 'Cookies'],
                     ['Half Dozen Giant Cookies', 30, 'Cookies'],
@@ -252,7 +379,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "Rustic Crumb Bakery bakes small-batch sourdough and farmhouse pastries in the heart of Knoxville, using slow fermentation and local flour.",
                 'hours' => 'Wed-Sun: 7:00 AM - 2:00 PM (or until sold out) | Mon-Tue: Closed',
                 'gallery_category' => 'Breads',
-                'gallery_tags' => ['sourdough', 'croissant', 'bread', 'pastry', 'bakery-shelf', 'galette'],
+                'order_flow' => 'bakeshop',
+                'flavor_options' => 'Classic Sourdough, Seeded Sourdough, Rosemary & Olive Oil (+$1.00), Cinnamon Raisin (+$1.00)',
+                'photos' => [
+                    ['photo-1613396874083-2d5fbe59ae79', 'Fresh baked sourdough loaf'],
+                    ['photo-1590301157172-7ba48dd1c2b2', 'Bread loaves on table'],
+                    ['photo-1623334044303-241021148842', 'Fresh baked croissants'],
+                    ['photo-1530610476181-d83430b64dcd', 'Croissant on a tray'],
+                    ['photo-1559811814-e2c57b5e69df', 'Sliced bread loaf'],
+                    ['photo-1670819916757-e8d5935a6c65', 'Seasonal fruit galette'],
+                ],
                 'products' => [
                     ['Classic Sourdough Loaf', 9, 'Breads'],
                     ['Seeded Sourdough Loaf', 10, 'Breads'],
@@ -291,7 +427,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "Honey & Butter Cakes crafts delicate, hand-piped custom cakes for weddings, showers, and birthdays from our Murfreesboro kitchen.",
                 'hours' => 'Tue-Sat: 9:00 AM - 5:00 PM | Sun-Mon: Closed',
                 'gallery_category' => 'Cakes',
-                'gallery_tags' => ['floral-cake', 'wedding-cake', 'cupcake-tower', 'mini-cake', 'pastel-cake', 'buttercream-flowers'],
+                'order_flow' => 'cake',
+                'flavor_options' => 'Vanilla Bean, Lemon (+$2.00), Strawberry (+$2.00), Funfetti, Chocolate',
+                'photos' => [
+                    ['photo-1525257831700-183b9b8bf5c4', 'Floral tiered fondant cake'],
+                    ['photo-1535254973040-607b474cb50d', 'Layered fondant cake'],
+                    ['photo-1621303837174-89787a7d4729', 'Pink and white celebration cake'],
+                    ['photo-1599785209707-a456fc1337bb', 'Pink frosted cupcake'],
+                    ['photo-1578922864601-79dcc7cbcea9', 'Pink cupcakes on a tray'],
+                    ['photo-1595272568891-123402d0fb3b', 'Berry-topped white cake'],
+                ],
                 'products' => [
                     ['6" Custom Cake', 70, 'Custom Cakes'],
                     ['8" Custom Cake', 90, 'Custom Cakes'],
@@ -330,7 +475,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "The Sugar Studio is Austin's modern custom cake studio, blending bold design with elevated flavor for weddings, brands, and milestone events.",
                 'hours' => 'Mon-Fri: 10:00 AM - 6:00 PM | Sat: 10:00 AM - 2:00 PM | Sun: Closed',
                 'gallery_category' => 'Cakes',
-                'gallery_tags' => ['modern-cake', 'geometric-cake', 'dessert-table', 'minimalist-cake', 'cake-design', 'event-cake'],
+                'order_flow' => 'cake',
+                'flavor_options' => 'Salted Caramel, Matcha (+$3.00), Passionfruit (+$3.00), Dark Chocolate, Vanilla Bean',
+                'photos' => [
+                    ['photo-1535141192574-5d4897c12636', 'Clean modern tiered cake'],
+                    ['photo-1588195538326-c5b1e9f80a1b', 'Cake with chocolate drip'],
+                    ['photo-1577998474517-7eeeed4e448a', 'Cake with sparkler'],
+                    ['photo-1610670444950-0b29430891b4', 'Modern candle display'],
+                    ['photo-1545696563-af8f6ec2295a', 'Iced celebration cake'],
+                    ['photo-1602630209855-dceac223adfe', 'Sliced layered cake'],
+                ],
                 'products' => [
                     ['6" Modern Cake', 75, 'Custom Cakes'],
                     ['8" Modern Cake', 95, 'Custom Cakes'],
@@ -369,7 +523,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "Wildflower Wedding Cakes has designed timeless wedding cakes for Charleston couples for years, pairing elegant sugar florals with rich, memorable flavor.",
                 'hours' => 'By Appointment Only | Tue-Sat: 10:00 AM - 4:00 PM',
                 'gallery_category' => 'Wedding',
-                'gallery_tags' => ['wedding-cake', 'sugar-flowers', 'tiered-cake', 'groom-cake', 'elegant-cake', 'wedding-reception'],
+                'order_flow' => 'wedding',
+                'flavor_options' => 'Champagne, Almond (+$3.00), Lemon Elderflower (+$3.00), Vanilla Bean, Chocolate',
+                'photos' => [
+                    ['photo-1623428454614-abaf00244e52', 'Wedding cake with fresh florals'],
+                    ['photo-1525257831700-183b9b8bf5c4', 'Tiered floral wedding cake'],
+                    ['photo-1535254973040-607b474cb50d', 'Elegant fondant wedding cake'],
+                    ['photo-1655762755958-cc0e10095c24', 'Cutting the wedding cake'],
+                    ['photo-1568571780765-9276ac8b75a2', 'Sliced wedding cake'],
+                    ['photo-1602630209855-dceac223adfe', 'Layered cake detail'],
+                ],
                 'products' => [
                     ['Wedding Cake Consultation', 0, 'Wedding'],
                     ['Wedding Tasting Box', 55, 'Wedding'],
@@ -408,7 +571,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "Golden Whisk Bakehouse hand-glazes fresh donuts and pastries every morning in Denver, with rotating seasonal flavors and catering boxes for any event.",
                 'hours' => 'Daily: 6:00 AM - 1:00 PM (or until sold out)',
                 'gallery_category' => 'Donuts',
-                'gallery_tags' => ['donuts', 'glazed-donut', 'pastry-case', 'bakery-counter', 'filled-donut', 'coffee-and-donuts'],
+                'order_flow' => 'bakeshop',
+                'flavor_options' => 'Classic Glazed, Chocolate Frosted, Maple Bacon (+$1.00), Strawberry Sprinkle, Boston Cream (+$1.00)',
+                'photos' => [
+                    ['photo-1551024601-bec78aea704b', 'Glazed donut with toppings'],
+                    ['photo-1646615077267-97c6088b74d9', 'Pink frosted donuts with sprinkles'],
+                    ['photo-1618411640018-972400a01458', 'Assorted donuts on a plate'],
+                    ['photo-1527515545081-5db817172677', 'Assorted flavor donuts'],
+                    ['photo-1533910534207-90f31029a78e', 'Strawberry sprinkle donuts'],
+                    ['photo-1551106652-a5bcf4b29ab6', 'Chocolate-coated donuts with sprinkles'],
+                ],
                 'products' => [
                     ['Single Donut', 4, 'Donuts'],
                     ['Half Dozen Donuts', 20, 'Donuts'],
@@ -447,7 +619,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "Velvet & Vine Cakery bakes bold, richly flavored cakes with statement designs out of our Savannah kitchen — Southern soul meets modern style.",
                 'hours' => 'Tue-Sat: 9:00 AM - 6:00 PM | Sun-Mon: Closed',
                 'gallery_category' => 'Cakes',
-                'gallery_tags' => ['red-velvet-cake', 'drip-cake', 'birthday-cake', 'dessert-box', 'chocolate-cake', 'cake-topper'],
+                'order_flow' => 'cake',
+                'flavor_options' => 'Red Velvet, Chocolate Fudge (+$2.00), Caramel (+$2.00), Strawberry, Vanilla Bean',
+                'photos' => [
+                    ['photo-1714386148315-2f0e3eebcd5a', 'Slice of red velvet cake'],
+                    ['photo-1714949134591-d6f2c581b20d', 'Red velvet cake with strawberries'],
+                    ['photo-1685957652870-d56b0e5bea52', 'Red velvet cake slice'],
+                    ['photo-1687877858381-e98c32796861', 'Layered cake topped with berries'],
+                    ['photo-1659489397202-cd5d8875806b', 'Cakes with red frosting and florals'],
+                    ['photo-1560172797-c656dbab1a39', 'Sliced red velvet cake'],
+                ],
                 'products' => [
                     ['6" Red Velvet Cake', 66, 'Signature Cakes'],
                     ['8" Red Velvet Cake', 84, 'Signature Cakes'],
@@ -486,7 +667,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "Marigold Pastry Co. brings French pastry technique to Portland — macarons, fruit tarts, and entremet cakes made with precision and seasonal ingredients.",
                 'hours' => 'Wed-Sun: 8:00 AM - 4:00 PM | Mon-Tue: Closed',
                 'gallery_category' => 'Pastries',
-                'gallery_tags' => ['macarons', 'fruit-tart', 'entremet-cake', 'french-pastry', 'patisserie', 'mousse-cake'],
+                'order_flow' => 'bakeshop',
+                'flavor_options' => 'Pistachio, Raspberry (+$1.00), Salted Caramel (+$1.00), Vanilla Bean, Chocolate',
+                'photos' => [
+                    ['photo-1569864358642-9d1684040f43', 'Assorted French macarons'],
+                    ['photo-1558326567-98ae2405596b', 'Macarons on display'],
+                    ['photo-1531594652722-292a43e752b4', 'Tray of French macarons'],
+                    ['photo-1670819916757-e8d5935a6c65', 'Fresh fruit tarts'],
+                    ['photo-1646321155195-44f0a4f91d1b', 'Berry-topped pastry'],
+                    ['photo-1600477063726-b6b2473e43f9', 'Fruit-topped entremet cake'],
+                ],
                 'products' => [
                     ['Macarons (box of 6)', 15, 'Macarons'],
                     ['Macarons (box of 12)', 28, 'Macarons'],
@@ -525,7 +715,16 @@ class DemoBakeriesSeeder extends Seeder
                 'about_bio' => "Copper Kettle Bakery bakes homestyle pies, cinnamon rolls, and rustic breads from scratch in small batches out of our Boise kitchen.",
                 'hours' => 'Mon-Sat: 7:00 AM - 4:00 PM | Sun: Closed',
                 'gallery_category' => 'Pies',
-                'gallery_tags' => ['pie', 'cinnamon-rolls', 'bread-loaf', 'apple-pie', 'bakery-shop', 'pastry-case'],
+                'order_flow' => 'bakeshop',
+                'flavor_options' => 'Apple, Cherry (+$1.00), Pumpkin (Seasonal), Pecan (+$2.00)',
+                'photos' => [
+                    ['photo-1621743478914-cc8a86d7e7b5', 'Fresh baked apple pie'],
+                    ['photo-1535920527002-b35e96722eb9', 'Apple pie on a plate'],
+                    ['photo-1694632288834-17d86b340745', 'Pan of frosted cinnamon rolls'],
+                    ['photo-1649308401368-a68b77116605', 'Plate of cinnamon rolls'],
+                    ['photo-1620921592619-652411a0d01a', 'Bread loaf on a tray'],
+                    ['photo-1638329261528-1932b0e63212', 'Fresh baked pie'],
+                ],
                 'products' => [
                     ['Apple Pie', 26, 'Pies'],
                     ['Cherry Pie', 28, 'Pies'],
