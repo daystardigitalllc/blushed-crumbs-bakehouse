@@ -577,7 +577,7 @@ class Tenant extends Model implements TenancyContract
             ],
             'rustic_kitchen' => [
                 'id' => 'rustic_kitchen',
-                'name' => '🪵 Rustic Kitchen',
+                'name' => '🥖 Rustic Kitchen',
                 'subtitle' => 'Warm terracotta, linen beige, artisanal bakery feel',
                 'preview_bg' => '#f9f5f0',
                 'preview_accent' => '#c86d51',
@@ -633,7 +633,7 @@ class Tenant extends Model implements TenancyContract
             ],
             'lavender_bloom' => [
                 'id' => 'lavender_bloom',
-                'name' => '🪻 Lavender Bloom',
+                'name' => '💜 Lavender Bloom',
                 'subtitle' => 'Orchid purple & soft lavender, boutique product tiles, craft-shop editorial energy',
                 'preview_bg' => '#f6eefa',
                 'preview_accent' => '#8e4fa3',
