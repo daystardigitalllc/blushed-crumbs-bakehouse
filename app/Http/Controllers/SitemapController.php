@@ -85,6 +85,19 @@ class SitemapController extends Controller
             '/tools/bakery-pricing-calculator',
             '/cottage-food-laws',
             '/legal',
+            '/bakery-website-builder',
+            '/bakery-website-design',
+            '/home-bakery-website',
+            '/custom-cake-website',
+            '/bakesy-alternative',
+            '/bakebug-alternative',
+            '/blog',
+            '/blog/how-much-does-a-bakery-website-cost',
+            '/blog/how-to-sell-cakes-online',
+            '/blog/how-to-get-more-wedding-cake-customers',
+            '/blog/how-to-rank-a-bakery-website-on-google',
+            '/blog/do-home-bakers-need-a-website',
+            '/blog/the-best-website-platforms-for-bakeries',
         ];
 
         foreach (CottageFoodLawsController::allStatesSummary() as $state) {

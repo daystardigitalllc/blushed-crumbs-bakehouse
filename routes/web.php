@@ -40,6 +40,18 @@ Route::get('/legal/{slug}', [LegalController::class, 'show'])->name('legal.show'
 // ───  SaaS Landing Page ───
 Route::get('/landing', [BrandController::class, 'landing'])->name('brand.landing');
 
+// ─── SEO Landing Pages ───
+Route::get('/bakery-website-builder', [\App\Http\Controllers\MarketingController::class, 'bakeryWebsiteBuilder'])->name('brand.seo.bakery-website-builder');
+Route::get('/bakery-website-design', [\App\Http\Controllers\MarketingController::class, 'bakeryWebsiteDesign'])->name('brand.seo.bakery-website-design');
+Route::get('/home-bakery-website', [\App\Http\Controllers\MarketingController::class, 'homeBakeryWebsite'])->name('brand.seo.home-bakery-website');
+Route::get('/custom-cake-website', [\App\Http\Controllers\MarketingController::class, 'customCakeWebsite'])->name('brand.seo.custom-cake-website');
+Route::get('/bakesy-alternative', [\App\Http\Controllers\MarketingController::class, 'bakesyAlternative'])->name('brand.seo.bakesy-alternative');
+Route::get('/bakebug-alternative', [\App\Http\Controllers\MarketingController::class, 'bakebugAlternative'])->name('brand.seo.bakebug-alternative');
+
+// ─── Blog System ───
+Route::get('/blog', [\App\Http\Controllers\MarketingController::class, 'blogIndex'])->name('blog.index');
+Route::get('/blog/{slug}', [\App\Http\Controllers\MarketingController::class, 'blogPost'])->name('blog.show');
+
 // ─── Free Tools (SEO lead-gen calculators) ───
 Route::get('/tools/bakery-pricing-calculator', [ToolsController::class, 'pricingCalculator'])->name('tools.pricing-calculator');
 Route::post('/tools/bakery-pricing-calculator/parse-ingredients', [ToolsController::class, 'parseIngredients'])
