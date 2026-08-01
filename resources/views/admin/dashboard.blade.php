@@ -49,6 +49,75 @@
                 <button class="drawer-close-btn" onclick="toggleAdminMobileSidebar()">✕</button>
             </div>
 
+            @unless($onboardingComplete)
+                @php $onboardingTotal = count($onboardingChecklist); @endphp
+                <div id="onboarding-checklist-sidebar" style="background:rgba(255,255,255,0.08); border-radius:10px; padding:10px 12px; margin-bottom:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <strong style="font-size:0.7rem; color:rgba(255,255,255,0.9); text-transform:uppercase; letter-spacing:0.04em;">Setup Checklist</strong>
+                        <button type="button" onclick="dismissOnboardingChecklist()" title="Hide this checklist" style="background:none; border:none; color:rgba(255,255,255,0.45); cursor:pointer; font-size:0.85rem; line-height:1; padding:0;">✕</button>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.15); border-radius:20px; height:4px; overflow:hidden; margin-bottom:8px;">
+                        <div id="onboarding-progress-bar" style="background:#ffffff; height:100%; width:0%; transition:width 0.3s ease;"></div>
+                    </div>
+                    <div id="onboarding-checklist-items" style="display:flex; flex-direction:column; gap:4px;">
+                        @foreach($onboardingChecklist as $key => $step)
+                            @unless($step['done'])
+                                <div class="onboarding-checklist-item" data-step="{{ $key }}" onclick="goToOnboardingTab('{{ $step['tab'] }}')" style="font-size:0.76rem; color:rgba(255,255,255,0.85); cursor:pointer; padding:5px 8px; border-radius:6px; background:rgba(255,255,255,0.05); line-height:1.3;">
+                                    {{ $step['label'] }}
+                                </div>
+                            @endunless
+                        @endforeach
+                    </div>
+                </div>
+                <script>
+                    (function () {
+                        var totalSteps = {{ $onboardingTotal }};
+                        var dismissKey = 'onboarding_checklist_dismissed_{{ $tenant->id }}';
+                        var widget = document.getElementById('onboarding-checklist-sidebar');
+
+                        function remainingCount() {
+                            return document.querySelectorAll('#onboarding-checklist-items .onboarding-checklist-item').length;
+                        }
+
+                        function updateProgressBar() {
+                            var bar = document.getElementById('onboarding-progress-bar');
+                            if (!bar) return;
+                            var doneCount = totalSteps - remainingCount();
+                            bar.style.width = (totalSteps > 0 ? Math.round((doneCount / totalSteps) * 100) : 0) + '%';
+                        }
+                        updateProgressBar();
+
+                        if (localStorage.getItem(dismissKey) === '1' && widget) {
+                            widget.style.display = 'none';
+                        }
+
+                        window.dismissOnboardingChecklist = function () {
+                            localStorage.setItem(dismissKey, '1');
+                            if (widget) widget.style.display = 'none';
+                        };
+
+                        // Called from save-success handlers across the dashboard (form
+                        // builder, products, gallery, page builder, calendar) so a
+                        // completed step disappears immediately instead of waiting for
+                        // the next full page load. The server-computed list on reload
+                        // remains the source of truth — this is just instant feedback.
+                        window.markOnboardingStepDone = function (stepKey) {
+                            var item = document.querySelector('#onboarding-checklist-items .onboarding-checklist-item[data-step="' + stepKey + '"]');
+                            if (item) item.remove();
+                            updateProgressBar();
+                            if (remainingCount() === 0 && widget) {
+                                widget.style.display = 'none';
+                            }
+                        };
+                    })();
+
+                    window.goToOnboardingTab = function (tabId) {
+                        var btn = document.querySelector('.admin-sidebar-nav .admin-nav-item[data-tab="' + tabId + '"]');
+                        if (btn) btn.click();
+                    };
+                </script>
+            @endunless
+
             <nav class="admin-sidebar-nav">
                 <button class="admin-nav-item active" data-tab="tab-orders">
                     Orders
@@ -101,56 +170,6 @@
         <main class="admin-main-content">
             <!-- TAB 1: Orders -->
             <div id="tab-orders" class="tab-content active">
-                @unless($onboardingComplete)
-                    @php
-                        $onboardingDoneCount = collect($onboardingChecklist)->where('done', true)->count();
-                        $onboardingTotal = count($onboardingChecklist);
-                    @endphp
-                    <div id="onboarding-checklist-card" class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa); margin-bottom:24px; position:relative;">
-                        <button type="button" onclick="dismissOnboardingChecklist()" title="Hide this checklist" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.1rem; color:#999; cursor:pointer; line-height:1;">✕</button>
-                        <h4 style="color:var(--dark-text); margin-bottom:4px;">🚀 Finish Setting Up Your Website</h4>
-                        <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">
-                            {{ $onboardingDoneCount }} of {{ $onboardingTotal }} steps done — a few quick things make your site usable for real customers.
-                        </p>
-                        <div style="background:#eee; border-radius:20px; height:8px; overflow:hidden; margin-bottom:18px;">
-                            <div style="background:var(--primary); height:100%; width:{{ $onboardingTotal > 0 ? round(($onboardingDoneCount / $onboardingTotal) * 100) : 0 }}%; transition:width 0.3s ease;"></div>
-                        </div>
-                        <div style="display:flex; flex-direction:column; gap:10px;">
-                            @foreach($onboardingChecklist as $step)
-                                <div class="onboarding-checklist-item" data-tab-target="{{ $step['tab'] }}" style="display:flex; align-items:center; gap:12px; background:white; padding:12px 16px; border-radius:12px; border:1px solid #f0e4ea; {{ $step['done'] ? '' : 'cursor:pointer;' }}" @if(!$step['done']) onclick="goToOnboardingTab('{{ $step['tab'] }}')" @endif>
-                                    <span style="width:22px; height:22px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; {{ $step['done'] ? 'background:#059669; color:#fff;' : 'background:#f0e4ea; color:#999;' }}">
-                                        {{ $step['done'] ? '✓' : '' }}
-                                    </span>
-                                    <span style="flex:1; font-size:0.92rem; font-weight:600; color:{{ $step['done'] ? '#999' : '#5c1d37' }}; {{ $step['done'] ? 'text-decoration:line-through;' : '' }}">{{ $step['label'] }}</span>
-                                    @if(!$step['done'])
-                                        <span style="font-size:0.8rem; font-weight:700; color:var(--primary);">Go →</span>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    <script>
-                        (function () {
-                            var dismissKey = 'onboarding_checklist_dismissed_{{ $tenant->id }}';
-                            if (localStorage.getItem(dismissKey) === '1') {
-                                var card = document.getElementById('onboarding-checklist-card');
-                                if (card) card.style.display = 'none';
-                            }
-                            window.dismissOnboardingChecklist = function () {
-                                localStorage.setItem(dismissKey, '1');
-                                var card = document.getElementById('onboarding-checklist-card');
-                                if (card) card.style.display = 'none';
-                            };
-                        })();
-
-                        window.goToOnboardingTab = function (tabId) {
-                            var btn = document.querySelector('.admin-sidebar-nav .admin-nav-item[data-tab="' + tabId + '"]');
-                            if (btn) btn.click();
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                        };
-                    </script>
-                @endunless
-
                 <div class="section-header">
                     <h3>Orders</h3>
                     <p class="subtitle">Sorted by due date, soonest first.</p>

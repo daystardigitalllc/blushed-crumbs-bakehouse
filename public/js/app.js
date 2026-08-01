@@ -258,6 +258,7 @@ window.saveSectionManagerForm = function() {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
+            if (window.markOnboardingStepDone) window.markOnboardingStepDone('page_builder');
             if (msgEl) {
                 msgEl.style.display = 'block';
                 msgEl.innerHTML = `${data.message} <a href="/" target="_blank" style="color:#4c1d95; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Site ↗</a>`;
@@ -1407,6 +1408,7 @@ function initAdminPortal() {
         .then(data => {
             if (data.success) {
                 alert('Success: Order form steps & layout saved live to your storefront!');
+                if (window.markOnboardingStepDone) window.markOnboardingStepDone('order_form');
             } else {
                 alert('Error saving form layout: ' + (data.message || 'Unknown error'));
             }
@@ -1699,6 +1701,7 @@ function initAdminPortal() {
 
                 const data = await response.json();
                 if (data.success && data.product) {
+                    if (window.markOnboardingStepDone) window.markOnboardingStepDone('product');
                     const prod = data.product;
 
                     // Dynamically add to product grid in Order Form Step 1 if on page
@@ -1862,6 +1865,7 @@ window.deleteProduct = async function(productId, btnElement) {
             .then(res => res.json())
             .then(data => {
                 if (data.success && data.item) {
+                    if (window.markOnboardingStepDone) window.markOnboardingStepDone('gallery');
                     const item = data.item;
 
                     // Prepend to Admin Gallery List
@@ -2259,6 +2263,7 @@ window.saveLeadTime = function() {
         const msg = document.getElementById('lead-time-save-msg');
         if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
         if (typeof renderInteractiveCalendar === 'function') renderInteractiveCalendar();
+        if (window.markOnboardingStepDone) window.markOnboardingStepDone('calendar');
     })
     .catch(err => console.error('Save Lead Time Error:', err));
 };
@@ -2782,6 +2787,7 @@ function saveAdminCalendarState() {
     .then(data => {
         if (data.success && data.settings) {
             window._serverBookingSettings = data.settings;
+            if (window.markOnboardingStepDone) window.markOnboardingStepDone('calendar');
         }
     })
     .catch(err => console.error('Booking save error:', err));
