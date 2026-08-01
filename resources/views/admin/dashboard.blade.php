@@ -196,7 +196,7 @@
                 </div>
 
                 <!-- EMAIL ROUTING SETTINGS CARD -->
-                <div class="form-builder-card" style="border: 2px solid #e67399; background: #fff7fa;">
+                <div class="form-builder-card" style="border: 2px solid var(--primary); background: var(--theme-section-bg, #fff7fa);">
                     <h4 style="color:#5c1d37;">Order Email Routing</h4>
                     <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">All completed order form entries will be sent to this address:</p>
                     <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
@@ -252,7 +252,7 @@
 
                             <input type="hidden" id="field-options">
 
-                            <button type="button" class="btn btn-outline btn-sm" onclick="addAdminOptionRow()" style="border-radius:12px; font-weight:700; color:#e67399; border-color:#f8c6d7;">
+                            <button type="button" class="btn btn-outline btn-sm" onclick="addAdminOptionRow()" style="border-radius:12px; font-weight:700; color:var(--primary); border-color:var(--theme-section-bg, #f8c6d7);">
                                 + Add Option Choice
                             </button>
                         </div>
@@ -304,12 +304,12 @@
                     <p class="subtitle">Edit your homepage's text, images, and section order. Changes go live when you save.</p>
                 </div>
 
-                <div class="form-builder-card" style="border:1px solid #ddd6fe;">
+                <div class="form-builder-card" style="border:1px solid var(--theme-section-bg, #ddd6fe);">
                     <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
-                        <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:#7c3aed; border-color:#6d28d9;">Save All Changes</button>
+                        <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:var(--primary); border-color:var(--primary);">Save All Changes</button>
                     </div>
 
-                    <div id="section-manager-msg" style="display:none; margin-bottom:14px; background:#ddd6fe; color:#4c1d95; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c4b5fd;"></div>
+                    <div id="section-manager-msg" style="display:none; margin-bottom:14px; background:var(--theme-section-bg, #ddd6fe); color:var(--dark-text); padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid var(--theme-section-bg, #c4b5fd);"></div>
 
                     <form id="section-manager-form">
                         @csrf
@@ -354,7 +354,7 @@
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Background (Image or Video)</label>
                                                 <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                     <input type="text" id="hero_bg_url" name="hero_bg_url" value="{{ data_get($siteContent, 'hero_bg_url', '') }}" placeholder="URL or uploaded path (e.g. storage/hero.mp4)" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
-                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:var(--primary); color:var(--dark-text); font-size:0.8rem;">
                                                         Upload File
                                                         <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'hero_bg_url')" style="display:none;">
                                                     </label>
@@ -394,13 +394,13 @@
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                                 @for($h = 0; $h < 4; $h++)
                                                     <div style="padding:14px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;">
-                                                        <label style="font-weight:700; font-size:0.85rem; color:#6d28d9;">Highlight {{ $h+1 }}</label>
+                                                        <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text);">Highlight {{ $h+1 }}</label>
 
                                                         <div>
                                                             <label style="font-size:0.78rem; color:#666; display:block; margin-bottom:3px; font-weight:600;">Icon</label>
                                                             <div style="display:flex; gap:8px; align-items:center;">
                                                                 <input type="text" id="hl-icon-input-{{ $h }}" name="highlights[{{ $h }}][icon]" value="{{ $hlList[$h]['icon'] ?? '🎂' }}" style="width:50px; text-align:center; padding:6px; border-radius:6px; border:1px solid #ccc; font-size:1.1rem;">
-                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openIconPicker(document.getElementById('hl-icon-input-{{ $h }}'))" style="padding:5px 10px; font-size:0.8rem; border-color:#8b5cf6; color:#6d28d9;">Select Icon</button>
+                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openIconPicker(document.getElementById('hl-icon-input-{{ $h }}'))" style="padding:5px 10px; font-size:0.8rem; border-color:var(--primary); color:var(--dark-text);">Select Icon</button>
                                                             </div>
                                                         </div>
 
@@ -443,8 +443,8 @@
                                                             <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image</label>
                                                             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                                                                 <input type="text" id="cat_img_input_{{ $cIdx }}" name="categories[{{ $cIdx }}][image_url]" value="{{ $cat['image_url'] ?? '' }}" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
-                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_{{ $cIdx }}'), 'cat_preview_{{ $cIdx }}')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">Device Gallery</button>
-                                                                <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                                <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_{{ $cIdx }}'), 'cat_preview_{{ $cIdx }}')" style="border-color:var(--primary); color:var(--dark-text); font-size:0.8rem; font-weight:700;">Device Gallery</button>
+                                                                <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:var(--primary); color:var(--dark-text); font-size:0.8rem;">
                                                                     Upload File
                                                                     <input type="file" name="category_image_{{ $cIdx }}" accept="image/*" style="display:none;" onchange="uploadSectionMedia(this, 'cat_img_input_{{ $cIdx }}', 'cat_preview_{{ $cIdx }}')">
                                                                 </label>
@@ -457,7 +457,7 @@
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionCategoryItem()" style="margin-top:12px; border-color:#8b5cf6; color:#6d28d9; font-weight:700;">
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionCategoryItem()" style="margin-top:12px; border-color:var(--primary); color:var(--dark-text); font-weight:700;">
                                                 + Add Category
                                             </button>
 
@@ -466,8 +466,8 @@
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Photo</label>
                                                 <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                     <input type="text" id="whimsical_image_url" name="whimsical_image_url" value="{{ data_get($siteContent, 'whimsical_image_url', '') }}" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
-                                                    <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('whimsical_image_url'), 'whimsical_preview')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">Device Gallery</button>
-                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                    <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('whimsical_image_url'), 'whimsical_preview')" style="border-color:var(--primary); color:var(--dark-text); font-size:0.8rem; font-weight:700;">Device Gallery</button>
+                                                    <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:var(--primary); color:var(--dark-text); font-size:0.8rem;">
                                                         Upload File
                                                         <input type="file" accept="image/*" onchange="uploadSectionMedia(this, 'whimsical_image_url', 'whimsical_preview')" style="display:none;">
                                                     </label>
@@ -496,7 +496,7 @@
                                                     <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background</label>
                                                     <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                         <input type="text" id="promo_video_url" name="promo_video_url" value="{{ data_get($siteContent, 'promo_video_url', '') }}" placeholder="Upload custom video or image URL..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
-                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:var(--primary); color:var(--dark-text); font-size:0.8rem;">
                                                             Upload File
                                                             <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'promo_video_url')" style="display:none;">
                                                         </label>
@@ -519,7 +519,7 @@
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
                                                 @for($s = 0; $s < 3; $s++)
                                                     <div style="padding:12px; border-radius:10px; border:1px solid #eee;">
-                                                        <label style="font-weight:700; font-size:0.8rem; color:#6d28d9;">Step {{ $s+1 }}</label>
+                                                        <label style="font-weight:700; font-size:0.8rem; color:var(--dark-text);">Step {{ $s+1 }}</label>
                                                         <input type="text" name="how_it_works[{{ $s }}][title]" value="{{ $hwList[$s]['title'] ?? '' }}" placeholder="Step Title..." style="width:100%; margin-top:6px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.85rem;">
                                                         <textarea name="how_it_works[{{ $s }}][desc]" rows="2" placeholder="Step Description..." style="width:100%; margin-top:6px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.82rem; font-family:inherit;">{{ $hwList[$s]['desc'] ?? '' }}</textarea>
                                                     </div>
@@ -542,7 +542,7 @@
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionReviewItem()" style="margin-top:10px; border-color:#8b5cf6; color:#6d28d9;">+ Add Review</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionReviewItem()" style="margin-top:10px; border-color:var(--primary); color:var(--dark-text);">+ Add Review</button>
 
                                         @elseif($secId === 'faq')
                                             @php $faqList = data_get($siteContent, 'faqs', []); @endphp
@@ -557,7 +557,7 @@
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionFaqItem()" style="margin-top:10px; border-color:#8b5cf6; color:#6d28d9;">+ Add FAQ</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="addAccordionFaqItem()" style="margin-top:10px; border-color:var(--primary); color:var(--dark-text);">+ Add FAQ</button>
 
                                         @elseif($secId === 'cta_banner')
                                             <div style="display:flex; flex-direction:column; gap:10px;">
@@ -565,7 +565,7 @@
                                                     <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background</label>
                                                     <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                         <input type="text" id="cta_banner_url" name="cta_banner_url" value="{{ data_get($siteContent, 'cta_banner_url', '') }}" placeholder="Upload custom background media URL..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
-                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                                                        <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:var(--primary); color:var(--dark-text); font-size:0.8rem;">
                                                             Upload File
                                                             <input type="file" accept="image/*,video/*" onchange="uploadSectionMedia(this, 'cta_banner_url')" style="display:none;">
                                                         </label>
@@ -600,7 +600,7 @@
 
                                             <input type="hidden" id="featured_gallery_images_input" name="featured_gallery_images" value='{{ json_encode($featuredImages) }}'>
 
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="openFeaturedGalleryPicker()" style="border-color:#8b5cf6; color:#6d28d9; font-weight:700; margin-bottom:12px;">Select Photos from Device Gallery</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="openFeaturedGalleryPicker()" style="border-color:var(--primary); color:var(--dark-text); font-weight:700; margin-bottom:12px;">Select Photos from Device Gallery</button>
 
                                             <div id="featured-gallery-preview-strip" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
 
@@ -621,7 +621,7 @@
                     <p class="subtitle">Add, remove, and update prices for your order form products.</p>
                 </div>
 
-                <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
+                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
                     <h4>Add New Product</h4>
                     <form id="add-product-form" class="form-builder-grid" action="{{ route('admin.products.store') }}" method="POST">
                         @csrf
@@ -672,13 +672,13 @@
                 </div>
 
                 <!-- MENU STUDIO & UPLOAD CARD -->
-                <div class="form-builder-card" style="border:2px solid #6d28d9; background:linear-gradient(135deg, #ffffff, #fdf4ff); margin-top:25px;">
+                <div class="form-builder-card" style="border:2px solid var(--primary); background:linear-gradient(135deg, #ffffff, #fdf4ff); margin-top:25px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
                         <div>
-                            <h4 style="color:#6d28d9; font-size:1.25rem; margin-bottom:4px;">Menu Page &amp; Uploads</h4>
+                            <h4 style="color:var(--dark-text); font-size:1.25rem; margin-bottom:4px;">Menu Page &amp; Uploads</h4>
                             <p style="font-size:0.88rem; color:#555;">Upload your official menu image/PDF, or write custom menu text. Shown on your public <code>/menu</code> page.</p>
                         </div>
-                        <span style="background:#6d28d9; color:white; font-size:0.75rem; font-weight:800; padding:4px 12px; border-radius:12px; text-transform:uppercase;">Public Storefront Menu</span>
+                        <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 12px; border-radius:12px; text-transform:uppercase;">Public Storefront Menu</span>
                     </div>
 
                     @php
@@ -752,10 +752,10 @@
                         </div>
 
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <a href="{{ route('storefront.menu') }}" target="_blank" style="color:#6d28d9; font-size:0.9rem; font-weight:600; text-decoration:none;">
+                            <a href="{{ route('storefront.menu') }}" target="_blank" style="color:var(--dark-text); font-size:0.9rem; font-weight:600; text-decoration:none;">
                                 Preview Public Menu Page ↗
                             </a>
-                            <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); border:none; padding:10px 24px; font-weight:700; border-radius:8px;">
+                            <button type="submit" class="btn btn-primary" style="background:var(--primary); border:none; padding:10px 24px; font-weight:700; border-radius:8px;">
                                 Save Menu &amp; Pricing Settings
                             </button>
                         </div>
@@ -793,7 +793,7 @@
                         <!-- DEVICE FILE PICKER & DROPZONE -->
                         <div>
                             <label>Select Image File From Your Device</label>
-                            <div id="gal-device-dropzone" style="border:2px dashed #e67399; background:#fff7fa; padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
+                            <div id="gal-device-dropzone" style="border:2px dashed var(--primary); background:var(--theme-section-bg, #fff7fa); padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
                                 <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photo from device or drag image here</p>
                                 <span style="font-size:12px; color:#888;">Supports JPG, PNG, WEBP, GIF (Up to 10MB)</span>
                             </div>
@@ -802,7 +802,7 @@
 
                         <!-- LIVE PREVIEW CONTAINER -->
                         <div id="gal-upload-preview" style="display:none; text-align:center;">
-                            <img id="gal-preview-img" src="" style="max-width:200px; height:140px; object-fit:cover; border-radius:14px; border:2px solid #e67399; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+                            <img id="gal-preview-img" src="" style="max-width:200px; height:140px; object-fit:cover; border-radius:14px; border:2px solid var(--primary); box-shadow:0 4px 15px rgba(0,0,0,0.1);">
                             <p style="font-weight:700; color:#28a745; margin-top:6px; font-size:0.9rem;">Photo ready for publish</p>
                         </div>
 
@@ -820,7 +820,7 @@
                                     <img src="{{ asset($src) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
                                     <div>
                                         <strong style="color:#5c1d37;">{{ $item->title }}</strong><br>
-                                        <span style="font-size:0.8rem; color:#e67399; font-weight:600;">{{ $item->category }}</span>
+                                        <span style="font-size:0.8rem; color:var(--primary); font-weight:600;">{{ $item->category }}</span>
                                     </div>
                                 </div>
                                 <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
@@ -881,7 +881,7 @@
                 </div>
 
                 <!-- ADD CUSTOM PAYMENT METHOD CARD -->
-                <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
+                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
                     <h4 style="color:#5c1d37;">Add Custom Payment Option</h4>
                     <form id="add-payment-method-form" class="form-builder-grid">
                         <div>
@@ -932,7 +932,7 @@
                 </div>
 
                 <!-- ADD NEW REVIEW CARD -->
-                <div class="form-builder-card" style="margin-bottom:20px; border:2px solid #e67399; background:#fff7fa;">
+                <div class="form-builder-card" style="margin-bottom:20px; border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
                     <h4 style="color:#5c1d37; margin-bottom:12px;">Add New Client Review</h4>
                     <form id="add-review-form" style="display:flex; flex-direction:column; gap:12px;">
                         <div>
@@ -979,19 +979,19 @@
                 </div>
 
                 <!-- BAKERY LOGO MANAGEMENT CARD -->
-                <div class="form-builder-card" style="border:2px solid #6d28d9; background:#FAF8FF; margin-bottom:20px;">
-                    <h4 style="color:#4c1d95; margin-bottom:6px;">Brand Logo</h4>
+                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff); margin-bottom:20px;">
+                    <h4 style="color:var(--dark-text); margin-bottom:6px;">Brand Logo</h4>
                     <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Shown in the header and footer across all your storefront pages.</p>
 
                     <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
-                        <div style="width:90px; height:90px; border-radius:16px; background:#ffffff; border:2px dashed #c4b5fd; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:6px;">
+                        <div style="width:90px; height:90px; border-radius:16px; background:#ffffff; border:2px dashed var(--theme-section-bg, #c4b5fd); display:flex; align-items:center; justify-content:center; overflow:hidden; padding:6px;">
                             <img id="bakery-logo-preview" src="{{ $tenant->logo_path ? asset($tenant->logo_path) : asset('images/doughmain_logo.png') }}" alt="Bakery Logo" style="max-width:100%; max-height:100%; object-fit:contain;">
                         </div>
                         <div style="flex:1; min-width:240px;">
                             <form id="bakery-logo-form" onsubmit="uploadBakeryLogo(event)" style="display:flex; flex-direction:column; gap:10px;">
                                 <input type="file" id="bakery-logo-file" name="logo" accept="image/*" required onchange="previewBakeryLogoFile(this)" style="font-size:0.88rem;">
                                 <div style="display:flex; gap:10px; align-items:center;">
-                                    <button type="submit" class="btn btn-primary" style="background:#6d28d9; border-color:#6d28d9;">
+                                    <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary);">
                                         Save Logo
                                     </button>
                                     <span id="logo-upload-status" style="font-size:0.85rem; font-weight:600; color:#059669; display:none;">Logo updated!</span>
@@ -1002,11 +1002,11 @@
                 </div>
 
                 <!-- BUSINESS INFO & SEO CARD -->
-                <div class="form-builder-card" style="border:2px solid #059669; background:#f0fdf4; margin-bottom:20px;">
-                    <h4 style="color:#065f46; margin-bottom:6px;">Business Info &amp; SEO</h4>
+                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #f0fdf4); margin-bottom:20px;">
+                    <h4 style="color:var(--dark-text); margin-bottom:6px;">Business Info &amp; SEO</h4>
                     <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Contact details shown on your storefront, plus the title &amp; description search engines show for your site.</p>
 
-                    <div id="business-info-msg" style="display:none; margin-bottom:14px; background:#d1fae5; color:#065f46; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #a7f3d0;"></div>
+                    <div id="business-info-msg" style="display:none; margin-bottom:14px; background:var(--theme-section-bg, #d1fae5); color:var(--dark-text); padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid var(--theme-section-bg, #a7f3d0);"></div>
 
                     <form id="business-info-form">
                         @csrf
@@ -1053,8 +1053,8 @@
                             </div>
                         </div>
 
-                        <div style="border-top:1px solid #a7f3d0; padding-top:14px; margin-bottom:16px;">
-                            <h5 style="font-size:0.9rem; color:#065f46; margin-bottom:10px;">Search Engine (SEO)</h5>
+                        <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
+                            <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:10px;">Search Engine (SEO)</h5>
                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
                                 <div>
                                     <label style="font-weight:600; font-size:0.82rem; color:#555;">Page Title</label>
@@ -1067,9 +1067,9 @@
                             </div>
                         </div>
 
-                        <div style="border-top:1px solid #a7f3d0; padding-top:14px; margin-bottom:16px;">
-                            <h5 style="font-size:0.9rem; color:#065f46; margin-bottom:4px;">Policy Page Numbers</h5>
-                            <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Used on your <a href="{{ route('storefront.policy') }}" target="_blank" style="color:#059669; text-decoration:underline;">Policy page</a> — the rest of that page's wording is shared, but these numbers are yours to correct.</p>
+                        <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
+                            <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Policy Page Numbers</h5>
+                            <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Used on your <a href="{{ route('storefront.policy') }}" target="_blank" style="color:var(--primary); text-decoration:underline;">Policy page</a> — the rest of that page's wording is shared, but these numbers are yours to correct.</p>
                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
                                 <div>
                                     <label style="font-weight:600; font-size:0.82rem; color:#555;">Deposit %</label>
@@ -1106,18 +1106,18 @@
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-primary" onclick="saveBusinessInfoForm()" style="background:#059669; border-color:#059669;">Save Business Info & SEO</button>
+                        <button type="button" class="btn btn-primary" onclick="saveBusinessInfoForm()" style="background:var(--primary); border-color:var(--primary);">Save Business Info & SEO</button>
                     </form>
                 </div>
 
                 <!-- CURATED BAKERY THEMES CARD -->
-                <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
+                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
                         <div>
                             <h4 style="color:#5c1d37; margin:0;">Storefront Theme</h4>
                             <p style="font-size:0.88rem; color:#666; margin-top:4px;">Pick a design template. Colors and layout update automatically.</p>
                         </div>
-                        <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:#e67399; color:#e67399;">View Live Storefront ↗</a>
+                        <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:var(--primary); color:var(--primary);">View Live Storefront ↗</a>
                     </div>
 
                     <div id="theme-status-msg" style="display:none; margin-bottom:14px; background:#d4edda; color:#155724; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c3e6cb;"></div>
@@ -1139,14 +1139,14 @@
                             @endphp
                             <div class="bakery-theme-card" 
                                  onclick="{{ $isLockedTheme ? "alert('Upgrade to Pro ($29/mo) to unlock this premium theme!')" : "selectBakeryTheme('".$t['id']."', this)" }}" 
-                                 style="border:{{ $currentTheme === $t['id'] ? '3px solid #e67399' : '2px solid #ddd' }}; background:white; padding:22px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
+                                 style="border:{{ $currentTheme === $t['id'] ? '3px solid var(--primary)' : '2px solid #ddd' }}; background:white; padding:22px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
                                 <div style="height:80px; background:{{ $t['preview_bg'] }}; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; border:1px solid #eee;">
                                     <span style="font-weight:800; color:{{ $t['preview_accent'] }}; font-size:1.1rem;">{{ $t['name'] }}</span>
                                 </div>
                                 <h5 style="font-size:1rem; font-weight:700; color:#5c1d37; margin-bottom:4px;">{{ $t['name'] }}</h5>
                                 <p style="font-size:0.8rem; color:#666; line-height:1.4;">{{ $t['subtitle'] }}</p>
                                 @if($currentTheme === $t['id'])
-                                    <span class="theme-badge" style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#e67399; color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
+                                    <span class="theme-badge" style="display:inline-block; margin-top:8px; font-size:0.75rem; background:var(--primary); color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
                                 @elseif($tenant->plan_tier === 'pro' && !$isStarterTheme)
                                     <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#c7d2fe; color:#4338ca; padding:3px 10px; border-radius:20px; font-weight:700;">Pro Tier</span>
                                 @elseif($isLockedTheme)
@@ -1186,19 +1186,19 @@
                 </div>
 
                 <!-- BAKER SUPPORT CARD -->
-                <div class="form-builder-card" style="margin-top:20px; border:2px solid #6d28d9; background:#fbf8ff;">
-                    <h4 style="color:#4c1d95; margin-bottom:4px;">Support &amp; Custom Code Requests</h4>
+                <div class="form-builder-card" style="margin-top:20px; border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff);">
+                    <h4 style="color:var(--dark-text); margin-bottom:4px;">Support &amp; Custom Code Requests</h4>
                     <p style="font-size:0.88rem; color:#666; margin-bottom:14px;">Request custom features, theme tweaks, or code assistance (Pro Tier perk).</p>
                     <form id="support-request-form" style="display:flex; flex-direction:column; gap:12px;">
                         <div>
-                            <label style="font-weight:700; font-size:0.85rem; color:#4c1d95; display:block; margin-bottom:4px;">Subject</label>
+                            <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Subject</label>
                             <input type="text" class="form-control" placeholder="e.g. Custom theme tweak request" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
                         </div>
                         <div>
-                            <label style="font-weight:700; font-size:0.85rem; color:#4c1d95; display:block; margin-bottom:4px;">Description</label>
+                            <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Description</label>
                             <textarea class="form-control" placeholder="Describe custom code or support request..." required style="width:100%; height:100px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="background:#6d28d9; border-color:#6d28d9; align-self:flex-start;">Send Support Request</button>
+                        <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary); align-self:flex-start;">Send Support Request</button>
                     </form>
                 </div>
             </div>
@@ -1211,7 +1211,7 @@
                 </div>
 
                 <!-- CARD 1: RECURRING WEEKLY CLOSED DAYS -->
-                <div class="form-builder-card" style="border:2px solid #e67399; background:#fff7fa;">
+                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
                     <h4 style="color:#5c1d37;">Weekly Recurring Closed Days</h4>
                     <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Days you're regularly closed (e.g. Saturdays &amp; Sundays) are automatically blocked on the order form calendar.</p>
 
@@ -1249,7 +1249,7 @@
                             <p style="font-size:0.85rem; color:#888; margin:0;">Click any date below to toggle it blocked or available.</p>
                         </div>
                         <!-- Month Navigation -->
-                        <div style="display:flex; align-items:center; gap:10px; background:#fff0f5; padding:6px 14px; border-radius:14px; border:1px solid #f8c6d7;">
+                        <div style="display:flex; align-items:center; gap:10px; background:#fff0f5; padding:6px 14px; border-radius:14px; border:1px solid var(--theme-section-bg, #f8c6d7);">
                             <button class="btn btn-sm btn-outline" style="padding:4px 10px;" onclick="changeAdminCalMonth(-1)">◀ Prev</button>
                             <span id="admin-cal-month-year" style="font-weight:800; color:#5c1d37; min-width:130px; text-align:center;">{{ now()->format('F Y') }}</span>
                             <button class="btn btn-sm btn-outline" style="padding:4px 10px;" onclick="changeAdminCalMonth(1)">Next ▶</button>
@@ -1368,7 +1368,7 @@
                         <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:16px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                 <span style="font-weight:600; color:#475569;">Current Plan:</span>
-                                <span style="font-weight:800; color:#e67399; text-transform:uppercase;">{{ $tenant->plan_tier === 'pro' ? 'PRO ($29/mo)' : 'FREE ($0/mo)' }}</span>
+                                <span style="font-weight:800; color:var(--primary); text-transform:uppercase;">{{ $tenant->plan_tier === 'pro' ? 'PRO ($29/mo)' : 'FREE ($0/mo)' }}</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <span style="font-weight:600; color:#475569;">Account Status:</span>
@@ -1377,9 +1377,9 @@
                         </div>
 
                         @if(($tenant->plan_tier ?? 'free') !== 'pro')
-                            <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid #6d28d9; padding:20px; border-radius:14px; margin-bottom:16px;">
-                                <span style="background:#6d28d9; color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Unlock All Features</span>
-                                <h4 style="color:#6d28d9; margin-top:8px; font-size:1.3rem;">Upgrade to Doughmain Pro ($29/month)</h4>
+                            <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid var(--primary); padding:20px; border-radius:14px; margin-bottom:16px;">
+                                <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Unlock All Features</span>
+                                <h4 style="color:var(--dark-text); margin-top:8px; font-size:1.3rem;">Upgrade to Doughmain Pro ($29/month)</h4>
                                 <p style="font-size:0.9rem; color:#555; margin-top:4px; margin-bottom:16px;">Unlock all 7 premium themes, custom domain support, and priority baker support.</p>
                                  
                     <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6) !important; color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
@@ -1839,8 +1839,8 @@
                         <label style="font-size:0.8rem; font-weight:600; color:#555; display:block; margin-bottom:4px;">Category Image</label>
                         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                             <input type="text" id="cat_img_input_${idx}" name="categories[${idx}][image_url]" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
-                            <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_${idx}'), 'cat_preview_${idx}')" style="border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem; font-weight:700;">Device Gallery</button>
-                            <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:#8b5cf6; color:#6d28d9; font-size:0.8rem;">
+                            <button type="button" class="btn btn-sm btn-outline" onclick="openGalleryPicker(document.getElementById('cat_img_input_${idx}'), 'cat_preview_${idx}')" style="border-color:var(--primary); color:var(--dark-text); font-size:0.8rem; font-weight:700;">Device Gallery</button>
+                            <label class="btn btn-sm btn-outline" style="cursor:pointer; padding:6px 12px; border-color:var(--primary); color:var(--dark-text); font-size:0.8rem;">
                                 Upload File
                                 <input type="file" name="category_image_${idx}" accept="image/*" style="display:none;" onchange="uploadSectionMedia(this, 'cat_img_input_${idx}', 'cat_preview_${idx}')">
                             </label>
@@ -1962,7 +1962,7 @@
 
                 const dotsEl = document.getElementById('tour-step-dots');
                 dotsEl.innerHTML = ADMIN_TOUR_STEPS.map((_, i) =>
-                    `<span style="width:8px; height:8px; border-radius:50%; background:${i === tourStepIndex ? '#8b5cf6' : '#e9d5ff'}; display:inline-block; transition:background 0.2s;"></span>`
+                    `<span style="width:8px; height:8px; border-radius:50%; background:${i === tourStepIndex ? 'var(--primary)' : 'var(--theme-section-bg, #e9d5ff)'}; display:inline-block; transition:background 0.2s;"></span>`
                 ).join('');
 
                 document.getElementById('tour-back-btn').style.visibility = tourStepIndex === 0 ? 'hidden' : 'visible';
@@ -2086,7 +2086,7 @@
 
                 <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid #eee; padding-top:16px;">
                     <button type="button" class="btn btn-outline" onclick="closeInvoiceEditModal()">Cancel</button>
-                    <button type="button" class="btn btn-outline" onclick="saveInvoiceEdits()" style="border-color:#e67399; color:#e67399;">Save Invoice</button>
+                    <button type="button" class="btn btn-outline" onclick="saveInvoiceEdits()" style="border-color:var(--primary); color:var(--primary);">Save Invoice</button>
                     <button type="button" class="btn btn-primary" onclick="saveAndSendInvoice()">Save &amp; Send</button>
                 </div>
             </form>
@@ -2096,10 +2096,10 @@
 
 <!-- DEVICE GALLERY MEDIA PICKER MODAL -->
 <div id="gallery-picker-modal" class="order-modal-overlay" style="display:none; z-index:99999;">
-    <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid #8b5cf6; padding:20px; box-shadow:0 20px 50px rgba(109,40,217,0.2);">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e9d5ff; padding-bottom:12px; margin-bottom:16px;">
+    <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid var(--primary); padding:20px; box-shadow:0 20px 50px rgba(109,40,217,0.2);">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--theme-section-bg, #e9d5ff); padding-bottom:12px; margin-bottom:16px;">
             <div>
-                <h3 style="margin:0; color:#6d28d9; font-size:1.2rem; font-family:'Outfit',sans-serif;">Device Gallery Media Picker</h3>
+                <h3 style="margin:0; color:var(--dark-text); font-size:1.2rem; font-family:'Outfit',sans-serif;">Device Gallery Media Picker</h3>
                 <p style="margin:2px 0 0 0; font-size:0.82rem; color:#666;">Click any photo thumbnail to attach it to this section.</p>
             </div>
             <button type="button" class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeGalleryPickerModal()">✕</button>
@@ -2108,11 +2108,11 @@
         <div id="gallery-picker-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:12px; overflow-y:auto; padding-right:6px; flex:1; max-height:50vh;">
             @forelse($gallery as $gItem)
                 @php $gSrc = $gItem->image_url ?? $gItem->image_path; @endphp
-                <div class="gallery-picker-item" data-path="{{ $gSrc }}" onclick="handleGalleryPickerItemClick(this, @js(asset($gSrc)), @js($gSrc), @js($gItem->title))" style="cursor:pointer; border:2px solid #e9d5ff; border-radius:10px; overflow:hidden; background:#ffffff; transition:all 0.2s ease; text-align:center; padding:6px; position:relative;">
+                <div class="gallery-picker-item" data-path="{{ $gSrc }}" onclick="handleGalleryPickerItemClick(this, @js(asset($gSrc)), @js($gSrc), @js($gItem->title))" style="cursor:pointer; border:2px solid var(--theme-section-bg, #e9d5ff); border-radius:10px; overflow:hidden; background:#ffffff; transition:all 0.2s ease; text-align:center; padding:6px; position:relative;">
                     <span class="gallery-picker-checkmark" style="display:none; position:absolute; top:4px; right:4px; background:#16a34a; color:white; width:22px; height:22px; border-radius:50%; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; z-index:2;">✓</span>
                     <img src="{{ asset($gSrc) }}" style="width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:4px;">
-                    <strong style="font-size:0.75rem; color:#4c1d95; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $gItem->title }}</strong>
-                    <span style="font-size:0.7rem; color:#8b5cf6;">{{ $gItem->category }}</span>
+                    <strong style="font-size:0.75rem; color:var(--dark-text); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $gItem->title }}</strong>
+                    <span style="font-size:0.7rem; color:var(--primary);">{{ $gItem->category }}</span>
                 </div>
             @empty
                 <div style="grid-column:1 / -1; text-align:center; padding:30px; color:#666;">
@@ -2122,11 +2122,11 @@
             @endforelse
         </div>
 
-        <div style="margin-top:16px; border-top:1px solid #e9d5ff; padding-top:12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div style="margin-top:16px; border-top:1px solid var(--theme-section-bg, #e9d5ff); padding-top:12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
             <button type="button" id="gallery-picker-clear-btn" class="btn btn-outline" onclick="selectGalleryPickerImage('', '')" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">Clear Selection (Theme Default)</button>
-            <div id="gallery-picker-multi-hint" style="display:none; font-size:0.82rem; color:#6d28d9; font-weight:600;">Click photos to select or deselect them, then hit Done.</div>
+            <div id="gallery-picker-multi-hint" style="display:none; font-size:0.82rem; color:var(--dark-text); font-weight:600;">Click photos to select or deselect them, then hit Done.</div>
             <div style="display:flex; gap:8px;">
-                <button type="button" id="gallery-picker-done-btn" class="btn btn-primary" style="display:none; background:#7c3aed; border-color:#6d28d9;" onclick="confirmFeaturedGallerySelection()">Done — Use Selected Photos</button>
+                <button type="button" id="gallery-picker-done-btn" class="btn btn-primary" style="display:none; background:var(--primary); border-color:var(--primary);" onclick="confirmFeaturedGallerySelection()">Done — Use Selected Photos</button>
                 <button type="button" class="btn btn-outline" onclick="closeGalleryPickerModal()">Cancel</button>
             </div>
         </div>
@@ -2152,8 +2152,8 @@
     }
 </style>
 <div id="terms-edit-modal" class="order-modal-overlay" style="display:none; z-index:99999;">
-    <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; overflow-y:auto; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid #e67399; padding:20px; box-shadow:0 20px 50px rgba(230,115,153,0.2);">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f8c6d7; padding-bottom:12px; margin-bottom:16px;">
+    <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; overflow-y:auto; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid var(--primary); padding:20px; box-shadow:0 20px 50px rgba(230,115,153,0.2);">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--theme-section-bg, #f8c6d7); padding-bottom:12px; margin-bottom:16px;">
             <div>
                 <h3 style="margin:0; color:#5c1d37; font-size:1.2rem; font-family:'Outfit',sans-serif;">Edit Terms &amp; Policy Text</h3>
                 <p style="margin:2px 0 0 0; font-size:0.82rem; color:#666;">Leave blank to show the default message: <em>"Please consult the bakery directly for their order policies and terms."</em></p>
@@ -2163,7 +2163,7 @@
 
         <div id="quill-terms-modal-editor" style="background:#ffffff; border-radius:0 0 8px 8px; font-size:0.95rem;"></div>
 
-        <div style="margin-top:16px; border-top:1px solid #f8c6d7; padding-top:12px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
+        <div style="margin-top:16px; border-top:1px solid var(--theme-section-bg, #f8c6d7); padding-top:12px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
             <button type="button" class="btn btn-outline" onclick="clearTermsEditModal()" style="color:#dc2626; border-color:#fca5a5; font-size:0.82rem;">Clear (Use Default)</button>
             <div style="display:flex; gap:10px;">
                 <button type="button" class="btn btn-outline" onclick="closeTermsEditModal()">Cancel</button>
@@ -2175,9 +2175,9 @@
 
 <!-- GUIDED ADMIN TOUR MODAL -->
 <div id="admin-tour-modal" class="order-modal-overlay" style="display:none; z-index:100000;">
-    <div class="order-modal-card" style="max-width: 480px; width:92%; background:#ffffff; border-radius:18px; border:2px solid #8b5cf6; padding:26px; box-shadow:0 20px 50px rgba(109,40,217,0.25); text-align:center;">
+    <div class="order-modal-card" style="max-width: 480px; width:92%; background:#ffffff; border-radius:18px; border:2px solid var(--primary); padding:26px; box-shadow:0 20px 50px rgba(109,40,217,0.25); text-align:center;">
         <div id="tour-step-icon" style="font-size:2.6rem; margin-bottom:10px;"></div>
-        <h3 id="tour-step-title" style="margin:0 0 12px 0; color:#4c1d95; font-family:'Outfit',sans-serif; font-size:1.3rem;"></h3>
+        <h3 id="tour-step-title" style="margin:0 0 12px 0; color:var(--dark-text); font-family:'Outfit',sans-serif; font-size:1.3rem;"></h3>
         <p id="tour-step-body" style="color:#555; font-size:0.95rem; line-height:1.6; margin-bottom:20px;"></p>
 
         <div id="tour-step-dots" style="display:flex; justify-content:center; gap:8px; margin-bottom:22px;"></div>
@@ -2186,7 +2186,7 @@
             <button type="button" class="btn btn-outline" onclick="skipAdminTour()" style="font-size:0.82rem; color:#888; border-color:#ddd;">Skip Tour</button>
             <div style="display:flex; gap:10px;">
                 <button type="button" class="btn btn-outline" id="tour-back-btn" onclick="prevAdminTourStep()">← Back</button>
-                <button type="button" class="btn btn-primary" id="tour-next-btn" onclick="nextAdminTourStep()" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); border:none;">Next →</button>
+                <button type="button" class="btn btn-primary" id="tour-next-btn" onclick="nextAdminTourStep()" style="background:var(--primary); border:none;">Next →</button>
             </div>
         </div>
     </div>
