@@ -16,10 +16,16 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(append: [
-            \App\Http\Middleware\SecurityHeaders::class,
-            \App\Http\Middleware\ResolveTenant::class,
-        ]);
+        $middleware->web(
+            prepend: [
+                // Must run before StartSession — see class docblock.
+                \App\Http\Middleware\ScopeSessionDomainToRequestHost::class,
+            ],
+            append: [
+                \App\Http\Middleware\SecurityHeaders::class,
+                \App\Http\Middleware\ResolveTenant::class,
+            ],
+        );
 
         $middleware->alias([
             'tenant.owner' => \App\Http\Middleware\EnsureBakerOwnsTenant::class,
