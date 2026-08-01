@@ -191,9 +191,4 @@ body.theme-sweet_elegant .hero-cake-bottom-right {
     }
 }
 
-/* Mobile responsive fixes for Sweet & Elegant raining cakes */
-@media (max-width: 768px) {
-    body.theme-sweet_elegant .raining-cake {
-        width: 140px !important;
-    }
-}
+
