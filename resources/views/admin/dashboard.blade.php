@@ -390,6 +390,14 @@
                         box-shadow: 0 4px 10px rgba(230, 115, 153, 0.25);
                     }
 
+                    /* Taller kanban columns on desktop — fills most of the viewport instead of stopping at 500px */
+                    @media (min-width: 769px) {
+                        .board-column {
+                            min-height: 90vh !important;
+                            max-height: 90vh !important;
+                        }
+                    }
+
                     @media (max-width: 768px) {
                         .orders-board-container {
                             grid-template-columns: 1fr !important;
@@ -455,6 +463,56 @@
                         }
                         .oc-header-bottomrow .status-select {
                             width: 100%;
+                        }
+                    }
+
+                    /* Collapsed-card preview — thumbnails + a one-line summary, so a collapsed card
+                       isn't just blank white space until you tap to expand it */
+                    .order-card-preview {
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        padding: 0 20px 16px;
+                    }
+                    .oc-preview-thumbs {
+                        display: flex;
+                        gap: 6px;
+                        flex-shrink: 0;
+                    }
+                    .oc-preview-thumb {
+                        width: 44px;
+                        height: 44px;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        border: 1px solid #e2e8f0;
+                        cursor: pointer;
+                        flex-shrink: 0;
+                    }
+                    .oc-preview-thumb img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        display: block;
+                    }
+                    .oc-preview-summary {
+                        margin: 0;
+                        min-width: 0;
+                        font-size: 0.9rem;
+                        color: #64748b;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                    .collapsible-card.expanded .order-card-preview {
+                        display: none;
+                    }
+                    @media (max-width: 576px) {
+                        .oc-preview-summary {
+                            white-space: normal;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
                         }
                     }
 
@@ -533,6 +591,22 @@
                                 ->filter(fn($f) => is_string($f) && file_exists(public_path($f)))
                                 ->map(fn($f) => asset($f))
                                 ->values();
+
+                            $previewParts = collect();
+                            if (!empty($order->items) && is_array($order->items)) {
+                                $previewParts->push(collect($order->items)->map(function ($item) {
+                                    return is_array($item)
+                                        ? trim(($item['name'] ?? 'Item') . (!empty($item['quantity']) ? ' x' . $item['quantity'] : ''))
+                                        : (string) $item;
+                                })->implode(', '));
+                            }
+                            if (!empty($order->flavors)) {
+                                $previewParts->push(implode(', ', $order->flavors));
+                            }
+                            if ($order->special_notes) {
+                                $previewParts->push($order->special_notes);
+                            }
+                            $previewSummary = $previewParts->implode(' • ');
                         @endphp
                         <div class="order-card collapsible-card {{ $isUrgent ? 'urgent-border' : '' }}" data-id="{{ $order->id }}" data-fulfillment="{{ $order->fulfillment_type }}" style="padding:0; overflow:hidden;">
                             <div class="order-card-header" onclick="toggleOrderCardCollapse(this)">
@@ -570,6 +644,23 @@
                                     </div>
                                 </div>
                             </div>
+
+                            @if($orderPhotoUrls->isNotEmpty() || $previewSummary)
+                                <div class="order-card-preview" onclick="toggleOrderCardCollapse(this.closest('.order-card').querySelector('.order-card-header'))">
+                                    @if($orderPhotoUrls->isNotEmpty())
+                                        <div class="oc-preview-thumbs">
+                                            @foreach($orderPhotoUrls->take(3) as $idx => $url)
+                                                <div class="oc-preview-thumb" onclick='event.stopPropagation(); openOrderLightbox(@json($orderPhotoUrls), {{ $idx }})'>
+                                                    <img src="{{ $url }}" alt="Inspiration {{ $idx + 1 }}" loading="lazy">
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    @if($previewSummary)
+                                        <p class="oc-preview-summary">{{ $previewSummary }}</p>
+                                    @endif
+                                </div>
+                            @endif
 
                             <div class="order-card-collapsible" style="display: none;">
                                 <div class="order-card-body" style="padding: 20px; border-top:1px solid #f1f5f9;">
