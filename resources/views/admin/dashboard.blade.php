@@ -275,6 +275,61 @@
                         border: 2px solid #fca5a5 !important;
                         background: #fffefe !important;
                     }
+
+                    /* --- Mobile optimizations --- */
+                    .mobile-board-tabs {
+                        display: none;
+                        gap: 8px;
+                        overflow-x: auto;
+                        padding-bottom: 8px;
+                        margin-top: 14px;
+                        -webkit-overflow-scrolling: touch;
+                    }
+                    .mobile-board-tab {
+                        background: #e2e8f0;
+                        color: #475569;
+                        font-size: 0.8rem;
+                        font-weight: 700;
+                        padding: 8px 14px;
+                        border-radius: 20px;
+                        border: none;
+                        white-space: nowrap;
+                        cursor: pointer;
+                        transition: background 0.2s, color 0.2s;
+                    }
+                    .mobile-board-tab.active-tab {
+                        background: var(--primary);
+                        color: white;
+                        box-shadow: 0 4px 10px rgba(230, 115, 153, 0.25);
+                    }
+
+                    @media (max-width: 768px) {
+                        .orders-board-container {
+                            grid-template-columns: 1fr !important;
+                            gap: 0;
+                        }
+                        .board-column {
+                            display: none !important;
+                        }
+                        .board-column.active-column {
+                            display: flex !important;
+                        }
+                        .order-card-header {
+                            padding: 12px 14px;
+                        }
+                    }
+
+                    @media (max-width: 576px) {
+                        .order-card-actions {
+                            flex-direction: column;
+                            width: 100%;
+                        }
+                        .order-card-actions button {
+                            width: 100%;
+                            text-align: center;
+                            justify-content: center;
+                        }
+                    }
                 </style>
 
                 <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom: 24px;">
@@ -289,6 +344,16 @@
                         <button type="button" class="btn btn-sm btn-outline active-toggle-btn" id="orders-view-list-btn" onclick="switchOrdersView('list')" style="border:none; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; background:transparent; color:#555;">List View</button>
                         <button type="button" class="btn btn-sm btn-outline" id="orders-view-board-btn" onclick="switchOrdersView('board')" style="border:none; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; background:transparent; color:#555;">Board View</button>
                     </div>
+                </div>
+
+                <!-- Mobile Column Switcher (Visible only on mobile/tablet) -->
+                <div class="mobile-board-tabs" id="mobile-board-tabs-bar" style="display:none; margin-bottom: 16px;">
+                    <button type="button" class="mobile-board-tab active-tab" onclick="switchMobileBoardColumn('new')">New ({{ $urgentOrders->where('status', 'new')->count() }})</button>
+                    <button type="button" class="mobile-board-tab" onclick="switchMobileBoardColumn('invoiced')">Invoiced ({{ $urgentOrders->where('status', 'invoiced')->count() }})</button>
+                    <button type="button" class="mobile-board-tab" onclick="switchMobileBoardColumn('paid')">Paid ({{ $urgentOrders->where('status', 'paid')->count() }})</button>
+                    <button type="button" class="mobile-board-tab" onclick="switchMobileBoardColumn('in_progress')">Progress ({{ $urgentOrders->where('status', 'in_progress')->count() }})</button>
+                    <button type="button" class="mobile-board-tab" onclick="switchMobileBoardColumn('ready')">Ready ({{ $urgentOrders->where('status', 'ready')->count() }})</button>
+                    <button type="button" class="mobile-board-tab" onclick="switchMobileBoardColumn('completed')">Done ({{ $urgentOrders->where('status', 'completed')->count() }})</button>
                 </div>
 
                 <!-- LIST VIEW CONTAINER -->
@@ -405,7 +470,7 @@
                         @php
                             $statusOrders = $urgentOrders->where('status', $statusKey);
                         @endphp
-                        <div class="board-column" data-status="{{ $statusKey }}" ondragover="allowBoardCardDrop(event)" ondragleave="handleBoardCardDragLeave(event, this)" ondrop="handleBoardCardDrop(event, this)" style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:16px; padding:12px; display:flex; flex-direction:column; min-height:500px; max-height:80vh; overflow-y:auto; transition: background 0.15s ease;">
+                        <div class="board-column {{ $statusKey === 'new' ? 'active-column' : '' }}" data-status="{{ $statusKey }}" ondragover="allowBoardCardDrop(event)" ondragleave="handleBoardCardDragLeave(event, this)" ondrop="handleBoardCardDrop(event, this)" style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:16px; padding:12px; display:flex; flex-direction:column; min-height:500px; max-height:80vh; overflow-y:auto; transition: background 0.15s ease;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:2px solid #cbd5e1; padding-bottom:8px; position:sticky; top:0; background:#f8fafc; z-index:10;">
                                 <h4 style="margin:0; font-size:0.85rem; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.04em;">{{ $columnName }}</h4>
                                 <span style="font-size:0.8rem; background:#cbd5e1; color:#475569; font-weight:700; padding:2px 8px; border-radius:10px;">{{ $statusOrders->count() }}</span>
@@ -508,20 +573,50 @@
                         const boardBtn = document.getElementById('orders-view-board-btn');
                         const listContainer = document.getElementById('admin-orders-list');
                         const boardContainer = document.getElementById('admin-orders-board');
+                        const mobileTabsBar = document.getElementById('mobile-board-tabs-bar');
                         
                         if (viewType === 'board') {
                             listBtn?.classList.remove('active-toggle-btn');
                             boardBtn?.classList.add('active-toggle-btn');
                             if (listContainer) listContainer.style.display = 'none';
                             if (boardContainer) boardContainer.style.display = 'grid';
+                            if (mobileTabsBar && window.innerWidth <= 768) mobileTabsBar.style.display = 'flex';
                             localStorage.setItem('baker_orders_view_type', 'board');
+                            
+                            // Initialize active mobile column
+                            if (window.innerWidth <= 768) {
+                                const activeTab = document.querySelector('.mobile-board-tab.active-tab');
+                                const activeStatus = activeTab ? activeTab.getAttribute('onclick').match(/'([^']+)'/)[1] : 'new';
+                                switchMobileBoardColumn(activeStatus);
+                            }
                         } else {
                             boardBtn?.classList.remove('active-toggle-btn');
                             listBtn?.classList.add('active-toggle-btn');
                             if (boardContainer) boardContainer.style.display = 'none';
                             if (listContainer) listContainer.style.display = 'grid';
+                            if (mobileTabsBar) mobileTabsBar.style.display = 'none';
                             localStorage.setItem('baker_orders_view_type', 'list');
                         }
+                    };
+
+                    window.switchMobileBoardColumn = function(statusKey) {
+                        // Deactivate all tabs
+                        const tabs = document.querySelectorAll('.mobile-board-tab');
+                        tabs.forEach(tab => {
+                            tab.classList.remove('active-tab');
+                            if (tab.getAttribute('onclick').includes(`'${statusKey}'`)) {
+                                tab.classList.add('active-tab');
+                            }
+                        });
+                        
+                        // Deactivate all columns
+                        const columns = document.querySelectorAll('.board-column');
+                        columns.forEach(col => {
+                            col.classList.remove('active-column');
+                            if (col.dataset.status === statusKey) {
+                                col.classList.add('active-column');
+                            }
+                        });
                     };
 
                     window.advanceOrderStatus = function(orderId, nextStatus) {
