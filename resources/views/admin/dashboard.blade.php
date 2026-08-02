@@ -11,6 +11,7 @@
         'recurring_closed_days' => [0, 1],
         'blocked_dates' => ['2026-07-04', '2026-07-25']
     ];
+    $newInquiriesCount = $urgentOrders->where('status', 'new')->count();
 @endphp
 <script>
     window._serverFormSchema = @json($serverFormSchema);
@@ -120,7 +121,7 @@
 
             <nav class="admin-sidebar-nav">
                 <button class="admin-nav-item active" data-tab="tab-orders">
-                    Orders
+                    Orders @if($newInquiriesCount > 0)<span class="nav-inquiries-badge">{{ $newInquiriesCount }}</span>@endif
                 </button>
                 <button class="admin-nav-item" data-tab="tab-form-builder">
                     Order Form
@@ -170,68 +171,213 @@
         <main class="admin-main-content">
             <!-- TAB 1: Orders -->
             <div id="tab-orders" class="tab-content active">
-                <div class="section-header">
-                    <h3>Orders</h3>
-                    <p class="subtitle">Sorted by due date, soonest first.</p>
+                <style>
+                    /* --- Dashboard UI/UX Optimizations --- */
+                    .collapsible-card {
+                        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+                        margin-bottom: 16px;
+                    }
+                    .collapsible-card.expanded {
+                        border-color: var(--primary) !important;
+                        box-shadow: 0 10px 30px rgba(230, 115, 153, 0.15) !important;
+                    }
+                    .order-card-header {
+                        cursor: pointer;
+                        user-select: none;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                        padding: 14px 20px;
+                    }
+                    .chevron-indicator {
+                        font-size: 0.85rem;
+                        color: var(--primary);
+                        transition: transform 0.2s ease;
+                        display: inline-block;
+                        width: 16px;
+                        text-align: center;
+                        margin-right: 4px;
+                    }
+                    .allergy-pinned-badge {
+                        background: #fee2e2;
+                        color: #ef4444;
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        padding: 3px 8px;
+                        border-radius: 6px;
+                        border: 1px solid #fca5a5;
+                        animation: pulseAlert 2s infinite;
+                        display: inline-block;
+                    }
+                    @keyframes pulseAlert {
+                        0% { opacity: 1; }
+                        50% { opacity: 0.75; }
+                        100% { opacity: 1; }
+                    }
+                    .nav-inquiries-badge {
+                        background: #ef4444;
+                        color: white;
+                        font-size: 0.72rem;
+                        font-weight: 700;
+                        padding: 2px 7px;
+                        border-radius: 20px;
+                        margin-left: 8px;
+                        display: inline-block;
+                    }
+                    .header-inquiries-badge {
+                        background: #ef4444;
+                        color: white;
+                        font-size: 0.85rem;
+                        font-weight: 700;
+                        padding: 4px 10px;
+                        border-radius: 20px;
+                        margin-left: 10px;
+                        display: inline-block;
+                        vertical-align: middle;
+                    }
+
+                    /* Lightbox Modal */
+                    .order-modal-overlay {
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(0, 0, 0, 0.6);
+                        backdrop-filter: blur(4px);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        animation: fadeInModal 0.25s ease;
+                    }
+                    @keyframes fadeInModal {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+
+                    /* Toggle buttons styling */
+                    .active-toggle-btn {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        box-shadow: 0 4px 10px rgba(230, 115, 153, 0.25) !important;
+                    }
+
+                    /* Board columns styling */
+                    .board-column {
+                        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02);
+                    }
+                    .board-order-card {
+                        transition: transform 0.15s ease, box-shadow 0.15s ease;
+                    }
+                    .board-order-card:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 14px rgba(0,0,0,0.08) !important;
+                    }
+                    .board-urgent-border {
+                        border: 2px solid #fca5a5 !important;
+                        background: #fffefe !important;
+                    }
+                </style>
+
+                <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom: 24px;">
+                    <div>
+                        <h3 style="display:inline-block; vertical-align:middle; margin:0;">Orders</h3>
+                        @if($newInquiriesCount > 0)
+                            <span class="header-inquiries-badge">{{ $newInquiriesCount }} New</span>
+                        @endif
+                        <p class="subtitle" style="margin-top:4px;">Sorted by due date, soonest first.</p>
+                    </div>
+                    <div style="display:flex; gap:10px; background:#f1f5f9; padding:4px; border-radius:10px;">
+                        <button type="button" class="btn btn-sm btn-outline active-toggle-btn" id="orders-view-list-btn" onclick="switchOrdersView('list')" style="border:none; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; background:transparent; color:#555;">List View</button>
+                        <button type="button" class="btn btn-sm btn-outline" id="orders-view-board-btn" onclick="switchOrdersView('board')" style="border:none; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; background:transparent; color:#555;">Board View</button>
+                    </div>
                 </div>
+
+                <!-- LIST VIEW CONTAINER -->
                 <div class="orders-list-grid" id="admin-orders-list">
                     @forelse($urgentOrders as $order)
                         @php
                             $dueDate = \Carbon\Carbon::parse($order->due_date);
                             $isUrgent = $dueDate->isToday() || $dueDate->isTomorrow() || $dueDate->diffInDays(now()) <= 2;
                         @endphp
-                        <div class="order-card {{ $isUrgent ? 'urgent-border' : '' }}" data-fulfillment="{{ $order->fulfillment_type }}">
-                            <div class="order-card-header">
-                                <div class="due-badge {{ $isUrgent ? 'due-urgent' : 'due-normal' }}">
-                                    DUE: {{ $dueDate->format('M d, Y') }} ({{ $order->time_slot }})
-                                </div>
-                                <select class="status-select status-{{ $order->status }}" onchange="updateOrderStatus({{ $order->id }}, this.value)">
-                                    <option value="new" {{ $order->status == 'new' ? 'selected' : '' }}>NEW</option>
-                                    <option value="invoiced" {{ $order->status == 'invoiced' ? 'selected' : '' }}>INVOICED</option>
-                                    <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>PAID</option>
-                                    <option value="in_progress" {{ $order->status == 'in_progress' ? 'selected' : '' }}>IN PROGRESS</option>
-                                    <option value="ready" {{ $order->status == 'ready' ? 'selected' : '' }}>READY</option>
-                                    <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>COMPLETED</option>
-                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
-                                </select>
-                            </div>
-
-                            <div class="order-card-body">
-                                <h4>#{{ $order->order_number }} - {{ $order->client_name }}</h4>
-                                <p><strong>Phone:</strong> {{ $order->client_phone }} | <strong>Email:</strong> {{ $order->client_email }}</p>
-                                <p><strong>Fulfillment:</strong> {{ strtoupper($order->fulfillment_type) }} 
-                                    @if($order->fulfillment_type == 'delivery')
-                                        ({{ $order->delivery_address }})
+                        <div class="order-card collapsible-card {{ $isUrgent ? 'urgent-border' : '' }}" data-id="{{ $order->id }}" data-fulfillment="{{ $order->fulfillment_type }}" style="padding:0; overflow:hidden;">
+                            <div class="order-card-header" onclick="toggleOrderCardCollapse(this)" style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:12px;">
+                                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; flex:1;">
+                                    <span class="chevron-indicator">▼</span>
+                                    <div class="due-badge {{ $isUrgent ? 'due-urgent' : 'due-normal' }}" style="margin:0;">
+                                        DUE: {{ $dueDate->format('M d, Y') }} ({{ $order->time_slot }})
+                                    </div>
+                                    <h4 style="margin:0; font-size:1.05rem; font-weight:700; color:#5c1d37;">#{{ $order->order_number }} - {{ $order->client_name }}</h4>
+                                    
+                                    @if($order->allergies)
+                                        <span class="allergy-pinned-badge">⚠️ ALLERGIES</span>
                                     @endif
-                                </p>
-
-                                @if(!empty($order->flavors))
-                                    <p><strong>Flavors:</strong> {{ implode(', ', $order->flavors) }}</p>
-                                @endif
-                                @if(!empty($order->frosting))
-                                    <p><strong>Frosting:</strong> {{ implode(', ', $order->frosting) }}</p>
-                                @endif
-                                @if(!empty($order->fillings))
-                                    <p><strong>Fillings:</strong> {{ implode(', ', $order->fillings) }}</p>
-                                @endif
-                                @if($order->special_notes)
-                                    <p class="notes-box"><strong>Special Notes:</strong> {{ $order->special_notes }}</p>
-                                @endif
-                                @if($order->allergies)
-                                    <p class="allergy-warning"><strong>Allergies:</strong> {{ $order->allergies }}</p>
-                                @endif
-
-                                <div class="pricing-breakdown">
-                                    <span>Total: <strong>${{ number_format($order->total_price, 2) }}</strong></span>
-                                    <span>50% Deposit: <strong>${{ number_format($order->deposit_amount, 2) }}</strong>
-                                        ({{ $order->deposit_paid ? 'Paid' : 'Pending' }})
-                                    </span>
+                                </div>
+                                <div onclick="event.stopPropagation()">
+                                    <select class="status-select status-{{ $order->status }}" onchange="updateOrderStatus({{ $order->id }}, this.value)">
+                                        <option value="new" {{ $order->status == 'new' ? 'selected' : '' }}>NEW</option>
+                                        <option value="invoiced" {{ $order->status == 'invoiced' ? 'selected' : '' }}>INVOICED</option>
+                                        <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>PAID</option>
+                                        <option value="in_progress" {{ $order->status == 'in_progress' ? 'selected' : '' }}>IN PROGRESS</option>
+                                        <option value="ready" {{ $order->status == 'ready' ? 'selected' : '' }}>READY</option>
+                                        <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>COMPLETED</option>
+                                        <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
+                                    </select>
                                 </div>
                             </div>
 
-                            <div class="order-card-actions">
-                                <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder({{ $order->id }}, {{ $order->total_price }}, {{ $order->deposit_amount }})">Create Invoice</button>
-                                <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $order->invoice ? $order->invoice->invoice_number : '' }}', {{ $order->id }})">Copy Invoice Link</button>
+                            <div class="order-card-collapsible" style="display: none;">
+                                <div class="order-card-body" style="padding: 20px; border-top:1px solid #f1f5f9;">
+                                    <p><strong>Phone:</strong> {{ $order->client_phone }} | <strong>Email:</strong> {{ $order->client_email }}</p>
+                                    <p><strong>Fulfillment:</strong> {{ strtoupper($order->fulfillment_type) }} 
+                                        @if($order->fulfillment_type == 'delivery')
+                                            ({{ $order->delivery_address }})
+                                        @endif
+                                    </p>
+
+                                    @if(!empty($order->flavors))
+                                        <p style="font-size:1.15rem; font-weight:600; color:#1e293b; margin-top:12px;"><strong>Flavors:</strong> {{ implode(', ', $order->flavors) }}</p>
+                                    @endif
+                                    @if(!empty($order->frosting))
+                                        <p style="font-size:1.15rem; font-weight:600; color:#1e293b; margin-top:6px;"><strong>Frosting:</strong> {{ implode(', ', $order->frosting) }}</p>
+                                    @endif
+                                    @if(!empty($order->fillings))
+                                        <p style="font-size:1.15rem; font-weight:600; color:#1e293b; margin-top:6px;"><strong>Fillings:</strong> {{ implode(', ', $order->fillings) }}</p>
+                                    @endif
+                                    @if($order->special_notes)
+                                        <p class="notes-box" style="font-size:1.1rem; margin-top:12px; padding:10px; background:#f8fafc; border-left:4px solid var(--primary); border-radius:4px;"><strong>Special Notes:</strong> {{ $order->special_notes }}</p>
+                                    @endif
+                                    @if($order->allergies)
+                                        <p class="allergy-warning" style="font-size:1.2rem; font-weight:700; border:2px solid #ef4444; background:#fef2f2; color:#991b1b; padding:10px; border-radius:6px; margin-top:12px;"><strong>Allergies:</strong> {{ $order->allergies }}</p>
+                                    @endif
+
+                                    <!-- Inspiration Photos (Thumbnails with Lightbox Zoom) -->
+                                    @if(!empty($order->inspiration_files) && is_array($order->inspiration_files) && count($order->inspiration_files) > 0)
+                                        <div class="inspiration-section" style="margin-top:16px; border-top:1px solid #f1f5f9; padding-top:12px;">
+                                            <strong style="display:block; margin-bottom:8px; font-size:0.85rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em;">Inspiration Photos</strong>
+                                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                                @foreach($order->inspiration_files as $idx => $filePath)
+                                                    @if(file_exists(public_path($filePath)))
+                                                        <div class="inspiration-thumb-container" style="position:relative; width:80px; height:80px; border-radius:8px; overflow:hidden; border:2px solid #e2e8f0; cursor:pointer;" onclick="openOrderLightbox('{{ asset($filePath) }}')">
+                                                            <img src="{{ asset($filePath) }}" alt="Inspiration {{ $idx + 1 }}" style="width:100%; height:100%; object-fit:cover;">
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <div class="pricing-breakdown" style="border-top:1px solid #f1f5f9; margin-top:16px; padding-top:12px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                                        <span>Total: <strong>${{ number_format($order->total_price, 2) }}</strong></span>
+                                        <span>50% Deposit: <strong>${{ number_format($order->deposit_amount, 2) }}</strong>
+                                            ({{ $order->deposit_paid ? 'Paid' : 'Pending' }})
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="order-card-actions" style="display:flex; gap:10px; border-top:1px solid #f1f5f9; padding: 14px 20px; margin-top:0; background:#fafafa;">
+                                    <button class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder({{ $order->id }}, {{ $order->total_price }}, {{ $order->deposit_amount }})">Create Invoice</button>
+                                    <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $order->invoice ? $order->invoice->invoice_number : '' }}', {{ $order->id }})">Copy Invoice Link</button>
+                                    <button class="btn btn-sm btn-outline" style="border-color:#64748b; color:#64748b;" onclick="printOrderBoxSlip({{ $order->id }})">🖨️ Print Box Slip</button>
+                                </div>
                             </div>
                         </div>
                     @empty
@@ -242,6 +388,291 @@
                         </div>
                     @endforelse
                 </div>
+
+                <!-- BOARD VIEW CONTAINER -->
+                <div class="orders-board-container" id="admin-orders-board" style="display:none; grid-template-columns: repeat(6, minmax(280px, 1fr)); gap:16px; overflow-x:auto; padding-bottom:12px; margin-top:20px;">
+                    @php
+                        $columns = [
+                            'new' => 'New Inquiries',
+                            'invoiced' => 'Invoiced',
+                            'paid' => 'Paid / Confirmed',
+                            'in_progress' => 'In Progress',
+                            'ready' => 'Ready',
+                            'completed' => 'Completed'
+                        ];
+                    @endphp
+                    @foreach($columns as $statusKey => $columnName)
+                        @php
+                            $statusOrders = $urgentOrders->where('status', $statusKey);
+                        @endphp
+                        <div class="board-column" data-status="{{ $statusKey }}" style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:16px; padding:12px; display:flex; flex-direction:column; min-height:500px; max-height:80vh; overflow-y:auto;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:2px solid #cbd5e1; padding-bottom:8px; position:sticky; top:0; background:#f8fafc; z-index:10;">
+                                <h4 style="margin:0; font-size:0.85rem; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.04em;">{{ $columnName }}</h4>
+                                <span style="font-size:0.8rem; background:#cbd5e1; color:#475569; font-weight:700; padding:2px 8px; border-radius:10px;">{{ $statusOrders->count() }}</span>
+                            </div>
+                            
+                            <div class="board-cards-list" style="display:flex; flex-direction:column; gap:12px; flex:1;">
+                                @forelse($statusOrders as $order)
+                                    @php
+                                        $dueDate = \Carbon\Carbon::parse($order->due_date);
+                                        $isUrgent = $dueDate->isToday() || $dueDate->isTomorrow() || $dueDate->diffInDays(now()) <= 2;
+                                    @endphp
+                                    <div class="board-order-card {{ $isUrgent ? 'board-urgent-border' : '' }}" data-id="{{ $order->id }}" style="background:white; border:1px solid #cbd5e1; border-radius:12px; padding:14px; box-shadow:0 2px 6px rgba(0,0,0,0.04); position:relative;">
+                                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                                            <span style="font-size:0.75rem; font-weight:700; color:#64748b;">#{{ $order->order_number }}</span>
+                                            <span style="font-size:0.75rem; font-weight:700; background:{{ $isUrgent ? '#fee2e2' : '#f1f5f9' }}; color:{{ $isUrgent ? '#ef4444' : '#475569' }}; padding:2px 6px; border-radius:6px;">
+                                                {{ $dueDate->format('M d') }}
+                                            </span>
+                                        </div>
+                                        
+                                        <h5 style="margin:0 0 6px 0; font-size:0.95rem; font-weight:700; color:#5c1d37;">{{ $order->client_name }}</h5>
+                                        
+                                        @if($order->allergies)
+                                            <span style="display:inline-block; font-size:0.68rem; font-weight:700; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; margin-bottom:8px; border:1px solid #fca5a5;">⚠️ ALLERGIES</span>
+                                        @endif
+
+                                        <p style="font-size:0.82rem; color:#475569; margin:0 0 8px 0; line-height:1.4; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">
+                                            @if(!empty($order->flavors))
+                                                <strong>Flavors:</strong> {{ implode(', ', $order->flavors) }}<br>
+                                            @endif
+                                            @if($order->special_notes)
+                                                <strong>Notes:</strong> {{ $order->special_notes }}
+                                            @endif
+                                        </p>
+
+                                        @if(!empty($order->inspiration_files) && is_array($order->inspiration_files) && count($order->inspiration_files) > 0)
+                                            @php $firstFile = $order->inspiration_files[0]; @endphp
+                                            @if(file_exists(public_path($firstFile)))
+                                                <div onclick="openOrderLightbox('{{ asset($firstFile) }}')" style="width:100%; height:80px; border-radius:6px; overflow:hidden; border:1px solid #e2e8f0; margin-bottom:10px; cursor:pointer;">
+                                                    <img src="{{ asset($firstFile) }}" alt="Inspiration" style="width:100%; height:100%; object-fit:cover;">
+                                                </div>
+                                            @endif
+                                        @endif
+
+                                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f1f5f9; padding-top:8px; margin-top:8px;">
+                                            <span style="font-size:0.85rem; font-weight:700; color:#1e293b;">${{ number_format($order->total_price, 2) }}</span>
+                                            
+                                            <div style="display:flex; gap:6px;">
+                                                @php
+                                                    $statusKeys = ['new', 'invoiced', 'paid', 'in_progress', 'ready', 'completed'];
+                                                    $currentIdx = array_search($statusKey, $statusKeys);
+                                                    $nextStatus = ($currentIdx !== false && $currentIdx < count($statusKeys) - 1) ? $statusKeys[$currentIdx + 1] : null;
+                                                @endphp
+                                                @if($nextStatus)
+                                                    <button type="button" class="btn btn-sm" onclick="advanceOrderStatus({{ $order->id }}, '{{ $nextStatus }}')" style="background:var(--pink-bg); color:var(--primary); font-weight:700; border:none; padding:4px 8px; border-radius:6px; font-size:0.75rem; cursor:pointer;" title="Move to {{ ucfirst($nextStatus) }}">
+                                                        Advance ➔
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div style="padding:20px; text-align:center; color:#94a3b8; font-size:0.8rem; border:2px dashed #cbd5e1; border-radius:12px;">
+                                        No orders here
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- REUSABLE LIGHTBOX MODAL -->
+                <div id="order-lightbox-modal" class="order-modal-overlay" style="display:none; z-index:100001;" onclick="closeOrderLightbox()">
+                    <div style="position:relative; max-width:90%; max-height:90%;" onclick="event.stopPropagation()">
+                        <img id="order-lightbox-img" src="" alt="Zoomed Inspiration Photo" style="max-width:100%; max-height:85vh; border-radius:12px; box-shadow:0 25px 50px rgba(0,0,0,0.3); border:3px solid #fff; display:block;">
+                        <button type="button" style="position:absolute; top:-40px; right:0; background:none; border:none; color:white; font-size:2rem; cursor:pointer;" onclick="closeOrderLightbox()">✕</button>
+                    </div>
+                </div>
+
+                <!-- SCRIPTS SPECIFIC TO ORDERS TAB -->
+                <script>
+                    window.toggleOrderCardCollapse = function(headerElement) {
+                        const card = headerElement.closest('.order-card');
+                        if (!card) return;
+                        
+                        card.classList.toggle('expanded');
+                        const collapsible = card.querySelector('.order-card-collapsible');
+                        if (collapsible) {
+                            if (card.classList.contains('expanded')) {
+                                collapsible.style.display = 'block';
+                                card.querySelector('.chevron-indicator').innerText = '▲';
+                            } else {
+                                collapsible.style.display = 'none';
+                                card.querySelector('.chevron-indicator').innerText = '▼';
+                            }
+                        }
+                    };
+
+                    window.switchOrdersView = function(viewType) {
+                        const listBtn = document.getElementById('orders-view-list-btn');
+                        const boardBtn = document.getElementById('orders-view-board-btn');
+                        const listContainer = document.getElementById('admin-orders-list');
+                        const boardContainer = document.getElementById('admin-orders-board');
+                        
+                        if (viewType === 'board') {
+                            listBtn?.classList.remove('active-toggle-btn');
+                            boardBtn?.classList.add('active-toggle-btn');
+                            if (listContainer) listContainer.style.display = 'none';
+                            if (boardContainer) boardContainer.style.display = 'grid';
+                            localStorage.setItem('baker_orders_view_type', 'board');
+                        } else {
+                            boardBtn?.classList.remove('active-toggle-btn');
+                            listBtn?.classList.add('active-toggle-btn');
+                            if (boardContainer) boardContainer.style.display = 'none';
+                            if (listContainer) listContainer.style.display = 'grid';
+                            localStorage.setItem('baker_orders_view_type', 'list');
+                        }
+                    };
+
+                    window.advanceOrderStatus = function(orderId, nextStatus) {
+                        window.updateOrderStatus(orderId, nextStatus);
+                    };
+
+                    window.printOrderBoxSlip = function(orderId) {
+                        const card = document.querySelector(`.order-card[data-id="${orderId}"]`);
+                        if (!card) return;
+                        
+                        const number = card.querySelector('h4').innerText;
+                        const clientInfo = card.querySelector('.order-card-body p:nth-child(1)').innerHTML;
+                        const fulfillment = card.querySelector('.order-card-body p:nth-child(2)').innerHTML;
+                        
+                        const details = Array.from(card.querySelectorAll('.order-card-body > p')).slice(2)
+                            .map(p => p.outerHTML).join('');
+                        
+                        const notesBox = card.querySelector('.notes-box') ? card.querySelector('.notes-box').outerHTML : '';
+                        const allergyWarning = card.querySelector('.allergy-warning') ? card.querySelector('.allergy-warning').outerHTML : '';
+                        const pricing = card.querySelector('.pricing-breakdown') ? card.querySelector('.pricing-breakdown').innerHTML : '';
+                        
+                        const photos = Array.from(card.querySelectorAll('.inspiration-thumb-container img'))
+                            .map(img => `<img src="${img.src}" style="max-height:180px; margin:5px; border-radius:6px; border:1px solid #ccc;">`).join('');
+
+                        const printWindow = window.open('', '_blank', 'width=600,height=800');
+                        printWindow.document.write(`
+                            <html>
+                            <head>
+                                <title>Box Slip - ${number}</title>
+                                <style>
+                                    body {
+                                        font-family: 'Inter', system-ui, sans-serif;
+                                        padding: 20px;
+                                        color: #333;
+                                        line-height: 1.4;
+                                    }
+                                    .slip-header {
+                                        border-bottom: 2px dashed #000;
+                                        padding-bottom: 12px;
+                                        margin-bottom: 16px;
+                                        text-align: center;
+                                    }
+                                    .slip-header h2 {
+                                        margin: 0;
+                                        font-size: 1.6rem;
+                                    }
+                                    .slip-section {
+                                        margin-bottom: 14px;
+                                    }
+                                    .slip-section strong {
+                                        color: #555;
+                                        font-size: 0.85rem;
+                                        text-transform: uppercase;
+                                        display: block;
+                                        margin-bottom: 2px;
+                                    }
+                                    .slip-section p {
+                                        margin: 0;
+                                        font-size: 1.1rem;
+                                    }
+                                    .notes-box {
+                                        background: #f8fafc;
+                                        border-left: 4px solid #64748b;
+                                        padding: 10px;
+                                        font-style: italic;
+                                        border-radius: 4px;
+                                    }
+                                    .allergy-warning {
+                                        background: #fef2f2;
+                                        border: 2px solid #ef4444;
+                                        color: #991b1b;
+                                        padding: 10px;
+                                        font-weight: bold;
+                                        border-radius: 4px;
+                                    }
+                                    .pricing {
+                                        font-size: 1.15rem;
+                                        font-weight: bold;
+                                        border-top: 2px dashed #000;
+                                        padding-top: 10px;
+                                        margin-top: 20px;
+                                        display: flex;
+                                        justify-content: space-between;
+                                    }
+                                    @media print {
+                                        body { padding: 0; }
+                                        button { display: none; }
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <div class="slip-header">
+                                    <h2>${number}</h2>
+                                    <div style="font-size:0.9rem; margin-top:4px; font-weight:bold;">${card.querySelector('.due-badge').innerText}</div>
+                                </div>
+                                <div class="slip-section">
+                                    <strong>Customer Info</strong>
+                                    <p>${clientInfo}</p>
+                                </div>
+                                <div class="slip-section">
+                                    <strong>Fulfillment</strong>
+                                    <p>${fulfillment}</p>
+                                </div>
+                                <div class="slip-section">
+                                    <strong>Order Specifications</strong>
+                                    ${details}
+                                </div>
+                                ${notesBox ? `<div class="slip-section"><strong>Special Notes</strong>${notesBox}</div>` : ''}
+                                ${allergyWarning ? `<div class="slip-section">${allergyWarning}</div>` : ''}
+                                ${photos ? `<div class="slip-section"><strong>Reference Photos</strong><div style="display:flex; flex-wrap:wrap;">${photos}</div></div>` : ''}
+                                <div class="pricing">
+                                    ${pricing}
+                                </div>
+                                <div style="margin-top:30px; text-align:center;">
+                                    <button onclick="window.print();window.close();" style="padding:10px 24px; font-weight:bold; background:#000; color:#fff; border:none; border-radius:6px; cursor:pointer;">Print Box Slip</button>
+                                </div>
+                                <script>
+                                    window.onload = function() {
+                                        setTimeout(() => {
+                                            window.print();
+                                        }, 600);
+                                    }
+                                <\/script>
+                            </body>
+                            </html>
+                        `);
+                        printWindow.document.close();
+                    };
+
+                    window.openOrderLightbox = function(src) {
+                        const modal = document.getElementById('order-lightbox-modal');
+                        const img = document.getElementById('order-lightbox-img');
+                        if (modal && img) {
+                            img.src = src;
+                            modal.style.display = 'flex';
+                        }
+                    };
+
+                    window.closeOrderLightbox = function() {
+                        const modal = document.getElementById('order-lightbox-modal');
+                        if (modal) modal.style.display = 'none';
+                    };
+
+                    // Initialize toggle state on page load
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const stored = localStorage.getItem('baker_orders_view_type');
+                        if (stored === 'board') {
+                            switchOrdersView('board');
+                        }
+                    });
+                </script>
             </div>
 
             <!-- TAB 2: Order Form -->

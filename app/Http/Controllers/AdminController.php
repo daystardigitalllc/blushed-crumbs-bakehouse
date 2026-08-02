@@ -70,7 +70,7 @@ class AdminController extends Controller
 
         // Key feature: Orders sorted by due_date ASC so the baker sees what is due first!
         $urgentOrders = Order::where('tenant_id', $tenant->id)
-            ->whereIn('status', ['new', 'invoiced', 'in_progress', 'ready'])
+            ->whereIn('status', ['new', 'invoiced', 'paid', 'in_progress', 'ready'])
             ->orderBy('due_date', 'asc')
             ->get();
 
@@ -86,7 +86,7 @@ class AdminController extends Controller
 
         // Revenue stats
         $totalRevenue = Order::where('tenant_id', $tenant->id)
-            ->whereIn('status', ['completed', 'in_progress', 'ready'])
+            ->whereIn('status', ['completed', 'in_progress', 'ready', 'paid'])
             ->sum('total_price');
         $pendingOrders = Order::where('tenant_id', $tenant->id)
             ->whereIn('status', ['new', 'invoiced'])

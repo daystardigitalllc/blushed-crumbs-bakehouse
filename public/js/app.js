@@ -3284,6 +3284,11 @@ window.updateOrderStatus = function(orderId, status) {
                 selectBox.value = data.status;
                 selectBox.className = `status-select status-${data.status}`;
             }
+            
+            // Auto reload after 800ms so board columns and inquiry counts refresh immediately
+            setTimeout(() => {
+                window.location.reload();
+            }, 800);
         } else {
             window.showToast(data.message || 'Failed to update status', 'error');
         }
