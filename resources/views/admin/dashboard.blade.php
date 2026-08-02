@@ -574,11 +574,25 @@
                             <div class="order-card-collapsible" style="display: none;">
                                 <div class="order-card-body" style="padding: 20px; border-top:1px solid #f1f5f9;">
                                     <p><strong>Phone:</strong> {{ $order->client_phone }} | <strong>Email:</strong> {{ $order->client_email }}</p>
-                                    <p><strong>Fulfillment:</strong> {{ strtoupper($order->fulfillment_type) }} 
+                                    <p><strong>Fulfillment:</strong> {{ strtoupper($order->fulfillment_type) }}
                                         @if($order->fulfillment_type == 'delivery')
                                             ({{ $order->delivery_address }})
                                         @endif
                                     </p>
+
+                                    @if(!empty($order->items) && is_array($order->items))
+                                        <div class="order-items-section" style="margin-top:12px;">
+                                            <strong style="display:block; margin-bottom:6px; font-size:0.85rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em;">Order Items</strong>
+                                            @foreach($order->items as $item)
+                                                <p style="font-size:1.1rem; color:#1e293b; margin:2px 0; display:flex; justify-content:space-between; gap:12px;">
+                                                    <span>{{ is_array($item) ? ($item['name'] ?? 'Item') : $item }}{{ is_array($item) && !empty($item['quantity']) ? ' x' . $item['quantity'] : '' }}</span>
+                                                    @if(is_array($item) && isset($item['price']))
+                                                        <span>${{ number_format((float) $item['price'], 2) }}</span>
+                                                    @endif
+                                                </p>
+                                            @endforeach
+                                        </div>
+                                    @endif
 
                                     @if(!empty($order->flavors))
                                         <p style="font-size:1.15rem; font-weight:600; color:#1e293b; margin-top:12px;"><strong>Flavors:</strong> {{ implode(', ', $order->flavors) }}</p>
@@ -594,6 +608,9 @@
                                     @endif
                                     @if($order->allergies)
                                         <p class="allergy-warning" style="font-size:1.2rem; font-weight:700; border:2px solid #ef4444; background:#fef2f2; color:#991b1b; padding:10px; border-radius:6px; margin-top:12px;"><strong>Allergies:</strong> {{ $order->allergies }}</p>
+                                    @endif
+                                    @if(!empty($order->social_follows))
+                                        <p style="font-size:1.05rem; color:#1e293b; margin-top:12px;"><strong>Social/Follow:</strong> {{ is_array($order->social_follows) ? implode(', ', $order->social_follows) : $order->social_follows }}</p>
                                     @endif
 
                                     <!-- Inspiration Photos (Thumbnails with Lightbox Zoom) -->
@@ -676,11 +693,17 @@
                                             'dueDateFormatted' => $dueDate->format('M d, Y'),
                                             'timeSlot' => $order->time_slot,
                                             'isUrgent' => $isUrgent,
+                                            'items' => !empty($order->items) && is_array($order->items) ? array_map(function ($item) {
+                                                return is_array($item)
+                                                    ? trim(($item['name'] ?? 'Item') . (!empty($item['quantity']) ? ' x' . $item['quantity'] : ''))
+                                                    : (string) $item;
+                                            }, $order->items) : [],
                                             'flavors' => !empty($order->flavors) ? implode(', ', $order->flavors) : null,
                                             'frosting' => !empty($order->frosting) ? implode(', ', $order->frosting) : null,
                                             'fillings' => !empty($order->fillings) ? implode(', ', $order->fillings) : null,
                                             'specialNotes' => $order->special_notes,
                                             'allergies' => $order->allergies,
+                                            'socialFollows' => !empty($order->social_follows) ? (is_array($order->social_follows) ? implode(', ', $order->social_follows) : $order->social_follows) : null,
                                             'totalPrice' => number_format((float) $order->total_price, 2),
                                             'depositAmount' => number_format((float) $order->deposit_amount, 2),
                                             'depositPaid' => (bool) $order->deposit_paid,
@@ -846,10 +869,12 @@
                         const number = card.querySelector('h4').innerText;
                         const clientInfo = card.querySelector('.order-card-body p:nth-child(1)').innerHTML;
                         const fulfillment = card.querySelector('.order-card-body p:nth-child(2)').innerHTML;
-                        
+
+                        const itemsSection = card.querySelector('.order-items-section') ? card.querySelector('.order-items-section').outerHTML : '';
+
                         const details = Array.from(card.querySelectorAll('.order-card-body > p')).slice(2)
                             .map(p => p.outerHTML).join('');
-                        
+
                         const notesBox = card.querySelector('.notes-box') ? card.querySelector('.notes-box').outerHTML : '';
                         const allergyWarning = card.querySelector('.allergy-warning') ? card.querySelector('.allergy-warning').outerHTML : '';
                         const pricing = card.querySelector('.pricing-breakdown') ? card.querySelector('.pricing-breakdown').innerHTML : '';
@@ -936,6 +961,7 @@
                                     <strong>Fulfillment</strong>
                                     <p>${fulfillment}</p>
                                 </div>
+                                ${itemsSection ? `<div class="slip-section">${itemsSection}</div>` : ''}
                                 <div class="slip-section">
                                     <strong>Order Specifications</strong>
                                     ${details}
@@ -1049,11 +1075,13 @@
                             <h4 style="margin:0 0 10px; font-size:1.15rem; font-weight:700; color:#5c1d37;">#${esc(order.orderNumber)} - ${esc(order.clientName)}</h4>
                             <p><strong>Phone:</strong> ${esc(order.clientPhone)} | <strong>Email:</strong> ${esc(order.clientEmail)}</p>
                             <p><strong>Fulfillment:</strong> ${esc((order.fulfillmentType || '').toUpperCase())} ${order.deliveryAddress ? '(' + esc(order.deliveryAddress) + ')' : ''}</p>
+                            ${order.items && order.items.length ? `<div style="margin-top:12px;"><strong style="display:block; margin-bottom:6px; font-size:0.85rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em;">Order Items</strong>${order.items.map(i => `<p style="font-size:1.1rem; color:#1e293b; margin:2px 0;">${esc(i)}</p>`).join('')}</div>` : ''}
                             ${order.flavors ? `<p style="font-size:1.1rem; font-weight:600; color:#1e293b; margin-top:12px;"><strong>Flavors:</strong> ${esc(order.flavors)}</p>` : ''}
                             ${order.frosting ? `<p style="font-size:1.1rem; font-weight:600; color:#1e293b; margin-top:6px;"><strong>Frosting:</strong> ${esc(order.frosting)}</p>` : ''}
                             ${order.fillings ? `<p style="font-size:1.1rem; font-weight:600; color:#1e293b; margin-top:6px;"><strong>Fillings:</strong> ${esc(order.fillings)}</p>` : ''}
                             ${order.specialNotes ? `<p class="notes-box" style="font-size:1.1rem; margin-top:12px; padding:10px; background:#f8fafc; border-left:4px solid var(--primary); border-radius:4px;"><strong>Special Notes:</strong> ${esc(order.specialNotes)}</p>` : ''}
                             ${order.allergies ? `<p class="allergy-warning" style="font-size:1.2rem; font-weight:700; border:2px solid #ef4444; background:#fef2f2; color:#991b1b; padding:10px; border-radius:6px; margin-top:12px;"><strong>Allergies:</strong> ${esc(order.allergies)}</p>` : ''}
+                            ${order.socialFollows ? `<p style="font-size:1.05rem; color:#1e293b; margin-top:12px;"><strong>Social/Follow:</strong> ${esc(order.socialFollows)}</p>` : ''}
                             ${photosHtml}
                             <div class="pricing-breakdown" style="border-top:1px solid #f1f5f9; margin-top:16px; padding-top:12px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;">
                                 <span>Total: <strong>$${esc(order.totalPrice)}</strong></span>
