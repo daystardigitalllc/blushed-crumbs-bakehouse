@@ -968,27 +968,34 @@
                 <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
                     <h4 style="color:#5c1d37;">Accepted Payment Methods</h4>
                     <p class="subtitle">Check the payment methods you accept, then enter your handle, username, or email for each one. Customers will see these on their invoice — you need at least one set up before you can send an invoice.</p>
+                    <style>
+                        .pm-icon-badge { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1rem; flex-shrink:0; box-shadow: 0 2px 5px rgba(0,0,0,0.12); }
+                        .payment-method-toggle-row { transition: border-color 0.15s ease, background 0.15s ease; }
+                        .payment-method-toggle-row.pm-checked { border-color: var(--primary) !important; background: #fffafc; }
+                        .payment-method-toggle-row:hover { border-color: #e0c3d1; }
+                    </style>
                     <form id="payment-methods-form" style="display:flex; flex-direction:column; gap:12px;">
                         @php
                             $knownPaymentMethods = [
-                                'venmo' => ['label' => 'Venmo', 'placeholder' => '@YourVenmoHandle'],
-                                'cashapp' => ['label' => 'Cash App', 'placeholder' => '$YourCashtag'],
-                                'zelle' => ['label' => 'Zelle', 'placeholder' => 'you@email.com or phone number'],
-                                'paypal' => ['label' => 'PayPal', 'placeholder' => 'https://paypal.me/you or email'],
-                                'square' => ['label' => 'Square', 'placeholder' => 'Your Square payment link'],
-                                'apple_pay' => ['label' => 'Apple Pay', 'placeholder' => 'Phone number or email'],
-                                'stripe' => ['label' => 'Stripe', 'placeholder' => 'Your Stripe payment link'],
+                                'venmo' => ['label' => 'Venmo', 'placeholder' => '@YourVenmoHandle', 'icon' => 'V', 'bg' => '#3D95CE', 'fg' => '#ffffff'],
+                                'cashapp' => ['label' => 'Cash App', 'placeholder' => '$YourCashtag', 'icon' => '$', 'bg' => '#00D632', 'fg' => '#ffffff'],
+                                'zelle' => ['label' => 'Zelle', 'placeholder' => 'you@email.com or phone number', 'icon' => 'Z', 'bg' => '#6D1ED4', 'fg' => '#ffffff'],
+                                'paypal' => ['label' => 'PayPal', 'placeholder' => 'https://paypal.me/you or email', 'icon' => 'P', 'bg' => '#003087', 'fg' => '#ffffff'],
+                                'square' => ['label' => 'Square', 'placeholder' => 'Your Square payment link', 'icon' => '■', 'bg' => '#1a1a1a', 'fg' => '#ffffff'],
+                                'apple_pay' => ['label' => 'Apple Pay', 'placeholder' => 'Phone number or email', 'icon' => '', 'bg' => '#000000', 'fg' => '#ffffff'],
+                                'stripe' => ['label' => 'Stripe', 'placeholder' => 'Your Stripe payment link', 'icon' => 'S', 'bg' => '#635BFF', 'fg' => '#ffffff'],
                             ];
                             $existingPayments = is_array($tenant->payment_settings ?? null) ? $tenant->payment_settings : [];
                         @endphp
                         @foreach($knownPaymentMethods as $pmKey => $pmMeta)
                             @php $pmExisting = is_string($existingPayments[$pmKey] ?? null) ? trim($existingPayments[$pmKey]) : ''; @endphp
-                            <div class="payment-method-toggle-row" style="border:1px solid #eee; border-radius:12px; padding:14px 16px; background:white;">
-                                <label style="display:flex; align-items:center; gap:10px; font-weight:700; color:#5c1d37; cursor:pointer; margin:0;">
-                                    <input type="checkbox" class="pm-toggle" id="pm-toggle-{{ $pmKey }}" data-key="{{ $pmKey }}" {{ $pmExisting !== '' ? 'checked' : '' }} onchange="togglePaymentMethodInput('{{ $pmKey }}')">
-                                    {{ $pmMeta['label'] }}
+                            <div class="payment-method-toggle-row {{ $pmExisting !== '' ? 'pm-checked' : '' }}" id="pm-row-{{ $pmKey }}" style="border:1.5px solid #eee; border-radius:12px; padding:14px 16px; background:white;">
+                                <label style="display:flex; align-items:center; gap:12px; font-weight:700; color:#5c1d37; cursor:pointer; margin:0;">
+                                    <input type="checkbox" class="pm-toggle" id="pm-toggle-{{ $pmKey }}" data-key="{{ $pmKey }}" {{ $pmExisting !== '' ? 'checked' : '' }} onchange="togglePaymentMethodInput('{{ $pmKey }}')" style="width:18px; height:18px; accent-color: var(--primary); cursor:pointer; flex-shrink:0;">
+                                    <span class="pm-icon-badge" style="background:{{ $pmMeta['bg'] }}; color:{{ $pmMeta['fg'] }};">{{ $pmMeta['icon'] }}</span>
+                                    <span style="font-size:1rem;">{{ $pmMeta['label'] }}</span>
                                 </label>
-                                <div class="pm-handle-wrap" id="pm-handle-wrap-{{ $pmKey }}" style="{{ $pmExisting !== '' ? '' : 'display:none;' }} margin-top:10px;">
+                                <div class="pm-handle-wrap" id="pm-handle-wrap-{{ $pmKey }}" style="{{ $pmExisting !== '' ? '' : 'display:none;' }} margin-top:10px; padding-left:50px;">
                                     <input type="text" id="pm-handle-{{ $pmKey }}" placeholder="{{ $pmMeta['placeholder'] }}" value="{{ $pmExisting }}" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de; font-size:0.9rem;">
                                 </div>
                             </div>

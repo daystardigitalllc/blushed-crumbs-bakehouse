@@ -1101,8 +1101,10 @@ function initAdminPortal() {
     window.togglePaymentMethodInput = function(key) {
         const checkbox = document.getElementById('pm-toggle-' + key);
         const wrap = document.getElementById('pm-handle-wrap-' + key);
+        const row = document.getElementById('pm-row-' + key);
         if (!checkbox || !wrap) return;
         wrap.style.display = checkbox.checked ? '' : 'none';
+        if (row) row.classList.toggle('pm-checked', checkbox.checked);
         if (checkbox.checked) {
             const input = document.getElementById('pm-handle-' + key);
             if (input) input.focus();
