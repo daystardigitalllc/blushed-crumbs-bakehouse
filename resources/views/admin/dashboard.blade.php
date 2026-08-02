@@ -405,7 +405,7 @@
                         @php
                             $statusOrders = $urgentOrders->where('status', $statusKey);
                         @endphp
-                        <div class="board-column" data-status="{{ $statusKey }}" style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:16px; padding:12px; display:flex; flex-direction:column; min-height:500px; max-height:80vh; overflow-y:auto;">
+                        <div class="board-column" data-status="{{ $statusKey }}" ondragover="allowBoardCardDrop(event)" ondragleave="handleBoardCardDragLeave(event, this)" ondrop="handleBoardCardDrop(event, this)" style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:16px; padding:12px; display:flex; flex-direction:column; min-height:500px; max-height:80vh; overflow-y:auto; transition: background 0.15s ease;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:2px solid #cbd5e1; padding-bottom:8px; position:sticky; top:0; background:#f8fafc; z-index:10;">
                                 <h4 style="margin:0; font-size:0.85rem; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.04em;">{{ $columnName }}</h4>
                                 <span style="font-size:0.8rem; background:#cbd5e1; color:#475569; font-weight:700; padding:2px 8px; border-radius:10px;">{{ $statusOrders->count() }}</span>
@@ -417,7 +417,7 @@
                                         $dueDate = \Carbon\Carbon::parse($order->due_date);
                                         $isUrgent = $dueDate->isToday() || $dueDate->isTomorrow() || $dueDate->diffInDays(now()) <= 2;
                                     @endphp
-                                    <div class="board-order-card {{ $isUrgent ? 'board-urgent-border' : '' }}" data-id="{{ $order->id }}" style="background:white; border:1px solid #cbd5e1; border-radius:12px; padding:14px; box-shadow:0 2px 6px rgba(0,0,0,0.04); position:relative;">
+                                    <div class="board-order-card {{ $isUrgent ? 'board-urgent-border' : '' }}" data-id="{{ $order->id }}" draggable="true" ondragstart="handleBoardCardDragStart(event)" style="background:white; border:1px solid #cbd5e1; border-radius:12px; padding:14px; box-shadow:0 2px 6px rgba(0,0,0,0.04); position:relative; cursor: grab;">
                                         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
                                             <span style="font-size:0.75rem; font-weight:700; color:#64748b;">#{{ $order->order_number }}</span>
                                             <span style="font-size:0.75rem; font-weight:700; background:{{ $isUrgent ? '#fee2e2' : '#f1f5f9' }}; color:{{ $isUrgent ? '#ef4444' : '#475569' }}; padding:2px 6px; border-radius:6px;">
@@ -663,6 +663,61 @@
                     window.closeOrderLightbox = function() {
                         const modal = document.getElementById('order-lightbox-modal');
                         if (modal) modal.style.display = 'none';
+                    };
+
+                    // HTML5 Drag and Drop Functions for Kanban Board
+                    window.handleBoardCardDragStart = function(event) {
+                        const card = event.target.closest('.board-order-card');
+                        if (card) {
+                            event.dataTransfer.setData("text/plain", card.dataset.id);
+                            card.style.opacity = '0.4';
+                        }
+                    };
+
+                    document.addEventListener('dragend', (event) => {
+                        const card = event.target.closest('.board-order-card');
+                        if (card) {
+                            card.style.opacity = '1';
+                        }
+                    });
+
+                    window.allowBoardCardDrop = function(event) {
+                        event.preventDefault();
+                        const column = event.target.closest('.board-column');
+                        if (column) {
+                            column.style.background = '#f1f5f9';
+                        }
+                    };
+
+                    window.handleBoardCardDragLeave = function(event, columnElement) {
+                        columnElement.style.background = '#f8fafc';
+                    };
+
+                    window.handleBoardCardDrop = function(event, columnElement) {
+                        event.preventDefault();
+                        columnElement.style.background = '#f8fafc';
+                        
+                        const cardId = event.dataTransfer.getData("text/plain");
+                        const newStatus = columnElement.dataset.status;
+                        
+                        if (cardId && newStatus) {
+                            const card = document.querySelector(`.board-order-card[data-id="${cardId}"]`);
+                            if (card) {
+                                const currentStatus = card.closest('.board-column').dataset.status;
+                                if (currentStatus !== newStatus) {
+                                    const cardsList = columnElement.querySelector('.board-cards-list');
+                                    if (cardsList) {
+                                        const emptyIndicator = cardsList.querySelector('div');
+                                        if (emptyIndicator && emptyIndicator.innerText.includes('No orders here')) {
+                                            emptyIndicator.remove();
+                                        }
+                                        cardsList.appendChild(card);
+                                    }
+                                    
+                                    window.updateOrderStatus(cardId, newStatus);
+                                }
+                            }
+                        }
                     };
 
                     // Initialize toggle state on page load
