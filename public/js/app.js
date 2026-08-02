@@ -1044,25 +1044,35 @@ function initAdminPortal() {
     const galFileInput = document.getElementById('gal-image-file');
     const galDropzone = document.getElementById('gal-device-dropzone');
     const galPreviewWrap = document.getElementById('gal-upload-preview');
-    const galPreviewImg = document.getElementById('gal-preview-img');
+    const galPreviewGrid = document.getElementById('gal-preview-grid');
+    const galPreviewStatus = document.getElementById('gal-preview-status');
     const galDropText = document.getElementById('gal-dropzone-text');
 
-    if (galFileInput && galPreviewImg) {
-        const updatePreview = (file) => {
-            if (file && file.type.startsWith('image/')) {
+    if (galFileInput && galPreviewGrid) {
+        const updatePreview = (fileList) => {
+            const files = Array.from(fileList || []).filter(f => f.type.startsWith('image/'));
+            if (files.length === 0) return;
+
+            galPreviewGrid.innerHTML = '';
+            files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    galPreviewImg.src = ev.target.result;
-                    if (galPreviewWrap) galPreviewWrap.style.display = 'block';
-                    if (galDropText) galDropText.innerHTML = `Selected: <strong>${file.name}</strong>`;
+                    const img = document.createElement('img');
+                    img.src = ev.target.result;
+                    img.style.cssText = 'width:110px; height:90px; object-fit:cover; border-radius:12px; border:2px solid var(--primary); box-shadow:0 4px 15px rgba(0,0,0,0.1);';
+                    galPreviewGrid.appendChild(img);
                 };
                 reader.readAsDataURL(file);
-            }
+            });
+
+            if (galPreviewWrap) galPreviewWrap.style.display = 'block';
+            if (galPreviewStatus) galPreviewStatus.textContent = files.length > 1 ? `${files.length} photos ready for publish` : 'Photo ready for publish';
+            if (galDropText) galDropText.innerHTML = files.length > 1 ? `Selected <strong>${files.length}</strong> photos` : `Selected: <strong>${files[0].name}</strong>`;
         };
 
         galFileInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-                updatePreview(e.target.files[0]);
+            if (e.target.files && e.target.files.length) {
+                updatePreview(e.target.files);
             }
         });
 
@@ -1088,9 +1098,9 @@ function initAdminPortal() {
 
             galDropzone.addEventListener('drop', (e) => {
                 const dt = e.dataTransfer;
-                if (dt.files && dt.files[0]) {
+                if (dt.files && dt.files.length) {
                     galFileInput.files = dt.files;
-                    updatePreview(dt.files[0]);
+                    updatePreview(dt.files);
                 }
             });
         }
@@ -1890,7 +1900,7 @@ window.deleteProduct = async function(productId, btnElement) {
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerText = 'Uploading Photo...';
+                submitBtn.innerText = fileInput.files.length > 1 ? 'Uploading Photos...' : 'Uploading Photo...';
             }
 
             fetch('/dashboard/gallery', {
@@ -1903,58 +1913,65 @@ window.deleteProduct = async function(productId, btnElement) {
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success && data.item) {
+                if (data.success && data.items && data.items.length) {
                     if (window.markOnboardingStepDone) window.markOnboardingStepDone('gallery');
-                    const item = data.item;
 
-                    // Prepend to Admin Gallery List
                     const adminGalleryList = document.getElementById('admin-gallery-list');
-                    if (adminGalleryList) {
-                        const adminItem = document.createElement('div');
-                        adminItem.className = 'admin-gallery-item-row';
-                        adminItem.dataset.id = item.id;
-                        adminItem.style.cssText = 'display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);';
-                        adminItem.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:15px;">
-                                <img src="${item.image_url}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
-                                <div>
-                                    <strong style="color:#5c1d37;">${item.title}</strong><br>
-                                    <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${item.category}</span>
-                                </div>
-                            </div>
-                            <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem(${item.id}, this)">Delete</button>
-                        `;
-                        adminGalleryList.prepend(adminItem);
-                    }
-
-                    // Prepend to Public Storefront Gallery Grid
                     const mainGalleryGrid = document.getElementById('public-gallery-grid');
                     if (mainGalleryGrid) {
-                        // Remove empty placeholder message if present
                         const emptyMsg = mainGalleryGrid.querySelector('div[style*="grid-column"]');
                         if (emptyMsg) emptyMsg.remove();
-
-                        const card = document.createElement('div');
-                        card.className = 'gallery-card';
-                        card.dataset.category = item.category;
-                        card.dataset.id = item.id;
-                        card.onclick = () => openLightbox(item.image_url, item.title);
-                        card.innerHTML = `
-                            <div class="gallery-card-img-wrap">
-                                <img src="${item.image_url}" alt="${item.title}">
-                            </div>
-                            <div class="gallery-card-info">
-                                <h4>${item.title}</h4>
-                                <span class="gallery-tag">${item.category}</span>
-                            </div>
-                        `;
-                        mainGalleryGrid.prepend(card);
                     }
 
-                    alert(`Success: "${item.title}" published live to your gallery!`);
+                    // Prepend newest-first, so iterate in reverse to keep the
+                    // upload order intact once each is prepended in turn.
+                    data.items.slice().reverse().forEach(item => {
+                        if (adminGalleryList) {
+                            const adminItem = document.createElement('div');
+                            adminItem.className = 'admin-gallery-item-row';
+                            adminItem.dataset.id = item.id;
+                            adminItem.style.cssText = 'display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);';
+                            adminItem.innerHTML = `
+                                <div style="display:flex; align-items:center; gap:15px;">
+                                    <img src="${item.image_url}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
+                                    <div>
+                                        <strong style="color:#5c1d37;">${item.title}</strong><br>
+                                        <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${item.category}</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem(${item.id}, this)">Delete</button>
+                            `;
+                            adminGalleryList.prepend(adminItem);
+                        }
+
+                        if (mainGalleryGrid) {
+                            const card = document.createElement('div');
+                            card.className = 'gallery-card';
+                            card.dataset.category = item.category;
+                            card.dataset.id = item.id;
+                            card.onclick = () => openLightbox(item.image_url, item.title);
+                            card.innerHTML = `
+                                <div class="gallery-card-img-wrap">
+                                    <img src="${item.image_url}" alt="${item.title}">
+                                </div>
+                                <div class="gallery-card-info">
+                                    <h4>${item.title}</h4>
+                                    <span class="gallery-tag">${item.category}</span>
+                                </div>
+                            `;
+                            mainGalleryGrid.prepend(card);
+                        }
+                    });
+
+                    if (window.showToast) {
+                        window.showToast(data.message || 'Published to your gallery!', 'success');
+                    } else {
+                        alert(data.message || 'Published to your gallery!');
+                    }
                     galleryForm.reset();
                     if (galPreviewWrap) galPreviewWrap.style.display = 'none';
-                    if (galDropText) galDropText.innerText = 'Click to select photo from device or drag image here';
+                    if (galPreviewGrid) galPreviewGrid.innerHTML = '';
+                    if (galDropText) galDropText.innerText = 'Click to select photos from device or drag images here';
                 } else {
                     alert('Upload Error: ' + (data.message || 'Could not upload image. Please try again.'));
                 }
@@ -1966,7 +1983,7 @@ window.deleteProduct = async function(productId, btnElement) {
             .finally(() => {
                 if (submitBtn) {
                     submitBtn.disabled = false;
-                    submitBtn.innerText = 'Publish Photo to Live Gallery';
+                    submitBtn.innerText = 'Publish Photos to Live Gallery';
                 }
             });
         });

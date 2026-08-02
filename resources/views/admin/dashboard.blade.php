@@ -845,8 +845,8 @@
                         @csrf
                         <div class="form-builder-grid">
                             <div>
-                                <label>Photo Title</label>
-                                <input type="text" id="gal-title" name="title" placeholder="e.g. Lavender Crown Vintage Cake" required>
+                                <label>Photo Title <span style="font-weight:400; color:#888; font-size:0.8rem;">(optional if uploading multiple)</span></label>
+                                <input type="text" id="gal-title" name="title" placeholder="e.g. Lavender Crown Vintage Cake">
                             </div>
                             <div>
                                 <label>Gallery Category</label>
@@ -861,21 +861,21 @@
 
                         <!-- DEVICE FILE PICKER & DROPZONE -->
                         <div>
-                            <label>Select Image File From Your Device</label>
+                            <label>Select Image Files From Your Device</label>
                             <div id="gal-device-dropzone" style="border:2px dashed var(--primary); background:var(--theme-section-bg, #fff7fa); padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
-                                <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photo from device or drag image here</p>
-                                <span style="font-size:12px; color:#888;">Supports JPG, PNG, WEBP, GIF (Up to 10MB)</span>
+                                <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photos from device or drag images here</p>
+                                <span style="font-size:12px; color:#888;">Select multiple at once — Supports JPG, PNG, WEBP, GIF (Up to 10MB each)</span>
                             </div>
-                            <input type="file" id="gal-image-file" name="image" accept="image/*" style="display:none;" required>
+                            <input type="file" id="gal-image-file" name="images[]" accept="image/*" multiple style="display:none;" required>
                         </div>
 
                         <!-- LIVE PREVIEW CONTAINER -->
-                        <div id="gal-upload-preview" style="display:none; text-align:center;">
-                            <img id="gal-preview-img" src="" style="max-width:200px; height:140px; object-fit:cover; border-radius:14px; border:2px solid var(--primary); box-shadow:0 4px 15px rgba(0,0,0,0.1);">
-                            <p style="font-weight:700; color:#28a745; margin-top:6px; font-size:0.9rem;">Photo ready for publish</p>
+                        <div id="gal-upload-preview" style="display:none;">
+                            <div id="gal-preview-grid" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;"></div>
+                            <p style="font-weight:700; color:#28a745; margin-top:10px; font-size:0.9rem; text-align:center;" id="gal-preview-status">Photos ready for publish</p>
                         </div>
 
-                        <button type="submit" id="gal-submit-btn" class="btn btn-primary" style="padding:14px;">Publish Photo to Live Gallery</button>
+                        <button type="submit" id="gal-submit-btn" class="btn btn-primary" style="padding:14px;">Publish Photos to Live Gallery</button>
                     </form>
                 </div>
 

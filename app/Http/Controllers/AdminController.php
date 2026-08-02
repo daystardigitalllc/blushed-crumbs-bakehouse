@@ -204,47 +204,68 @@ class AdminController extends Controller
     {
         $tenant = $this->tenant($request);
 
+        // Accepts either a single 'image' file (legacy) or multiple 'images[]'
+        // files, so old form posts and the multi-select dropzone both work.
+        $files = $request->file('images') ?? ($request->hasFile('image') ? [$request->file('image')] : []);
+
+        if (empty($files)) {
+            return response()->json(['success' => false, 'message' => 'No image file uploaded.'], 422);
+        }
+
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
             'category' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:10240',
         ]);
 
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = time() . '_' . Str::slug($request->title) . '.' . $file->getClientOriginalExtension();
-            $destPath = public_path('uploads/tenants/' . $tenant->id . '/gallery');
-            if (!file_exists($destPath)) {
-                mkdir($destPath, 0755, true);
+        $destPath = public_path('uploads/tenants/' . $tenant->id . '/gallery');
+        if (!file_exists($destPath)) {
+            mkdir($destPath, 0755, true);
+        }
+
+        $baseTitle = trim((string) $request->input('title', ''));
+        $createdItems = [];
+
+        foreach (array_values($files) as $index => $file) {
+            if ($baseTitle !== '') {
+                $title = $index === 0 ? $baseTitle : $baseTitle . ' (' . ($index + 1) . ')';
+            } else {
+                $title = Str::title(str_replace(['-', '_'], ' ', pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)));
             }
+
+            $fileName = time() . '_' . Str::random(6) . '_' . Str::slug($title) . '.' . $file->getClientOriginalExtension();
             $file->move($destPath, $fileName);
             $imageUrl = 'uploads/tenants/' . $tenant->id . '/gallery/' . $fileName;
 
             $galleryItem = GalleryItem::create([
                 'tenant_id' => $tenant->id,
-                'title' => $request->title,
+                'title' => $title,
                 'category' => $request->category,
                 'image_url' => $imageUrl,
             ]);
 
-            if ($request->wantsJson() || $request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Photo published to live gallery!',
-                    'item' => [
-                        'id' => $galleryItem->id,
-                        'title' => $galleryItem->title,
-                        'category' => $galleryItem->category,
-                        'image_url' => asset($galleryItem->image_url),
-                        'raw_url' => $galleryItem->image_url,
-                    ],
-                ]);
-            }
-
-            return redirect()->route('admin.dashboard')->with('success', 'Photo published to live gallery!');
+            $createdItems[] = [
+                'id' => $galleryItem->id,
+                'title' => $galleryItem->title,
+                'category' => $galleryItem->category,
+                'image_url' => asset($galleryItem->image_url),
+                'raw_url' => $galleryItem->image_url,
+            ];
         }
 
-        return response()->json(['success' => false, 'message' => 'No image file uploaded.'], 422);
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => count($createdItems) > 1
+                    ? count($createdItems) . ' photos published to live gallery!'
+                    : 'Photo published to live gallery!',
+                'items' => $createdItems,
+            ]);
+        }
+
+        return redirect()->route('admin.dashboard')->with('success', 'Photos published to live gallery!');
     }
 
     public function destroyGallery(Request $request, $id)
