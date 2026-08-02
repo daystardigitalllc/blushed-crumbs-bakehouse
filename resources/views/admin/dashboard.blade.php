@@ -181,15 +181,6 @@
                         border-color: var(--primary) !important;
                         box-shadow: 0 10px 30px rgba(230, 115, 153, 0.15) !important;
                     }
-                    .order-card-header {
-                        cursor: pointer;
-                        user-select: none;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        width: 100%;
-                        padding: 14px 20px;
-                    }
                     .chevron-indicator {
                         font-size: 0.85rem;
                         color: var(--primary);
@@ -319,6 +310,36 @@
                         display: none;
                     }
 
+                    /* Board-view order detail modal */
+                    .order-detail-modal-box {
+                        position: relative;
+                        background: white;
+                        border-radius: 16px;
+                        width: 92%;
+                        max-width: 480px;
+                        max-height: 88vh;
+                        overflow-y: auto;
+                        padding: 24px 20px 20px;
+                        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+                    }
+                    .detail-modal-close-btn {
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        background: #f1f5f9;
+                        border: none;
+                        color: #475569;
+                        font-size: 1.2rem;
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 2;
+                    }
+
                     /* Toggle buttons styling */
                     .active-toggle-btn {
                         background: var(--primary) !important;
@@ -380,8 +401,60 @@
                         .board-column.active-column {
                             display: flex !important;
                         }
+                    }
+
+                    /* A shared card rule elsewhere forces padding:36px !important on .order-card, which fights
+                       the header/body's own padding (they rely on the card itself having none). Reclaim it. */
+                    .order-card {
+                        padding: 0 !important;
+                    }
+
+                    /* Order card header — stacked rows so it lays out predictably at every width */
+                    .order-card-header {
+                        cursor: pointer;
+                        user-select: none;
+                        width: 100%;
+                        padding: 16px 20px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: stretch;
+                        justify-content: flex-start;
+                        gap: 8px;
+                    }
+                    .oc-header-toprow {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 10px;
+                    }
+                    .oc-order-title {
+                        margin: 0;
+                        font-size: 1.05rem;
+                        font-weight: 700;
+                        color: #5c1d37;
+                    }
+                    .oc-header-bottomrow {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                    }
+                    .oc-badges {
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                    }
+                    @media (max-width: 576px) {
                         .order-card-header {
-                            padding: 12px 14px;
+                            padding: 14px 16px;
+                        }
+                        .due-badge {
+                            font-size: 0.8rem;
+                        }
+                        .oc-header-bottomrow .status-select {
+                            width: 100%;
                         }
                     }
 
@@ -424,19 +497,6 @@
                         }
                     }
 
-                    @media (max-width: 480px) {
-                        .order-card-header {
-                            flex-direction: column;
-                            align-items: flex-start !important;
-                        }
-                        .order-card-header > div:last-child {
-                            width: 100%;
-                        }
-                        .order-card-header > div:last-child select.status-select {
-                            width: 100%;
-                            min-width: 0 !important;
-                        }
-                    }
                 </style>
 
                 <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom: 24px;">
@@ -475,34 +535,39 @@
                                 ->values();
                         @endphp
                         <div class="order-card collapsible-card {{ $isUrgent ? 'urgent-border' : '' }}" data-id="{{ $order->id }}" data-fulfillment="{{ $order->fulfillment_type }}" style="padding:0; overflow:hidden;">
-                            <div class="order-card-header" onclick="toggleOrderCardCollapse(this)" style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:12px;">
-                                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; flex:1;">
-                                    <span class="chevron-indicator">▼</span>
-                                    <div class="due-badge {{ $isUrgent ? 'due-urgent' : 'due-normal' }}" style="margin:0;">
+                            <div class="order-card-header" onclick="toggleOrderCardCollapse(this)">
+                                <div class="oc-header-toprow">
+                                    <div class="due-badge {{ $isUrgent ? 'due-urgent' : 'due-normal' }}">
                                         DUE: {{ $dueDate->format('M d, Y') }} ({{ $order->time_slot }})
                                     </div>
-                                    <h4 style="margin:0; font-size:1.05rem; font-weight:700; color:#5c1d37;">#{{ $order->order_number }} - {{ $order->client_name }}</h4>
-
-                                    @if($order->allergies)
-                                        <span class="allergy-pinned-badge">⚠️ ALLERGIES</span>
-                                    @endif
-
-                                    @if($orderPhotoUrls->isNotEmpty())
-                                        <button type="button" class="photo-count-chip" onclick='event.stopPropagation(); openOrderLightbox(@json($orderPhotoUrls), 0)' title="View reference photos">
-                                            📷 {{ $orderPhotoUrls->count() }}
-                                        </button>
-                                    @endif
+                                    <span class="chevron-indicator">▼</span>
                                 </div>
-                                <div onclick="event.stopPropagation()">
-                                    <select class="status-select status-{{ $order->status }}" onchange="updateOrderStatus({{ $order->id }}, this.value)">
-                                        <option value="new" {{ $order->status == 'new' ? 'selected' : '' }}>NEW</option>
-                                        <option value="invoiced" {{ $order->status == 'invoiced' ? 'selected' : '' }}>INVOICED</option>
-                                        <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>PAID</option>
-                                        <option value="in_progress" {{ $order->status == 'in_progress' ? 'selected' : '' }}>IN PROGRESS</option>
-                                        <option value="ready" {{ $order->status == 'ready' ? 'selected' : '' }}>READY</option>
-                                        <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>COMPLETED</option>
-                                        <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
-                                    </select>
+
+                                <h4 class="oc-order-title">#{{ $order->order_number }} - {{ $order->client_name }}</h4>
+
+                                <div class="oc-header-bottomrow">
+                                    <div class="oc-badges">
+                                        @if($order->allergies)
+                                            <span class="allergy-pinned-badge">⚠️ ALLERGIES</span>
+                                        @endif
+
+                                        @if($orderPhotoUrls->isNotEmpty())
+                                            <button type="button" class="photo-count-chip" onclick='event.stopPropagation(); openOrderLightbox(@json($orderPhotoUrls), 0)' title="View reference photos">
+                                                📷 {{ $orderPhotoUrls->count() }}
+                                            </button>
+                                        @endif
+                                    </div>
+                                    <div onclick="event.stopPropagation()">
+                                        <select class="status-select status-{{ $order->status }}" onchange="updateOrderStatus({{ $order->id }}, this.value)">
+                                            <option value="new" {{ $order->status == 'new' ? 'selected' : '' }}>NEW</option>
+                                            <option value="invoiced" {{ $order->status == 'invoiced' ? 'selected' : '' }}>INVOICED</option>
+                                            <option value="paid" {{ $order->status == 'paid' ? 'selected' : '' }}>PAID</option>
+                                            <option value="in_progress" {{ $order->status == 'in_progress' ? 'selected' : '' }}>IN PROGRESS</option>
+                                            <option value="ready" {{ $order->status == 'ready' ? 'selected' : '' }}>READY</option>
+                                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>COMPLETED</option>
+                                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>CANCELLED</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
 
@@ -600,8 +665,29 @@
                                             ->filter(fn($f) => is_string($f) && file_exists(public_path($f)))
                                             ->map(fn($f) => asset($f))
                                             ->values();
+                                        $orderModalData = [
+                                            'id' => $order->id,
+                                            'orderNumber' => $order->order_number,
+                                            'clientName' => $order->client_name,
+                                            'clientPhone' => $order->client_phone,
+                                            'clientEmail' => $order->client_email,
+                                            'fulfillmentType' => $order->fulfillment_type,
+                                            'deliveryAddress' => $order->delivery_address,
+                                            'dueDateFormatted' => $dueDate->format('M d, Y'),
+                                            'timeSlot' => $order->time_slot,
+                                            'isUrgent' => $isUrgent,
+                                            'flavors' => !empty($order->flavors) ? implode(', ', $order->flavors) : null,
+                                            'frosting' => !empty($order->frosting) ? implode(', ', $order->frosting) : null,
+                                            'fillings' => !empty($order->fillings) ? implode(', ', $order->fillings) : null,
+                                            'specialNotes' => $order->special_notes,
+                                            'allergies' => $order->allergies,
+                                            'totalPrice' => number_format((float) $order->total_price, 2),
+                                            'depositAmount' => number_format((float) $order->deposit_amount, 2),
+                                            'depositPaid' => (bool) $order->deposit_paid,
+                                            'photos' => $orderPhotoUrls,
+                                        ];
                                     @endphp
-                                    <div class="board-order-card {{ $isUrgent ? 'board-urgent-border' : '' }}" data-id="{{ $order->id }}" draggable="true" ondragstart="handleBoardCardDragStart(event)" style="background:white; border:1px solid #cbd5e1; border-radius:12px; padding:14px; box-shadow:0 2px 6px rgba(0,0,0,0.04); position:relative; cursor: grab;">
+                                    <div class="board-order-card {{ $isUrgent ? 'board-urgent-border' : '' }}" data-id="{{ $order->id }}" data-order='@json($orderModalData)' draggable="true" ondragstart="handleBoardCardDragStart(event)" onclick="openOrderDetailModal(this)" style="background:white; border:1px solid #cbd5e1; border-radius:12px; padding:14px; box-shadow:0 2px 6px rgba(0,0,0,0.04); position:relative; cursor: pointer;">
                                         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
                                             <span style="font-size:0.75rem; font-weight:700; color:#64748b;">#{{ $order->order_number }}</span>
                                             <span style="font-size:0.75rem; font-weight:700; background:{{ $isUrgent ? '#fee2e2' : '#f1f5f9' }}; color:{{ $isUrgent ? '#ef4444' : '#475569' }}; padding:2px 6px; border-radius:6px;">
@@ -625,7 +711,7 @@
                                         </p>
 
                                         @if($orderPhotoUrls->isNotEmpty())
-                                            <div onclick='openOrderLightbox(@json($orderPhotoUrls), 0)' style="width:100%; height:80px; border-radius:6px; overflow:hidden; border:1px solid #e2e8f0; margin-bottom:10px; cursor:pointer; position:relative;">
+                                            <div onclick='event.stopPropagation(); openOrderLightbox(@json($orderPhotoUrls), 0)' style="width:100%; height:80px; border-radius:6px; overflow:hidden; border:1px solid #e2e8f0; margin-bottom:10px; cursor:pointer; position:relative;">
                                                 <img src="{{ $orderPhotoUrls->first() }}" alt="Inspiration" style="width:100%; height:100%; object-fit:cover;">
                                                 @if($orderPhotoUrls->count() > 1)
                                                     <span style="position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.65); color:#fff; font-size:0.68rem; font-weight:700; padding:2px 6px; border-radius:10px;">+{{ $orderPhotoUrls->count() - 1 }}</span>
@@ -643,7 +729,7 @@
                                                     $nextStatus = ($currentIdx !== false && $currentIdx < count($statusKeys) - 1) ? $statusKeys[$currentIdx + 1] : null;
                                                 @endphp
                                                 @if($nextStatus)
-                                                    <button type="button" class="btn btn-sm advance-status-btn" onclick="advanceOrderStatus({{ $order->id }}, '{{ $nextStatus }}')" style="background:var(--pink-bg); color:var(--primary); font-weight:700; border:none; padding:4px 8px; border-radius:6px; font-size:0.75rem; cursor:pointer;" title="Move to {{ ucfirst($nextStatus) }}">
+                                                    <button type="button" class="btn btn-sm advance-status-btn" onclick="event.stopPropagation(); advanceOrderStatus({{ $order->id }}, '{{ $nextStatus }}')" style="background:var(--pink-bg); color:var(--primary); font-weight:700; border:none; padding:4px 8px; border-radius:6px; font-size:0.75rem; cursor:pointer;" title="Move to {{ ucfirst($nextStatus) }}">
                                                         Advance ➔
                                                     </button>
                                                 @endif
@@ -668,6 +754,14 @@
                         <button type="button" id="lightbox-prev-btn" class="lightbox-nav-btn lightbox-prev-btn" onclick="lightboxStep(-1)" title="Previous photo">‹</button>
                         <button type="button" id="lightbox-next-btn" class="lightbox-nav-btn lightbox-next-btn" onclick="lightboxStep(1)" title="Next photo">›</button>
                         <div id="lightbox-counter" class="lightbox-counter"></div>
+                    </div>
+                </div>
+
+                <!-- BOARD-VIEW ORDER DETAIL MODAL — full order details in a popup, since board columns are too narrow to expand inline -->
+                <div id="order-detail-modal" class="order-modal-overlay" style="display:none; z-index:100002;" onclick="closeOrderDetailModal()">
+                    <div class="order-detail-modal-box" onclick="event.stopPropagation()">
+                        <button type="button" class="detail-modal-close-btn" onclick="closeOrderDetailModal()" title="Close">✕</button>
+                        <div id="order-detail-content"></div>
                     </div>
                 </div>
 
@@ -715,7 +809,7 @@
                             boardBtn?.classList.remove('active-toggle-btn');
                             listBtn?.classList.add('active-toggle-btn');
                             if (boardContainer) boardContainer.style.display = 'none';
-                            if (listContainer) listContainer.style.display = 'grid';
+                            if (listContainer) listContainer.style.display = 'flex';
                             if (mobileTabsBar) mobileTabsBar.style.display = 'none';
                             localStorage.setItem('baker_orders_view_type', 'list');
                         }
@@ -912,6 +1006,77 @@
 
                     window.closeOrderLightbox = function() {
                         const modal = document.getElementById('order-lightbox-modal');
+                        if (modal) modal.style.display = 'none';
+                    };
+
+                    // Escapes text pulled from order data (customer-submitted) before it's placed in innerHTML
+                    window._escapeHtml = function(str) {
+                        if (str === null || str === undefined) return '';
+                        const div = document.createElement('div');
+                        div.textContent = String(str);
+                        return div.innerHTML;
+                    };
+
+                    // Board-view card tap: shows full order details (flavors, fillings, notes, photos) in a popup,
+                    // since board columns are too narrow to expand inline like the list view can.
+                    window.openOrderDetailModal = function(cardEl) {
+                        let order;
+                        try {
+                            order = JSON.parse(cardEl.dataset.order);
+                        } catch (e) {
+                            return;
+                        }
+
+                        const esc = window._escapeHtml;
+                        const content = document.getElementById('order-detail-content');
+                        if (!content) return;
+
+                        let photosHtml = '';
+                        if (order.photos && order.photos.length) {
+                            // Thumbnails get no inline onclick (URLs could contain characters that break
+                            // an HTML attribute) — click listeners are wired up below via addEventListener instead.
+                            const thumbs = order.photos.map((url, idx) => {
+                                return `<div class="inspiration-thumb-container" data-photo-index="${idx}" style="position:relative; width:80px; height:80px; border-radius:8px; overflow:hidden; border:2px solid #e2e8f0; cursor:pointer;"><img src="${url}" alt="Inspiration ${idx + 1}" style="width:100%; height:100%; object-fit:cover;"></div>`;
+                            }).join('');
+                            photosHtml = `<div class="inspiration-section" style="margin-top:16px; border-top:1px solid #f1f5f9; padding-top:12px;">
+                                <strong style="display:block; margin-bottom:8px; font-size:0.85rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em;">Inspiration Photos</strong>
+                                <div style="display:flex; gap:10px; flex-wrap:wrap;">${thumbs}</div>
+                            </div>`;
+                        }
+
+                        content.innerHTML = `
+                            <div class="due-badge ${order.isUrgent ? 'due-urgent' : 'due-normal'}" style="margin-bottom:10px;">DUE: ${esc(order.dueDateFormatted)} (${esc(order.timeSlot)})</div>
+                            <h4 style="margin:0 0 10px; font-size:1.15rem; font-weight:700; color:#5c1d37;">#${esc(order.orderNumber)} - ${esc(order.clientName)}</h4>
+                            <p><strong>Phone:</strong> ${esc(order.clientPhone)} | <strong>Email:</strong> ${esc(order.clientEmail)}</p>
+                            <p><strong>Fulfillment:</strong> ${esc((order.fulfillmentType || '').toUpperCase())} ${order.deliveryAddress ? '(' + esc(order.deliveryAddress) + ')' : ''}</p>
+                            ${order.flavors ? `<p style="font-size:1.1rem; font-weight:600; color:#1e293b; margin-top:12px;"><strong>Flavors:</strong> ${esc(order.flavors)}</p>` : ''}
+                            ${order.frosting ? `<p style="font-size:1.1rem; font-weight:600; color:#1e293b; margin-top:6px;"><strong>Frosting:</strong> ${esc(order.frosting)}</p>` : ''}
+                            ${order.fillings ? `<p style="font-size:1.1rem; font-weight:600; color:#1e293b; margin-top:6px;"><strong>Fillings:</strong> ${esc(order.fillings)}</p>` : ''}
+                            ${order.specialNotes ? `<p class="notes-box" style="font-size:1.1rem; margin-top:12px; padding:10px; background:#f8fafc; border-left:4px solid var(--primary); border-radius:4px;"><strong>Special Notes:</strong> ${esc(order.specialNotes)}</p>` : ''}
+                            ${order.allergies ? `<p class="allergy-warning" style="font-size:1.2rem; font-weight:700; border:2px solid #ef4444; background:#fef2f2; color:#991b1b; padding:10px; border-radius:6px; margin-top:12px;"><strong>Allergies:</strong> ${esc(order.allergies)}</p>` : ''}
+                            ${photosHtml}
+                            <div class="pricing-breakdown" style="border-top:1px solid #f1f5f9; margin-top:16px; padding-top:12px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                                <span>Total: <strong>$${esc(order.totalPrice)}</strong></span>
+                                <span>50% Deposit: <strong>$${esc(order.depositAmount)}</strong> (${order.depositPaid ? 'Paid' : 'Pending'})</span>
+                            </div>
+                            <div class="order-card-actions" style="border-top:1px solid #f1f5f9; padding-top:14px; margin-top:16px;">
+                                <button type="button" class="btn btn-sm btn-primary" onclick="generateInvoiceFromOrder(${order.id}, ${order.totalPrice}, ${order.depositAmount})">Create Invoice</button>
+                                <button type="button" class="btn btn-sm btn-outline" onclick="copyClientPayLink('', ${order.id})">Copy Invoice Link</button>
+                                <button type="button" class="btn btn-sm btn-outline" style="border-color:#64748b; color:#64748b;" onclick="printOrderBoxSlip(${order.id})">🖨️ Print Box Slip</button>
+                            </div>
+                        `;
+
+                        content.querySelectorAll('.inspiration-thumb-container').forEach((thumb) => {
+                            thumb.addEventListener('click', () => {
+                                openOrderLightbox(order.photos, parseInt(thumb.dataset.photoIndex, 10));
+                            });
+                        });
+
+                        document.getElementById('order-detail-modal').style.display = 'flex';
+                    };
+
+                    window.closeOrderDetailModal = function() {
+                        const modal = document.getElementById('order-detail-modal');
                         if (modal) modal.style.display = 'none';
                     };
 
