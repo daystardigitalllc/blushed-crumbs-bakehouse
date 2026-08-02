@@ -190,8 +190,7 @@ Route::middleware(['auth', 'tenant.owner'])->prefix('dashboard')->group(function
     Route::post('/site/{subdomain}/products', [AdminController::class, 'storeProduct']);
     Route::put('/site/{subdomain}/products/{id}', [AdminController::class, 'updateProduct']);
     Route::delete('/site/{subdomain}/products/{id}', [AdminController::class, 'destroyProduct']);
-    Route::post('/payment-methods', [AdminController::class, 'addPaymentMethod'])->name('admin.payment-methods.store');
-    Route::delete('/payment-methods/{key}', [AdminController::class, 'removePaymentMethod'])->name('admin.payment-methods.destroy');
+    Route::post('/settings/payment-methods', [AdminController::class, 'savePaymentMethods'])->name('admin.settings.payment-methods');
     Route::post('/subscription/cancel', [AdminController::class, 'cancelSubscription'])->name('admin.subscription.cancel');
     Route::post('/support/ticket', [AdminController::class, 'submitSupportTicket'])->name('admin.support.ticket');
 

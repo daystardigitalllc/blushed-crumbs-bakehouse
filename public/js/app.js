@@ -1096,113 +1096,71 @@ function initAdminPortal() {
         }
     }
 
-    // Custom Payment Method Builder Handler
-    const payForm = document.getElementById('add-payment-method-form');
-    if (payForm) {
-        payForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const methodName = document.getElementById('pay-method-name').value.trim();
-            const methodHandle = document.getElementById('pay-method-handle').value.trim();
-            const methodInstructions = document.getElementById('pay-method-instructions').value.trim();
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    // Accepted Payment Methods: checkbox toggles a handle input, one save button
+    // persists all of them at once via /dashboard/settings/payment-methods.
+    window.togglePaymentMethodInput = function(key) {
+        const checkbox = document.getElementById('pm-toggle-' + key);
+        const wrap = document.getElementById('pm-handle-wrap-' + key);
+        if (!checkbox || !wrap) return;
+        wrap.style.display = checkbox.checked ? '' : 'none';
+        if (checkbox.checked) {
+            const input = document.getElementById('pm-handle-' + key);
+            if (input) input.focus();
+        }
+    };
 
-            fetch('/dashboard/payment-methods', {
+    const paymentMethodsForm = document.getElementById('payment-methods-form');
+    if (paymentMethodsForm) {
+        paymentMethodsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            const methods = {};
+            let hasError = false;
+
+            paymentMethodsForm.querySelectorAll('.pm-toggle').forEach(checkbox => {
+                const key = checkbox.dataset.key;
+                const input = document.getElementById('pm-handle-' + key);
+                const value = checkbox.checked ? (input ? input.value.trim() : '') : '';
+                if (checkbox.checked && value === '') {
+                    hasError = true;
+                    if (input) input.style.borderColor = '#d9534f';
+                }
+                methods[key] = value;
+            });
+
+            if (hasError) {
+                alert('Please enter a handle/username/email for each checked payment method (or uncheck it).');
+                return;
+            }
+
+            fetch('/dashboard/settings/payment-methods', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({ name: methodName, handle: methodHandle, instructions: methodInstructions })
+                body: JSON.stringify({ methods })
             })
             .then(res => res.json())
             .then(data => {
-                if (data.success && data.method) {
-                    addPaymentMethodRow(data.method);
-                    payForm.reset();
+                if (data.success) {
+                    window.tenantHasPaymentMethods = (data.methods || []).length > 0;
                     if (window.showToast) {
-                        window.showToast('Payment method added!', 'success');
+                        window.showToast('Payment methods saved!', 'success');
                     } else {
-                        alert(`Payment Method "${data.method.name}" (${data.method.handle}) added!`);
+                        alert('Payment methods saved!');
                     }
                 } else {
-                    alert('Error adding payment method: ' + (data.message || 'Unknown error'));
+                    alert('Error saving payment methods: ' + (data.message || 'Unknown error'));
                 }
             })
             .catch(err => {
-                console.error('Add Payment Method Error:', err);
-                alert('Failed to add payment method.');
+                console.error('Save Payment Methods Error:', err);
+                alert('Failed to save payment methods.');
             });
         });
     }
-
-    function addPaymentMethodRow(pm) {
-        const payList = document.getElementById('payment-methods-list');
-        if (!payList) return;
-
-        const emptyRow = document.getElementById('no-payment-methods-row');
-        if (emptyRow) emptyRow.remove();
-
-        const row = document.createElement('div');
-        row.className = 'payment-method-row';
-        row.dataset.key = pm.key;
-        row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;';
-        const infoDiv = document.createElement('div');
-        const strong = document.createElement('strong');
-        strong.style.cssText = 'color:#5c1d37; font-size:1.05rem;';
-        strong.textContent = pm.name;
-        infoDiv.appendChild(strong);
-        infoDiv.append(': ');
-        const code = document.createElement('code');
-        code.textContent = pm.handle;
-        infoDiv.appendChild(code);
-        if (pm.instructions) {
-            const p = document.createElement('p');
-            p.style.cssText = 'font-size:0.85rem; color:#666; margin-top:2px;';
-            p.textContent = pm.instructions;
-            infoDiv.appendChild(p);
-        }
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'btn btn-sm btn-outline';
-        removeBtn.style.cssText = 'color:#d9534f; border-color:#d9534f;';
-        removeBtn.textContent = 'Remove';
-        removeBtn.onclick = () => window.removePaymentMethod(pm.key, removeBtn);
-        row.appendChild(infoDiv);
-        row.appendChild(removeBtn);
-        payList.prepend(row);
-    }
-
-    window.removePaymentMethod = function(key, btnElement) {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-        fetch(`/dashboard/payment-methods/${key}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                const row = btnElement.closest('.payment-method-row');
-                if (row) row.remove();
-                const payList = document.getElementById('payment-methods-list');
-                if (payList && !payList.querySelector('.payment-method-row')) {
-                    const empty = document.createElement('p');
-                    empty.id = 'no-payment-methods-row';
-                    empty.style.cssText = 'color:#888; text-align:center; padding:10px;';
-                    empty.textContent = 'No payment methods configured yet. Add one above.';
-                    payList.appendChild(empty);
-                }
-            } else {
-                alert('Error removing payment method: ' + (data.message || 'Unknown error'));
-            }
-        })
-        .catch(err => {
-            console.error('Remove Payment Method Error:', err);
-            alert('Failed to remove payment method.');
-        });
-    };
 
     // Email Routing Form Handler
     const emailForm = document.getElementById('email-routing-form');
@@ -2369,7 +2327,20 @@ function addCampaignRow(camp) {
     list.prepend(row);
 }
 
+// Always-available tab switcher (not gated behind the onboarding checklist,
+// which only renders its own copy of this while onboarding is incomplete).
+window.switchDashboardTab = function(tabId) {
+    const btn = document.querySelector('.admin-sidebar-nav .admin-nav-item[data-tab="' + tabId + '"]');
+    if (btn) btn.click();
+};
+
 window.generateInvoiceFromOrder = function(orderId, totalAmount, depositAmount) {
+    if (!window.tenantHasPaymentMethods) {
+        alert('Set up at least one payment method before invoicing a customer, so they know how to pay you.');
+        window.switchDashboardTab('tab-invoices');
+        return;
+    }
+
     const editInvId = document.getElementById('edit-invoice-id');
     const editOrderId = document.getElementById('edit-order-id');
     const editSubtotal = document.getElementById('edit-invoice-subtotal');
@@ -2429,6 +2400,9 @@ window.sendInvoice = function(invoiceId) {
         if (data.success) {
             alert(data.message);
             location.reload();
+        } else if (data.requires_payment_setup) {
+            alert(data.message);
+            window.switchDashboardTab('tab-invoices');
         } else {
             alert('Error: ' + data.message);
         }
@@ -3318,6 +3292,10 @@ function submitInvoiceEdits(sendAfter) {
                 } else if (window.showToast) {
                     window.showToast('Invoice created & saved!', 'success');
                 }
+            } else if (data.requires_payment_setup) {
+                closeInvoiceEditModal();
+                alert(data.message);
+                window.switchDashboardTab('tab-invoices');
             } else {
                 alert('Error creating invoice: ' + data.message);
             }

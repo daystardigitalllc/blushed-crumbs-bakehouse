@@ -906,6 +906,8 @@
                     <p class="subtitle">Add payment methods and generate digital client invoices.</p>
                 </div>
 
+                <script>window.tenantHasPaymentMethods = @json(!empty($tenant->normalizedPaymentMethods()));</script>
+
                 <!-- RECENT INVOICES TRACKER -->
                 <div class="form-builder-card" style="margin-bottom:20px;">
                     <h4>Recent Invoices</h4>
@@ -962,46 +964,37 @@
                     </table>
                 </div>
 
-                <!-- ADD CUSTOM PAYMENT METHOD CARD -->
+                <!-- ACCEPTED PAYMENT METHODS: CHECKBOX + HANDLE -->
                 <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                    <h4 style="color:#5c1d37;">Add Custom Payment Option</h4>
-                    <form id="add-payment-method-form" class="form-builder-grid">
-                        <div>
-                            <label>Payment Method Name</label>
-                            <input type="text" id="pay-method-name" placeholder="e.g. Venmo, CashApp, Zelle, Apple Pay, Cash" required>
-                        </div>
-                        <div>
-                            <label>Handle / Username / Email</label>
-                            <input type="text" id="pay-method-handle" placeholder="e.g. @Blushed_Crumbs or $BlushedCrumbs" required>
-                        </div>
-                        <div style="grid-column: 1 / -1;">
-                            <label>Payment Instructions for Clients</label>
-                            <input type="text" id="pay-method-instructions" placeholder="e.g. Please include your Order # in the memo line!">
-                        </div>
-                        <div style="grid-column: 1 / -1;">
-                            <button type="submit" class="btn btn-primary">+ Add Payment Method</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- ACTIVE PAYMENT METHODS LIST -->
-                <div class="form-builder-card">
-                    <h4>Active Payment Handles & Methods</h4>
-                    <div id="payment-methods-list">
-                        @forelse($tenant->normalizedPaymentMethods() as $pm)
-                            <div class="payment-method-row" data-key="{{ $pm['key'] }}" style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;">
-                                <div>
-                                    <strong style="color:#5c1d37; font-size:1.05rem;">{{ $pm['name'] }}</strong>: <code>{{ $pm['handle'] }}</code>
-                                    @if(!empty($pm['instructions']))
-                                        <p style="font-size:0.85rem; color:#666; margin-top:2px;">{{ $pm['instructions'] }}</p>
-                                    @endif
+                    <h4 style="color:#5c1d37;">Accepted Payment Methods</h4>
+                    <p class="subtitle">Check the payment methods you accept, then enter your handle, username, or email for each one. Customers will see these on their invoice — you need at least one set up before you can send an invoice.</p>
+                    <form id="payment-methods-form" style="display:flex; flex-direction:column; gap:12px;">
+                        @php
+                            $knownPaymentMethods = [
+                                'venmo' => ['label' => 'Venmo', 'placeholder' => '@YourVenmoHandle'],
+                                'cashapp' => ['label' => 'Cash App', 'placeholder' => '$YourCashtag'],
+                                'zelle' => ['label' => 'Zelle', 'placeholder' => 'you@email.com or phone number'],
+                                'paypal' => ['label' => 'PayPal', 'placeholder' => 'https://paypal.me/you or email'],
+                                'square' => ['label' => 'Square', 'placeholder' => 'Your Square payment link'],
+                                'apple_pay' => ['label' => 'Apple Pay', 'placeholder' => 'Phone number or email'],
+                                'stripe' => ['label' => 'Stripe', 'placeholder' => 'Your Stripe payment link'],
+                            ];
+                            $existingPayments = is_array($tenant->payment_settings ?? null) ? $tenant->payment_settings : [];
+                        @endphp
+                        @foreach($knownPaymentMethods as $pmKey => $pmMeta)
+                            @php $pmExisting = is_string($existingPayments[$pmKey] ?? null) ? trim($existingPayments[$pmKey]) : ''; @endphp
+                            <div class="payment-method-toggle-row" style="border:1px solid #eee; border-radius:12px; padding:14px 16px; background:white;">
+                                <label style="display:flex; align-items:center; gap:10px; font-weight:700; color:#5c1d37; cursor:pointer; margin:0;">
+                                    <input type="checkbox" class="pm-toggle" id="pm-toggle-{{ $pmKey }}" data-key="{{ $pmKey }}" {{ $pmExisting !== '' ? 'checked' : '' }} onchange="togglePaymentMethodInput('{{ $pmKey }}')">
+                                    {{ $pmMeta['label'] }}
+                                </label>
+                                <div class="pm-handle-wrap" id="pm-handle-wrap-{{ $pmKey }}" style="{{ $pmExisting !== '' ? '' : 'display:none;' }} margin-top:10px;">
+                                    <input type="text" id="pm-handle-{{ $pmKey }}" placeholder="{{ $pmMeta['placeholder'] }}" value="{{ $pmExisting }}" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de; font-size:0.9rem;">
                                 </div>
-                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="removePaymentMethod('{{ $pm['key'] }}', this)">Remove</button>
                             </div>
-                        @empty
-                            <p id="no-payment-methods-row" style="color:#888; text-align:center; padding:10px;">No payment methods configured yet. Add one above.</p>
-                        @endforelse
-                    </div>
+                        @endforeach
+                        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Save Payment Methods</button>
+                    </form>
                 </div>
             </div>
 

@@ -675,6 +675,14 @@ class AdminController extends Controller
     {
         $tenant = $this->tenant($request);
 
+        if (empty($tenant->normalizedPaymentMethods())) {
+            return response()->json([
+                'success' => false,
+                'requires_payment_setup' => true,
+                'message' => 'Set up at least one payment method before invoicing a customer.',
+            ], 422);
+        }
+
         $validated = $request->validate([
             'order_id' => 'required|exists:orders,id',
             'subtotal' => 'nullable|numeric|min:0',
@@ -743,6 +751,14 @@ class AdminController extends Controller
 
         // Build payment methods from tenant settings
         $paymentSettings = $tenant->normalizedPaymentMethods();
+
+        if (empty($paymentSettings)) {
+            return response()->json([
+                'success' => false,
+                'requires_payment_setup' => true,
+                'message' => 'Set up at least one payment method before sending this invoice.',
+            ], 422);
+        }
 
         try {
             Mail::send('emails.invoice', [
@@ -851,52 +867,40 @@ class AdminController extends Controller
         ]);
     }
 
-    // ─── Custom Payment Methods ───
+    // ─── Payment Methods ───
 
-    public function addPaymentMethod(Request $request)
+    /**
+     * Known rails the checkbox UI offers. Anything else previously stored
+     * under payment_settings (e.g. a legacy custom entry) is left untouched.
+     */
+    private const KNOWN_PAYMENT_METHODS = ['venmo', 'cashapp', 'zelle', 'paypal', 'square', 'apple_pay', 'stripe'];
+
+    public function savePaymentMethods(Request $request)
     {
         $tenant = $this->tenant($request);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:60',
-            'handle' => 'required|string|max:120',
-            'instructions' => 'nullable|string|max:255',
+            'methods' => 'required|array',
+            'methods.*' => 'nullable|string|max:150',
         ]);
 
         $settings = $tenant->payment_settings ?? [];
-        $key = Str::slug($validated['name'], '_') . '_' . Str::random(6);
 
-        $settings[$key] = [
-            'name' => $validated['name'],
-            'handle' => $validated['handle'],
-            'instructions' => $validated['instructions'] ?? null,
-        ];
-
-        $tenant->update(['payment_settings' => $settings]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Payment method added!',
-            'method' => array_merge(['key' => $key], $settings[$key]),
-        ]);
-    }
-
-    public function removePaymentMethod(Request $request, string $key)
-    {
-        $tenant = $this->tenant($request);
-
-        $settings = $tenant->payment_settings ?? [];
-
-        if (!array_key_exists($key, $settings)) {
-            return response()->json(['success' => false, 'message' => 'Payment method not found.'], 404);
+        foreach (self::KNOWN_PAYMENT_METHODS as $key) {
+            $handle = trim((string) ($validated['methods'][$key] ?? ''));
+            if ($handle !== '') {
+                $settings[$key] = $handle;
+            } else {
+                unset($settings[$key]);
+            }
         }
 
-        unset($settings[$key]);
         $tenant->update(['payment_settings' => $settings]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Payment method removed.',
+            'message' => 'Payment methods updated!',
+            'methods' => $tenant->refresh()->normalizedPaymentMethods(),
         ]);
     }
 
