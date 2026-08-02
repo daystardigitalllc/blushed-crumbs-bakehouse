@@ -742,7 +742,7 @@ class AdminController extends Controller
         }
 
         // Build payment methods from tenant settings
-        $paymentSettings = $tenant->payment_settings ?? [];
+        $paymentSettings = $tenant->normalizedPaymentMethods();
 
         try {
             Mail::send('emails.invoice', [
@@ -851,6 +851,54 @@ class AdminController extends Controller
         ]);
     }
 
+    // ─── Custom Payment Methods ───
+
+    public function addPaymentMethod(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:60',
+            'handle' => 'required|string|max:120',
+            'instructions' => 'nullable|string|max:255',
+        ]);
+
+        $settings = $tenant->payment_settings ?? [];
+        $key = Str::slug($validated['name'], '_') . '_' . Str::random(6);
+
+        $settings[$key] = [
+            'name' => $validated['name'],
+            'handle' => $validated['handle'],
+            'instructions' => $validated['instructions'] ?? null,
+        ];
+
+        $tenant->update(['payment_settings' => $settings]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment method added!',
+            'method' => array_merge(['key' => $key], $settings[$key]),
+        ]);
+    }
+
+    public function removePaymentMethod(Request $request, string $key)
+    {
+        $tenant = $this->tenant($request);
+
+        $settings = $tenant->payment_settings ?? [];
+
+        if (!array_key_exists($key, $settings)) {
+            return response()->json(['success' => false, 'message' => 'Payment method not found.'], 404);
+        }
+
+        unset($settings[$key]);
+        $tenant->update(['payment_settings' => $settings]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment method removed.',
+        ]);
+    }
 
     // ─── New: Custom Domain ───
 

@@ -1104,26 +1104,105 @@ function initAdminPortal() {
             const methodName = document.getElementById('pay-method-name').value.trim();
             const methodHandle = document.getElementById('pay-method-handle').value.trim();
             const methodInstructions = document.getElementById('pay-method-instructions').value.trim();
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-            const payList = document.getElementById('payment-methods-list');
-            if (payList) {
-                const row = document.createElement('div');
-                row.className = 'payment-method-row';
-                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;';
-                row.innerHTML = `
-                    <div>
-                        <strong style="color:#5c1d37; font-size:1.05rem;">${methodName}</strong>: <code>${methodHandle}</code>
-                        ${methodInstructions ? `<p style="font-size:0.85rem; color:#666; margin-top:2px;">${methodInstructions}</p>` : ''}
-                    </div>
-                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Remove</button>
-                `;
-                payList.prepend(row);
-            }
-
-            alert(`Payment Method "${methodName}" (${methodHandle}) added to Baker Admin Portal & Client Invoice Options!`);
-            payForm.reset();
+            fetch('/dashboard/payment-methods', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ name: methodName, handle: methodHandle, instructions: methodInstructions })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.method) {
+                    addPaymentMethodRow(data.method);
+                    payForm.reset();
+                    if (window.showToast) {
+                        window.showToast('Payment method added!', 'success');
+                    } else {
+                        alert(`Payment Method "${data.method.name}" (${data.method.handle}) added!`);
+                    }
+                } else {
+                    alert('Error adding payment method: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                console.error('Add Payment Method Error:', err);
+                alert('Failed to add payment method.');
+            });
         });
     }
+
+    function addPaymentMethodRow(pm) {
+        const payList = document.getElementById('payment-methods-list');
+        if (!payList) return;
+
+        const emptyRow = document.getElementById('no-payment-methods-row');
+        if (emptyRow) emptyRow.remove();
+
+        const row = document.createElement('div');
+        row.className = 'payment-method-row';
+        row.dataset.key = pm.key;
+        row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;';
+        const infoDiv = document.createElement('div');
+        const strong = document.createElement('strong');
+        strong.style.cssText = 'color:#5c1d37; font-size:1.05rem;';
+        strong.textContent = pm.name;
+        infoDiv.appendChild(strong);
+        infoDiv.append(': ');
+        const code = document.createElement('code');
+        code.textContent = pm.handle;
+        infoDiv.appendChild(code);
+        if (pm.instructions) {
+            const p = document.createElement('p');
+            p.style.cssText = 'font-size:0.85rem; color:#666; margin-top:2px;';
+            p.textContent = pm.instructions;
+            infoDiv.appendChild(p);
+        }
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'btn btn-sm btn-outline';
+        removeBtn.style.cssText = 'color:#d9534f; border-color:#d9534f;';
+        removeBtn.textContent = 'Remove';
+        removeBtn.onclick = () => window.removePaymentMethod(pm.key, removeBtn);
+        row.appendChild(infoDiv);
+        row.appendChild(removeBtn);
+        payList.prepend(row);
+    }
+
+    window.removePaymentMethod = function(key, btnElement) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+        fetch(`/dashboard/payment-methods/${key}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const row = btnElement.closest('.payment-method-row');
+                if (row) row.remove();
+                const payList = document.getElementById('payment-methods-list');
+                if (payList && !payList.querySelector('.payment-method-row')) {
+                    const empty = document.createElement('p');
+                    empty.id = 'no-payment-methods-row';
+                    empty.style.cssText = 'color:#888; text-align:center; padding:10px;';
+                    empty.textContent = 'No payment methods configured yet. Add one above.';
+                    payList.appendChild(empty);
+                }
+            } else {
+                alert('Error removing payment method: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(err => {
+            console.error('Remove Payment Method Error:', err);
+            alert('Failed to remove payment method.');
+        });
+    };
 
     // Email Routing Form Handler
     const emailForm = document.getElementById('email-routing-form');

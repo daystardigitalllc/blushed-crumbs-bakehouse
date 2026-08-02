@@ -988,20 +988,19 @@
                 <div class="form-builder-card">
                     <h4>Active Payment Handles & Methods</h4>
                     <div id="payment-methods-list">
-                        <div class="payment-method-row" style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;">
-                            <div>
-                                <strong style="color:#5c1d37; font-size:1.05rem;">Venmo</strong>: <code>{{ !empty($tenant->payment_settings['venmo']) ? $tenant->payment_settings['venmo'] : 'Not Configured' }}</code>
-                                <p style="font-size:0.85rem; color:#666; margin-top:2px;">Include Order # in payment memo</p>
+                        @forelse($tenant->normalizedPaymentMethods() as $pm)
+                            <div class="payment-method-row" data-key="{{ $pm['key'] }}" style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;">
+                                <div>
+                                    <strong style="color:#5c1d37; font-size:1.05rem;">{{ $pm['name'] }}</strong>: <code>{{ $pm['handle'] }}</code>
+                                    @if(!empty($pm['instructions']))
+                                        <p style="font-size:0.85rem; color:#666; margin-top:2px;">{{ $pm['instructions'] }}</p>
+                                    @endif
+                                </div>
+                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="removePaymentMethod('{{ $pm['key'] }}', this)">Remove</button>
                             </div>
-                            <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Remove</button>
-                        </div>
-                        <div class="payment-method-row" style="display:flex; justify-content:space-between; align-items:center; background:white; padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid #eee;">
-                            <div>
-                                <strong style="color:#5c1d37; font-size:1.05rem;">CashApp</strong>: <code>{{ !empty($tenant->payment_settings['cashapp']) ? $tenant->payment_settings['cashapp'] : 'Not Configured' }}</code>
-                                <p style="font-size:0.85rem; color:#666; margin-top:2px;">Include Order # in payment memo</p>
-                            </div>
-                            <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="this.parentElement.remove()">Remove</button>
-                        </div>
+                        @empty
+                            <p id="no-payment-methods-row" style="color:#888; text-align:center; padding:10px;">No payment methods configured yet. Add one above.</p>
+                        @endforelse
                     </div>
                 </div>
             </div>

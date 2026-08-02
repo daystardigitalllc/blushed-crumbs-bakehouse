@@ -264,24 +264,7 @@ class StorefrontController extends Controller
             $tenant = Tenant::find($invoice->tenant_id) ?? $tenant;
         }
 
-        $rawSettings = $tenant->payment_settings ?? [];
-        $paymentSettings = [];
-
-        if (is_array($rawSettings)) {
-            foreach ($rawSettings as $key => $val) {
-                if (is_array($val)) {
-                    $paymentSettings[] = [
-                        'name' => $val['name'] ?? ucfirst($key),
-                        'handle' => $val['handle'] ?? ($val['username'] ?? ''),
-                    ];
-                } elseif (is_string($val) && !empty(trim($val))) {
-                    $paymentSettings[] = [
-                        'name' => ucfirst($key),
-                        'handle' => $val,
-                    ];
-                }
-            }
-        }
+        $paymentSettings = $tenant->normalizedPaymentMethods();
 
         return view('invoices.show', compact('tenant', 'invoice', 'paymentSettings'));
     }

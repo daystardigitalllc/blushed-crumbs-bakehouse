@@ -122,35 +122,21 @@
                 <h3>💳 Payment Methods</h3>
                 <p>Please use one of the following methods to submit your payment:</p>
                 
-                @if(!empty($paymentSettings['venmo']))
+                @forelse($paymentSettings as $pm)
                 <div class="payment-method">
-                    <strong>Venmo:</strong> {{ $paymentSettings['venmo'] }}
+                    <strong>{{ $pm['name'] }}:</strong>
+                    @if(strtolower($pm['name']) === 'paypal')
+                        <a href="{{ $pm['handle'] }}" style="color:#e67399;">{{ $pm['handle'] }}</a>
+                    @else
+                        {{ $pm['handle'] }}
+                    @endif
+                    @if(!empty($pm['instructions']))
+                        <div style="font-size:0.8rem; color:#888; margin-top:2px;">{{ $pm['instructions'] }}</div>
+                    @endif
                 </div>
-                @endif
-
-                @if(!empty($paymentSettings['cashapp']))
-                <div class="payment-method">
-                    <strong>Cash App:</strong> {{ $paymentSettings['cashapp'] }}
-                </div>
-                @endif
-
-                @if(!empty($paymentSettings['paypal']))
-                <div class="payment-method">
-                    <strong>PayPal:</strong> <a href="{{ $paymentSettings['paypal'] }}" style="color:#e67399;">{{ $paymentSettings['paypal'] }}</a>
-                </div>
-                @endif
-
-                @if(!empty($paymentSettings['zelle']))
-                <div class="payment-method">
-                    <strong>Zelle:</strong> {{ $paymentSettings['zelle'] }}
-                </div>
-                @endif
-
-                @if(!empty($paymentSettings['bank_name']))
-                <div class="payment-method">
-                    <strong>Bank Transfer:</strong> {{ $paymentSettings['bank_name'] }}
-                </div>
-                @endif
+                @empty
+                <p style="font-size:0.9rem; color:#888;">No payment methods have been configured yet.</p>
+                @endforelse
             </div>
 
             <p style="text-align:center; color:#888; font-size:14px;">

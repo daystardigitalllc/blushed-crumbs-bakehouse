@@ -656,6 +656,45 @@ class Tenant extends Model implements TenancyContract
         return [];
     }
 
+    /**
+     * Flattens payment_settings (a mix of legacy flat strings like
+     * ['venmo' => '@handle'] and custom entries like
+     * ['custom_abc123' => ['name' => 'Apple Pay', 'handle' => '...', 'instructions' => '...']])
+     * into one consistent list, so the dashboard, invoice email, and
+     * customer-facing invoice page all render the same data the same way.
+     */
+    public function normalizedPaymentMethods(): array
+    {
+        $raw = $this->payment_settings ?? [];
+        $out = [];
+
+        if (is_array($raw)) {
+            foreach ($raw as $key => $val) {
+                if (is_array($val)) {
+                    $handle = $val['handle'] ?? ($val['username'] ?? '');
+                    if (trim((string) $handle) === '') {
+                        continue;
+                    }
+                    $out[] = [
+                        'key' => $key,
+                        'name' => $val['name'] ?? ucfirst($key),
+                        'handle' => $handle,
+                        'instructions' => $val['instructions'] ?? null,
+                    ];
+                } elseif (is_string($val) && trim($val) !== '') {
+                    $out[] = [
+                        'key' => $key,
+                        'name' => ucfirst($key),
+                        'handle' => $val,
+                        'instructions' => null,
+                    ];
+                }
+            }
+        }
+
+        return $out;
+    }
+
     // ─── Relationships ───
 
     public function brand()
