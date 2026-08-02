@@ -253,6 +253,72 @@
                         to { opacity: 1; }
                     }
 
+                    /* Photo count chip — jumps straight to the gallery without expanding the card */
+                    .photo-count-chip {
+                        background: #1e293b;
+                        color: #fff;
+                        border: none;
+                        font-size: 0.75rem;
+                        font-weight: 700;
+                        padding: 5px 10px;
+                        border-radius: 20px;
+                        cursor: pointer;
+                        min-height: 32px;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 4px;
+                    }
+
+                    /* Lightbox close/nav controls — sized for messy-hands tapping */
+                    .lightbox-close-btn {
+                        position: absolute;
+                        top: -48px;
+                        right: 0;
+                        background: rgba(0,0,0,0.4);
+                        border: none;
+                        color: white;
+                        font-size: 1.5rem;
+                        width: 44px;
+                        height: 44px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    .lightbox-nav-btn {
+                        position: absolute;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        background: rgba(0,0,0,0.45);
+                        border: none;
+                        color: white;
+                        font-size: 2rem;
+                        line-height: 1;
+                        width: 48px;
+                        height: 48px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        display: none;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    .lightbox-prev-btn { left: -8px; }
+                    .lightbox-next-btn { right: -8px; }
+                    .lightbox-counter {
+                        position: absolute;
+                        bottom: -36px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: rgba(0,0,0,0.5);
+                        color: white;
+                        font-size: 0.8rem;
+                        font-weight: 700;
+                        padding: 4px 12px;
+                        border-radius: 20px;
+                        display: none;
+                    }
+
                     /* Toggle buttons styling */
                     .active-toggle-btn {
                         background: var(--primary) !important;
@@ -330,6 +396,47 @@
                             justify-content: center;
                         }
                     }
+
+                    /* Bigger touch targets for tapping with messy/floury hands */
+                    @media (max-width: 768px) {
+                        .admin-main-content select.status-select {
+                            height: 42px !important;
+                            min-width: 150px !important;
+                            font-size: 0.8rem !important;
+                        }
+                        .advance-status-btn {
+                            padding: 10px 14px !important;
+                            font-size: 0.85rem !important;
+                            min-height: 40px;
+                        }
+                        .inspiration-thumb-container {
+                            width: 96px !important;
+                            height: 96px !important;
+                        }
+                        .lightbox-close-btn {
+                            top: 8px;
+                            right: 8px;
+                        }
+                        .lightbox-prev-btn { left: 4px; }
+                        .lightbox-next-btn { right: 4px; }
+                        .lightbox-counter {
+                            bottom: 8px;
+                        }
+                    }
+
+                    @media (max-width: 480px) {
+                        .order-card-header {
+                            flex-direction: column;
+                            align-items: flex-start !important;
+                        }
+                        .order-card-header > div:last-child {
+                            width: 100%;
+                        }
+                        .order-card-header > div:last-child select.status-select {
+                            width: 100%;
+                            min-width: 0 !important;
+                        }
+                    }
                 </style>
 
                 <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom: 24px;">
@@ -362,6 +469,10 @@
                         @php
                             $dueDate = \Carbon\Carbon::parse($order->due_date);
                             $isUrgent = $dueDate->isToday() || $dueDate->isTomorrow() || $dueDate->diffInDays(now()) <= 2;
+                            $orderPhotoUrls = collect($order->inspiration_files ?? [])
+                                ->filter(fn($f) => is_string($f) && file_exists(public_path($f)))
+                                ->map(fn($f) => asset($f))
+                                ->values();
                         @endphp
                         <div class="order-card collapsible-card {{ $isUrgent ? 'urgent-border' : '' }}" data-id="{{ $order->id }}" data-fulfillment="{{ $order->fulfillment_type }}" style="padding:0; overflow:hidden;">
                             <div class="order-card-header" onclick="toggleOrderCardCollapse(this)" style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:12px;">
@@ -371,9 +482,15 @@
                                         DUE: {{ $dueDate->format('M d, Y') }} ({{ $order->time_slot }})
                                     </div>
                                     <h4 style="margin:0; font-size:1.05rem; font-weight:700; color:#5c1d37;">#{{ $order->order_number }} - {{ $order->client_name }}</h4>
-                                    
+
                                     @if($order->allergies)
                                         <span class="allergy-pinned-badge">⚠️ ALLERGIES</span>
+                                    @endif
+
+                                    @if($orderPhotoUrls->isNotEmpty())
+                                        <button type="button" class="photo-count-chip" onclick='event.stopPropagation(); openOrderLightbox(@json($orderPhotoUrls), 0)' title="View reference photos">
+                                            📷 {{ $orderPhotoUrls->count() }}
+                                        </button>
                                     @endif
                                 </div>
                                 <div onclick="event.stopPropagation()">
@@ -415,16 +532,14 @@
                                     @endif
 
                                     <!-- Inspiration Photos (Thumbnails with Lightbox Zoom) -->
-                                    @if(!empty($order->inspiration_files) && is_array($order->inspiration_files) && count($order->inspiration_files) > 0)
+                                    @if($orderPhotoUrls->isNotEmpty())
                                         <div class="inspiration-section" style="margin-top:16px; border-top:1px solid #f1f5f9; padding-top:12px;">
                                             <strong style="display:block; margin-bottom:8px; font-size:0.85rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em;">Inspiration Photos</strong>
                                             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                                @foreach($order->inspiration_files as $idx => $filePath)
-                                                    @if(file_exists(public_path($filePath)))
-                                                        <div class="inspiration-thumb-container" style="position:relative; width:80px; height:80px; border-radius:8px; overflow:hidden; border:2px solid #e2e8f0; cursor:pointer;" onclick="openOrderLightbox('{{ asset($filePath) }}')">
-                                                            <img src="{{ asset($filePath) }}" alt="Inspiration {{ $idx + 1 }}" style="width:100%; height:100%; object-fit:cover;">
-                                                        </div>
-                                                    @endif
+                                                @foreach($orderPhotoUrls as $idx => $url)
+                                                    <div class="inspiration-thumb-container" style="position:relative; width:80px; height:80px; border-radius:8px; overflow:hidden; border:2px solid #e2e8f0; cursor:pointer;" onclick='openOrderLightbox(@json($orderPhotoUrls), {{ $idx }})'>
+                                                        <img src="{{ $url }}" alt="Inspiration {{ $idx + 1 }}" style="width:100%; height:100%; object-fit:cover;">
+                                                    </div>
                                                 @endforeach
                                             </div>
                                         </div>
@@ -481,6 +596,10 @@
                                     @php
                                         $dueDate = \Carbon\Carbon::parse($order->due_date);
                                         $isUrgent = $dueDate->isToday() || $dueDate->isTomorrow() || $dueDate->diffInDays(now()) <= 2;
+                                        $orderPhotoUrls = collect($order->inspiration_files ?? [])
+                                            ->filter(fn($f) => is_string($f) && file_exists(public_path($f)))
+                                            ->map(fn($f) => asset($f))
+                                            ->values();
                                     @endphp
                                     <div class="board-order-card {{ $isUrgent ? 'board-urgent-border' : '' }}" data-id="{{ $order->id }}" draggable="true" ondragstart="handleBoardCardDragStart(event)" style="background:white; border:1px solid #cbd5e1; border-radius:12px; padding:14px; box-shadow:0 2px 6px rgba(0,0,0,0.04); position:relative; cursor: grab;">
                                         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
@@ -505,13 +624,13 @@
                                             @endif
                                         </p>
 
-                                        @if(!empty($order->inspiration_files) && is_array($order->inspiration_files) && count($order->inspiration_files) > 0)
-                                            @php $firstFile = $order->inspiration_files[0]; @endphp
-                                            @if(file_exists(public_path($firstFile)))
-                                                <div onclick="openOrderLightbox('{{ asset($firstFile) }}')" style="width:100%; height:80px; border-radius:6px; overflow:hidden; border:1px solid #e2e8f0; margin-bottom:10px; cursor:pointer;">
-                                                    <img src="{{ asset($firstFile) }}" alt="Inspiration" style="width:100%; height:100%; object-fit:cover;">
-                                                </div>
-                                            @endif
+                                        @if($orderPhotoUrls->isNotEmpty())
+                                            <div onclick='openOrderLightbox(@json($orderPhotoUrls), 0)' style="width:100%; height:80px; border-radius:6px; overflow:hidden; border:1px solid #e2e8f0; margin-bottom:10px; cursor:pointer; position:relative;">
+                                                <img src="{{ $orderPhotoUrls->first() }}" alt="Inspiration" style="width:100%; height:100%; object-fit:cover;">
+                                                @if($orderPhotoUrls->count() > 1)
+                                                    <span style="position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.65); color:#fff; font-size:0.68rem; font-weight:700; padding:2px 6px; border-radius:10px;">+{{ $orderPhotoUrls->count() - 1 }}</span>
+                                                @endif
+                                            </div>
                                         @endif
 
                                         <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f1f5f9; padding-top:8px; margin-top:8px;">
@@ -524,7 +643,7 @@
                                                     $nextStatus = ($currentIdx !== false && $currentIdx < count($statusKeys) - 1) ? $statusKeys[$currentIdx + 1] : null;
                                                 @endphp
                                                 @if($nextStatus)
-                                                    <button type="button" class="btn btn-sm" onclick="advanceOrderStatus({{ $order->id }}, '{{ $nextStatus }}')" style="background:var(--pink-bg); color:var(--primary); font-weight:700; border:none; padding:4px 8px; border-radius:6px; font-size:0.75rem; cursor:pointer;" title="Move to {{ ucfirst($nextStatus) }}">
+                                                    <button type="button" class="btn btn-sm advance-status-btn" onclick="advanceOrderStatus({{ $order->id }}, '{{ $nextStatus }}')" style="background:var(--pink-bg); color:var(--primary); font-weight:700; border:none; padding:4px 8px; border-radius:6px; font-size:0.75rem; cursor:pointer;" title="Move to {{ ucfirst($nextStatus) }}">
                                                         Advance ➔
                                                     </button>
                                                 @endif
@@ -541,11 +660,14 @@
                     @endforeach
                 </div>
 
-                <!-- REUSABLE LIGHTBOX MODAL -->
+                <!-- REUSABLE LIGHTBOX MODAL (gallery-aware: prev/next + swipe) -->
                 <div id="order-lightbox-modal" class="order-modal-overlay" style="display:none; z-index:100001;" onclick="closeOrderLightbox()">
-                    <div style="position:relative; max-width:90%; max-height:90%;" onclick="event.stopPropagation()">
-                        <img id="order-lightbox-img" src="" alt="Zoomed Inspiration Photo" style="max-width:100%; max-height:85vh; border-radius:12px; box-shadow:0 25px 50px rgba(0,0,0,0.3); border:3px solid #fff; display:block;">
-                        <button type="button" style="position:absolute; top:-40px; right:0; background:none; border:none; color:white; font-size:2rem; cursor:pointer;" onclick="closeOrderLightbox()">✕</button>
+                    <div style="position:relative; max-width:92%; max-height:92%;" onclick="event.stopPropagation()">
+                        <img id="order-lightbox-img" src="" alt="Zoomed Inspiration Photo" style="max-width:100%; max-height:85vh; border-radius:12px; box-shadow:0 25px 50px rgba(0,0,0,0.3); border:3px solid #fff; display:block; touch-action:pan-y;">
+                        <button type="button" class="lightbox-close-btn" onclick="closeOrderLightbox()" title="Close">✕</button>
+                        <button type="button" id="lightbox-prev-btn" class="lightbox-nav-btn lightbox-prev-btn" onclick="lightboxStep(-1)" title="Previous photo">‹</button>
+                        <button type="button" id="lightbox-next-btn" class="lightbox-nav-btn lightbox-next-btn" onclick="lightboxStep(1)" title="Next photo">›</button>
+                        <div id="lightbox-counter" class="lightbox-counter"></div>
                     </div>
                 </div>
 
@@ -746,19 +868,77 @@
                         printWindow.document.close();
                     };
 
-                    window.openOrderLightbox = function(src) {
+                    // Gallery state for the reference-photo lightbox
+                    window._lightboxGallery = [];
+                    window._lightboxIndex = 0;
+
+                    window.openOrderLightbox = function(urlsOrSrc, startIndex) {
                         const modal = document.getElementById('order-lightbox-modal');
                         const img = document.getElementById('order-lightbox-img');
-                        if (modal && img) {
-                            img.src = src;
-                            modal.style.display = 'flex';
+                        if (!modal || !img) return;
+
+                        window._lightboxGallery = Array.isArray(urlsOrSrc) ? urlsOrSrc : [urlsOrSrc];
+                        window._lightboxIndex = startIndex || 0;
+
+                        window._renderLightboxImage();
+                        modal.style.display = 'flex';
+                    };
+
+                    window._renderLightboxImage = function() {
+                        const img = document.getElementById('order-lightbox-img');
+                        const counter = document.getElementById('lightbox-counter');
+                        const prevBtn = document.getElementById('lightbox-prev-btn');
+                        const nextBtn = document.getElementById('lightbox-next-btn');
+                        const gallery = window._lightboxGallery;
+                        if (!img || !gallery.length) return;
+
+                        img.src = gallery[window._lightboxIndex];
+
+                        const showNav = gallery.length > 1;
+                        if (prevBtn) prevBtn.style.display = showNav ? 'flex' : 'none';
+                        if (nextBtn) nextBtn.style.display = showNav ? 'flex' : 'none';
+                        if (counter) {
+                            counter.style.display = showNav ? 'block' : 'none';
+                            counter.innerText = `${window._lightboxIndex + 1} / ${gallery.length}`;
                         }
+                    };
+
+                    window.lightboxStep = function(direction) {
+                        const gallery = window._lightboxGallery;
+                        if (!gallery.length) return;
+                        window._lightboxIndex = (window._lightboxIndex + direction + gallery.length) % gallery.length;
+                        window._renderLightboxImage();
                     };
 
                     window.closeOrderLightbox = function() {
                         const modal = document.getElementById('order-lightbox-modal');
                         if (modal) modal.style.display = 'none';
                     };
+
+                    // Keyboard navigation (desktop) + swipe navigation (touch/mobile)
+                    document.addEventListener('keydown', (event) => {
+                        const modal = document.getElementById('order-lightbox-modal');
+                        if (!modal || modal.style.display !== 'flex') return;
+                        if (event.key === 'Escape') window.closeOrderLightbox();
+                        if (event.key === 'ArrowLeft') window.lightboxStep(-1);
+                        if (event.key === 'ArrowRight') window.lightboxStep(1);
+                    });
+
+                    (function setupLightboxSwipe() {
+                        let touchStartX = 0;
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const modal = document.getElementById('order-lightbox-modal');
+                            if (!modal) return;
+                            modal.addEventListener('touchstart', (event) => {
+                                touchStartX = event.changedTouches[0].screenX;
+                            }, { passive: true });
+                            modal.addEventListener('touchend', (event) => {
+                                const deltaX = event.changedTouches[0].screenX - touchStartX;
+                                if (Math.abs(deltaX) < 40) return;
+                                window.lightboxStep(deltaX < 0 ? 1 : -1);
+                            }, { passive: true });
+                        });
+                    })();
 
                     // HTML5 Drag and Drop Functions for Kanban Board
                     window.handleBoardCardDragStart = function(event) {
