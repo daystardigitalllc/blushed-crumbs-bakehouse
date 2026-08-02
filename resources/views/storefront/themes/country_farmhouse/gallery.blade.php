@@ -53,10 +53,9 @@
     <section class="gallery-page-section" style="padding-top:0;">
         <div class="gallery-filter-bar">
             <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="Cakes">Cakes</button>
-            <button class="filter-btn" data-filter="Cupcakes">Cupcakes</button>
-            <button class="filter-btn" data-filter="Treats">Treats</button>
-            <button class="filter-btn" data-filter="Weddings">Weddings</button>
+            @foreach($tenant->galleryCategories() as $galCat)
+                <button class="filter-btn" data-filter="{{ $galCat }}">{{ $galCat }}</button>
+            @endforeach
         </div>
 
         <!-- gallery-masonry-grid is kept (not renamed) since app.js's filter

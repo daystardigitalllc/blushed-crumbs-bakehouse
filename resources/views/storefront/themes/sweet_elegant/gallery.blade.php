@@ -51,10 +51,9 @@
 
         <div class="gallery-filter-bar">
             <button class="filter-btn active" data-filter="all">All Sweets</button>
-            <button class="filter-btn" data-filter="Cakes">Custom Cakes</button>
-            <button class="filter-btn" data-filter="Cupcakes">Cupcakes & Shooters</button>
-            <button class="filter-btn" data-filter="Treats">Chocolate Treats</button>
-            <button class="filter-btn" data-filter="Weddings">Weddings</button>
+            @foreach($tenant->galleryCategories() as $galCat)
+                <button class="filter-btn" data-filter="{{ $galCat }}">{{ $galCat }}</button>
+            @endforeach
         </div>
 
         <div class="gallery-masonry-grid" id="public-gallery-grid">

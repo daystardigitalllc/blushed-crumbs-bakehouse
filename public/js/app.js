@@ -1934,11 +1934,19 @@ window.deleteProduct = async function(productId, btnElement) {
                             adminItem.innerHTML = `
                                 <div style="display:flex; align-items:center; gap:15px;">
                                     <img src="${item.image_url}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
-                                    <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${item.category}</span>
+                                    <select class="gallery-item-category-select" onchange="updateGalleryItemCategory(${item.id}, this)" style="padding:7px 10px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem; font-weight:600; color:var(--primary);"></select>
                                 </div>
                                 <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem(${item.id}, this)">Delete</button>
                             `;
                             adminItem.querySelector('img').alt = item.title || '';
+                            const categorySelect = adminItem.querySelector('.gallery-item-category-select');
+                            (window.galleryCategories || [item.category]).forEach(cat => {
+                                const opt = document.createElement('option');
+                                opt.value = cat;
+                                opt.textContent = cat;
+                                if (cat === item.category) opt.selected = true;
+                                categorySelect.appendChild(opt);
+                            });
                             adminGalleryList.prepend(adminItem);
                         }
 
@@ -2019,6 +2027,164 @@ window.deleteProduct = async function(productId, btnElement) {
         .catch(err => {
             console.error('Delete Gallery Error:', err);
             alert('An error occurred while deleting the gallery photo.');
+        });
+    };
+
+    // Per-photo category dropdown - saves immediately on change, no reload.
+    window.updateGalleryItemCategory = function(id, selectEl) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+        const newCategory = selectEl.value;
+        const previousCategory = selectEl.dataset.prevValue || newCategory;
+        selectEl.disabled = true;
+
+        fetch('/dashboard/gallery/' + id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ category: newCategory })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                selectEl.dataset.prevValue = newCategory;
+                const card = document.querySelector(`#public-gallery-grid .gallery-card[data-id="${id}"]`);
+                if (card) card.dataset.category = newCategory;
+                if (window.showToast) window.showToast('Category updated!', 'success');
+            } else {
+                selectEl.value = previousCategory;
+                alert('Error updating category: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(err => {
+            console.error('Update Gallery Category Error:', err);
+            selectEl.value = previousCategory;
+            alert('Failed to update category.');
+        })
+        .finally(() => {
+            selectEl.disabled = false;
+        });
+    };
+
+    // Add/Remove Gallery Categories - keeps the upload form select and every
+    // per-photo row select in sync without a reload.
+    const addGalleryCategoryForm = document.getElementById('add-gallery-category-form');
+    if (addGalleryCategoryForm) {
+        addGalleryCategoryForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('new-gallery-category-name');
+            const name = input.value.trim();
+            if (!name) return;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+            fetch('/dashboard/gallery-categories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ name })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.galleryCategories = data.categories || window.galleryCategories;
+                    addGalleryCategoryChip(name);
+                    addGalleryCategoryOption('gal-category', name);
+                    document.querySelectorAll('.gallery-item-category-select').forEach(sel => addGalleryCategoryOption(sel, name));
+                    input.value = '';
+                    if (window.showToast) window.showToast('Category added!', 'success');
+                } else {
+                    alert('Error adding category: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                console.error('Add Gallery Category Error:', err);
+                alert('Failed to add category.');
+            });
+        });
+    }
+
+    function addGalleryCategoryChip(name) {
+        const wrap = document.getElementById('gallery-category-chips');
+        if (!wrap || wrap.querySelector(`.gallery-category-chip[data-category="${CSS.escape(name)}"]`)) return;
+
+        const chip = document.createElement('span');
+        chip.className = 'gallery-category-chip';
+        chip.dataset.category = name;
+        chip.style.cssText = 'display:flex; align-items:center; gap:6px; background:var(--theme-section-bg, #fff7fa); border:1px solid #f0d4e4; color:#5c1d37; font-weight:600; font-size:0.85rem; padding:6px 8px 6px 14px; border-radius:20px;';
+
+        const label = document.createElement('span');
+        label.className = 'gallery-category-chip-label';
+        label.textContent = name;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.title = 'Remove category';
+        removeBtn.style.cssText = 'background:none; border:none; color:#a1a1aa; cursor:pointer; font-size:0.95rem; line-height:1; padding:2px 4px;';
+        removeBtn.textContent = '✕';
+        removeBtn.onclick = () => window.removeGalleryCategory(name, removeBtn);
+
+        chip.appendChild(label);
+        chip.appendChild(removeBtn);
+        wrap.appendChild(chip);
+    }
+
+    function addGalleryCategoryOption(selectOrId, name) {
+        const select = typeof selectOrId === 'string' ? document.getElementById(selectOrId) : selectOrId;
+        if (!select) return;
+        if (Array.from(select.options).some(o => o.value === name)) return;
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+    }
+
+    window.removeGalleryCategory = function(name, btnElement) {
+        if (!confirm(`Remove the "${name}" category? Photos already tagged with it will keep that tag until you re-tag them.`)) return;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+        fetch('/dashboard/gallery-categories', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ name })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.galleryCategories = data.categories || window.galleryCategories;
+                const chip = btnElement.closest('.gallery-category-chip');
+                if (chip) chip.remove();
+
+                // Remove the option everywhere it's not the currently-selected
+                // value (a row still tagged with it keeps showing it so
+                // nothing looks broken - it just won't offer to re-select it).
+                document.querySelectorAll(`#gal-category option[value="${CSS.escape(name)}"]`).forEach(opt => opt.remove());
+                document.querySelectorAll('.gallery-item-category-select').forEach(sel => {
+                    if (sel.value !== name) {
+                        const opt = Array.from(sel.options).find(o => o.value === name);
+                        if (opt) opt.remove();
+                    } else {
+                        const opt = Array.from(sel.options).find(o => o.value === name);
+                        if (opt) opt.textContent = name + ' (removed)';
+                    }
+                });
+
+                if (window.showToast) window.showToast('Category removed.', 'success');
+            } else {
+                alert('Error removing category: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(err => {
+            console.error('Remove Gallery Category Error:', err);
+            alert('Failed to remove category.');
         });
     };
 

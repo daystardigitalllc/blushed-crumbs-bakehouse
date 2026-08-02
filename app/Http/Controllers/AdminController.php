@@ -268,6 +268,85 @@ class AdminController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Photos published to live gallery!');
     }
 
+    public function updateGalleryCategory(Request $request, $id)
+    {
+        $tenant = $this->tenant($request);
+        $item = GalleryItem::where('tenant_id', $tenant->id)->findOrFail($id);
+
+        $validated = $request->validate([
+            'category' => 'required|string|max:255',
+        ]);
+
+        $item->update(['category' => $validated['category']]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category updated!',
+            'item' => [
+                'id' => $item->id,
+                'category' => $item->category,
+            ],
+        ]);
+    }
+
+    public function addGalleryCategory(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:50',
+        ]);
+
+        $name = trim($validated['name']);
+        $categories = $tenant->galleryCategories();
+
+        if (!in_array(strtolower($name), array_map('strtolower', $categories), true)) {
+            $categories[] = $name;
+            $tenant->update(['gallery_categories' => $categories]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category added!',
+            'categories' => $tenant->fresh()->galleryCategories(),
+        ]);
+    }
+
+    public function removeGalleryCategory(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:50',
+        ]);
+
+        $existing = $tenant->galleryCategories();
+
+        if (count($existing) <= 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You need at least one gallery category.',
+            ], 422);
+        }
+
+        $categories = array_values(array_filter(
+            $existing,
+            fn ($c) => strtolower($c) !== strtolower(trim($validated['name']))
+        ));
+
+        // Photos already tagged with the removed category keep that value
+        // untouched in the DB - they just won't appear in the option list
+        // going forward until re-tagged (the per-row dropdown still shows
+        // their current value as a fallback option so nothing looks broken).
+        $tenant->update(['gallery_categories' => $categories]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category removed.',
+            'categories' => $tenant->fresh()->galleryCategories(),
+        ]);
+    }
+
     public function destroyGallery(Request $request, $id)
     {
         $tenant = $this->tenant($request);

@@ -835,9 +835,29 @@
 
 
             <div id="tab-gallery-manager" class="tab-content">
+                @php $galleryCategories = $tenant->galleryCategories(); @endphp
+                <script>window.galleryCategories = @json($galleryCategories);</script>
                 <div class="section-header">
                     <h3>Device Gallery</h3>
                     <p class="subtitle">Upload photos from your computer, phone, or tablet. They'll publish to your public <strong>/gallery</strong> page.</p>
+                </div>
+
+                <!-- MANAGE CATEGORIES -->
+                <div class="form-builder-card">
+                    <h4>Gallery Categories</h4>
+                    <p class="subtitle">These show up as filter buttons on your public gallery page and as options when tagging a photo.</p>
+                    <div id="gallery-category-chips" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">
+                        @foreach($galleryCategories as $cat)
+                            <span class="gallery-category-chip" data-category="{{ $cat }}" style="display:flex; align-items:center; gap:6px; background:var(--theme-section-bg, #fff7fa); border:1px solid #f0d4e4; color:#5c1d37; font-weight:600; font-size:0.85rem; padding:6px 8px 6px 14px; border-radius:20px;">
+                                <span class="gallery-category-chip-label">{{ $cat }}</span>
+                                <button type="button" onclick="removeGalleryCategory('{{ $cat }}', this)" style="background:none; border:none; color:#a1a1aa; cursor:pointer; font-size:0.95rem; line-height:1; padding:2px 4px;" title="Remove category">✕</button>
+                            </span>
+                        @endforeach
+                    </div>
+                    <form id="add-gallery-category-form" style="display:flex; gap:10px; max-width:400px;">
+                        <input type="text" id="new-gallery-category-name" placeholder="e.g. Birthday Cakes" style="flex:1; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de;" maxlength="50" required>
+                        <button type="submit" class="btn btn-outline" style="white-space:nowrap;">+ Add Category</button>
+                    </form>
                 </div>
 
                 <div class="form-builder-card">
@@ -847,10 +867,9 @@
                         <div>
                             <label>Gallery Category</label>
                             <select id="gal-category" name="category">
-                                <option value="Cakes">Custom Cakes</option>
-                                <option value="Cupcakes">Cupcakes & Shooters</option>
-                                <option value="Treats">Chocolate Treats</option>
-                                <option value="Weddings">Weddings</option>
+                                @foreach($galleryCategories as $cat)
+                                    <option value="{{ $cat }}">{{ $cat }}</option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -882,7 +901,14 @@
                                 <div style="display:flex; align-items:center; gap:15px;">
                                     @php $src = $item->image_url ?? $item->image_path; @endphp
                                     <img src="{{ asset($src) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
-                                    <span style="font-size:0.8rem; color:var(--primary); font-weight:600;">{{ $item->category }}</span>
+                                    <select class="gallery-item-category-select" onchange="updateGalleryItemCategory({{ $item->id }}, this)" style="padding:7px 10px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem; font-weight:600; color:var(--primary);">
+                                        @foreach($galleryCategories as $cat)
+                                            <option value="{{ $cat }}" {{ $item->category === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                                        @endforeach
+                                        @if(!in_array($item->category, $galleryCategories, true))
+                                            <option value="{{ $item->category }}" selected>{{ $item->category }} (removed)</option>
+                                        @endif
+                                    </select>
                                 </div>
                                 <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
                             </div>

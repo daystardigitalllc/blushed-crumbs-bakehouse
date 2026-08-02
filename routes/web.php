@@ -159,7 +159,10 @@ Route::middleware(['auth', \App\Http\Middleware\SuperAdminMiddleware::class])->p
 Route::middleware(['auth', 'tenant.owner'])->prefix('dashboard')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('baker.dashboard');
     Route::post('/gallery', [AdminController::class, 'storeGallery'])->name('admin.gallery.store');
+    Route::put('/gallery/{id}', [AdminController::class, 'updateGalleryCategory'])->name('admin.gallery.category.update');
     Route::delete('/gallery/{id}', [AdminController::class, 'destroyGallery'])->name('admin.gallery.destroy');
+    Route::post('/gallery-categories', [AdminController::class, 'addGalleryCategory'])->name('admin.gallery.categories.store');
+    Route::delete('/gallery-categories', [AdminController::class, 'removeGalleryCategory'])->name('admin.gallery.categories.destroy');
     Route::post('/form-builder', [AdminController::class, 'saveFormSchema'])->name('admin.form.schema.save');
     Route::post('/settings/booking', [AdminController::class, 'saveBookingSettings'])->name('admin.settings.booking.save');
     Route::post('/settings/email', [AdminController::class, 'saveEmailRouting'])->name('admin.settings.email.save');

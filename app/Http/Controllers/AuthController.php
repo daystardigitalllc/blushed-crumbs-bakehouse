@@ -150,6 +150,7 @@ class AuthController extends Controller
                     'zelle' => '',
                     'paypal' => '',
                 ],
+                'gallery_categories' => ['Cakes', 'Cupcakes', 'Treats', 'Weddings'],
                 'booking_settings' => [
                     'lead_time_enabled' => true,
                     'lead_time_days' => 3,

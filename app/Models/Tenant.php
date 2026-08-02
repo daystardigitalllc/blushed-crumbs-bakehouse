@@ -63,6 +63,7 @@ class Tenant extends Model implements TenancyContract
         'pending_pro_theme_id',
         'logo_path',
         'gallery_images',
+        'gallery_categories',
         'instagram_url',
         'facebook_url',
         'payment_settings',
@@ -90,6 +91,7 @@ class Tenant extends Model implements TenancyContract
         'booking_settings' => 'array',
         'ai_generated_content' => 'array',
         'gallery_images' => 'array',
+        'gallery_categories' => 'array',
         'onboarding_completed' => 'boolean',
         'onboarding_started_at' => 'datetime',
         'onboarding_completed_at' => 'datetime',
@@ -693,6 +695,24 @@ class Tenant extends Model implements TenancyContract
         }
 
         return $out;
+    }
+
+    /**
+     * The baker's editable list of gallery categories. Falls back to the
+     * originally-hardcoded set for any tenant created before this existed.
+     */
+    public function galleryCategories(): array
+    {
+        $categories = $this->gallery_categories;
+
+        // Only a genuinely unconfigured (null) tenant falls back to the
+        // starter set - an intentionally emptied array stays empty rather
+        // than springing back to defaults every time this is read.
+        if (!is_array($categories)) {
+            return ['Cakes', 'Cupcakes', 'Treats', 'Weddings'];
+        }
+
+        return array_values($categories);
     }
 
     // ─── Relationships ───
