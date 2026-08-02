@@ -1934,13 +1934,11 @@ window.deleteProduct = async function(productId, btnElement) {
                             adminItem.innerHTML = `
                                 <div style="display:flex; align-items:center; gap:15px;">
                                     <img src="${item.image_url}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
-                                    <div>
-                                        <strong style="color:#5c1d37;">${item.title}</strong><br>
-                                        <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${item.category}</span>
-                                    </div>
+                                    <span style="font-size:0.8rem; color:#e67399; font-weight:600;">${item.category}</span>
                                 </div>
                                 <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem(${item.id}, this)">Delete</button>
                             `;
+                            adminItem.querySelector('img').alt = item.title || '';
                             adminGalleryList.prepend(adminItem);
                         }
 
@@ -1949,16 +1947,16 @@ window.deleteProduct = async function(productId, btnElement) {
                             card.className = 'gallery-card';
                             card.dataset.category = item.category;
                             card.dataset.id = item.id;
-                            card.onclick = () => openLightbox(item.image_url, item.title);
+                            card.onclick = () => openLightbox(item.image_url, '');
                             card.innerHTML = `
                                 <div class="gallery-card-img-wrap">
-                                    <img src="${item.image_url}" alt="${item.title}">
+                                    <img src="${item.image_url}">
                                 </div>
                                 <div class="gallery-card-info">
-                                    <h4>${item.title}</h4>
                                     <span class="gallery-tag">${item.category}</span>
                                 </div>
                             `;
+                            card.querySelector('img').alt = item.title || '';
                             mainGalleryGrid.prepend(card);
                         }
                     });

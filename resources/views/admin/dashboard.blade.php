@@ -844,20 +844,14 @@
                     <h4>Upload Photo From Device</h4>
                     <form id="add-gallery-form" action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:18px;">
                         @csrf
-                        <div class="form-builder-grid">
-                            <div>
-                                <label>Photo Title <span style="font-weight:400; color:#888; font-size:0.8rem;">(optional if uploading multiple)</span></label>
-                                <input type="text" id="gal-title" name="title" placeholder="e.g. Lavender Crown Vintage Cake">
-                            </div>
-                            <div>
-                                <label>Gallery Category</label>
-                                <select id="gal-category" name="category">
-                                    <option value="Cakes">Custom Cakes</option>
-                                    <option value="Cupcakes">Cupcakes & Shooters</option>
-                                    <option value="Treats">Chocolate Treats</option>
-                                    <option value="Weddings">Weddings</option>
-                                </select>
-                            </div>
+                        <div>
+                            <label>Gallery Category</label>
+                            <select id="gal-category" name="category">
+                                <option value="Cakes">Custom Cakes</option>
+                                <option value="Cupcakes">Cupcakes & Shooters</option>
+                                <option value="Treats">Chocolate Treats</option>
+                                <option value="Weddings">Weddings</option>
+                            </select>
                         </div>
 
                         <!-- DEVICE FILE PICKER & DROPZONE -->
@@ -888,10 +882,7 @@
                                 <div style="display:flex; align-items:center; gap:15px;">
                                     @php $src = $item->image_url ?? $item->image_path; @endphp
                                     <img src="{{ asset($src) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
-                                    <div>
-                                        <strong style="color:#5c1d37;">{{ $item->title }}</strong><br>
-                                        <span style="font-size:0.8rem; color:var(--primary); font-weight:600;">{{ $item->category }}</span>
-                                    </div>
+                                    <span style="font-size:0.8rem; color:var(--primary); font-weight:600;">{{ $item->category }}</span>
                                 </div>
                                 <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
                             </div>
@@ -2305,7 +2296,6 @@
                 <div class="gallery-picker-item" data-path="{{ $gSrc }}" onclick="handleGalleryPickerItemClick(this, @js(asset($gSrc)), @js($gSrc), @js($gItem->title))" style="cursor:pointer; border:2px solid var(--theme-section-bg, #e9d5ff); border-radius:10px; overflow:hidden; background:#ffffff; transition:all 0.2s ease; text-align:center; padding:6px; position:relative;">
                     <span class="gallery-picker-checkmark" style="display:none; position:absolute; top:4px; right:4px; background:#16a34a; color:white; width:22px; height:22px; border-radius:50%; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; z-index:2;">✓</span>
                     <img src="{{ asset($gSrc) }}" style="width:100%; height:90px; object-fit:cover; border-radius:6px; margin-bottom:4px;">
-                    <strong style="font-size:0.75rem; color:var(--dark-text); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $gItem->title }}</strong>
                     <span style="font-size:0.7rem; color:var(--primary);">{{ $gItem->category }}</span>
                 </div>
             @empty
