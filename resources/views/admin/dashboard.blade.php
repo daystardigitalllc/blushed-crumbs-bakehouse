@@ -409,6 +409,7 @@
                                             <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:3px 9px; font-size:0.78rem;" aria-label="Move up">↑</button>
                                             <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:3px 9px; font-size:0.78rem;" aria-label="Move down">↓</button>
                                             <label class="toggle-switch" style="transform:scale(0.8);">
+                                                <input type="hidden" name="sections[{{ $secId }}][enabled]" value="0">
                                                 <input type="checkbox" name="sections[{{ $secId }}][enabled]" value="1" {{ !empty($sec['enabled']) ? 'checked' : '' }}>
                                                 <span class="toggle-slider"></span>
                                             </label>
