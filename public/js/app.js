@@ -1328,17 +1328,54 @@ function initAdminPortal() {
     }
 
     // Render Form Studio Fields Visual Cards (Baker UI Optimizations)
+    // Ensure Products at Spot 1 (Index 0) and Contact Info at the End
+    function ensureCoreStepsExist() {
+        if (!window._customFields) window._customFields = [];
+
+        // 1. Ensure 'products' step exists and is at index 0
+        let prodIdx = window._customFields.findIndex(f => f.type === 'products');
+        if (prodIdx !== 0) {
+            if (prodIdx > 0) {
+                const [prod] = window._customFields.splice(prodIdx, 1);
+                window._customFields.unshift(prod);
+            } else {
+                window._customFields.unshift({
+                    id: 'step_products_default',
+                    title: 'Select Products',
+                    subtext: 'Choose from our menu of fresh baked goods below.',
+                    type: 'products',
+                    options: '',
+                    description: ''
+                });
+            }
+        }
+
+        // 2. Ensure 'contact_info' step exists and is at the very end
+        let contactIdx = window._customFields.findIndex(f => f.type === 'contact_info');
+        if (contactIdx !== window._customFields.length - 1) {
+            if (contactIdx >= 0) {
+                const [contact] = window._customFields.splice(contactIdx, 1);
+                window._customFields.push(contact);
+            } else {
+                window._customFields.push({
+                    id: 'step_contact_default',
+                    title: 'Contact Details',
+                    subtext: 'Provide your name, email, and phone number to submit order request.',
+                    type: 'contact_info',
+                    options: '',
+                    description: ''
+                });
+            }
+        }
+    }
+
+    // Render Form Studio Fields Visual Cards (Baker UI Optimizations)
     function renderFieldsTable() {
         const container = document.getElementById('custom-fields-cards-container');
         if (!container) return;
 
-        if (window._customFields.length === 0) {
-            container.innerHTML = `
-                <div style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem; background:#fff; border-radius:12px; border:1px dashed #f0e4ea;">
-                    No steps added yet. Use the form above to add your first step!
-                </div>`;
-            return;
-        }
+        // Auto-enforce core steps existence and locked layout positions
+        ensureCoreStepsExist();
 
         const typeLabels = {
             'products': 'Product Catalog',
@@ -1383,6 +1420,7 @@ function initAdminPortal() {
         container.innerHTML = window._customFields.map((f, i) => {
             const icon = typeIcons[f.type] || '⚙️';
             const labelText = typeLabels[f.type] || f.type;
+            const isLocked = (f.type === 'products' || f.type === 'contact_info');
             
             let previewDetails = '';
             if (['flavors', 'frosting', 'fillings', 'fulfillment', 'social_discount', 'select', 'chips'].includes(f.type)) {
@@ -1408,10 +1446,26 @@ function initAdminPortal() {
                 `;
             }
 
+            const dragHandleHTML = isLocked
+                ? `<div class="lock-handle" style="font-size:1.15rem; color:#a28290; align-self:center; user-select:none;" title="Required step (locked in position)">🔒</div>`
+                : `<div class="drag-handle" style="font-size:1.3rem; color:#ccc; cursor:grab; align-self:center; user-select:none;">⠿</div>`;
+
+            const actionButtonsHTML = isLocked
+                ? `<span style="font-size:0.65rem; color:#e67399; font-weight:800; text-align:center; padding:5px 8px; background:#fff0f5; border:1px dashed #f8c6d7; border-radius:8px; letter-spacing:0.02em;">REQUIRED STEP</span>`
+                : `
+                    <div style="display:flex; flex-direction:column; gap:6px; align-self:center; flex-shrink:0;">
+                        <div style="display:flex; gap:4px;">
+                            <button class="reorder-btn" onclick="moveField(${i}, -1)" title="Move Up" ${i <= 1 ? 'disabled' : ''} style="width:28px; height:28px; border-radius:8px; border:1px solid #eee; background:#fff; cursor:pointer; font-weight:700; font-size:0.85rem;">↑</button>
+                            <button class="reorder-btn" onclick="moveField(${i}, 1)" title="Move Down" ${i >= window._customFields.length - 2 ? 'disabled' : ''} style="width:28px; height:28px; border-radius:8px; border:1px solid #eee; background:#fff; cursor:pointer; font-weight:700; font-size:0.85rem;">↓</button>
+                        </div>
+                        <button class="delete-field-btn" onclick="deleteField(${i})" title="Remove Step" style="width:100%; height:28px; border-radius:8px; border:1px solid #fee2e2; background:#fef2f2; color:#ef4444; cursor:pointer; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:0.75rem; border:none;">✕ Remove</button>
+                    </div>
+                `;
+
             return `
-                <div class="field-row" draggable="true" data-idx="${i}" style="background:#ffffff; border-radius:14px; padding:16px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.02); display:flex; align-items:flex-start; gap:16px; transition: all 0.2s ease;">
-                    <!-- Drag handle -->
-                    <div class="drag-handle" style="font-size:1.3rem; color:#ccc; cursor:grab; align-self:center; user-select:none;">⠿</div>
+                <div class="field-row" draggable="${!isLocked}" data-idx="${i}" style="background:#ffffff; border-radius:14px; padding:16px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.02); display:flex; align-items:flex-start; gap:16px; transition: all 0.2s ease;">
+                    <!-- Drag handle / lock -->
+                    ${dragHandleHTML}
                     
                     <!-- Visual Icon badge -->
                     <div style="width:40px; height:40px; border-radius:10px; background:#fff0f5; border:1px solid #f8c6d7; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">
@@ -1435,13 +1489,7 @@ function initAdminPortal() {
                     </div>
 
                     <!-- Action items -->
-                    <div style="display:flex; flex-direction:column; gap:6px; align-self:center; flex-shrink:0;">
-                        <div style="display:flex; gap:4px;">
-                            <button class="reorder-btn" onclick="moveField(${i}, -1)" title="Move Up" ${i === 0 ? 'disabled' : ''} style="width:28px; height:28px; border-radius:8px; border:1px solid #eee; background:#fff; cursor:pointer; font-weight:700; font-size:0.85rem;">↑</button>
-                            <button class="reorder-btn" onclick="moveField(${i}, 1)" title="Move Down" ${i === window._customFields.length - 1 ? 'disabled' : ''} style="width:28px; height:28px; border-radius:8px; border:1px solid #eee; background:#fff; cursor:pointer; font-weight:700; font-size:0.85rem;">↓</button>
-                        </div>
-                        <button class="delete-field-btn" onclick="deleteField(${i})" title="Remove Step" style="width:100%; height:28px; border-radius:8px; border:1px solid #fee2e2; background:#fef2f2; color:#ef4444; cursor:pointer; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:0.75rem; border:none;">✕ Remove</button>
-                    </div>
+                    ${actionButtonsHTML}
                 </div>
             `;
         }).join('');
@@ -1450,14 +1498,26 @@ function initAdminPortal() {
         const rows = container.querySelectorAll('.field-row');
         let dragSrc = null;
         rows.forEach(row => {
-            row.addEventListener('dragstart', () => { dragSrc = row; row.style.opacity = '0.5'; });
+            row.addEventListener('dragstart', e => {
+                const idx = parseInt(row.dataset.idx);
+                if (window._customFields[idx].type === 'products' || window._customFields[idx].type === 'contact_info') {
+                    e.preventDefault();
+                    return;
+                }
+                dragSrc = row;
+                row.style.opacity = '0.5';
+            });
             row.addEventListener('dragend', () => { row.style.opacity = '1'; });
             row.addEventListener('dragover', e => { e.preventDefault(); });
             row.addEventListener('drop', e => {
                 e.preventDefault();
-                if (dragSrc === row) return;
+                if (!dragSrc || dragSrc === row) return;
                 const from = parseInt(dragSrc.dataset.idx);
                 const to = parseInt(row.dataset.idx);
+                
+                // Block dropping onto index 0 (products) or final index (contact_info)
+                if (to <= 0 || to >= window._customFields.length - 1) return;
+                
                 const moved = window._customFields.splice(from, 1)[0];
                 window._customFields.splice(to, 0, moved);
                 renderFieldsTable();
@@ -1471,14 +1531,23 @@ function initAdminPortal() {
     window.moveField = function(idx, dir) {
         const arr = window._customFields;
         const newIdx = idx + dir;
-        if (newIdx < 0 || newIdx >= arr.length) return;
+        
+        // Don't reorder locked steps (products / contact_info)
+        if (arr[idx].type === 'products' || arr[idx].type === 'contact_info') return;
+        if (newIdx <= 0 || newIdx >= arr.length - 1) return;
+        
         [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
         renderFieldsTable();
     };
 
     window.deleteField = function(idx) {
-        if (window._customFields.length <= 1) {
-            alert('Your order form must have at least 1 step!');
+        const type = window._customFields[idx]?.type;
+        if (type === 'products' || type === 'contact_info') {
+            alert('This step is required for customer ordering and cannot be removed.');
+            return;
+        }
+        if (window._customFields.length <= 2) {
+            alert('Your order form must have at least the Product Catalog and Contact Info steps!');
             return;
         }
         window._customFields.splice(idx, 1);
@@ -1705,6 +1774,12 @@ function initAdminPortal() {
             const labelText = document.getElementById('field-label').value.trim();
             const fieldType = document.getElementById('field-type').value;
             
+            // Block duplicate required steps
+            if (fieldType === 'products' || fieldType === 'contact_info') {
+                alert('Only one Product Catalog and one Contact Info step can exist on the form, and they are already locked in place.');
+                return;
+            }
+
             // Serialize dynamic option rows with extra charges
             const optionsText = window.serializeAdminOptions();
             const descriptionText = (document.getElementById('field-description')?.value || '').trim();
@@ -1720,13 +1795,18 @@ function initAdminPortal() {
                 description: ''
             };
 
-            window._customFields.push(fieldEntry);
+            // Always insert before the last element (which is locked contact_info)
+            const insertIdx = Math.max(1, window._customFields.length - 1);
+            window._customFields.splice(insertIdx, 0, fieldEntry);
             renderFieldsTable();
 
             fieldForm.reset();
             window.populateAdminOptionRows('');
-            toggleOptionsRow('products');
-            alert(`Step "${labelText}" added! Click "Save Order Form Layout Live" to update your storefront.`);
+            
+            // Reset active visual template tile to products (default)
+            if (window.selectTemplateTile) window.selectTemplateTile('products');
+            
+            alert(`Step "${labelText}" added! Click "Save Order Form Layout" to update your storefront.`);
         });
     }
 
