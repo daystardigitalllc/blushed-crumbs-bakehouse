@@ -393,8 +393,8 @@
                     /* Taller kanban columns on desktop — fills most of the viewport instead of stopping at 500px */
                     @media (min-width: 769px) {
                         .board-column {
-                            min-height: 90vh !important;
-                            max-height: 90vh !important;
+                            min-height: 80vh !important;
+                            max-height: 80vh !important;
                         }
                     }
 
