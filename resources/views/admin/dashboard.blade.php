@@ -1784,34 +1784,41 @@
                     <p class="subtitle">Add, remove, and update prices for your order form products.</p>
                 </div>
 
-                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                    <h4>Add New Product</h4>
-                    <form id="add-product-form" class="form-builder-grid" action="{{ route('admin.products.store') }}" method="POST">
-                        @csrf
-                        <div>
-                            <label>Product Name</label>
-                            <input type="text" id="new-prod-name" name="name" placeholder="e.g. 6″ Heart Cake" required>
-                        </div>
-                        <div>
-                            <label>Price ($)</label>
-                            <input type="number" id="new-prod-price" name="price" placeholder="45.00" step="0.01" required>
-                        </div>
-                        <div>
-                            <label>Category</label>
-                            <select id="new-prod-category" name="category" onchange="if(this.value === 'custom_new'){ document.getElementById('new-prod-category-custom').style.display='block'; document.getElementById('new-prod-category-custom').setAttribute('required', 'true'); } else { document.getElementById('new-prod-category-custom').style.display='none'; document.getElementById('new-prod-category-custom').removeAttribute('required'); }">
-                                <option value="Single Tier">Single Tier</option>
-                                <option value="Multi-Tier">Multi-Tier</option>
-                                <option value="By The Dozen">By The Dozen</option>
-                                <option value="Treats">Treats</option>
-                                <option value="Party Packs">Party Packs</option>
-                                <option value="custom_new">+ Add Custom Category...</option>
-                            </select>
-                            <input type="text" id="new-prod-category-custom" placeholder="Type new category name..." style="display:none; margin-top:8px;">
-                        </div>
-                        <div style="grid-column: 1 / -1;">
-                            <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Product to Catalog</button>
-                        </div>
-                    </form>
+                <!-- COLLAPSIBLE ADD PRODUCT DRAWER -->
+                <div class="form-builder-card" id="add-product-drawer-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa); margin-bottom:20px; padding:0; overflow:hidden; transition: box-shadow 0.2s ease;">
+                    <div onclick="toggleAddProductDrawer()" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:16px 20px; user-select:none;">
+                        <h4 style="color:#5c1d37; margin:0; font-size:1.1rem; font-weight:700;">+ Add New Product</h4>
+                        <span id="add-product-drawer-chevron" style="font-size:0.9rem; color:var(--primary); font-weight:bold;">▼</span>
+                    </div>
+                    
+                    <div id="add-product-drawer-content" style="display:none; padding:0 20px 20px 20px; border-top:1px solid #f0e4ea; margin-top:0;">
+                        <form id="add-product-form" class="form-builder-grid" action="{{ route('admin.products.store') }}" method="POST" style="margin-top:16px;">
+                            @csrf
+                            <div>
+                                <label>Product Name</label>
+                                <input type="text" id="new-prod-name" name="name" placeholder="e.g. 6″ Heart Cake" required>
+                            </div>
+                            <div>
+                                <label>Price ($)</label>
+                                <input type="number" id="new-prod-price" name="price" placeholder="45.00" step="0.01" required>
+                            </div>
+                            <div>
+                                <label>Category</label>
+                                <select id="new-prod-category" name="category" onchange="if(this.value === 'custom_new'){ document.getElementById('new-prod-category-custom').style.display='block'; document.getElementById('new-prod-category-custom').setAttribute('required', 'true'); } else { document.getElementById('new-prod-category-custom').style.display='none'; document.getElementById('new-prod-category-custom').removeAttribute('required'); }">
+                                    <option value="Single Tier">Single Tier</option>
+                                    <option value="Multi-Tier">Multi-Tier</option>
+                                    <option value="By The Dozen">By The Dozen</option>
+                                    <option value="Treats">Treats</option>
+                                    <option value="Party Packs">Party Packs</option>
+                                    <option value="custom_new">+ Add Custom Category...</option>
+                                </select>
+                                <input type="text" id="new-prod-category-custom" placeholder="Type new category name..." style="display:none; margin-top:8px;">
+                            </div>
+                            <div style="grid-column: 1 / -1; margin-top:8px;">
+                                <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Product to Catalog</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
                 <div class="form-builder-card">
@@ -2261,239 +2268,295 @@
                     <p class="subtitle">Theme, logo, booking rules, and support.</p>
                 </div>
 
-                <!-- BAKERY LOGO MANAGEMENT CARD -->
-                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff); margin-bottom:20px;">
-                    <h4 style="color:var(--dark-text); margin-bottom:6px;">Brand Logo</h4>
-                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Shown in the header and footer across all your storefront pages.</p>
-
-                    <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
-                        <div style="width:90px; height:90px; border-radius:16px; background:#ffffff; border:2px dashed var(--theme-section-bg, #c4b5fd); display:flex; align-items:center; justify-content:center; overflow:hidden; padding:6px;">
-                            <img id="bakery-logo-preview" src="{{ $tenant->logo_path ? asset($tenant->logo_path) : asset('images/doughmain_logo.png') }}" alt="Bakery Logo" style="max-width:100%; max-height:100%; object-fit:contain;">
-                        </div>
-                        <div style="flex:1; min-width:240px;">
-                            <form id="bakery-logo-form" onsubmit="uploadBakeryLogo(event)" style="display:flex; flex-direction:column; gap:10px;">
-                                <input type="file" id="bakery-logo-file" name="logo" accept="image/*" required onchange="previewBakeryLogoFile(this)" style="font-size:0.88rem;">
-                                <div style="display:flex; gap:10px; align-items:center;">
-                                    <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary);">
-                                        Save Logo
-                                    </button>
-                                    <span id="logo-upload-status" style="font-size:0.85rem; font-weight:600; color:#059669; display:none;">Logo updated!</span>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <!-- Sub-Navigation for Settings Tab (Hick's Law Optimization) -->
+                <div class="settings-subnav" style="display:flex; gap:10px; overflow-x:auto; margin-bottom:24px; border-bottom:1px solid #e2e8f0; padding-bottom:12px; -webkit-overflow-scrolling: touch;">
+                    <button type="button" class="btn btn-sm btn-outline active-toggle-btn" id="settings-subnav-brand" onclick="switchSettingsSection('brand')" style="border:none; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; background:transparent; color:#555;">Brand &amp; Theme</button>
+                    <button type="button" class="btn btn-sm btn-outline" id="settings-subnav-booking" onclick="switchSettingsSection('booking')" style="border:none; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; background:transparent; color:#555;">Booking Rules</button>
+                    <button type="button" class="btn btn-sm btn-outline" id="settings-subnav-domains" onclick="switchSettingsSection('domains')" style="border:none; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; background:transparent; color:#555;">Plan &amp; Domains</button>
+                    <button type="button" class="btn btn-sm btn-outline" id="settings-subnav-support" onclick="switchSettingsSection('support')" style="border:none; border-radius:8px; padding:6px 14px; font-weight:600; cursor:pointer; background:transparent; color:#555;">Account &amp; Support</button>
                 </div>
 
-                <!-- BUSINESS INFO & SEO CARD -->
-                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #f0fdf4); margin-bottom:20px;">
-                    <h4 style="color:var(--dark-text); margin-bottom:6px;">Business Info &amp; SEO</h4>
-                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Contact details shown on your storefront, plus the title &amp; description search engines show for your site.</p>
+                <!-- SECTION 1: Brand & Theme -->
+                <div id="settings-sect-brand">
+                    <!-- BAKERY LOGO MANAGEMENT CARD -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff); margin-bottom:20px;">
+                        <h4 style="color:var(--dark-text); margin-bottom:6px;">Brand Logo</h4>
+                        <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Shown in the header and footer across all your storefront pages.</p>
 
-                    <div id="business-info-msg" style="display:none; margin-bottom:14px; background:var(--theme-section-bg, #d1fae5); color:var(--dark-text); padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid var(--theme-section-bg, #a7f3d0);"></div>
-
-                    <form id="business-info-form">
-                        @csrf
-                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:16px;">
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Business Hours</label>
-                                <input type="text" name="contact_hours" value="{{ data_get($siteContent, 'contact_hours') }}" placeholder="Mon-Sat: 8:00 AM - 6:00 PM" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                        <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+                            <div style="width:90px; height:90px; border-radius:16px; background:#ffffff; border:2px dashed var(--theme-section-bg, #c4b5fd); display:flex; align-items:center; justify-content:center; overflow:hidden; padding:6px;">
+                                <img id="bakery-logo-preview" src="{{ $tenant->logo_path ? asset($tenant->logo_path) : asset('images/doughmain_logo.png') }}" alt="Bakery Logo" style="max-width:100%; max-height:100%; object-fit:contain;">
                             </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Service Area / Pickup Note</label>
-                                <input type="text" name="contact_location" value="{{ data_get($siteContent, 'contact_location') }}" placeholder="Local Delivery & Pickup Available" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Phone</label>
-                                <input type="text" name="phone" value="{{ $tenant->phone }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Address Line 1</label>
-                                <input type="text" name="address_line1" value="{{ $tenant->address_line1 }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Address Line 2</label>
-                                <input type="text" name="address_line2" value="{{ $tenant->address_line2 }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">City</label>
-                                <input type="text" name="city" value="{{ $tenant->city }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">State</label>
-                                <input type="text" name="state" value="{{ $tenant->state }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">ZIP / Postal Code</label>
-                                <input type="text" name="postal_code" value="{{ $tenant->postal_code }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Instagram URL</label>
-                                <input type="text" name="instagram_url" value="{{ $tenant->instagram_url }}" placeholder="https://instagram.com/yourbakery" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                            </div>
-                            <div>
-                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Facebook URL</label>
-                                <input type="text" name="facebook_url" value="{{ $tenant->facebook_url }}" placeholder="https://facebook.com/yourbakery" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                            <div style="flex:1; min-width:240px;">
+                                <form id="bakery-logo-form" onsubmit="uploadBakeryLogo(event)" style="display:flex; flex-direction:column; gap:10px;">
+                                    <input type="file" id="bakery-logo-file" name="logo" accept="image/*" required onchange="previewBakeryLogoFile(this)" style="font-size:0.88rem;">
+                                    <div style="display:flex; gap:10px; align-items:center;">
+                                        <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary);">
+                                            Save Logo
+                                        </button>
+                                        <span id="logo-upload-status" style="font-size:0.85rem; font-weight:600; color:#059669; display:none;">Logo updated!</span>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-
-                        <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
-                            <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:10px;">Search Engine (SEO)</h5>
-                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Page Title</label>
-                                    <input type="text" name="seo_title" value="{{ data_get($siteContent, 'seo_title') }}" placeholder="{{ $tenant->name }} | Custom Cakes & Baked Goods" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Meta Description</label>
-                                    <input type="text" name="seo_description" value="{{ data_get($siteContent, 'seo_description') }}" placeholder="Custom cakes, cupcakes & desserts made fresh to order." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
-                            <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Policy Page Numbers</h5>
-                            <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Used on your <a href="{{ route('storefront.policy') }}" target="_blank" style="color:var(--primary); text-decoration:underline;">Policy page</a> — the rest of that page's wording is shared, but these numbers are yours to correct.</p>
-                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Deposit %</label>
-                                    <input type="text" name="policy_deposit_percentage" value="{{ data_get($siteContent, 'policy_deposit_percentage', '50') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Late Fee %</label>
-                                    <input type="text" name="policy_late_fee_percentage" value="{{ data_get($siteContent, 'policy_late_fee_percentage', '10') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Delivery Base Fee ($)</label>
-                                    <input type="text" name="policy_delivery_base_fee" value="{{ data_get($siteContent, 'policy_delivery_base_fee', '30') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Delivery Rate ($/mile)</label>
-                                    <input type="text" name="policy_delivery_per_mile" value="{{ data_get($siteContent, 'policy_delivery_per_mile', '2') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Delivery Change Fee ($)</label>
-                                    <input type="text" name="policy_delivery_change_fee" value="{{ data_get($siteContent, 'policy_delivery_change_fee', '15') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Pickup Hours</label>
-                                    <input type="text" name="policy_pickup_hours" value="{{ data_get($siteContent, 'policy_pickup_hours', '10:00am – 4:00pm') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Closed Days</label>
-                                    <input type="text" name="policy_closed_days" value="{{ data_get($siteContent, 'policy_closed_days', 'Sundays or Mondays') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Extra Cake Layer Fee ($)</label>
-                                    <input type="text" name="policy_extra_layer_fee" value="{{ data_get($siteContent, 'policy_extra_layer_fee', '20') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="button" class="btn btn-primary" onclick="saveBusinessInfoForm()" style="background:var(--primary); border-color:var(--primary);">Save Business Info & SEO</button>
-                    </form>
-                </div>
-
-                <!-- CURATED BAKERY THEMES CARD -->
-                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-                        <div>
-                            <h4 style="color:#5c1d37; margin:0;">Storefront Theme</h4>
-                            <p style="font-size:0.88rem; color:#666; margin-top:4px;">Pick a design template. Colors and layout update automatically.</p>
-                        </div>
-                        <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:var(--primary); color:var(--primary);">View Live Storefront ↗</a>
                     </div>
 
-                    <div id="theme-status-msg" style="display:none; margin-bottom:14px; background:#d4edda; color:#155724; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c3e6cb;"></div>
+                    <!-- BUSINESS INFO & SEO CARD -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #f0fdf4); margin-bottom:20px;">
+                        <h4 style="color:var(--dark-text); margin-bottom:6px;">Business Info &amp; SEO</h4>
+                        <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Contact details shown on your storefront, plus the title &amp; description search engines show for your site.</p>
 
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px;">
-                        @php
-                            $themes = $tenant->getAvailableThemesForTenant();
-                            $starterThemeIds = ['rustic_kitchen', 'modern_bakery', 'country_farmhouse'];
-                            // Free/starter themes first, Pro themes after - usort() is a
-                            // stable sort as of PHP 8.0, so ties (both free or both pro)
-                            // keep their original registry order.
-                            usort($themes, fn($a, $b) => in_array($b['id'], $starterThemeIds) <=> in_array($a['id'], $starterThemeIds));
-                            $currentTheme = $tenant->theme_id ?? 'sweet_elegant';
-                        @endphp
-                        @foreach($themes as $t)
+                        <div id="business-info-msg" style="display:none; margin-bottom:14px; background:var(--theme-section-bg, #d1fae5); color:var(--dark-text); padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid var(--theme-section-bg, #a7f3d0);"></div>
+
+                        <form id="business-info-form">
+                            @csrf
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:16px;">
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Business Hours</label>
+                                    <input type="text" name="contact_hours" value="{{ data_get($siteContent, 'contact_hours') }}" placeholder="Mon-Sat: 8:00 AM - 6:00 PM" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Service Area / Pickup Note</label>
+                                    <input type="text" name="contact_location" value="{{ data_get($siteContent, 'contact_location') }}" placeholder="Local Delivery & Pickup Available" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Phone</label>
+                                    <input type="text" name="phone" value="{{ $tenant->phone }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Address Line 1</label>
+                                    <input type="text" name="address_line1" value="{{ $tenant->address_line1 }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Address Line 2</label>
+                                    <input type="text" name="address_line2" value="{{ $tenant->address_line2 }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">City</label>
+                                    <input type="text" name="city" value="{{ $tenant->city }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">State</label>
+                                    <input type="text" name="state" value="{{ $tenant->state }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">ZIP / Postal Code</label>
+                                    <input type="text" name="postal_code" value="{{ $tenant->postal_code }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Instagram URL</label>
+                                    <input type="text" name="instagram_url" value="{{ $tenant->instagram_url }}" placeholder="https://instagram.com/yourbakery" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Facebook URL</label>
+                                    <input type="text" name="facebook_url" value="{{ $tenant->facebook_url }}" placeholder="https://facebook.com/yourbakery" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                            </div>
+
+                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
+                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:10px;">Search Engine (SEO)</h5>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Page Title</label>
+                                        <input type="text" name="seo_title" value="{{ data_get($siteContent, 'seo_title') }}" placeholder="{{ $tenant->name }} | Custom Cakes & Baked Goods" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Meta Description</label>
+                                        <input type="text" name="seo_description" value="{{ data_get($siteContent, 'seo_description') }}" placeholder="Custom cakes, cupcakes & desserts made fresh to order." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
+                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Policy Page Numbers</h5>
+                                <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Used on your <a href="{{ route('storefront.policy') }}" target="_blank" style="color:var(--primary); text-decoration:underline;">Policy page</a> — the rest of that page's wording is shared, but these numbers are yours to correct.</p>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Deposit %</label>
+                                        <input type="text" name="policy_deposit_percentage" value="{{ data_get($siteContent, 'policy_deposit_percentage', '50') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Late Fee %</label>
+                                        <input type="text" name="policy_late_fee_percentage" value="{{ data_get($siteContent, 'policy_late_fee_percentage', '10') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Delivery Base Fee ($)</label>
+                                        <input type="text" name="policy_delivery_base_fee" value="{{ data_get($siteContent, 'policy_delivery_base_fee', '30') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Delivery Rate ($/mile)</label>
+                                        <input type="text" name="policy_delivery_per_mile" value="{{ data_get($siteContent, 'policy_delivery_per_mile', '2') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Delivery Change Fee ($)</label>
+                                        <input type="text" name="policy_delivery_change_fee" value="{{ data_get($siteContent, 'policy_delivery_change_fee', '15') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Pickup Hours</label>
+                                        <input type="text" name="policy_pickup_hours" value="{{ data_get($siteContent, 'policy_pickup_hours', '10:00am – 4:00pm') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Closed Days</label>
+                                        <input type="text" name="policy_closed_days" value="{{ data_get($siteContent, 'policy_closed_days', 'Sundays or Mondays') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Extra Cake Layer Fee ($)</label>
+                                        <input type="text" name="policy_extra_layer_fee" value="{{ data_get($siteContent, 'policy_extra_layer_fee', '20') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-primary" onclick="saveBusinessInfoForm()" style="background:var(--primary); border-color:var(--primary);">Save Business Info & SEO</button>
+                        </form>
+                    </div>
+
+                    <!-- CURATED BAKERY THEMES CARD -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                            <div>
+                                <h4 style="color:#5c1d37; margin:0;">Storefront Theme</h4>
+                                <p style="font-size:0.88rem; color:#666; margin-top:4px;">Pick a design template. Colors and layout update automatically.</p>
+                            </div>
+                            <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:var(--primary); color:var(--primary);">View Live Storefront ↗</a>
+                        </div>
+
+                        <div id="theme-status-msg" style="display:none; margin-bottom:14px; background:#d4edda; color:#155724; padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid #c3e6cb;"></div>
+
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px;">
                             @php
-                                $isStarterTheme = in_array($t['id'], ['rustic_kitchen', 'modern_bakery', 'country_farmhouse']);
-                                $isLockedTheme = ($tenant->plan_tier !== 'pro') && !$isStarterTheme;
+                                $themes = $tenant->getAvailableThemesForTenant();
+                                $starterThemeIds = ['rustic_kitchen', 'modern_bakery', 'country_farmhouse'];
+                                usort($themes, fn($a, $b) => in_array($b['id'], $starterThemeIds) <=> in_array($a['id'], $starterThemeIds));
+                                $currentTheme = $tenant->theme_id ?? 'sweet_elegant';
                             @endphp
-                            <div class="bakery-theme-card" 
-                                 onclick="{{ $isLockedTheme ? "alert('Upgrade to Pro ($29/mo) to unlock this premium theme!')" : "selectBakeryTheme('".$t['id']."', this)" }}" 
-                                 style="border:{{ $currentTheme === $t['id'] ? '3px solid var(--primary)' : '2px solid #ddd' }}; background:white; padding:22px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
-                                <div style="height:80px; background:{{ $t['preview_bg'] }}; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; border:1px solid #eee;">
-                                    <span style="font-weight:800; color:{{ $t['preview_accent'] }}; font-size:1.1rem;">{{ $t['name'] }}</span>
+                            @foreach($themes as $t)
+                                @php
+                                    $isStarterTheme = in_array($t['id'], ['rustic_kitchen', 'modern_bakery', 'country_farmhouse']);
+                                    $isLockedTheme = ($tenant->plan_tier !== 'pro') && !$isStarterTheme;
+                                @endphp
+                                <div class="bakery-theme-card" 
+                                     onclick="{{ $isLockedTheme ? "alert('Upgrade to Pro ($29/mo) to unlock this premium theme!')" : "selectBakeryTheme('".$t['id']."', this)" }}" 
+                                     style="border:{{ $currentTheme === $t['id'] ? '3px solid var(--primary)' : '2px solid #ddd' }}; background:white; padding:22px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
+                                    <div style="height:80px; background:{{ $t['preview_bg'] }}; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; border:1px solid #eee;">
+                                        <span style="font-weight:800; color:{{ $t['preview_accent'] }}; font-size:1.1rem;">{{ $t['name'] }}</span>
+                                    </div>
+                                    <h5 style="font-size:1rem; font-weight:700; color:#5c1d37; margin-bottom:4px;">{{ $t['name'] }}</h5>
+                                    <p style="font-size:0.8rem; color:#666; line-height:1.4;">{{ $t['subtitle'] }}</p>
+                                    @if($currentTheme === $t['id'])
+                                        <span class="theme-badge" style="display:inline-block; margin-top:8px; font-size:0.75rem; background:var(--primary); color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
+                                    @elseif($tenant->plan_tier === 'pro' && !$isStarterTheme)
+                                        <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#c7d2fe; color:#4338ca; padding:3px 10px; border-radius:20px; font-weight:700;">Pro Tier</span>
+                                    @elseif($isLockedTheme)
+                                        <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#fef3c7; color:#92400e; padding:3px 10px; border-radius:20px; font-weight:700;">Pro Only ($29/mo)</span>
+                                    @else
+                                        <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#d1fae5; color:#065f46; padding:3px 10px; border-radius:20px; font-weight:700;">Free Tier</span>
+                                    @endif
                                 </div>
-                                <h5 style="font-size:1rem; font-weight:700; color:#5c1d37; margin-bottom:4px;">{{ $t['name'] }}</h5>
-                                <p style="font-size:0.8rem; color:#666; line-height:1.4;">{{ $t['subtitle'] }}</p>
-                                @if($currentTheme === $t['id'])
-                                    <span class="theme-badge" style="display:inline-block; margin-top:8px; font-size:0.75rem; background:var(--primary); color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
-                                @elseif($tenant->plan_tier === 'pro' && !$isStarterTheme)
-                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#c7d2fe; color:#4338ca; padding:3px 10px; border-radius:20px; font-weight:700;">Pro Tier</span>
-                                @elseif($isLockedTheme)
-                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#fef3c7; color:#92400e; padding:3px 10px; border-radius:20px; font-weight:700;">Pro Only ($29/mo)</span>
-                                @else
-                                    <span style="display:inline-block; margin-top:8px; font-size:0.75rem; background:#d1fae5; color:#065f46; padding:3px 10px; border-radius:20px; font-weight:700;">Free Tier</span>
-                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Booking Rules -->
+                <div id="settings-sect-booking" style="display:none;">
+                    <!-- BOOKING RULES CARD -->
+                    <div class="form-builder-card">
+                        <h4>Order Lead Time</h4>
+                        <p style="font-size:0.9rem; color:#666; margin-bottom:18px;">Prevent customers from selecting a completion date that is too soon to fulfill.</p>
+
+                        <div class="settings-toggle-row" id="lead-time-toggle-row">
+                            <div>
+                                <strong>Block orders within 3 days of today</strong>
+                                <p style="font-size:0.82rem; color:#888; margin-top:2px;">Customers cannot pick a date within 3 days of placing their order.</p>
                             </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- BOOKING RULES CARD -->
-                <div class="form-builder-card">
-                    <h4>Order Lead Time</h4>
-                    <p style="font-size:0.9rem; color:#666; margin-bottom:18px;">Prevent customers from selecting a completion date that is too soon to fulfill.</p>
-
-                    <div class="settings-toggle-row" id="lead-time-toggle-row">
-                        <div>
-                            <strong>Block orders within 3 days of today</strong>
-                            <p style="font-size:0.82rem; color:#888; margin-top:2px;">Customers cannot pick a date within 3 days of placing their order.</p>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="lead-time-enabled" checked onchange="toggleLeadTimeInput(this)">
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="lead-time-enabled" checked onchange="toggleLeadTimeInput(this)">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
 
-                    <div id="custom-lead-days-wrapper" style="display:none; margin-top:16px;">
-                        <label>Days to auto-block from today</label>
-                        <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
-                            <input type="number" id="custom-lead-days" min="0" max="60" value="3" style="width:100px;">
-                            <button class="btn btn-primary" onclick="saveLeadTime()">Save Setting</button>
-                            <span id="lead-time-save-msg" style="font-size:0.85rem; color:#28a745; display:none;">Saved!</span>
+                        <div id="custom-lead-days-wrapper" style="display:none; margin-top:16px;">
+                            <label>Days to auto-block from today</label>
+                            <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+                                <input type="number" id="custom-lead-days" min="0" max="60" value="3" style="width:100px;">
+                                <button class="btn btn-primary" onclick="saveLeadTime()">Save Setting</button>
+                                <span id="lead-time-save-msg" style="font-size:0.85rem; color:#28a745; display:none;">Saved!</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- BAKER SUPPORT CARD -->
-                <div class="form-builder-card" style="margin-top:20px; border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff);">
-                    <h4 style="color:var(--dark-text); margin-bottom:4px;">Support &amp; Custom Code Requests</h4>
-                    <p style="font-size:0.88rem; color:#666; margin-bottom:14px;">Request custom features, theme tweaks, or code assistance (Pro Tier perk).</p>
-                    <form id="support-request-form" style="display:flex; flex-direction:column; gap:12px;">
-                        <div>
-                            <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Subject</label>
-                            <input type="text" class="form-control" placeholder="e.g. Custom theme tweak request" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
+                <!-- SECTION 3: Plan & Domains -->
+                <div id="settings-sect-domains" style="display:none;">
+                    <!-- SUBSCRIPTION CARD -->
+                    <div class="form-builder-card" style="margin-bottom:20px;">
+                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Bakery Plan &amp; Billing</h4>
+                        <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <span style="font-weight:600; color:#475569;">Current Plan:</span>
+                                <span style="font-weight:800; color:var(--primary); text-transform:uppercase;">{{ $tenant->plan_tier === 'pro' ? 'PRO ($29/mo)' : 'FREE ($0/mo)' }}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:600; color:#475569;">Account Status:</span>
+                                <span style="color:#059669; font-weight:700;">● {{ $tenant->is_active ? 'Active' : 'Suspended/Canceled' }}</span>
+                            </div>
                         </div>
-                        <div>
-                            <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Description</label>
-                            <textarea class="form-control" placeholder="Describe custom code or support request..." required style="width:100%; height:100px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
+
+                        @if(($tenant->plan_tier ?? 'free') !== 'pro')
+                            <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid var(--primary); padding:20px; border-radius:14px; margin-bottom:16px;">
+                                <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Unlock All Features</span>
+                                <h4 style="color:var(--dark-text); margin-top:8px; font-size:1.3rem;">Upgrade to Doughmain Pro ($29/month)</h4>
+                                <p style="font-size:0.9rem; color:#555; margin-top:4px; margin-bottom:16px;">Unlock all 7 premium themes, custom domain support, and priority baker support.</p>
+
+                                <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="btn btn-primary" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6) !important; color:#ffffff !important; font-weight:700; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block; padding:12px 18px;">
+                                    Upgrade to Pro ($29/mo)
+                                </a>
+                            </div>
+                        @endif
+                        <form onsubmit="handleCancelSubscription(event)">
+                            <button type="submit" class="btn" style="background:#ef4444; color:#fff; width:100%; padding:12px; font-weight:600; border-radius:10px; border:none; cursor:pointer;">
+                                End Subscription / Cancel Account
+                            </button>
+                        </form>
+                    </div>
+
+                    @if(($tenant->plan_tier ?? 'free') == 'pro')
+                        <!-- CUSTOM DOMAIN CARD -->
+                        <div class="form-builder-card">
+                            <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Custom Domain Connection</h4>
+                            <p style="font-size:0.9rem; color:#555; margin-bottom:18px;">Connect your own domain so your bakery appears on a branded address like <strong>yourbakery.com</strong>.</p>
+                            <div style="display:flex; flex-direction:column; gap:14px;"
+                                 data-custom-domain-status="{{ $tenant->custom_domain_status ?? 'unverified' }}"
+                                 data-custom-domain-token="{{ $tenant->custom_domain_token ?? '' }}">
+                                <input type="text" id="custom-domain-input" value="{{ $tenant->custom_domain ?? '' }}" placeholder="yourbakery.com" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1;">
+                                <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                                    <button type="button" class="btn btn-primary" onclick="saveCustomDomain()" style="padding:12px 18px;">Save Domain</button>
+                                    <button type="button" class="btn btn-outline" onclick="verifyCustomDomain()" style="padding:12px 18px;">Verify DNS</button>
+                                    <span id="custom-domain-status" style="font-size:0.9rem; color:#475569;"></span>
+                                </div>
+                                <div id="custom-domain-txt-instructions" style="background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:14px; {{ $tenant->custom_domain_token ? '' : 'display:none;' }}">
+                                    <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 1 — Prove you own this domain</p>
+                                    <p style="font-size:0.82rem; color:#475569; margin:0 0 8px 0;">Add this TXT record at your domain registrar (GoDaddy, Namecheap, etc.):</p>
+                                    <p style="font-size:0.8rem; color:#334155; margin:0;">Host: <code>_doughmain-verify</code></p>
+                                    <p style="font-size:0.8rem; color:#334155; margin:4px 0 0 0;">Value: <code id="custom-domain-txt-value">doughmain-verify={{ $tenant->custom_domain_token }}</code></p>
+                                </div>
+                                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
+                                    <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 2 — Point the domain at us</p>
+                                    <ul style="font-size:0.85rem; color:#475569; line-height:1.6; margin:0; padding-left:18px;">
+                                        <li><strong>www</strong> CNAME → <code>{{ $tenant->subdomain }}.doughmain.pro</code></li>
+                                        <li><strong>@</strong> root A record → follow your registrar's instructions for root domains, or use their "ALIAS"/"ANAME" option pointed at the same address</li>
+                                    </ul>
+                                    <p style="font-size:0.82rem; color:#64748b; margin:10px 0 0 0;">After adding both records, click Verify DNS. This checks in the background and can take a few minutes — DNS changes aren't always instant.</p>
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary); align-self:flex-start;">Send Support Request</button>
-                    </form>
+                    @endif
                 </div>
 
-                <!-- Subscription & Support was its own sidebar tab; merged in here to cut down the nav. -->
-                <div class="section-header" style="margin-top:32px; border-top:1px solid #f0e4ea; padding-top:24px;">
-                    <h3>Subscription &amp; Support</h3>
-                    <p class="subtitle">Manage your plan and get help from Doughmain.pro.</p>
-                </div>
-
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-top:20px;">
+                <!-- SECTION 4: Security & Support -->
+                <div id="settings-sect-support" style="display:none;">
                     <!-- CHANGE PASSWORD CARD -->
-                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                    <div class="form-builder-card" style="margin-bottom:20px;">
                         <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Account Security</h4>
                         <form action="{{ route('admin.settings.password') }}" method="POST">
                             @csrf
@@ -2520,73 +2583,25 @@
                         </form>
                     </div>
 
-                    <!-- SUBSCRIPTION CARD -->
-                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
-                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Bakery Plan &amp; Billing</h4>
-                        <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:16px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                <span style="font-weight:600; color:#475569;">Current Plan:</span>
-                                <span style="font-weight:800; color:var(--primary); text-transform:uppercase;">{{ $tenant->plan_tier === 'pro' ? 'PRO ($29/mo)' : 'FREE ($0/mo)' }}</span>
+                    <!-- BAKER SUPPORT & CUSTOM CODE REQUESTS CARD -->
+                    <div class="form-builder-card" style="margin-bottom:20px; border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff);">
+                        <h4 style="color:var(--dark-text); margin-bottom:4px;">Support &amp; Custom Code Requests</h4>
+                        <p style="font-size:0.88rem; color:#666; margin-bottom:14px;">Request custom features, theme tweaks, or code assistance (Pro Tier perk).</p>
+                        <form id="support-request-form" style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Subject</label>
+                                <input type="text" class="form-control" placeholder="e.g. Custom theme tweak request" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-weight:600; color:#475569;">Account Status:</span>
-                                <span style="color:#059669; font-weight:700;">● {{ $tenant->is_active ? 'Active' : 'Suspended/Canceled' }}</span>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Description</label>
+                                <textarea class="form-control" placeholder="Describe custom code or support request..." required style="width:100%; height:100px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
                             </div>
-                        </div>
-
-                        @if(($tenant->plan_tier ?? 'free') !== 'pro')
-                            <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid var(--primary); padding:20px; border-radius:14px; margin-bottom:16px;">
-                                <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Unlock All Features</span>
-                                <h4 style="color:var(--dark-text); margin-top:8px; font-size:1.3rem;">Upgrade to Doughmain Pro ($29/month)</h4>
-                                <p style="font-size:0.9rem; color:#555; margin-top:4px; margin-bottom:16px;">Unlock all 7 premium themes, custom domain support, and priority baker support.</p>
-
-                    <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6) !important; color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
-                        Upgrade to Pro ($29/mo)
-                    </a>
-
-
-                            </div>
-                        @endif
-                        <form onsubmit="handleCancelSubscription(event)">
-                            <button type="submit" class="btn" style="background:#ef4444; color:#fff; width:100%; padding:12px; font-weight:600; border-radius:10px; border:none; cursor:pointer;">
-                                End Subscription / Cancel Account
-                            </button>
+                            <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary); align-self:flex-start;">Send Support Request</button>
                         </form>
                     </div>
-                        @if(($tenant->plan_tier ?? 'free') == 'pro')
 
-                    <!-- CUSTOM DOMAIN CARD -->
-                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
-                        <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Custom Domain Connection</h4>
-                        <p style="font-size:0.9rem; color:#555; margin-bottom:18px;">If you&rsquo;re on Doughmain Pro, connect your own domain so your bakery appears on a branded address like <strong>blushedcrumbsbakehouse.com</strong>.</p>
-                        <div style="display:flex; flex-direction:column; gap:14px;"
-                             data-custom-domain-status="{{ $tenant->custom_domain_status ?? 'unverified' }}"
-                             data-custom-domain-token="{{ $tenant->custom_domain_token ?? '' }}">
-                            <input type="text" id="custom-domain-input" value="{{ $tenant->custom_domain ?? '' }}" placeholder="yourbakery.com" style="width:100%; padding:12px; border-radius:10px; border:1px solid #cbd5e1;">
-                            <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
-                                <button type="button" class="btn btn-primary" onclick="saveCustomDomain()" style="padding:12px 18px;">Save Domain</button>
-                                <button type="button" class="btn btn-outline" onclick="verifyCustomDomain()" style="padding:12px 18px;">Verify DNS</button>
-                                <span id="custom-domain-status" style="font-size:0.9rem; color:#475569;"></span>
-                            </div>
-                            <div id="custom-domain-txt-instructions" style="background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:14px; {{ $tenant->custom_domain_token ? '' : 'display:none;' }}">
-                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 1 — Prove you own this domain</p>
-                                <p style="font-size:0.82rem; color:#475569; margin:0 0 8px 0;">Add this TXT record at your domain registrar (GoDaddy, Namecheap, etc.):</p>
-                                <p style="font-size:0.8rem; color:#334155; margin:0;">Host: <code>_doughmain-verify</code></p>
-                                <p style="font-size:0.8rem; color:#334155; margin:4px 0 0 0;">Value: <code id="custom-domain-txt-value">doughmain-verify={{ $tenant->custom_domain_token }}</code></p>
-                            </div>
-                            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
-                                <p style="font-size:0.85rem; color:#334155; margin:0 0 8px 0; font-weight:600;">Step 2 — Point the domain at us</p>
-                                <ul style="font-size:0.85rem; color:#475569; line-height:1.6; margin:0; padding-left:18px;">
-                                    <li><strong>www</strong> CNAME → <code>{{ $tenant->subdomain }}.doughmain.pro</code></li>
-                                    <li><strong>@</strong> root A record → follow your registrar's instructions for root domains, or use their "ALIAS"/"ANAME" option pointed at the same address</li>
-                                </ul>
-                                <p style="font-size:0.82rem; color:#64748b; margin:10px 0 0 0;">After adding both records, click Verify DNS. This checks in the background and can take a few minutes — DNS changes aren't always instant.</p>
-                            </div>
-                        </div>
-                    </div>
-@endif
                     <!-- SUPPORT TICKET FORM CARD -->
-                    <div style="background:#ffffff; border-radius:16px; padding:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); border:1px solid #e2e8f0;">
+                    <div class="form-builder-card">
                         <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Submit Support Ticket</h4>
                         <form onsubmit="handleSubmitSupportTicket(event)">
                             <div class="form-group" style="margin-bottom:12px;">
@@ -2604,7 +2619,7 @@
                             </div>
                             <div class="form-group" style="margin-bottom:16px;">
                                 <label style="font-weight:600; font-size:0.85rem; color:#475569;">Describe Your Request</label>
-                                <textarea id="ticket_message" name="message" required rows="4" class="form-input" placeholder="Tell our support team how we can assist your bakery..."></textarea>
+                                <textarea id="ticket_message" name="message" required rows="4" class="form-input" placeholder="Tell our support team how we can assist your bakery..." style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; font-family:inherit;"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; border-radius:10px;">
                                 Submit Support Ticket
@@ -3335,6 +3350,51 @@
                     btn.innerText = 'Save Menu & Pricing Settings';
                 }
             }
+
+            // UI/UX Optimizations: Settings Section Tabs Switcher
+            window.switchSettingsSection = function(sectionId) {
+                const sections = ['brand', 'booking', 'domains', 'support'];
+                sections.forEach(sect => {
+                    const btn = document.getElementById(`settings-subnav-${sect}`);
+                    const content = document.getElementById(`settings-sect-${sect}`);
+                    if (sect === sectionId) {
+                        btn?.classList.add('active-toggle-btn');
+                        if (content) content.style.display = 'block';
+                    } else {
+                        btn?.classList.remove('active-toggle-btn');
+                        if (content) content.style.display = 'none';
+                    }
+                });
+                localStorage.setItem('baker_settings_active_section', sectionId);
+            };
+
+            // UI/UX Optimizations: Collapsible Add Product Drawer
+            window.toggleAddProductDrawer = function() {
+                const content = document.getElementById('add-product-drawer-content');
+                const chevron = document.getElementById('add-product-drawer-chevron');
+                const card = document.getElementById('add-product-drawer-card');
+                if (content && chevron) {
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        chevron.innerText = '▲';
+                        if (card) card.style.boxShadow = '0 10px 30px rgba(230, 115, 153, 0.15)';
+                    } else {
+                        content.style.display = 'none';
+                        chevron.innerText = '▼';
+                        if (card) card.style.boxShadow = 'none';
+                    }
+                }
+            };
+
+            // Auto-restore settings subnav view state on DOMContentLoaded
+            document.addEventListener('DOMContentLoaded', () => {
+                const storedSect = localStorage.getItem('baker_settings_active_section');
+                if (storedSect) {
+                    switchSettingsSection(storedSect);
+                } else {
+                    switchSettingsSection('brand');
+                }
+            });
         </script>
 
     <!-- INVOICE EDIT / CREATION MODAL -->

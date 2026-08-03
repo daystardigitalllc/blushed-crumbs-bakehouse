@@ -8719,3 +8719,30 @@ body.theme-sunny_whisk {
     line-height: 1.6;
     margin: 0;
 }
+
+/* Settings Subnav Tabs Styling */
+.settings-subnav button {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px;
+    padding: 8px 18px !important;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #475569 !important;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-subnav button:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+.settings-subnav button.active-toggle-btn {
+    background: var(--primary, #e67399) !important;
+    border-color: var(--primary, #e67399) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(230, 115, 153, 0.25) !important;
+}
