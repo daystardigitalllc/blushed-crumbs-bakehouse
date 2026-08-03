@@ -625,6 +625,8 @@ class AdminController extends Controller
             'cta_headline' => $request->input('cta_headline', $currentContent['cta_headline'] ?? ''),
             'cta_subtext' => $request->input('cta_subtext', $currentContent['cta_subtext'] ?? ''),
             'cta_btn_text' => $request->input('cta_btn_text', $currentContent['cta_btn_text'] ?? ''),
+            'cta_btn_action' => $request->input('cta_btn_action', $currentContent['cta_btn_action'] ?? 'order'),
+            'marquee_text' => $request->input('marquee_text', $currentContent['marquee_text'] ?? ''),
             'featured_gallery_title' => $request->input('featured_gallery_title', $currentContent['featured_gallery_title'] ?? ''),
             'featured_gallery_images' => $processedFeaturedImages,
         ]);

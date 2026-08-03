@@ -129,9 +129,9 @@
                     </div>
                 </section>
             @elseif($secId === 'whimsical')
-                <!-- Whimsical, re-purposed as an oval-photo "Custom Cakes" promo banner -->
+                <!-- Whimsical, re-purposed as an oval-photo promo banner with a baker-editable scrolling marquee -->
                 <div class="modern-marquee"><div class="modern-marquee-track">
-                    @for($i = 0; $i < 8; $i++)<span>Custom Cakes</span>@endfor
+                    @for($i = 0; $i < 8; $i++)<span>{{ $tenant->getSiteContent('marquee_text', 'Custom Cakes') }}</span>@endfor
                 </div></div>
                 <section class="whimsical-section modern-cakes-banner">
                     <div class="whimsical-two-column">
@@ -244,7 +244,7 @@
             @elseif($secId === 'faq')
                 <!-- FAQ, re-purposed as the "Custom Orders" accordion section -->
                 <div class="modern-marquee"><div class="modern-marquee-track">
-                    @for($i = 0; $i < 8; $i++)<span>Custom Orders</span>@endfor
+                    @for($i = 0; $i < 8; $i++)<span>{{ $tenant->getSiteContent('marquee_text', 'Custom Cakes') }}</span>@endfor
                 </div></div>
                 <section class="faq-policies-section modern-orders-section" style="padding:70px 25px;">
                     <div class="modern-orders-grid">
@@ -309,7 +309,11 @@
                     <div class="cta-content" style="max-width:750px; margin:0 auto; position:relative; z-index:2;">
                         <h2 style="font-size: 2.6rem; color: #ffffff; margin-bottom: 10px;">{{ $tenant->getSiteContent('cta_headline', 'Ready For Your Perfect Cake?') }}</h2>
                         <p style="font-size: 1.1rem; color: #ffffff; opacity: 0.95; margin-bottom: 24px;">{{ $tenant->getSiteContent('cta_subtext', 'Order your plan or custom order now') }}</p>
-                        <button onclick="openOrderModal()" class="btn btn-primary" style="padding: 14px 34px; font-size: 1.1rem;">{{ $tenant->getSiteContent('cta_btn_text', 'Order Now') }}</button>
+                        @if($tenant->getSiteContent('cta_btn_action', 'order') === 'menu')
+                            <a href="{{ route('storefront.menu') }}" class="btn btn-primary" style="padding: 14px 34px; font-size: 1.1rem;">{{ $tenant->getSiteContent('cta_btn_text', 'Order Now') }}</a>
+                        @else
+                            <button onclick="openOrderModal()" class="btn btn-primary" style="padding: 14px 34px; font-size: 1.1rem;">{{ $tenant->getSiteContent('cta_btn_text', 'Order Now') }}</button>
+                        @endif
                     </div>
                 </section>
             @endif

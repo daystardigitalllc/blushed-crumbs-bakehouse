@@ -1596,6 +1596,11 @@
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Title</label>
                                                 <input type="text" name="whimsical_title" value="{{ data_get($siteContent, 'whimsical_title') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
                                             </div>
+                                            <div style="margin-bottom:10px;">
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Scrolling Banner Text</label>
+                                                <input type="text" name="marquee_text" value="{{ data_get($siteContent, 'marquee_text', 'Custom Cakes') }}" placeholder="e.g. Fresh Sourdough" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                <span style="font-size:0.75rem; color:#888;">The repeating scrolling text banner shown on the homepage.</span>
+                                            </div>
                                             <div style="display:flex; flex-direction:column; gap:6px;">
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Specialty Bullets</label>
                                                 <input type="text" name="whimsical_bullet_1" value="{{ $bullets[0] ?? '' }}" placeholder="Bullet 1..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
@@ -1698,6 +1703,14 @@
                                                     <div>
                                                         <label style="font-weight:600; font-size:0.82rem; color:#555;">Button Text</label>
                                                         <input type="text" name="cta_btn_text" value="{{ data_get($siteContent, 'cta_btn_text', 'Order Now') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                    </div>
+                                                    <div>
+                                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Button Links To</label>
+                                                        @php $ctaBtnAction = data_get($siteContent, 'cta_btn_action', 'order'); @endphp
+                                                        <select name="cta_btn_action" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                            <option value="order" {{ $ctaBtnAction === 'order' ? 'selected' : '' }}>Custom Order Form</option>
+                                                            <option value="menu" {{ $ctaBtnAction === 'menu' ? 'selected' : '' }}>Menu Page</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
