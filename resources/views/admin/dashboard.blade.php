@@ -1344,16 +1344,7 @@
                     <!-- LEFT COLUMN: Editor Controls -->
                     <div class="form-builder-left-col" style="display: flex; flex-direction: column; gap: 20px;">
                         
-                        <!-- EMAIL ROUTING SETTINGS CARD -->
-                        <div class="form-builder-card" style="border: 2px solid var(--primary); background: var(--theme-section-bg, #fff7fa); margin-bottom: 0;">
-                            <h4 style="color:#5c1d37; margin-bottom: 6px;">Order Email Routing</h4>
-                            <p style="font-size:0.85rem; color:#666; margin-bottom:12px;">All completed order form entries will be sent to this address:</p>
-                            <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                                <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? '' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:220px; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
-                                <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Save</button>
-                            </form>
-                            <div id="email-save-status" style="margin-top:10px; font-weight:700; color:#28a745; font-size:0.88rem; display:none;"></div>
-                        </div>
+
 
                         <!-- ADD STEP / FIELD CARD -->
                         <div class="form-builder-card" style="margin-bottom: 0;">
@@ -2313,6 +2304,17 @@
 
                 <!-- SECTION 1: Brand & Theme -->
                 <div id="settings-sect-brand">
+                    <!-- EMAIL ROUTING SETTINGS CARD -->
+                    <div class="form-builder-card" style="border: 2px solid var(--primary); background: var(--theme-section-bg, #fff7fa); margin-bottom: 20px;">
+                        <h4 style="color:#5c1d37; margin-bottom: 6px;">Order Email Routing</h4>
+                        <p style="font-size:0.85rem; color:#666; margin-bottom:12px;">All completed storefront order entries will be sent to this address:</p>
+                        <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                            <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? '' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:220px; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                            <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Save</button>
+                        </form>
+                        <div id="email-save-status" style="margin-top:10px; font-weight:700; color:#28a745; font-size:0.88rem; display:none;"></div>
+                    </div>
+
                     <!-- BAKERY LOGO MANAGEMENT CARD -->
                     <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff); margin-bottom:20px;">
                         <h4 style="color:var(--dark-text); margin-bottom:6px;">Brand Logo</h4>
