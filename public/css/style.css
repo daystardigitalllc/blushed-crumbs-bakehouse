@@ -7347,8 +7347,33 @@ body.theme-sunny_whisk {
 .admin-sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 4px;
     flex: 1;
+}
+
+.sidebar-category-title {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 14px 0 6px 12px;
+    font-family: 'Outfit', sans-serif;
+}
+
+.sidebar-category-title:first-of-type {
+    margin-top: 0;
+}
+
+.sidebar-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, stroke 0.2s ease;
+}
+
+.admin-nav-item:hover .sidebar-icon,
+.admin-nav-item.active .sidebar-icon {
+    opacity: 1;
 }
 
 .admin-nav-item {

@@ -119,36 +119,57 @@
                 </script>
             @endunless
 
-            <nav class="admin-sidebar-nav">
+            <nav class="admin-sidebar-nav" style="gap: 5px;">
+                <div class="sidebar-category-title">Operations</div>
                 <button class="admin-nav-item active" data-tab="tab-orders">
-                    Orders @if($newInquiriesCount > 0)<span class="nav-inquiries-badge">{{ $newInquiriesCount }}</span>@endif
-                </button>
-                <button class="admin-nav-item" data-tab="tab-form-builder">
-                    Order Form
-                </button>
-                <button class="admin-nav-item" data-tab="tab-page-builder">
-                    Page Builder
-                </button>
-                <button class="admin-nav-item" data-tab="tab-products">
-                    Products
-                </button>
-                <button class="admin-nav-item" data-tab="tab-gallery-manager">
-                    Device Gallery
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg>
+                    <span>Orders</span>
+                    @if($newInquiriesCount > 0)<span class="nav-inquiries-badge">{{ $newInquiriesCount }}</span>@endif
                 </button>
                 <button class="admin-nav-item" data-tab="tab-invoices">
-                    Invoices &amp; Payments
-                </button>
-                <button class="admin-nav-item" data-tab="tab-reviews">
-                    Client Reviews
-                </button>
-                <button class="admin-nav-item" data-tab="tab-email-marketing">
-                    Email Marketing @if(($tenant->plan_tier ?? 'free') !== 'pro')<span style="font-size:0.68rem; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; margin-left:4px;">PRO</span>@endif
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                    <span>Invoices &amp; Payments</span>
                 </button>
                 <button class="admin-nav-item" data-tab="tab-calendar">
-                    Availability &amp; Blackouts
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Availability &amp; Dates</span>
                 </button>
+
+                <div class="sidebar-category-title" style="margin-top: 14px;">Catalog &amp; Storefront</div>
+                <button class="admin-nav-item" data-tab="tab-products">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                    <span>Products &amp; Menu</span>
+                </button>
+                <button class="admin-nav-item" data-tab="tab-form-builder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <span>Order Form Builder</span>
+                </button>
+                <button class="admin-nav-item" data-tab="tab-page-builder">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                    <span>Page Builder</span>
+                </button>
+                <button class="admin-nav-item" data-tab="tab-gallery-manager">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    <span>Device Gallery</span>
+                </button>
+
+                <div class="sidebar-category-title" style="margin-top: 14px;">Growth &amp; Engagement</div>
+                <button class="admin-nav-item" data-tab="tab-reviews">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Client Reviews</span>
+                </button>
+                <button class="admin-nav-item" data-tab="tab-email-marketing">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <span>Email Marketing</span>
+                    @if(($tenant->plan_tier ?? 'free') !== 'pro')
+                        <span style="font-size:0.62rem; font-weight:800; background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:10px; margin-left:auto;">PRO</span>
+                    @endif
+                </button>
+
+                <div class="sidebar-category-title" style="margin-top: 14px;">Configuration</div>
                 <button class="admin-nav-item" data-tab="tab-settings">
-                    Settings
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span>Settings</span>
                 </button>
                 @if(($tenant->plan_tier ?? 'free') !== 'pro')
                     <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" class="admin-nav-item" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff !important; font-weight:700; margin-top:12px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:block;">
@@ -169,6 +190,15 @@
 
         <!-- RIGHT MAIN CONTENT -->
         <main class="admin-main-content">
+            @if($onboardingNeedsAttention ?? null)
+                <div style="background:#fef3c7; border:1px solid #f59e0b; color:#92400e; padding:14px 20px; border-radius:12px; margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:1.3rem;">⚠️</span>
+                        <span style="font-weight:600; font-size:0.92rem;">{{ $onboardingNeedsAttention }}</span>
+                    </div>
+                    <a href="{{ route('onboarding.v2.wizard', $latestOnboardingDraft ? ['draft' => $latestOnboardingDraft->id] : []) }}" style="background:#92400e; color:#fff; padding:8px 16px; border-radius:8px; font-weight:700; text-decoration:none; white-space:nowrap; font-size:0.85rem;">Finish Setup →</a>
+                </div>
+            @endif
             <!-- TAB 1: Orders -->
             <div id="tab-orders" class="tab-content active">
                 <style>
