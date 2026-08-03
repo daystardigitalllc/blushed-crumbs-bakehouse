@@ -1339,103 +1339,152 @@
                     <p class="subtitle">Customize the steps and fields customers fill out when placing an order.</p>
                 </div>
 
-                <!-- EMAIL ROUTING SETTINGS CARD -->
-                <div class="form-builder-card" style="border: 2px solid var(--primary); background: var(--theme-section-bg, #fff7fa);">
-                    <h4 style="color:#5c1d37;">Order Email Routing</h4>
-                    <p style="font-size:0.9rem; color:#666; margin-bottom:15px;">All completed order form entries will be sent to this address:</p>
-                    <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                        <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? '' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:220px;">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </form>
-                    <div id="email-save-status" style="margin-top:10px; font-weight:700; color:#28a745; font-size:0.88rem; display:none;"></div>
-                </div>
+                <div class="form-builder-workspace" style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 30px; align-items: start;">
+                    
+                    <!-- LEFT COLUMN: Editor Controls -->
+                    <div class="form-builder-left-col" style="display: flex; flex-direction: column; gap: 20px;">
+                        
+                        <!-- EMAIL ROUTING SETTINGS CARD -->
+                        <div class="form-builder-card" style="border: 2px solid var(--primary); background: var(--theme-section-bg, #fff7fa); margin-bottom: 0;">
+                            <h4 style="color:#5c1d37; margin-bottom: 6px;">Order Email Routing</h4>
+                            <p style="font-size:0.85rem; color:#666; margin-bottom:12px;">All completed order form entries will be sent to this address:</p>
+                            <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                                <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? '' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:220px; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+                                <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Save</button>
+                            </form>
+                            <div id="email-save-status" style="margin-top:10px; font-weight:700; color:#28a745; font-size:0.88rem; display:none;"></div>
+                        </div>
 
-                <!-- ADD STEP / FIELD CARD -->
-                <div class="form-builder-card">
-                    <h4>Add Step or Field</h4>
-                    <form id="add-field-form" class="form-builder-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <label style="font-weight:700; color:#5c1d37;">Field Type / Template</label>
-                            <select id="field-type" onchange="toggleOptionsRow(this.value)" style="width:100%; max-width:100%; box-sizing:border-box; text-overflow:ellipsis;">
-                                <option value="products">Product Catalog</option>
-                                <option value="calendar">Booking Calendar</option>
-                                <option value="flavors">Flavors Grid</option>
-                                <option value="frosting">Frosting Grid</option>
-                                <option value="fillings">Fillings Grid</option>
-                                <option value="textarea">Textarea / Notes</option>
-                                <option value="fulfillment">Fulfillment &amp; Time Slots</option>
-                                <option value="allergies">Allergy Notice</option>
-                                <option value="social_discount">Social Discounts</option>
-                                <option value="file_upload">Inspiration Photo Upload</option>
-                                <option value="terms">Terms &amp; Conditions</option>
-                                <option value="contact_info">Contact Info &amp; Submit</option>
-                                <option value="text">Single-Line Text</option>
-                                <option value="select">Select Dropdown</option>
-                                <option value="datepicker">Date Picker</option>
-                                <option value="toggle">Yes / No Toggle</option>
-                            </select>
+                        <!-- ADD STEP / FIELD CARD -->
+                        <div class="form-builder-card" style="margin-bottom: 0;">
+                            <h4 style="color:#5c1d37; margin-bottom: 6px;">Add Step or Field</h4>
+                            <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Add custom steps to gather flavors, details, or choices on your storefront order form.</p>
+                            <form id="add-field-form" class="form-builder-grid">
+                                <div style="grid-column: 1 / -1;">
+                                    <label style="font-weight:700; color:#5c1d37;">Field Type / Template</label>
+                                    <select id="field-type" onchange="toggleOptionsRow(this.value)" style="width:100%; max-width:100%; box-sizing:border-box; text-overflow:ellipsis;">
+                                        <option value="products">Product Catalog</option>
+                                        <option value="calendar">Booking Calendar</option>
+                                        <option value="flavors">Flavors Grid</option>
+                                        <option value="frosting">Frosting Grid</option>
+                                        <option value="fillings">Fillings Grid</option>
+                                        <option value="textarea">Textarea / Notes</option>
+                                        <option value="fulfillment">Fulfillment &amp; Time Slots</option>
+                                        <option value="allergies">Allergy Notice</option>
+                                        <option value="social_discount">Social Discounts</option>
+                                        <option value="file_upload">Inspiration Photo Upload</option>
+                                        <option value="terms">Terms &amp; Conditions</option>
+                                        <option value="contact_info">Contact Info &amp; Submit</option>
+                                        <option value="text">Single-Line Text</option>
+                                        <option value="select">Select Dropdown</option>
+                                        <option value="datepicker">Date Picker</option>
+                                        <option value="toggle">Yes / No Toggle</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Step Header / Title</label>
+                                    <input type="text" id="field-label" placeholder="e.g. Choose Your Flavors, Select Crust Type…" required>
+                                </div>
+                                <div style="grid-column: 1 / -1;">
+                                    <label>Step Subtext / Directions</label>
+                                    <textarea id="field-description" placeholder="e.g. Select all options that apply... (for Terms & Conditions steps, add the actual policy text afterward using the Edit Policy Text button below)" style="width:100%; height:80px; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;"></textarea>
+                                </div>
+                                <div id="field-options-row" style="grid-column: 1 / -1; margin-top: 10px;">
+                                    <label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:8px;">
+                                        Step Options &amp; Extra Charges
+                                        <span style="font-weight:500; font-size:0.85rem; color:#888;">(Separate inputs for option names and optional extra charges)</span>
+                                    </label>
+                                    
+                                    <!-- Dynamic Option Rows Container -->
+                                    <div id="option-rows-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                                        <!-- Option rows rendered dynamically by JS -->
+                                    </div>
+
+                                    <input type="hidden" id="field-options">
+
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="addAdminOptionRow()" style="border-radius:12px; font-weight:700; color:var(--primary); border-color:var(--theme-section-bg, #f8c6d7);">
+                                        + Add Option Choice
+                                    </button>
+                                </div>
+                                <div style="grid-column: 1 / -1; margin-top:10px;">
+                                    <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Step to Order Form</button>
+                                </div>
+                            </form>
                         </div>
-                        <div>
-                            <label>Step Header / Title</label>
-                            <input type="text" id="field-label" placeholder="e.g. Choose Your Flavors, Select Crust Type…" required>
-                        </div>
-                        <div style="grid-column: 1 / -1;">
-                            <label>Step Subtext / Directions</label>
-                            <textarea id="field-description" placeholder="e.g. Select all options that apply... (for Terms & Conditions steps, add the actual policy text afterward using the Edit Policy Text button below)" style="width:100%; height:80px; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;"></textarea>
-                        </div>
-                        <div id="field-options-row" style="grid-column: 1 / -1; margin-top: 10px;">
-                            <label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:8px;">
-                                Step Options &amp; Extra Charges
-                                <span style="font-weight:500; font-size:0.85rem; color:#888;">(Separate inputs for option names and optional extra charges)</span>
-                            </label>
-                            
-                            <!-- Dynamic Option Rows Container -->
-                            <div id="option-rows-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
-                                <!-- Option rows rendered dynamically by JS -->
+
+                        <!-- LIVE FIELDS TABLE WITH REORDER & SAVE -->
+                        <div class="form-builder-card" style="margin-bottom: 0;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+                                <div>
+                                    <h4 style="margin-bottom:4px; color:#5c1d37;">Configured Form Steps &amp; Fields</h4>
+                                    <span style="font-size:0.85rem; color:#888; font-weight:500;">Drag rows, or use the arrows, to reorder steps.</span>
+                                </div>
+                                <button id="save-form-schema-btn" class="btn btn-primary" onclick="saveFormSchemaToServer()">Save Order Form Layout</button>
                             </div>
 
-                            <input type="hidden" id="field-options">
-
-                            <button type="button" class="btn btn-outline btn-sm" onclick="addAdminOptionRow()" style="border-radius:12px; font-weight:700; color:var(--primary); border-color:var(--theme-section-bg, #f8c6d7);">
-                                + Add Option Choice
-                            </button>
+                            <div class="field-table-wrapper">
+                                <table class="field-table" id="custom-fields-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:36px;"></th>
+                                            <th>Step #</th>
+                                            <th>Step Header / Title</th>
+                                            <th>Template / Type</th>
+                                            <th>Subtext / Options</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="custom-fields-tbody">
+                                        <tr class="empty-row" id="fields-empty-row">
+                                            <td colspan="6" style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem;">
+                                                Loading configured form steps…
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div style="grid-column: 1 / -1; margin-top:10px;">
-                            <button type="submit" class="btn btn-primary" style="width:100%;">+ Add Step to Order Form</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- LIVE FIELDS TABLE WITH REORDER & SAVE -->
-                <div class="form-builder-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
-                        <div>
-                            <h4 style="margin-bottom:4px;">Configured Form Steps &amp; Fields</h4>
-                            <span style="font-size:0.85rem; color:#888; font-weight:500;">Drag rows, or use the arrows, to reorder steps.</span>
-                        </div>
-                        <button id="save-form-schema-btn" class="btn btn-primary" onclick="saveFormSchemaToServer()">Save Order Form Layout</button>
                     </div>
 
-                    <div class="field-table-wrapper">
-                        <table class="field-table" id="custom-fields-table">
-                            <thead>
-                                <tr>
-                                    <th style="width:36px;"></th>
-                                    <th>Step #</th>
-                                    <th>Step Header / Title</th>
-                                    <th>Template / Type</th>
-                                    <th>Subtext / Options</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="custom-fields-tbody">
-                                <tr class="empty-row" id="fields-empty-row">
-                                    <td colspan="6" style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem;">
-                                        Loading configured form steps…
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <!-- RIGHT COLUMN: Real-Time Mobile Preview Drawer -->
+                    <div class="form-builder-right-col" style="position: sticky; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%;">
+                        
+                        <div style="font-weight: 700; font-size: 0.85rem; color: #5c1d37; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
+                            <span>📱 Storefront Form Preview</span>
+                            <span style="background: #e67399; color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; text-transform: none; font-weight: 800;">Real-Time</span>
+                        </div>
+
+                        <!-- Phone Frame Mockup -->
+                        <div class="mobile-phone-frame" style="width: 100%; max-width: 320px; height: 560px; background: #ffffff; border: 12px solid #2d2419; border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column;">
+                            <!-- Speaker / Notch -->
+                            <div style="width: 110px; height: 18px; background: #2d2419; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; justify-content: center; align-items: center;">
+                                <div style="width: 40px; height: 4px; background: #555; border-radius: 10px;"></div>
+                            </div>
+                            
+                            <!-- Phone screen viewport -->
+                            <div class="phone-screen-viewport" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 32px 16px 24px 16px; background: #fff5f8; font-family: 'Outfit', sans-serif;">
+                                <!-- Storefront Header mockup -->
+                                <div style="text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(230,115,153,0.15); padding-bottom: 12px;">
+                                    <h5 style="font-family: 'Great Vibes', cursive; font-size: 1.8rem; color: #5c1d37; margin: 0;">{{ $tenant->name }}</h5>
+                                    <span style="font-size: 0.7rem; color: #888;">Storefront Order Form</span>
+                                </div>
+
+                                <!-- Live Interactive Preview Content -->
+                                <div id="live-preview-viewport-content" style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+                                    <!-- Populated dynamically via Javascript based on window._customFields -->
+                                </div>
+                            </div>
+                            
+                            <!-- Home Bar -->
+                            <div style="height: 15px; background: #ffffff; display: flex; justify-content: center; align-items: center; border-top: 1px solid #eee;">
+                                <div style="width: 80px; height: 4px; background: #ccc; border-radius: 10px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Quick guide -->
+                        <span style="font-size: 0.78rem; color: #888; text-align: center; max-width: 280px; line-height: 1.4;">
+                            Changes made to steps on the left will immediately sync inside this storefront preview mockup.
+                        </span>
                     </div>
                 </div>
 

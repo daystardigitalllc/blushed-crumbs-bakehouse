@@ -8746,3 +8746,14 @@ body.theme-sunny_whisk {
     color: #ffffff !important;
     box-shadow: 0 4px 12px rgba(230, 115, 153, 0.25) !important;
 }
+
+/* Form Builder Live Preview Workspace Sizing */
+@media (max-width: 992px) {
+    .form-builder-workspace {
+        grid-template-columns: 1fr !important;
+    }
+    .form-builder-right-col {
+        position: static !important;
+        margin-top: 20px;
+    }
+}

@@ -1410,6 +1410,9 @@ function initAdminPortal() {
                 renderFieldsTable();
             });
         });
+
+        // Trigger Live Preview Update
+        if (window.updateLivePreview) window.updateLivePreview();
     }
 
     window.moveField = function(idx, dir) {
@@ -1432,6 +1435,173 @@ function initAdminPortal() {
     window.updateField = function(idx, key, value) {
         if (value === '—' || value === 'Add subtext...') value = '';
         window._customFields[idx][key] = value.trim();
+        if (window.updateLivePreview) window.updateLivePreview();
+    };
+
+    // Live Storefront Form Builder Preview Render Engine
+    window.updateLivePreview = function() {
+        const previewContainer = document.getElementById('live-preview-viewport-content');
+        if (!previewContainer) return;
+
+        if (!window._customFields || window._customFields.length === 0) {
+            previewContainer.innerHTML = `
+                <div style="text-align:center; padding:40px 10px; color:#aaa;">
+                    <span style="font-size:3rem; display:block; margin-bottom:12px;">🧁</span>
+                    <strong style="color:#5c1d37; display:block; font-size:0.95rem;">No Steps Added Yet</strong>
+                    <p style="font-size:0.8rem; margin-top:4px;">Use the form builder on the left to customize your customer order steps.</p>
+                </div>`;
+            return;
+        }
+
+        previewContainer.innerHTML = window._customFields.map((f, i) => {
+            const labelText = f.title || f.label || 'Step ' + (i+1);
+            const subtext = f.subtext || '';
+            const type = f.type || 'text';
+            const rawOptions = f.options || '';
+            const opts = rawOptions.split(',').map(o => o.trim()).filter(Boolean);
+
+            let mockupHTML = '';
+
+            switch (type) {
+                case 'products':
+                    mockupHTML = `
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
+                            <div style="border:1px solid #f8c6d7; background:#fff; border-radius:10px; padding:10px 8px; text-align:center; font-size:0.75rem; cursor:pointer;" class="preview-product-tile">
+                                <strong style="display:block; color:#5c1d37;">6" Custom Cake</strong>
+                                <span style="color:#e67399; font-weight:700;">$45</span>
+                            </div>
+                            <div style="border:1px solid #f8c6d7; background:#fff; border-radius:10px; padding:10px 8px; text-align:center; font-size:0.75rem; cursor:pointer;" class="preview-product-tile">
+                                <strong style="display:block; color:#5c1d37;">Dozen Cupcakes</strong>
+                                <span style="color:#e67399; font-weight:700;">$30</span>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'calendar':
+                    mockupHTML = `
+                        <div style="border:1px solid #ebd4dd; background:#fff; border-radius:10px; padding:10px; margin-top:8px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; font-weight:700; color:#5c1d37; margin-bottom:8px;">
+                                <span>← August 2026 →</span>
+                            </div>
+                            <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; text-align:center; font-size:0.68rem;">
+                                ${['S','M','T','W','T','F','S'].map(d => `<span style="font-weight:700; color:#aaa;">${d}</span>`).join('')}
+                                ${Array.from({length: 28}, (_, idx) => {
+                                    const day = idx + 1;
+                                    const isClosed = [2, 3, 9, 10].includes(day);
+                                    const style = isClosed 
+                                        ? 'color:#ccc; text-decoration:line-through; cursor:not-allowed;' 
+                                        : 'font-weight:600; color:#5c1d37; cursor:pointer; background:#fff5f8; border-radius:50%; width:18px; height:18px; line-height:18px; margin:0 auto;';
+                                    return `<span style="${style}">${day}</span>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'flavors':
+                case 'frosting':
+                case 'fillings':
+                case 'chips':
+                    const items = opts.length > 0 ? opts : ['Vanilla Bean', 'Rich Chocolate', 'Red Velvet'];
+                    mockupHTML = `
+                        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+                            ${items.map(o => {
+                                let addonPrice = 0.00;
+                                let cleanName = o;
+                                const match = o.match(/\(\+\$?([0-9]+(?:\.[0-9]{1,2})?)\)/i);
+                                if (match) {
+                                    addonPrice = parseFloat(match[1]);
+                                    cleanName = o.replace(/\(\+\$?([0-9]+(?:\.[0-9]{1,2})?)\)/i, '').trim();
+                                }
+                                return `
+                                    <div style="border:1.5px solid #f8c6d7; border-radius:15px; padding:6px 12px; font-size:0.72rem; font-weight:600; color:#5c1d37; background:#fff; cursor:pointer; display:flex; align-items:center; gap:4px;">
+                                        <span>${cleanName}</span>
+                                        ${addonPrice > 0 ? `<span style="background:#f9e0eb; color:#7a2b4a; padding:1px 4px; border-radius:6px; font-size:0.6rem;">+$${addonPrice}</span>` : ''}
+                                    </div>`;
+                            }).join('')}
+                        </div>
+                    `;
+                    break;
+                case 'fulfillment':
+                    mockupHTML = `
+                        <div style="display:flex; gap:10px; margin-top:8px;">
+                            <div style="flex:1; border:2px solid var(--primary, #e67399); background:#fff; border-radius:10px; padding:8px; text-align:center; font-size:0.75rem; font-weight:700; color:var(--primary);">Pickup</div>
+                            <div style="flex:1; border:1px solid #ddd; background:#fff; border-radius:10px; padding:8px; text-align:center; font-size:0.75rem; font-weight:700; color:#666;">Delivery</div>
+                        </div>
+                    `;
+                    break;
+                case 'file_upload':
+                    mockupHTML = `
+                        <div style="border:1.5px dashed #e67399; background:#fff; border-radius:10px; padding:18px 10px; text-align:center; margin-top:8px; cursor:pointer;">
+                            <span style="font-size:1.5rem; color:#e67399; display:block; margin-bottom:4px;">✦</span>
+                            <span style="font-size:0.72rem; font-weight:600; color:#5c1d37; display:block;">Click to upload photos</span>
+                            <span style="font-size:0.6rem; color:#999; display:block; margin-top:2px;">PNG, JPG, JPEG</span>
+                        </div>
+                    `;
+                    break;
+                case 'terms':
+                    mockupHTML = `
+                        <div style="border:1px solid #eee; background:#fafafa; border-radius:8px; padding:8px; height:60px; overflow-y:auto; font-size:0.62rem; line-height:1.4; color:#666; margin-top:8px;">
+                            ${f.description || 'Please agree to our order policy deposit and timeline details...'}
+                        </div>
+                        <label style="display:flex; align-items:center; gap:6px; margin-top:8px; cursor:pointer; font-size:0.7rem; font-weight:700; color:#4a2133;">
+                            <input type="checkbox" style="width:12px; height:12px;"> Agree to terms
+                        </label>
+                    `;
+                    break;
+                case 'contact_info':
+                    mockupHTML = `
+                        <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px;">
+                            <input type="text" placeholder="Full Name" disabled style="width:100%; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:0.72rem;">
+                            <input type="email" placeholder="Email" disabled style="width:100%; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:0.72rem;">
+                            <input type="tel" placeholder="Phone Number" disabled style="width:100%; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:0.72rem;">
+                        </div>
+                    `;
+                    break;
+                case 'allergies':
+                    mockupHTML = `
+                        <textarea placeholder="Please list any allergies here..." disabled style="width:100%; height:50px; padding:8px; border-radius:8px; border:1px solid #ef4444; font-size:0.72rem; margin-top:8px; resize:none; background:#fef2f2;"></textarea>
+                    `;
+                    break;
+                case 'select':
+                    const selectItems = opts.length > 0 ? opts : ['Option 1', 'Option 2'];
+                    mockupHTML = `
+                        <select disabled style="width:100%; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:0.72rem; margin-top:8px;">
+                            <option>Select Option...</option>
+                            ${selectItems.map(o => `<option>${o}</option>`).join('')}
+                        </select>
+                    `;
+                    break;
+                case 'datepicker':
+                    mockupHTML = `
+                        <input type="date" disabled style="width:100%; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:0.72rem; margin-top:8px;">
+                    `;
+                    break;
+                case 'toggle':
+                    mockupHTML = `
+                        <div style="display:flex; gap:8px; margin-top:8px; justify-content:center;">
+                            <span style="border:1.5px solid #f8c6d7; border-radius:15px; padding:4px 14px; font-size:0.72rem; font-weight:700; color:#5c1d37; background:#fff;">Yes</span>
+                            <span style="border:1.5px solid #f8c6d7; border-radius:15px; padding:4px 14px; font-size:0.72rem; font-weight:700; color:#5c1d37; background:#fff;">No</span>
+                        </div>
+                    `;
+                    break;
+                default: // text / textarea
+                    mockupHTML = `
+                        <input type="text" placeholder="${f.description || 'Type your answer here...'}" disabled style="width:100%; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:0.72rem; margin-top:8px;">
+                    `;
+                    break;
+            }
+
+            return `
+                <div style="background:#fff; border-radius:12px; padding:12px 14px; border:1px solid rgba(230,115,153,0.12); box-shadow:0 3px 8px rgba(230,115,153,0.04);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:700; font-size:0.78rem; color:#5c1d37; text-align:left;">${labelText}</span>
+                        <span style="font-size:0.62rem; color:#999; font-weight:700; background:#fafafa; border:1px solid #eee; padding:1px 6px; border-radius:6px; text-transform:uppercase;">Step ${i+1}</span>
+                    </div>
+                    ${subtext ? `<p style="font-size:0.65rem; color:#888; margin:2px 0 0 0; text-align:left;">${subtext}</p>` : ''}
+                    ${mockupHTML}
+                </div>
+            `;
+        }).join('');
     };
 
     // Save Form Schema to Server Endpoint
