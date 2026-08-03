@@ -33,6 +33,19 @@ class AdminController extends Controller
             return $request->attributes->get('tenant');
         }
 
+        // A superadmin previewing another bakery's CMS via /site/{subdomain}/dashboard gets the
+        // right tenant on page load (via the $subdomain route param above), but the dashboard's
+        // AJAX saves all POST to un-scoped /dashboard/* routes with no subdomain in the URL — so
+        // without this, a save would silently fall through to the superadmin's own tenant below.
+        // Only trusted for superadmins: a regular baker's request must never be able to redirect
+        // a save to another tenant just by adding a "subdomain" field to the form.
+        if ($request && $request->filled('subdomain') && auth()->user()?->isSuperAdmin()) {
+            $t = Tenant::where('subdomain', $request->input('subdomain'))
+                ->orWhere('slug', $request->input('subdomain'))
+                ->first();
+            if ($t) return $t;
+        }
+
         return auth()->user()?->tenant ?? Tenant::first();
     }
 

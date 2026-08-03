@@ -1427,6 +1427,11 @@
 
                     <form id="section-manager-form">
                         @csrf
+                        {{-- Carries which tenant this save applies to when a superadmin is previewing
+                             another bakery's CMS via /site/{subdomain}/dashboard — the save otherwise
+                             posts to an un-scoped /dashboard/sections URL and would silently land on
+                             the superadmin's own tenant instead. See AdminController::tenant(). --}}
+                        <input type="hidden" name="subdomain" value="{{ $tenant->subdomain ?? $tenant->slug }}">
                         @php
                             $orderedSections = $tenant->getOrderedSections();
                             $siteContent = $tenant->site_content ?? App\Models\Tenant::getDefaultSiteContent();
