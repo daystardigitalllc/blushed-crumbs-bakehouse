@@ -8817,3 +8817,15 @@ body.theme-sunny_whisk {
         box-shadow: 0 20px 50px rgba(0,0,0,0.1);
     }
 }
+
+/* Menu Source Selector Toggle Cards */
+.menu-source-card:hover {
+    border-color: #f8c6d7 !important;
+    background: #fff5f8 !important;
+    transform: translateY(-2px);
+}
+.menu-source-card.active-source {
+    border-color: var(--primary, #e67399) !important;
+    background: #fff5f8 !important;
+    box-shadow: 0 4px 12px rgba(230, 115, 153, 0.15) !important;
+}

@@ -1960,52 +1960,69 @@
                     @endphp
 
                     <form onsubmit="handleSaveMenuSettings(event)" enctype="multipart/form-data">
-                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:20px;">
-                            <!-- Display Mode -->
-                            <div>
-                                <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">Menu Display Mode</label>
-                                <select name="menu_type" id="admin_menu_type" class="form-input" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1;">
-                                    <option value="both" {{ $menuType === 'both' ? 'selected' : '' }}>Both (Uploaded Menu Image + Catalog Grid + Custom Notes)</option>
-                                    <option value="text" {{ $menuType === 'text' ? 'selected' : '' }}>Styled Theme Menu Grid + Custom Notes</option>
-                                    <option value="image" {{ $menuType === 'image' ? 'selected' : '' }}>Uploaded Menu Image / PDF + Custom Notes</option>
-                                </select>
-                                <small style="color:#64748b; font-size:0.8rem; display:block; margin-top:4px;">
-                                    Custom notes (editor below) appear at the bottom of your public menu page.
-                                </small>
+                        <!-- Menu Display Type Selector Cards -->
+                        <div style="margin-bottom: 24px;">
+                            <label style="font-weight:700; color:#5c1d37; font-size:0.95rem; display:block; margin-bottom:12px;">Menu Source Option</label>
+                            <input type="hidden" name="menu_type" id="admin_menu_type" value="{{ $menuType }}">
+                            
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+                                <!-- Option 1: Digital Products Catalog -->
+                                <div class="menu-source-card {{ $menuType !== 'image' ? 'active-source' : '' }}" onclick="switchMenuSource('text')" style="background:#fff; border:2px solid #f0e4ea; border-radius:14px; padding:18px; cursor:pointer; transition:all 0.2s ease;">
+                                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                                        <span style="font-size:1.8rem;">🍰</span>
+                                        <div style="font-weight:700; color:#5c1d37; font-size:1rem;">Products Catalog Menu</div>
+                                    </div>
+                                    <p style="font-size:0.8rem; color:#666; margin:0; line-height:1.4;">Auto-generate a beautiful interactive menu on your public website directly from the products in your inventory.</p>
+                                </div>
+                                
+                                <!-- Option 2: Uploaded Menu Image / PDF -->
+                                <div class="menu-source-card {{ $menuType === 'image' ? 'active-source' : '' }}" onclick="switchMenuSource('image')" style="background:#fff; border:2px solid #f0e4ea; border-radius:14px; padding:18px; cursor:pointer; transition:all 0.2s ease;">
+                                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                                        <span style="font-size:1.8rem;">📸</span>
+                                        <div style="font-weight:700; color:#5c1d37; font-size:1rem;">Upload Menu Image / PDF</div>
+                                    </div>
+                                    <p style="font-size:0.8rem; color:#666; margin:0; line-height:1.4;">Upload a picture or PDF document of your bakery's print menu to display directly on your storefront.</p>
+                                </div>
                             </div>
+                        </div>
 
-                            <!-- Upload Menu File -->
-                            <div>
-                                <label style="font-weight:700; color:#334155; font-size:0.9rem; display:block; margin-bottom:6px;">
-                                    Upload Official Bakery Menu Image/PDF
-                                </label>
+                        <!-- SOURCE SECTION 1: Product Catalog Note -->
+                        <div id="source-sect-catalog" style="display: {{ $menuType !== 'image' ? 'block' : 'none' }}; margin-bottom: 24px; background: #fff5f8; border: 1px solid #f8c6d7; border-radius: 12px; padding: 16px;">
+                            <span style="font-weight:700; color:#5c1d37; font-size:0.9rem; display:block; margin-bottom:4px;">✓ Catalog Integration Active</span>
+                            <span style="font-size:0.82rem; color:#666; line-height:1.4;">Your menu is auto-generated using items in your catalog list above. Customers can browse these goods in the styled theme design on your public <a href="/menu" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:underline;">/menu</a> page.</span>
+                        </div>
 
-                                @if($menuImagePath)
-                                    <div style="background:#f0fdf4; border:1.5px solid #22c55e; border-radius:12px; padding:12px 16px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-                                        <div style="display:flex; align-items:center; gap:12px;">
-                                            @if(!Str::endsWith(strtolower($menuImagePath), '.pdf'))
-                                                <img src="{{ asset($menuImagePath) }}" alt="Current Menu Thumbnail" style="width:48px; height:48px; object-fit:cover; border-radius:8px; border:1px solid #bbf7d0;">
-                                            @endif
-                                            <div>
-                                                <div style="font-weight:700; color:#15803d; font-size:0.88rem;">Menu file active on storefront</div>
-                                                <a href="{{ asset($menuImagePath) }}" target="_blank" style="color:#166534; font-size:0.82rem; font-weight:600; text-decoration:underline;">
-                                                    View uploaded file ↗
-                                                </a>
-                                            </div>
+                        <!-- SOURCE SECTION 2: Menu File Upload -->
+                        <div id="source-sect-upload" style="display: {{ $menuType === 'image' ? 'block' : 'none' }}; margin-bottom: 24px; background:#ffffff; border:1px solid #f0e4ea; border-radius:14px; padding:20px;">
+                            <label style="font-weight:700; color:#5c1d37; font-size:0.9rem; display:block; margin-bottom:10px;">
+                                Upload Official Bakery Menu Image/PDF
+                            </label>
+
+                            @if($menuImagePath)
+                                <div style="background:#f0fdf4; border:1.5px solid #22c55e; border-radius:12px; padding:12px 16px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                                    <div style="display:flex; align-items:center; gap:12px;">
+                                        @if(!Str::endsWith(strtolower($menuImagePath), '.pdf'))
+                                            <img src="{{ asset($menuImagePath) }}" alt="Current Menu Thumbnail" style="width:48px; height:48px; object-fit:cover; border-radius:8px; border:1px solid #bbf7d0;">
+                                        @endif
+                                        <div>
+                                            <div style="font-weight:700; color:#15803d; font-size:0.88rem;">Menu file active on storefront</div>
+                                            <a href="{{ asset($menuImagePath) }}" target="_blank" style="color:#166534; font-size:0.82rem; font-weight:600; text-decoration:underline;">
+                                                View uploaded file ↗
+                                            </a>
                                         </div>
-                                        <label style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; padding:4px 10px; border-radius:8px; font-weight:700; font-size:0.8rem; cursor:pointer;">
-                                            <input type="checkbox" name="remove_menu_image" value="1"> Delete Active File
-                                        </label>
                                     </div>
-                                    <small style="color:#64748b; font-size:0.8rem; display:block; margin-bottom:6px;">Upload new file below to replace current file:</small>
-                                @else
-                                    <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:8px 12px; margin-bottom:8px; font-size:0.82rem; color:#64748b;">
-                                        No official menu image/PDF uploaded yet. Select a file below to upload.
-                                    </div>
-                                @endif
+                                    <label style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; padding:4px 10px; border-radius:8px; font-weight:700; font-size:0.8rem; cursor:pointer; margin: 0;">
+                                        <input type="checkbox" name="remove_menu_image" value="1"> Delete Active File
+                                    </label>
+                                </div>
+                                <small style="color:#64748b; font-size:0.8rem; display:block; margin-bottom:6px;">Upload new file below to replace current file:</small>
+                            @else
+                                <div style="background:#faf8f9; border:1px dashed #f8c6d7; border-radius:8px; padding:12px; margin-bottom:12px; font-size:0.82rem; color:#888;">
+                                    No official menu image/PDF uploaded yet. Select a file below to upload.
+                                </div>
+                            @endif
 
-                                <input type="file" name="menu_image" id="admin_menu_image" accept="image/*,.pdf" class="form-input" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; background:#fff;">
-                            </div>
+                            <input type="file" name="menu_image" id="admin_menu_image" accept="image/*,.pdf" class="form-input" style="width:100%; padding:8px; border-radius:8px; border:1px solid #cbd5e1; background:#fff;">
                         </div>
 
                         <!-- Menu WYSIWYG Rich Text Editor -->
@@ -3510,6 +3527,35 @@
                         tile.classList.add('selected-tile');
                     } else {
                         tile.classList.remove('selected-tile');
+                    }
+                });
+            };
+
+            // UI/UX Optimizations: Menu Source Toggle Cards Switcher
+            window.switchMenuSource = function(sourceType) {
+                const hiddenInput = document.getElementById('admin_menu_type');
+                if (hiddenInput) {
+                    hiddenInput.value = sourceType;
+                }
+                
+                const catalogSect = document.getElementById('source-sect-catalog');
+                const uploadSect = document.getElementById('source-sect-upload');
+                
+                if (sourceType === 'image') {
+                    if (catalogSect) catalogSect.style.display = 'none';
+                    if (uploadSect) uploadSect.style.display = 'block';
+                } else {
+                    if (catalogSect) catalogSect.style.display = 'block';
+                    if (uploadSect) uploadSect.style.display = 'none';
+                }
+                
+                // Toggle active visual CSS classes
+                document.querySelectorAll('.menu-source-card').forEach(card => {
+                    const clickFn = card.getAttribute('onclick') || '';
+                    if (clickFn.includes(sourceType)) {
+                        card.classList.add('active-source');
+                    } else {
+                        card.classList.remove('active-source');
                     }
                 });
             };
