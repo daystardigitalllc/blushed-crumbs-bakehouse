@@ -150,6 +150,26 @@ class DraftSynthesisServiceTest extends TestCase
         // where Gemini actually supplies them.
     }
 
+    /**
+     * A baker-selected bakery_type must produce a type-appropriate fallback
+     * (marquee text + one real category) even with zero AI involvement —
+     * this is the entirely-local safety net for when Gemini is unavailable
+     * or misconfigured, not something that depends on any API call working.
+     */
+    public function test_bakery_type_seeds_type_appropriate_fallback_with_no_gemini()
+    {
+        config(['services.gemini.key' => '']); // pure-defaults path, no network
+
+        $tenant = $this->makeTenant();
+        $draft = $this->makeDraft($tenant, ['bakery_type' => 'breads']);
+        $this->seedExtractedImage($draft, $tenant);
+
+        $proposal = app(DraftSynthesisService::class)->synthesize($draft, $tenant);
+
+        $this->assertSame('Fresh Sourdough Daily', $proposal['site_content']['marquee_text']);
+        $this->assertSame('Breads', $proposal['site_content']['categories'][0]['title']);
+    }
+
     public function test_gemini_copy_is_used_when_available_and_seo_fields_survive()
     {
         config(['services.gemini.key' => 'test-key']);
@@ -165,6 +185,29 @@ class DraftSynthesisServiceTest extends TestCase
         $this->assertSame('Synthesis Test Bakery | Custom Cakes', $proposal['site_content']['seo_title']);
         $this->assertSame('Order custom cakes and pastries online.', $proposal['site_content']['seo_description']);
         $this->assertSame('modern_bakery', $proposal['theme_id']);
+    }
+
+    /**
+     * A configured API key whose call still fails (after GeminiClient's own
+     * internal HTTP retries + repair attempt) must propagate, not silently
+     * fall back to an all-defaults site with no signal anyone needs to look
+     * at it. SynthesizeDraftJob relies on this exception to trigger its own
+     * queue-level retry/backoff — see SynthesizeDraftJobFailureTest.
+     */
+    public function test_synthesis_throws_when_gemini_call_persistently_fails()
+    {
+        config(['services.gemini.key' => 'test-key']);
+        Http::fake([
+            'generativelanguage.googleapis.com*' => Http::response('Internal Server Error', 500),
+        ]);
+
+        $tenant = $this->makeTenant();
+        $draft = $this->makeDraft($tenant);
+        $this->seedExtractedImage($draft, $tenant);
+
+        $this->expectException(\RuntimeException::class);
+
+        app(DraftSynthesisService::class)->synthesize($draft, $tenant);
     }
 
     public function test_contact_fields_come_from_basics_not_ai()

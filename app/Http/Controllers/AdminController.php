@@ -146,12 +146,35 @@ class AdminController extends Controller
         ];
         $onboardingComplete = collect($onboardingChecklist)->every(fn ($step) => $step['done']);
 
+        // "Your site isn't finished" banner — a tenant can be technically live
+        // (registration creates one immediately) while its AI-generated content
+        // never actually finished or came back mostly empty defaults, with no
+        // other signal anywhere that anything needs attention. Surfaced here
+        // rather than baked into $onboardingComplete since that flag tracks
+        // manual dashboard setup steps, a separate concern from the AI draft.
+        $latestOnboardingDraft = \App\Models\Onboarding\OnboardingDraft::where('tenant_id', $tenant->id)
+            ->orderByDesc('id')
+            ->first();
+        $onboardingNeedsAttention = null;
+        if ($latestOnboardingDraft) {
+            if ($latestOnboardingDraft->status === 'failed') {
+                $onboardingNeedsAttention = 'AI generation failed while building your site — some sections may still have placeholder content.';
+            } elseif (!$tenant->onboarding_completed && in_array($latestOnboardingDraft->status, \App\Models\Onboarding\OnboardingDraft::INCOMPLETE_STATUSES, true)) {
+                $onboardingNeedsAttention = 'Your site setup was never finished — some sections likely still have placeholder content.';
+            } elseif ($latestOnboardingDraft->status === 'imported' && $latestOnboardingDraft->confidence_overall !== null && (float) $latestOnboardingDraft->confidence_overall < 0.3) {
+                $onboardingNeedsAttention = 'AI generation had trouble reading your photos/menu — review your site copy and images for accuracy.';
+            }
+        } elseif (!$tenant->onboarding_completed) {
+            $onboardingNeedsAttention = 'Your site setup was never finished — some sections likely still have placeholder content.';
+        }
+
         return view('admin.dashboard', compact(
             'tenant', 'urgentOrders', 'allOrders', 'invoices',
             'products', 'reviews', 'gallery', 'supportTickets',
             'customers', 'totalRevenue', 'pendingOrders', 'customerCount',
             'serverBookingSettings', 'siteContent', 'emailSubscribers', 'emailCampaigns',
-            'onboardingChecklist', 'onboardingComplete'
+            'onboardingChecklist', 'onboardingComplete',
+            'latestOnboardingDraft', 'onboardingNeedsAttention'
         ));
     }
 

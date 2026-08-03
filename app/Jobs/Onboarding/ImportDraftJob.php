@@ -411,12 +411,19 @@ class ImportDraftJob implements ShouldQueue
             return;
         }
 
-        $hero = $copied->first(fn ($entry) => (bool) ($entry['payload']['is_hero'] ?? false)) ?? $copied->first();
+        // Only ever use an image explicitly flagged is_hero for the hero slot —
+        // DraftSynthesisService::pickHero() already vets candidates for
+        // landscape aspect ratio and quality (>= 55 score); forcing an
+        // arbitrary fallback here (e.g. a tall portrait product-label photo)
+        // produces a badly-cropped hero banner. No qualifying image just
+        // means hero_bg_url stays unset — every theme already renders a
+        // clean icon-on-gradient placeholder in that case.
+        $hero = $copied->first(fn ($entry) => (bool) ($entry['payload']['is_hero'] ?? false));
 
         // Cycle through the remaining images (falling back to reusing them,
         // including the hero) rather than leaving a slot blank just because
         // fewer than 5 distinct photos were approved.
-        $rotation = $copied->reject(fn ($entry) => $entry === $hero)->values();
+        $rotation = $hero ? $copied->reject(fn ($entry) => $entry === $hero)->values() : $copied;
         if ($rotation->isEmpty()) {
             $rotation = $copied;
         }
@@ -428,7 +435,9 @@ class ImportDraftJob implements ShouldQueue
         };
 
         $content = $tenant->site_content ?? [];
-        $content['hero_bg_url'] = $hero['public_path'];
+        if ($hero) {
+            $content['hero_bg_url'] = $hero['public_path'];
+        }
         $content['promo_bg_image_url'] = $next();
         $content['cta_bg_image_url'] = $next();
         $content['whimsical_image_url'] = $next();

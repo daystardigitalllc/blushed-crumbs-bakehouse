@@ -36,8 +36,34 @@ class Wizard extends Component
 
     public string $step = 'basics';
 
+    /**
+     * Canonical bakery-type options — shown as the "What do you specialize
+     * in?" select on the basics step. An explicit baker-chosen type is a far
+     * more reliable signal than inferring one from photos (photo analysis
+     * can fail outright — see the Aug 2026 onboarding investigation this was
+     * built from), so it flows straight into the AI copy prompt via `basics`
+     * and also seeds a type-appropriate fallback if Gemini never runs at
+     * all. Keys are shared with DraftSynthesisService::BAKERY_TYPE_DEFAULTS
+     * — keep both lists in sync if you add/rename an option.
+     */
+    public const BAKERY_TYPE_OPTIONS = [
+        'cakes' => '🎂 Cakes',
+        'cupcakes' => '🧁 Cupcakes',
+        'cookies' => '🍪 Cookies',
+        'breads' => '🍞 Bread / Sourdough',
+        'pastries' => '🥐 Pastries',
+        'pies' => '🥧 Pies',
+        'cake_pops' => '🍭 Cake Pops',
+        'donuts' => '🍩 Donuts',
+        'macarons' => '🇫🇷 Macarons',
+        'brownies' => '🍫 Brownies',
+        'muffins' => '🧁 Muffins',
+        'mixed' => '🥖 A Bit of Everything',
+    ];
+
     public array $basicsForm = [
         'business_name' => '',
+        'bakery_type' => '',
         'hours' => '',
         'location' => '',
         'instagram' => '',
@@ -130,6 +156,7 @@ class Wizard extends Component
     {
         $validated = $this->validate([
             'basicsForm.business_name' => 'required|string|max:255',
+            'basicsForm.bakery_type' => 'nullable|in:' . implode(',', array_keys(self::BAKERY_TYPE_OPTIONS)),
             'basicsForm.hours' => 'nullable|string|max:255',
             'basicsForm.location' => 'nullable|string|max:255',
             'basicsForm.instagram' => 'nullable|string|max:255',

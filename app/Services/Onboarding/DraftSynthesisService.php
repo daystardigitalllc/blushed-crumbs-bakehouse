@@ -74,7 +74,31 @@ class DraftSynthesisService
         'macaron' => 'macarons', 'macarons' => 'macarons',
         'brownie' => 'brownies', 'brownies' => 'brownies',
         'muffin' => 'muffins', 'muffins' => 'muffins',
+        'cake pop' => 'cake pops', 'cake pops' => 'cake pops',
         'seasonal' => 'seasonal specials', 'special' => 'seasonal specials', 'specials' => 'seasonal specials',
+    ];
+
+    /**
+     * Type-appropriate fallback copy keyed by Wizard::BAKERY_TYPE_OPTIONS —
+     * used in mergeSiteContent() to seed a better-than-generic default
+     * *before* Gemini's own copy is merged in, so even a total synthesis
+     * failure (no API key, or every retry exhausted) still reflects what the
+     * baker actually said they make, entirely without another API call. Keep
+     * keys in sync with Wizard::BAKERY_TYPE_OPTIONS.
+     */
+    private const BAKERY_TYPE_DEFAULTS = [
+        'cakes' => ['marquee_text' => 'Custom Cakes', 'category_name' => 'Cakes'],
+        'cupcakes' => ['marquee_text' => 'Fresh Cupcakes', 'category_name' => 'Cupcakes'],
+        'cookies' => ['marquee_text' => 'Fresh-Baked Cookies', 'category_name' => 'Cookies'],
+        'breads' => ['marquee_text' => 'Fresh Sourdough Daily', 'category_name' => 'Breads'],
+        'pastries' => ['marquee_text' => 'Fresh Pastries Daily', 'category_name' => 'Pastries'],
+        'pies' => ['marquee_text' => 'Homemade Pies', 'category_name' => 'Pies'],
+        'cake_pops' => ['marquee_text' => 'Cake Pops & Treats', 'category_name' => 'Cake Pops'],
+        'donuts' => ['marquee_text' => 'Fresh Donuts Daily', 'category_name' => 'Donuts'],
+        'macarons' => ['marquee_text' => 'French Macarons', 'category_name' => 'Macarons'],
+        'brownies' => ['marquee_text' => 'Fresh-Baked Brownies', 'category_name' => 'Brownies'],
+        'muffins' => ['marquee_text' => 'Fresh Muffins Daily', 'category_name' => 'Muffins'],
+        'mixed' => ['marquee_text' => 'Baked Fresh Daily', 'category_name' => null],
     ];
 
     /**
@@ -343,7 +367,18 @@ class DraftSynthesisService
             temperature: (float) config('onboarding.synthesis_temperature', 0.7)
         );
 
-        return $decoded ?? [];
+        if ($decoded === null) {
+            // A real API key is configured but the call — plus GeminiClient's own
+            // internal HTTP retries and one repair attempt — still came back
+            // empty. That's a transient failure, not "nothing to say", so this
+            // must propagate rather than silently importing an all-default site
+            // with no signal to anyone that synthesis never actually ran.
+            // SynthesizeDraftJob has its own queue-level retry/backoff for
+            // exactly this; see its $tries/backoff()/failed().
+            throw new \RuntimeException('Gemini synthesis call returned no usable content after retry.');
+        }
+
+        return $decoded;
     }
 
     private function systemInstruction(array $themeChoices): string
@@ -355,7 +390,17 @@ class DraftSynthesisService
             . 'Keep hero_headline short and punchy — 6 words or fewer, like a business name or tagline, never a full '
             . 'sentence, since it renders in very large text on top of a photo and will overflow if long. For every '
             . 'item in highlights, the icon field must be exactly one emoji character (e.g. 🎂, 🚚, 📦, 💖, ✨, 📍, ⏰) '
-            . '— never an icon-library name like "sparkles", "map-pin", or "clock".';
+            . '— never an icon-library name like "sparkles", "map-pin", or "clock". marquee_text is a short repeating '
+            . 'banner phrase (1-4 words, e.g. "Fresh Sourdough Daily", "Custom Cakes", "Small-Batch Cookies") that '
+            . 'names what this specific bakery actually specializes in based on the detected products/photos — never '
+            . 'default to "cakes" or any other single dessert type unless that is genuinely their specialty. If '
+            . 'business.bakery_type is present in the input, it is the baker\'s own explicit answer to "what do you '
+            . 'specialize in" and is the single most authoritative signal you have — it must win over any conflicting '
+            . 'guess from photos, and should directly shape marquee_text, whimsical_title/bullets, cta_headline, '
+            . 'highlights, and categories. Fill in EVERY field in the schema, even the optional ones — an empty field '
+            . 'falls back to generic placeholder copy that may not match this bakery\'s actual specialty (e.g. '
+            . 'cake-themed copy for a bread bakery), so leaving a field blank is worse than a reasonable guess '
+            . 'grounded in the input.';
     }
 
     private function responseSchema(array $themeChoices): array
@@ -380,6 +425,7 @@ class DraftSynthesisService
                 'categories' => $textArrayOfObjects(['title' => ['type' => 'STRING'], 'desc' => ['type' => 'STRING']], ['title', 'desc']),
                 'whimsical_title' => ['type' => 'STRING'],
                 'whimsical_bullets' => ['type' => 'ARRAY', 'items' => ['type' => 'STRING']],
+                'marquee_text' => ['type' => 'STRING'],
                 'faqs' => $textArrayOfObjects(['q' => ['type' => 'STRING'], 'a' => ['type' => 'STRING']], ['q', 'a']),
                 'cta_headline' => ['type' => 'STRING'],
                 'cta_subtext' => ['type' => 'STRING'],
@@ -389,7 +435,7 @@ class DraftSynthesisService
                 'seo_title' => ['type' => 'STRING'],
                 'seo_description' => ['type' => 'STRING'],
             ],
-            'required' => ['theme_id', 'hero_headline', 'about_bio', 'seo_title', 'seo_description'],
+            'required' => ['theme_id', 'hero_headline', 'about_bio', 'seo_title', 'seo_description', 'marquee_text', 'whimsical_title', 'whimsical_bullets', 'cta_headline'],
         ];
     }
 
@@ -405,6 +451,11 @@ class DraftSynthesisService
     {
         $basics = $draft->basics ?? [];
         $defaults = Tenant::getDefaultSiteContent($basics['business_name'] ?? $tenant->name);
+
+        $bakeryType = self::BAKERY_TYPE_DEFAULTS[$basics['bakery_type'] ?? ''] ?? null;
+        if ($bakeryType) {
+            $defaults['marquee_text'] = $bakeryType['marquee_text'];
+        }
 
         $contactFromBasics = array_filter([
             'contact_hours' => $basics['hours'] ?? null,
@@ -431,6 +482,12 @@ class DraftSynthesisService
                 'title' => $c['name'],
                 'desc' => '',
             ])->all();
+        } elseif (empty($merged['categories']) && $bakeryType && $bakeryType['category_name']) {
+            // Nothing was detected from photos/menu at all (or every image
+            // failed analysis) — the baker's own bakery_type answer still
+            // gives us one real, correctly-labeled category instead of an
+            // empty showcase section.
+            $merged['categories'] = [['title' => $bakeryType['category_name'], 'desc' => '']];
         }
 
         return $merged;

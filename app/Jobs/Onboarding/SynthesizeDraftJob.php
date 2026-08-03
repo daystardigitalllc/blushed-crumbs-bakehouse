@@ -32,7 +32,14 @@ class SynthesizeDraftJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 2;
+    // 3 attempts total: GeminiClient already retries transient HTTP failures
+    // internally (3x with backoff) plus one JSON-repair call per attempt, so
+    // this is a second, coarser layer — for failures that persist across an
+    // entire call (e.g. a quota window that hasn't reset yet). Spaced out
+    // with backoff() below rather than retried back-to-back, since a
+    // same-second retry is unlikely to see different results.
+    public int $tries = 3;
+
     // Must comfortably exceed GeminiClient's worst case: one primary call
     // (up to 3 attempts x 60s HTTP timeout) plus, if that doesn't parse, one
     // repair call (another up to 3 x 60s) - roughly 360s worst case. The
@@ -40,6 +47,11 @@ class SynthesizeDraftJob implements ShouldQueue
     // killed mid-request by Laravel's own timeout enforcement, leaving the
     // draft permanently stuck in 'synthesizing' with no retry left.
     public int $timeout = 400;
+
+    public function backoff(): array
+    {
+        return [30, 180]; // 30s before attempt 2, 3min before attempt 3
+    }
 
     public function __construct(public int $draftId)
     {
@@ -86,6 +98,37 @@ class SynthesizeDraftJob implements ShouldQueue
         ]);
 
         $this->maybeSendReadyEmail($draft, $tenant);
+    }
+
+    /**
+     * Called once all $tries are exhausted. Marks the draft 'failed' (an
+     * existing INCOMPLETE_STATUSES value) so the baker dashboard's
+     * needs-attention banner can pick it up and offer to retry, instead of
+     * the draft silently sitting in 'synthesizing' forever with no signal
+     * anywhere that AI generation never actually completed.
+     */
+    public function failed(\Throwable $exception): void
+    {
+        $draft = OnboardingDraft::find($this->draftId);
+        if (!$draft) {
+            return;
+        }
+
+        $draft->status = 'failed';
+        $draft->save();
+
+        Log::error('Onboarding draft synthesis failed after all retries.', [
+            'draft_id' => $draft->id,
+            'tenant_id' => $draft->tenant_id,
+            'error' => $exception->getMessage(),
+        ]);
+
+        OnboardingEvent::create([
+            'draft_id' => $draft->id,
+            'tenant_id' => $draft->tenant_id,
+            'type' => 'draft_synthesis_failed',
+            'message' => 'AI copy generation failed after retries: ' . $exception->getMessage(),
+        ]);
     }
 
     /**

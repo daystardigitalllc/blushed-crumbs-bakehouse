@@ -10,6 +10,17 @@
                 @error('basicsForm.business_name') <small class="ob-field-error">{{ $message }}</small> @enderror
             </label>
             <label class="ob-field">
+                <span>What do you specialize in?</span>
+                <select class="ob-input" wire:model="basicsForm.bakery_type">
+                    <option value="">Select one&hellip;</option>
+                    @foreach (\App\Livewire\Onboarding\Wizard::BAKERY_TYPE_OPTIONS as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                    @endforeach
+                </select>
+                <div class="ob-field-hint">Helps us pick the right theme and write copy that actually matches what you make.</div>
+                @error('basicsForm.bakery_type') <small class="ob-field-error">{{ $message }}</small> @enderror
+            </label>
+            <label class="ob-field">
                 <span>Hours</span>
                 <input type="text" class="ob-input" wire:model="basicsForm.hours" placeholder="Mon-Sat 9-5">
             </label>

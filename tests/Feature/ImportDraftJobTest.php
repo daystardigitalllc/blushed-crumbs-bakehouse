@@ -167,6 +167,34 @@ class ImportDraftJobTest extends TestCase
         }
     }
 
+    /**
+     * Regression: when no uploaded image was ever flagged is_hero (e.g. every
+     * photo is a tall portrait product-label shot, not landscape), the hero
+     * slot must stay unset rather than force an arbitrary — likely badly
+     * cropped — image in as the hero. The theme's own placeholder renders
+     * fine in that case; a wrongly-shaped hero photo does not.
+     */
+    public function test_import_leaves_hero_unset_when_no_image_qualifies_as_hero()
+    {
+        $tenant = $this->makeTenant();
+        $draft = $this->makeReadyDraft($tenant);
+        $this->seedGalleryItem($draft, $tenant, ['is_hero' => false]);
+        $this->seedGalleryItem($draft, $tenant, ['is_hero' => false]);
+
+        ImportDraftJob::dispatch($draft->id);
+
+        $tenant->refresh();
+        $content = $tenant->site_content;
+
+        $this->assertArrayNotHasKey('hero_bg_url', $content);
+
+        // The other slots still get filled from whatever was uploaded — only
+        // the hero slot is held to the is_hero bar.
+        foreach (['promo_bg_image_url', 'cta_bg_image_url', 'whimsical_image_url', 'cta_banner_url'] as $key) {
+            $this->assertNotEmpty($content[$key] ?? null);
+        }
+    }
+
     public function test_exception_mid_transaction_leaves_zero_rows_and_zero_orphan_files()
     {
         $tenant = $this->makeTenant();
