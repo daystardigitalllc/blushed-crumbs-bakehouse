@@ -1327,6 +1327,8 @@ function initAdminPortal() {
         window._customFields = [];
     }
 
+    let hasLoadedFirstTime = false;
+
     // Render Form Studio Fields Visual Cards (Baker UI Optimizations)
     // Ensure Products at Spot 1 (Index 0) and Contact Info at the End
     function ensureCoreStepsExist() {
@@ -1526,6 +1528,13 @@ function initAdminPortal() {
 
         // Trigger Live Preview Update
         if (window.updateLivePreview) window.updateLivePreview();
+
+        // Auto-save changes silently to backend after first load
+        if (hasLoadedFirstTime) {
+            window.saveFormSchemaToServer();
+        } else {
+            hasLoadedFirstTime = true;
+        }
     }
 
     window.moveField = function(idx, dir) {
@@ -1726,14 +1735,20 @@ function initAdminPortal() {
         }).join('');
     };
 
-    // Save Form Schema to Server Endpoint
+    // Save Form Schema to Server Endpoint (Silent Auto-Save background worker)
     window.saveFormSchemaToServer = function() {
-        const saveBtn = document.getElementById('save-form-schema-btn');
+        const indicator = document.getElementById('autosave-indicator');
+        const dot = document.getElementById('autosave-dot');
+        const text = document.getElementById('autosave-text');
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-        if (saveBtn) {
-            saveBtn.disabled = true;
-            saveBtn.innerText = 'Saving Form Steps...';
+        if (indicator && dot && text) {
+            indicator.style.background = '#fffbeb';
+            indicator.style.borderColor = '#fef3c7';
+            dot.style.background = '#f59e0b';
+            dot.style.boxShadow = '0 0 8px #f59e0b';
+            text.innerText = 'Saving changes...';
+            text.style.color = '#b45309';
         }
 
         fetch('/dashboard/form-builder', {
@@ -1748,20 +1763,37 @@ function initAdminPortal() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert('Success: Order form steps & layout saved live to your storefront!');
+                if (indicator && dot && text) {
+                    setTimeout(() => {
+                        indicator.style.background = '#f0fdf4';
+                        indicator.style.borderColor = '#bbf7d0';
+                        dot.style.background = '#22c55e';
+                        dot.style.boxShadow = 'none';
+                        text.innerText = 'Changes Auto-Saved';
+                        text.style.color = '#15803d';
+                    }, 500);
+                }
                 if (window.markOnboardingStepDone) window.markOnboardingStepDone('order_form');
             } else {
-                alert('Error saving form layout: ' + (data.message || 'Unknown error'));
+                if (indicator && dot && text) {
+                    indicator.style.background = '#fef2f2';
+                    indicator.style.borderColor = '#fee2e2';
+                    dot.style.background = '#ef4444';
+                    dot.style.boxShadow = 'none';
+                    text.innerText = 'Save error - Retry in progress';
+                    text.style.color = '#b91c1c';
+                }
             }
         })
         .catch(err => {
             console.error('Save Schema Error:', err);
-            alert('An error occurred while saving form layout.');
-        })
-        .finally(() => {
-            if (saveBtn) {
-                saveBtn.disabled = false;
-                saveBtn.innerText = 'Save Order Form Layout';
+            if (indicator && dot && text) {
+                indicator.style.background = '#fef2f2';
+                indicator.style.borderColor = '#fee2e2';
+                dot.style.background = '#ef4444';
+                dot.style.boxShadow = 'none';
+                text.innerText = 'Network error - Retrying...';
+                text.style.color = '#b91c1c';
             }
         });
     };

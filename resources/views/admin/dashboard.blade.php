@@ -1480,7 +1480,12 @@
                                     <h4 style="margin-bottom:4px; color:#5c1d37;">Configured Form Steps &amp; Fields</h4>
                                     <span style="font-size:0.85rem; color:#888; font-weight:500;">Drag rows, or use the arrows, to reorder steps.</span>
                                 </div>
-                                <button id="save-form-schema-btn" class="btn btn-primary" onclick="saveFormSchemaToServer()">Save Order Form Layout</button>
+                                <div style="display:flex; align-items:center; gap:8px; background:#f0fdf4; border:1px solid #bbf7d0; padding:6px 14px; border-radius:20px; transition: all 0.3s ease;" id="autosave-indicator">
+                                    <span style="font-size:0.75rem; color:#15803d; font-weight:800; display:flex; align-items:center; gap:6px;">
+                                        <span style="display:inline-block; width:8px; height:8px; background:#22c55e; border-radius:50%; transition: all 0.3s ease;" id="autosave-dot"></span>
+                                        <span id="autosave-text">Changes Auto-Saved</span>
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="field-table-wrapper" style="border: none; background: transparent; padding: 0; box-shadow: none;">
