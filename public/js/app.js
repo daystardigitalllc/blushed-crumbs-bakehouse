@@ -1327,17 +1327,16 @@ function initAdminPortal() {
         window._customFields = [];
     }
 
-    // Render Form Studio Fields Table
+    // Render Form Studio Fields Visual Cards (Baker UI Optimizations)
     function renderFieldsTable() {
-        const tbody = document.getElementById('custom-fields-tbody');
-        if (!tbody) return;
+        const container = document.getElementById('custom-fields-cards-container');
+        if (!container) return;
 
         if (window._customFields.length === 0) {
-            tbody.innerHTML = `<tr class="empty-row" id="fields-empty-row">
-                <td colspan="6" style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem;">
+            container.innerHTML = `
+                <div style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem; background:#fff; border-radius:12px; border:1px dashed #f0e4ea;">
                     No steps added yet. Use the form above to add your first step!
-                </td>
-            </tr>`;
+                </div>`;
             return;
         }
 
@@ -1361,40 +1360,94 @@ function initAdminPortal() {
             'toggle': 'Yes/No Toggle'
         };
 
-        tbody.innerHTML = window._customFields.map((f, i) => `
-            <tr class="field-row" draggable="true" data-idx="${i}">
-                <td class="drag-handle">⠿</td>
-                <td style="color:#e67399; font-weight:800; font-size:0.95rem;">Step ${i + 1}</td>
-                <td>
-                    <strong style="color:#5c1d37; font-size:0.95rem; border-bottom:1px dashed #ccc; cursor:text; padding:2px;" contenteditable="true" onblur="updateField(${i}, 'title', this.innerText)" title="Click to edit title">${f.title || f.label || 'Step ' + (i+1)}</strong>
-                    <br>
-                    <span style="font-size:0.8rem; color:#888; border-bottom:1px dashed #ccc; cursor:text; padding:2px;" contenteditable="true" onblur="updateField(${i}, 'subtext', this.innerText)" title="Click to edit subtext">${f.subtext || 'Add subtext...'}</span>
-                </td>
-                <td><span style="background:#fff0f5; color:#5c1d37; font-weight:700; padding:4px 10px; border-radius:12px; border:1px solid #f8c6d7; font-size:0.8rem;">${typeLabels[f.type] || f.type}</span></td>
-                <td style="color:#666; font-size:0.85rem; max-width:260px; word-wrap:break-word;">
-                    ${['flavors', 'frosting', 'fillings', 'fulfillment', 'social_discount', 'select', 'chips'].includes(f.type) ?
-                        `<span style="border-bottom:1px dashed #ccc; cursor:text; padding:2px; display:inline-block; min-width:50px;" contenteditable="true" onblur="updateField(${i}, 'options', this.innerText)" title="Edit Options (comma separated)">${f.options || '—'}</span>` :
-                      (f.type === 'terms' ?
-                        `<button type="button" class="btn btn-sm btn-outline" onclick="openTermsEditModal(${i})" style="border-color:#f8c6d7; color:#e67399; font-size:0.8rem; font-weight:700;">Edit Policy Text</button>
-                         ${f.description ? '<div style="color:#15803d; font-size:0.75rem; margin-top:4px;">Custom text set</div>' : '<div style="color:#aaa; font-size:0.75rem; margin-top:4px;">Using default message</div>'}` :
-                      (['textarea', 'allergies', 'file_upload', 'text', 'toggle'].includes(f.type) ?
-                        `<span style="border-bottom:1px dashed #ccc; cursor:text; padding:2px; display:inline-block; min-width:50px;" contenteditable="true" onblur="updateField(${i}, 'description', this.innerText)" title="Edit Placeholder/Description">${f.description || '—'}</span>` :
-                        `<span style="color:#aaa;">—</span>`
-                      ))
-                    }
-                </td>
-                <td>
-                    <div style="display:flex; gap:6px; align-items:center;">
-                        <button class="reorder-btn" onclick="moveField(${i}, -1)" title="Move Up" ${i === 0 ? 'disabled' : ''}>↑</button>
-                        <button class="reorder-btn" onclick="moveField(${i}, 1)" title="Move Down" ${i === window._customFields.length - 1 ? 'disabled' : ''}>↓</button>
-                        <button class="delete-field-btn" onclick="deleteField(${i})" title="Remove Step">✕</button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+        const typeIcons = {
+            'products': '🧁',
+            'calendar': '📅',
+            'flavors': '🍓',
+            'frosting': '🍦',
+            'fillings': '🍫',
+            'fulfillment': '🚚',
+            'allergies': '⚠️',
+            'social_discount': '📢',
+            'file_upload': '📸',
+            'terms': '📝',
+            'contact_info': '👤',
+            'text': '✏️',
+            'textarea': '📝',
+            'select': '👇',
+            'chips': '🏷️',
+            'datepicker': '📅',
+            'toggle': '🔄'
+        };
 
-        // Drag-and-drop reorder
-        const rows = tbody.querySelectorAll('.field-row');
+        container.innerHTML = window._customFields.map((f, i) => {
+            const icon = typeIcons[f.type] || '⚙️';
+            const labelText = typeLabels[f.type] || f.type;
+            
+            let previewDetails = '';
+            if (['flavors', 'frosting', 'fillings', 'fulfillment', 'social_discount', 'select', 'chips'].includes(f.type)) {
+                previewDetails = `
+                    <div style="margin-top: 8px;">
+                        <span style="font-size:0.75rem; color:#888; font-weight:700; display:block; margin-bottom:4px; text-align:left;">Options (click text to edit):</span>
+                        <span style="font-size:0.8rem; color:#5c1d37; background:#fff; border:1px solid #f8c6d7; border-radius:8px; padding:4px 8px; cursor:text; display:inline-block; text-align:left; word-break:break-all;" contenteditable="true" onblur="updateField(${i}, 'options', this.innerText)" title="Edit Options (comma separated)">${f.options || '—'}</span>
+                    </div>
+                `;
+            } else if (f.type === 'terms') {
+                previewDetails = `
+                    <div style="margin-top: 8px; display:flex; align-items:center; gap:10px; text-align:left;">
+                        <button type="button" class="btn btn-sm btn-outline" onclick="openTermsEditModal(${i})" style="border-color:#f8c6d7; color:#e67399; font-size:0.72rem; font-weight:700; padding:4px 10px; border-radius:8px; line-height:1.2;">Edit Policy Text</button>
+                        <span style="font-size:0.72rem; color:${f.description ? '#15803d' : '#999'}; font-weight:600;">${f.description ? '✓ Custom policies configured' : 'Using default policies'}</span>
+                    </div>
+                `;
+            } else if (['textarea', 'allergies', 'file_upload', 'text', 'toggle'].includes(f.type)) {
+                previewDetails = `
+                    <div style="margin-top: 8px;">
+                        <span style="font-size:0.75rem; color:#888; font-weight:700; display:block; margin-bottom:4px; text-align:left;">Placeholder/Description (click to edit):</span>
+                        <span style="font-size:0.8rem; color:#5c1d37; background:#fff; border:1px solid #f8c6d7; border-radius:8px; padding:4px 8px; cursor:text; display:inline-block; text-align:left;" contenteditable="true" onblur="updateField(${i}, 'description', this.innerText)" title="Edit Placeholder/Description">${f.description || '—'}</span>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="field-row" draggable="true" data-idx="${i}" style="background:#ffffff; border-radius:14px; padding:16px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.02); display:flex; align-items:flex-start; gap:16px; transition: all 0.2s ease;">
+                    <!-- Drag handle -->
+                    <div class="drag-handle" style="font-size:1.3rem; color:#ccc; cursor:grab; align-self:center; user-select:none;">⠿</div>
+                    
+                    <!-- Visual Icon badge -->
+                    <div style="width:40px; height:40px; border-radius:10px; background:#fff0f5; border:1px solid #f8c6d7; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">
+                        ${icon}
+                    </div>
+
+                    <!-- Step details -->
+                    <div style="flex:1; min-width:0; text-align:left;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <span style="background:#e67399; color:white; font-size:0.68rem; font-weight:800; padding:2px 8px; border-radius:20px;">STEP ${i + 1}</span>
+                            <span style="font-size:0.75rem; color:#7a2b4a; font-weight:700; background:#fff0f5; padding:2px 10px; border-radius:20px; border:1px solid #f8c6d7;">${labelText}</span>
+                        </div>
+                        
+                        <div style="margin-top:8px;">
+                            <strong style="color:#5c1d37; font-size:0.95rem; border-bottom:1px dashed #ccc; cursor:text; display:inline-block; margin-bottom:4px;" contenteditable="true" onblur="updateField(${i}, 'title', this.innerText)" title="Click to edit title">${f.title || f.label || 'Step ' + (i+1)}</strong>
+                            <br>
+                            <span style="font-size:0.8rem; color:#888; border-bottom:1px dashed #ccc; cursor:text; display:inline-block;" contenteditable="true" onblur="updateField(${i}, 'subtext', this.innerText)" title="Click to edit subtext">${f.subtext || 'Add subtext...'}</span>
+                        </div>
+
+                        ${previewDetails}
+                    </div>
+
+                    <!-- Action items -->
+                    <div style="display:flex; flex-direction:column; gap:6px; align-self:center; flex-shrink:0;">
+                        <div style="display:flex; gap:4px;">
+                            <button class="reorder-btn" onclick="moveField(${i}, -1)" title="Move Up" ${i === 0 ? 'disabled' : ''} style="width:28px; height:28px; border-radius:8px; border:1px solid #eee; background:#fff; cursor:pointer; font-weight:700; font-size:0.85rem;">↑</button>
+                            <button class="reorder-btn" onclick="moveField(${i}, 1)" title="Move Down" ${i === window._customFields.length - 1 ? 'disabled' : ''} style="width:28px; height:28px; border-radius:8px; border:1px solid #eee; background:#fff; cursor:pointer; font-weight:700; font-size:0.85rem;">↓</button>
+                        </div>
+                        <button class="delete-field-btn" onclick="deleteField(${i})" title="Remove Step" style="width:100%; height:28px; border-radius:8px; border:1px solid #fee2e2; background:#fef2f2; color:#ef4444; cursor:pointer; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:0.75rem; border:none;">✕ Remove</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Drag-and-drop reorder handlers on visual card rows
+        const rows = container.querySelectorAll('.field-row');
         let dragSrc = null;
         rows.forEach(row => {
             row.addEventListener('dragstart', () => { dragSrc = row; row.style.opacity = '0.5'; });

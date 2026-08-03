@@ -1422,26 +1422,12 @@
                                 <button id="save-form-schema-btn" class="btn btn-primary" onclick="saveFormSchemaToServer()">Save Order Form Layout</button>
                             </div>
 
-                            <div class="field-table-wrapper">
-                                <table class="field-table" id="custom-fields-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:36px;"></th>
-                                            <th>Step #</th>
-                                            <th>Step Header / Title</th>
-                                            <th>Template / Type</th>
-                                            <th>Subtext / Options</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="custom-fields-tbody">
-                                        <tr class="empty-row" id="fields-empty-row">
-                                            <td colspan="6" style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem;">
-                                                Loading configured form steps…
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="field-table-wrapper" style="border: none; background: transparent; padding: 0; box-shadow: none;">
+                                <div id="custom-fields-cards-container" style="display:flex; flex-direction:column; gap:14px;">
+                                    <div style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem; background:#fff; border-radius:12px; border:1px dashed #f0e4ea;">
+                                        Loading configured form steps…
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
