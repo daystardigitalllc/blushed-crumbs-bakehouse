@@ -1352,8 +1352,10 @@
                             <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Add custom steps to gather flavors, details, or choices on your storefront order form.</p>
                             <form id="add-field-form" class="form-builder-grid">
                                 <div style="grid-column: 1 / -1;">
-                                    <label style="font-weight:700; color:#5c1d37;">Field Type / Template</label>
-                                    <select id="field-type" onchange="toggleOptionsRow(this.value)" style="width:100%; max-width:100%; box-sizing:border-box; text-overflow:ellipsis;">
+                                    <label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:10px;">Select Field Template</label>
+                                    
+                                    <!-- Hidden select input backing the builder state -->
+                                    <select id="field-type" onchange="toggleOptionsRow(this.value)" style="display:none;">
                                         <option value="products">Product Catalog</option>
                                         <option value="calendar">Booking Calendar</option>
                                         <option value="flavors">Flavors Grid</option>
@@ -1371,6 +1373,74 @@
                                         <option value="datepicker">Date Picker</option>
                                         <option value="toggle">Yes / No Toggle</option>
                                     </select>
+                                    
+                                    <!-- Visual Grid Selector Tiles -->
+                                    <div class="template-selector-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; max-height: 230px; overflow-y: auto; padding: 6px; border: 1px solid #f0e4ea; border-radius: 14px; background: #faf8f9; -webkit-overflow-scrolling: touch;">
+                                        <div class="template-tile selected-tile" data-type="products" onclick="selectTemplateTile('products')">
+                                            <span class="template-tile-icon">🧁</span>
+                                            <span class="template-tile-label">Product Catalog</span>
+                                        </div>
+                                        <div class="template-tile" data-type="calendar" onclick="selectTemplateTile('calendar')">
+                                            <span class="template-tile-icon">📅</span>
+                                            <span class="template-tile-label">Booking Calendar</span>
+                                        </div>
+                                        <div class="template-tile" data-type="flavors" onclick="selectTemplateTile('flavors')">
+                                            <span class="template-tile-icon">🍓</span>
+                                            <span class="template-tile-label">Flavors Grid</span>
+                                        </div>
+                                        <div class="template-tile" data-type="frosting" onclick="selectTemplateTile('frosting')">
+                                            <span class="template-tile-icon">🍦</span>
+                                            <span class="template-tile-label">Frosting Grid</span>
+                                        </div>
+                                        <div class="template-tile" data-type="fillings" onclick="selectTemplateTile('fillings')">
+                                            <span class="template-tile-icon">🍫</span>
+                                            <span class="template-tile-label">Fillings Grid</span>
+                                        </div>
+                                        <div class="template-tile" data-type="fulfillment" onclick="selectTemplateTile('fulfillment')">
+                                            <span class="template-tile-icon">🚚</span>
+                                            <span class="template-tile-label">Fulfillment Slots</span>
+                                        </div>
+                                        <div class="template-tile" data-type="allergies" onclick="selectTemplateTile('allergies')">
+                                            <span class="template-tile-icon">⚠️</span>
+                                            <span class="template-tile-label">Allergy Notice</span>
+                                        </div>
+                                        <div class="template-tile" data-type="social_discount" onclick="selectTemplateTile('social_discount')">
+                                            <span class="template-tile-icon">📢</span>
+                                            <span class="template-tile-label">Social Discount</span>
+                                        </div>
+                                        <div class="template-tile" data-type="file_upload" onclick="selectTemplateTile('file_upload')">
+                                            <span class="template-tile-icon">📸</span>
+                                            <span class="template-tile-label">Photo Upload</span>
+                                        </div>
+                                        <div class="template-tile" data-type="terms" onclick="selectTemplateTile('terms')">
+                                            <span class="template-tile-icon">📝</span>
+                                            <span class="template-tile-label">Terms &amp; Conds</span>
+                                        </div>
+                                        <div class="template-tile" data-type="contact_info" onclick="selectTemplateTile('contact_info')">
+                                            <span class="template-tile-icon">👤</span>
+                                            <span class="template-tile-label">Contact Submit</span>
+                                        </div>
+                                        <div class="template-tile" data-type="text" onclick="selectTemplateTile('text')">
+                                            <span class="template-tile-icon">✏️</span>
+                                            <span class="template-tile-label">Single-Line Text</span>
+                                        </div>
+                                        <div class="template-tile" data-type="select" onclick="selectTemplateTile('select')">
+                                            <span class="template-tile-icon">👇</span>
+                                            <span class="template-tile-label">Dropdown Select</span>
+                                        </div>
+                                        <div class="template-tile" data-type="datepicker" onclick="selectTemplateTile('datepicker')">
+                                            <span class="template-tile-icon">📅</span>
+                                            <span class="template-tile-label">Date Picker</span>
+                                        </div>
+                                        <div class="template-tile" data-type="toggle" onclick="selectTemplateTile('toggle')">
+                                            <span class="template-tile-icon">🔄</span>
+                                            <span class="template-tile-label">Yes/No Toggle</span>
+                                        </div>
+                                        <div class="template-tile" data-type="textarea" onclick="selectTemplateTile('textarea')">
+                                            <span class="template-tile-icon">📝</span>
+                                            <span class="template-tile-label">Multi-Line Notes</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
                                     <label>Step Header / Title</label>
@@ -3421,6 +3491,22 @@
                         if (card) card.style.boxShadow = 'none';
                     }
                 }
+            };
+
+            // UI/UX Optimizations: Sync Visual template tiles selector with hidden select
+            window.selectTemplateTile = function(typeValue) {
+                const select = document.getElementById('field-type');
+                if (select) {
+                    select.value = typeValue;
+                    select.dispatchEvent(new Event('change'));
+                }
+                document.querySelectorAll('.template-tile').forEach(tile => {
+                    if (tile.dataset.type === typeValue) {
+                        tile.classList.add('selected-tile');
+                    } else {
+                        tile.classList.remove('selected-tile');
+                    }
+                });
             };
 
             // Auto-restore settings subnav view state on DOMContentLoaded

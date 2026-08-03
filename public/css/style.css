@@ -8757,3 +8757,63 @@ body.theme-sunny_whisk {
         margin-top: 20px;
     }
 }
+
+/* Template Visual Selector Grid Tiles styling */
+.template-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 2px solid #f0e4ea;
+    border-radius: 12px;
+    padding: 12px 8px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.template-tile:hover {
+    border-color: #f8c6d7;
+    background: #fff5f8;
+    transform: translateY(-2px);
+}
+
+.template-tile.selected-tile {
+    border-color: var(--primary, #e67399) !important;
+    background: #fff5f8 !important;
+    box-shadow: 0 4px 12px rgba(230, 115, 153, 0.15);
+}
+
+.template-tile-icon {
+    font-size: 1.5rem;
+}
+
+.template-tile-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #5c1d37;
+    text-align: center;
+}
+
+/* Mockup Smartphone Premium Bezel and Animation */
+.mobile-phone-frame {
+    transition: all 0.3s ease;
+    animation: phoneMockupFloat 4s ease-in-out infinite;
+}
+
+@keyframes phoneMockupFloat {
+    0% {
+        transform: translateY(0);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+    50% {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 55px rgba(230, 115, 153, 0.12);
+    }
+    100% {
+        transform: translateY(0);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+}
