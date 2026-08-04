@@ -2116,59 +2116,61 @@
                     </form>
                 </div>
 
-                <div class="form-builder-card">
-                    <h4>Upload Photo From Device</h4>
-                    <form id="add-gallery-form" action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:18px;">
-                        @csrf
-                        <div>
-                            <label>Gallery Category</label>
-                            <select id="gal-category" name="category">
-                                @foreach($galleryCategories as $cat)
-                                    <option value="{{ $cat }}">{{ $cat }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- DEVICE FILE PICKER & DROPZONE -->
-                        <div>
-                            <label>Select Image Files From Your Device</label>
-                            <div id="gal-device-dropzone" style="border:2px dashed var(--primary); background:var(--theme-section-bg, #fff7fa); padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
-                                <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photos from device or drag images here</p>
-                                <span style="font-size:12px; color:#888;">Select multiple at once — Supports JPG, PNG, WEBP, GIF (Up to 10MB each)</span>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px;">
+                    <div class="form-builder-card">
+                        <h4>Upload Photo From Device</h4>
+                        <form id="add-gallery-form" action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:18px;">
+                            @csrf
+                            <div>
+                                <label>Gallery Category</label>
+                                <select id="gal-category" name="category">
+                                    @foreach($galleryCategories as $cat)
+                                        <option value="{{ $cat }}">{{ $cat }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <input type="file" id="gal-image-file" name="images[]" accept="image/*" multiple style="display:none;" required>
-                        </div>
 
-                        <!-- LIVE PREVIEW CONTAINER -->
-                        <div id="gal-upload-preview" style="display:none;">
-                            <div id="gal-preview-grid" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;"></div>
-                            <p style="font-weight:700; color:#28a745; margin-top:10px; font-size:0.9rem; text-align:center;" id="gal-preview-status">Photos ready for publish</p>
-                        </div>
-
-                        <button type="submit" id="gal-submit-btn" class="btn btn-primary" style="padding:14px;">Publish Photos to Live Gallery</button>
-                    </form>
-                </div>
-
-                <div class="form-builder-card">
-                    <h4>Current Published Gallery Photos</h4>
-                    <div id="admin-gallery-list">
-                        @foreach($gallery as $item)
-                            <div class="admin-gallery-item-row" data-id="{{ $item->id }}" style="display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-                                <div style="display:flex; align-items:center; gap:15px;">
-                                    @php $src = $item->image_url ?? $item->image_path; @endphp
-                                    <img src="{{ asset($src) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
-                                    <select class="gallery-item-category-select" onchange="updateGalleryItemCategory({{ $item->id }}, this)" style="padding:7px 10px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem; font-weight:600; color:var(--primary);">
-                                        @foreach($galleryCategories as $cat)
-                                            <option value="{{ $cat }}" {{ $item->category === $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                                        @endforeach
-                                        @if(!in_array($item->category, $galleryCategories, true))
-                                            <option value="{{ $item->category }}" selected>{{ $item->category }} (removed)</option>
-                                        @endif
-                                    </select>
+                            <!-- DEVICE FILE PICKER & DROPZONE -->
+                            <div>
+                                <label>Select Image Files From Your Device</label>
+                                <div id="gal-device-dropzone" style="border:2px dashed var(--primary); background:var(--theme-section-bg, #fff7fa); padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
+                                    <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photos from device or drag images here</p>
+                                    <span style="font-size:12px; color:#888;">Select multiple at once — Supports JPG, PNG, WEBP, GIF (Up to 10MB each)</span>
                                 </div>
-                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
+                                <input type="file" id="gal-image-file" name="images[]" accept="image/*" multiple style="display:none;" required>
                             </div>
-                        @endforeach
+
+                            <!-- LIVE PREVIEW CONTAINER -->
+                            <div id="gal-upload-preview" style="display:none;">
+                                <div id="gal-preview-grid" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;"></div>
+                                <p style="font-weight:700; color:#28a745; margin-top:10px; font-size:0.9rem; text-align:center;" id="gal-preview-status">Photos ready for publish</p>
+                            </div>
+
+                            <button type="submit" id="gal-submit-btn" class="btn btn-primary" style="padding:14px;">Publish Photos to Live Gallery</button>
+                        </form>
+                    </div>
+
+                    <div class="form-builder-card">
+                        <h4>Current Published Gallery Photos</h4>
+                        <div id="admin-gallery-list">
+                            @foreach($gallery as $item)
+                                <div class="admin-gallery-item-row" data-id="{{ $item->id }}" style="display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+                                    <div style="display:flex; align-items:center; gap:15px;">
+                                        @php $src = $item->image_url ?? $item->image_path; @endphp
+                                        <img src="{{ asset($src) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
+                                        <select class="gallery-item-category-select" onchange="updateGalleryItemCategory({{ $item->id }}, this)" style="padding:7px 10px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem; font-weight:600; color:var(--primary);">
+                                            @foreach($galleryCategories as $cat)
+                                                <option value="{{ $cat }}" {{ $item->category === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                                            @endforeach
+                                            @if(!in_array($item->category, $galleryCategories, true))
+                                                <option value="{{ $item->category }}" selected>{{ $item->category }} (removed)</option>
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
