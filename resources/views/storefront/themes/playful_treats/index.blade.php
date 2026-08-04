@@ -83,6 +83,26 @@
                         </div>
                     </div>
                 </section>
+            @elseif($secId === 'about')
+                <!-- About Teaser -->
+                <section style="padding:80px 25px; background:var(--theme-section-bg, var(--pink-bg, #fff1f5)); text-align:center;">
+                    <div style="max-width:900px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:40px; text-align:left;">
+                        @php
+                            $aboutImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : null;
+                        @endphp
+                        @if($aboutImg)
+                            <div style="flex:1; min-width:260px;">
+                                <img src="{{ $aboutImg }}" alt="{{ $tenant->name }}" loading="lazy" decoding="async" style="width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
+                            </div>
+                        @endif
+                        <div style="flex:1; min-width:260px;">
+                            <span class="subheading" style="display:block; margin-bottom:8px;">Our Story</span>
+                            <h2 style="margin-bottom:16px;">{{ $tenant->getSiteContent('about_title', 'Baking With Heart') }}</h2>
+                            <p style="font-size:1.05rem; color:var(--dark-text); line-height:1.7; margin-bottom:24px;">{{ $tenant->getSiteContent('about_bio', 'Welcome to ' . ($tenant->name ?? 'our bakehouse') . '! We specialize in artisanal baked goods, made fresh with real ingredients and a whole lot of care.') }}</p>
+                            <a href="{{ route('storefront.about') }}" class="btn btn-primary">Read Our Story</a>
+                        </div>
+                    </div>
+                </section>
             @elseif($secId === 'highlights')
                 <!-- Highlights re-purposed as a floating "voted best" badge cluster -->
                 <section class="playful-badges-row">
