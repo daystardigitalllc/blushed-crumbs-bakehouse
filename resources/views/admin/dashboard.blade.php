@@ -1549,6 +1549,8 @@
                     <p class="subtitle">Edit your homepage's text, images, and section order. Changes go live when you save.</p>
                 </div>
 
+                <div class="form-builder-workspace" style="display:grid; grid-template-columns:1.3fr 0.7fr; gap:30px; align-items:start;">
+                <div class="form-builder-left-col">
                 <div class="form-builder-card" style="border:1px solid var(--theme-section-bg, #ddd6fe);">
                     <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
                         <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:var(--primary); border-color:var(--primary);">Save All Changes</button>
@@ -1737,13 +1739,15 @@
                                                 <input type="text" name="marquee_text" value="{{ data_get($siteContent, 'marquee_text', 'Custom Cakes') }}" placeholder="e.g. Fresh Sourdough" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
                                                 <span style="font-size:0.75rem; color:#888;">The repeating scrolling text banner shown on the homepage.</span>
                                             </div>
-                                            <div style="display:flex; flex-direction:column; gap:6px;">
-                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Specialty Bullets</label>
-                                                <input type="text" name="whimsical_bullet_1" value="{{ $bullets[0] ?? '' }}" placeholder="Bullet 1..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
-                                                <input type="text" name="whimsical_bullet_2" value="{{ $bullets[1] ?? '' }}" placeholder="Bullet 2..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
-                                                <input type="text" name="whimsical_bullet_3" value="{{ $bullets[2] ?? '' }}" placeholder="Bullet 3..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
-                                                <input type="text" name="whimsical_bullet_4" value="{{ $bullets[3] ?? '' }}" placeholder="Bullet 4..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
-                                                <input type="text" name="whimsical_bullet_5" value="{{ $bullets[4] ?? '' }}" placeholder="Bullet 5..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                            <div>
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555; display:block; margin-bottom:6px;">Specialty Bullets</label>
+                                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                                    <input type="text" name="whimsical_bullet_1" value="{{ $bullets[0] ?? '' }}" placeholder="Bullet 1..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                    <input type="text" name="whimsical_bullet_2" value="{{ $bullets[1] ?? '' }}" placeholder="Bullet 2..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                    <input type="text" name="whimsical_bullet_3" value="{{ $bullets[2] ?? '' }}" placeholder="Bullet 3..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                    <input type="text" name="whimsical_bullet_4" value="{{ $bullets[3] ?? '' }}" placeholder="Bullet 4..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                    <input type="text" name="whimsical_bullet_5" value="{{ $bullets[4] ?? '' }}" placeholder="Bullet 5..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
                                             </div>
 
                                         @elseif($secId === 'promo_video')
@@ -1876,6 +1880,25 @@
                             @endforeach
                         </div>
                     </form>
+                </div>
+                </div>
+
+                <!-- LIVE PREVIEW PANEL -->
+                <div class="form-builder-right-col" style="position:sticky; top:20px;">
+                    <div class="form-builder-card" style="padding:16px; border:1px solid var(--theme-section-bg, #ddd6fe);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <strong style="font-size:0.9rem; color:#27272a;">Live Preview</strong>
+                            <div style="display:flex; gap:8px;">
+                                <button type="button" class="btn btn-sm btn-outline" onclick="refreshPageBuilderPreview()" title="Refresh preview" style="padding:4px 10px; font-size:0.78rem;">↻ Refresh</button>
+                                <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-sm btn-outline" title="Open in new tab" style="padding:4px 10px; font-size:0.78rem;">Open ↗</a>
+                            </div>
+                        </div>
+                        <div style="border:8px solid #27272a; border-radius:18px; overflow:hidden; background:#27272a;">
+                            <iframe id="page-builder-preview-iframe" src="{{ $tenant->publicUrl() }}" title="Live storefront preview" style="width:100%; height:640px; border:0; display:block; background:#fff;"></iframe>
+                        </div>
+                        <p style="font-size:0.76rem; color:#999; margin-top:8px; margin-bottom:0;">Updates after you click <strong>Save All Changes</strong>, or hit Refresh to check current live content.</p>
+                    </div>
+                </div>
                 </div>
             </div>
 
@@ -3591,16 +3614,17 @@
                     <p style="font-size:0.75rem; color:#999; margin:10px 0 0;">Fees and misc add to the total; discount subtracts. Leave amount at 0 to skip a row.</p>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Total Amount ($)</label>
-                    <input type="number" step="0.01" id="edit-invoice-total" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
-                    <p style="font-size:0.78rem; color:#999; margin:5px 0 0;">Auto-filled from subtotal + adjustments above — feel free to type your own final number instead.</p>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom: 15px;">
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Total Amount ($)</label>
+                        <input type="number" step="0.01" id="edit-invoice-total" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Deposit Amount ($)</label>
+                        <input type="number" step="0.01" id="edit-invoice-deposit" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                    </div>
                 </div>
-
-                <div style="margin-bottom: 15px;">
-                    <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Required Deposit Amount ($)</label>
-                    <input type="number" step="0.01" id="edit-invoice-deposit" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
-                </div>
+                <p style="font-size:0.78rem; color:#999; margin:-10px 0 15px;">Total is auto-filled from subtotal + adjustments above — feel free to type your own final number instead.</p>
 
                 <div style="margin-bottom: 20px;">
                     <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Baker Notes & Payment Instructions</label>

@@ -239,6 +239,16 @@ function updateSectionOrderInputs() {
     });
 }
 
+window.refreshPageBuilderPreview = function() {
+    const frame = document.getElementById('page-builder-preview-iframe');
+    if (!frame) return;
+    // Re-assigning src (rather than frame.contentWindow.location.reload()) sidesteps
+    // any cross-origin restriction when the tenant is on a custom domain, and forces
+    // a fresh fetch instead of a cached document.
+    const base = frame.src.split('?')[0];
+    frame.src = base + '?_preview=' + Date.now();
+};
+
 window.saveSectionManagerForm = function() {
     updateSectionOrderInputs();
     const form = document.getElementById('section-manager-form');
@@ -265,6 +275,7 @@ window.saveSectionManagerForm = function() {
                 setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
             }
             window.showToast('Section order & visibility saved successfully!', 'success');
+            window.refreshPageBuilderPreview();
         } else {
             window.showToast(data.message || 'Failed to save section settings.', 'error');
         }
