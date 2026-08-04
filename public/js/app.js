@@ -432,7 +432,10 @@ function initPageBuilderLivePreview() {
         })
         .then(res => res.text())
         .then(html => {
-            iframe.removeAttribute('src');
+            // Deliberately NOT touching the src attribute -- srcdoc already
+            // takes rendering precedence over src whenever both are present,
+            // and "Show Live" (refreshPageBuilderPreview) depends on src
+            // still holding the real public URL to reload later.
             iframe.srcdoc = html;
             if (statusEl) statusEl.style.display = 'none';
         })
