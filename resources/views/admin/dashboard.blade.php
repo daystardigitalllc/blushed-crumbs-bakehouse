@@ -1549,10 +1549,10 @@
                     <p class="subtitle">Edit your homepage's text, images, and section order. Changes go live when you save.</p>
                 </div>
 
-                <div class="form-builder-workspace" id="page-builder-workspace" style="display:grid; grid-template-columns:1.3fr 0.7fr; gap:30px; align-items:start;">
+                <div class="form-builder-workspace" id="page-builder-workspace" style="display:grid; grid-template-columns:0.8fr 1.2fr; gap:30px; align-items:start;">
                 <div class="form-builder-left-col">
-                <div class="form-builder-card" style="border:1px solid var(--theme-section-bg, #ddd6fe);">
-                    <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
+                <div class="form-builder-card" style="border:1px solid var(--theme-section-bg, #ddd6fe); padding:18px;">
+                    <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
                         <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:var(--primary); border-color:var(--primary);">Save All Changes</button>
                     </div>
 
@@ -1571,37 +1571,37 @@
                             $bullets = data_get($siteContent, 'whimsical_bullets', []);
                         @endphp
 
-                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:10px;">
+                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:6px;">
                             @foreach($orderedSections as $secId => $sec)
                                 @php
                                     // Defensive: strips any leading emoji from section names saved to a
                                     // tenant's DB before Tenant::getDefaultSectionSettings() dropped them.
                                     $secName = trim(preg_replace('/^[^\p{L}\p{N}]+/u', '', $sec['name'] ?? $secId));
                                 @endphp
-                                <div class="section-manager-row" data-id="{{ $secId }}" style="background:white; border-radius:10px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-manager-row" data-id="{{ $secId }}" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
 
                                     <!-- ACCORDION HEADER ROW -->
-                                    <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; cursor:pointer; background:#fafafa; user-select:none;">
-                                        <div style="display:flex; align-items:center; gap:12px;">
-                                            <span class="drag-handle" style="cursor:grab; font-weight:800; color:#a1a1aa; font-size:1.1rem;" onclick="event.stopPropagation()">⠿</span>
+                                    <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; cursor:pointer; background:#fafafa; user-select:none;">
+                                        <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                                            <span class="drag-handle" style="cursor:grab; font-weight:800; color:#a1a1aa; font-size:0.9rem; flex-shrink:0;" onclick="event.stopPropagation()">⠿</span>
                                             <input type="hidden" class="section-order-input" name="sections[{{ $secId }}][order]" value="{{ $sec['order'] ?? 1 }}">
-                                            <strong style="color:#27272a; font-size:0.95rem;">{{ $secName }}</strong>
+                                            <strong style="color:#27272a; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $secName }}</strong>
                                         </div>
 
-                                        <div style="display:flex; align-items:center; gap:8px;" onclick="event.stopPropagation()">
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:3px 9px; font-size:0.78rem;" aria-label="Move up">↑</button>
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:3px 9px; font-size:0.78rem;" aria-label="Move down">↓</button>
-                                            <label class="toggle-switch" style="transform:scale(0.8);">
+                                        <div style="display:flex; align-items:center; gap:4px; flex-shrink:0;" onclick="event.stopPropagation()">
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:1px 6px; font-size:0.7rem; line-height:1.6;" aria-label="Move up">↑</button>
+                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:1px 6px; font-size:0.7rem; line-height:1.6;" aria-label="Move down">↓</button>
+                                            <label class="toggle-switch" style="transform:scale(0.65); margin:0 -6px;">
                                                 <input type="hidden" name="sections[{{ $secId }}][enabled]" value="0">
                                                 <input type="checkbox" name="sections[{{ $secId }}][enabled]" value="1" {{ !empty($sec['enabled']) ? 'checked' : '' }}>
                                                 <span class="toggle-slider"></span>
                                             </label>
-                                            <span class="accordion-arrow" style="font-size:0.9rem; color:#a1a1aa; margin-left:4px; transition:transform 0.2s ease;">▾</span>
+                                            <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                         </div>
                                     </div>
 
                                     <!-- EXPANDABLE ACCORDION BODY WITH SECTION COPY & CONTENT EDITORS -->
-                                    <div class="section-accordion-body" style="display:none; padding:18px; border-top:1px solid #eee; background:#ffffff;">
+                                    <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
                                         @if($secId === 'hero')
                                             <div style="margin-bottom:12px; padding:12px; border-radius:10px; border:1px solid #eee;">
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Background (Image or Video)</label>
