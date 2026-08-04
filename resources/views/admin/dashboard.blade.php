@@ -1501,18 +1501,24 @@
                     <!-- RIGHT COLUMN: Real-Time Mobile Preview Drawer -->
                     <div class="form-builder-right-col" style="position: sticky; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%;">
                         
-                        <div style="font-weight: 700; font-size: 0.85rem; color: #5c1d37; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
-                            <span>📱 Storefront Form Preview</span>
-                            <span style="background: #e67399; color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; text-transform: none; font-weight: 800;">Real-Time</span>
+                        <div style="width:100%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <div style="font-weight: 700; font-size: 0.85rem; color: #5c1d37; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
+                                <span>Storefront Form Preview</span>
+                                <span style="background: #e67399; color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; text-transform: none; font-weight: 800;">Real-Time</span>
+                            </div>
+                            <div class="preview-device-toggle">
+                                <button type="button" class="preview-device-btn active" data-device="mobile" onclick="setOrderFormPreviewDevice('mobile', this)">Mobile</button>
+                                <button type="button" class="preview-device-btn" data-device="desktop" onclick="setOrderFormPreviewDevice('desktop', this)">Desktop</button>
+                            </div>
                         </div>
 
-                        <!-- Phone Frame Mockup -->
-                        <div class="mobile-phone-frame" style="width: 100%; max-width: 320px; height: 560px; background: #ffffff; border: 12px solid #2d2419; border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column;">
+                        <!-- Phone/Desktop Frame Mockup -->
+                        <div id="order-form-preview-frame" class="mobile-phone-frame" style="width: 100%; max-width: 320px; height: 560px; background: #ffffff; border: 12px solid #2d2419; border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column; transition: max-width 0.25s ease, border-radius 0.25s ease, border-width 0.25s ease;">
                             <!-- Speaker / Notch -->
-                            <div style="width: 110px; height: 18px; background: #2d2419; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; justify-content: center; align-items: center;">
+                            <div class="order-form-preview-notch" style="width: 110px; height: 18px; background: #2d2419; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; justify-content: center; align-items: center;">
                                 <div style="width: 40px; height: 4px; background: #555; border-radius: 10px;"></div>
                             </div>
-                            
+
                             <!-- Phone screen viewport -->
                             <div class="phone-screen-viewport" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 32px 16px 24px 16px; background: #fff5f8; font-family: 'Outfit', sans-serif;">
                                 <!-- Storefront Header mockup -->
@@ -1526,9 +1532,9 @@
                                     <!-- Populated dynamically via Javascript based on window._customFields -->
                                 </div>
                             </div>
-                            
+
                             <!-- Home Bar -->
-                            <div style="height: 15px; background: #ffffff; display: flex; justify-content: center; align-items: center; border-top: 1px solid #eee;">
+                            <div class="order-form-preview-home-bar" style="height: 15px; background: #ffffff; display: flex; justify-content: center; align-items: center; border-top: 1px solid #eee;">
                                 <div style="width: 80px; height: 4px; background: #ccc; border-radius: 10px;"></div>
                             </div>
                         </div>

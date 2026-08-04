@@ -263,7 +263,12 @@ window.pageBuilderPreviewDevice = 'mobile';
 
 window.setPreviewDevice = function(mode, btnEl) {
     window.pageBuilderPreviewDevice = mode;
-    document.querySelectorAll('.preview-device-btn').forEach(b => b.classList.remove('active'));
+    // Scoped to this toggle's own container -- the Order Form Builder tab has
+    // an identical-looking .preview-device-toggle, and both tabs' markup is
+    // present in the DOM at once (just hidden), so a global clear here would
+    // also blank out the *other* tab's active state.
+    const toggle = btnEl ? btnEl.closest('.preview-device-toggle') : null;
+    if (toggle) toggle.querySelectorAll('.preview-device-btn').forEach(b => b.classList.remove('active'));
     if (btnEl) btnEl.classList.add('active');
     window.applyPageBuilderPreviewDevice();
 };
@@ -292,6 +297,20 @@ window.addEventListener('resize', function() {
         window.applyPageBuilderPreviewDevice();
     }
 });
+
+// Order Form Builder preview device toggle. Unlike the Page Builder preview,
+// this mockup is plain DOM (populated by renderLivePreview() from
+// window._customFields), not an iframe -- so switching devices is just a
+// container resize/class toggle, no scale transform needed.
+window.setOrderFormPreviewDevice = function(mode, btnEl) {
+    const frame = document.getElementById('order-form-preview-frame');
+    const toggle = btnEl ? btnEl.closest('.preview-device-toggle') : null;
+    if (toggle) {
+        toggle.querySelectorAll('.preview-device-btn').forEach(b => b.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+    }
+    if (frame) frame.classList.toggle('desktop-mode', mode === 'desktop');
+};
 
 window.saveSectionManagerForm = function() {
     updateSectionOrderInputs();

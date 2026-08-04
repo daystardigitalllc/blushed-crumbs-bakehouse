@@ -8798,6 +8798,27 @@ body.theme-sunny_whisk {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
+/* Order Form Builder preview: desktop mode widens the phone-frame mockup and
+   drops the phone-specific chrome (notch, home bar), since a real desktop
+   order form isn't inside a handset. Unlike the Page Builder's iframe-based
+   preview, this frame renders real (unscaled) DOM content, so it's just a
+   container resize -- no scale transform involved. */
+#order-form-preview-frame.desktop-mode {
+    max-width: 480px !important;
+    height: 460px !important;
+    border-width: 3px !important;
+    border-radius: 14px !important;
+}
+
+#order-form-preview-frame.desktop-mode .order-form-preview-notch,
+#order-form-preview-frame.desktop-mode .order-form-preview-home-bar {
+    display: none;
+}
+
+#order-form-preview-frame.desktop-mode .phone-screen-viewport {
+    padding: 20px 24px !important;
+}
+
 /* Prevents an explicitly-sized iframe (used for the desktop/tablet preview
    scale trick) from forcing its CSS Grid track to grow to fit it -- grid
    tracks default to min-width:auto, which respects a child's intrinsic
