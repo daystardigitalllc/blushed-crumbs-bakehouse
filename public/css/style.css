@@ -8776,28 +8776,13 @@ body.theme-sunny_whisk {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
-/* Prevents an explicitly-sized iframe (used for the desktop preview scale
-   trick) from forcing its CSS Grid track to grow to fit it -- grid tracks
-   default to min-width:auto, which respects a child's intrinsic content
-   size unless overridden. Without this, "desktop" mode blows the whole
-   two-column layout out way past the page edge. */
+/* Prevents an explicitly-sized iframe (used for the desktop/tablet preview
+   scale trick) from forcing its CSS Grid track to grow to fit it -- grid
+   tracks default to min-width:auto, which respects a child's intrinsic
+   content size unless overridden. Without this, switching preview modes
+   could blow the two-column layout out past the page edge. */
 .form-builder-right-col {
     min-width: 0;
-}
-
-/* Page Builder: Desktop preview mode. A true 1280px-wide render scaled down
-   to fit the narrow sidebar column would be too small to actually evaluate
-   (roughly 30% scale), so instead of keeping the two-column split, desktop
-   mode drops to one column and moves the preview above the editor -- it
-   gets real width to render at a legible scale, and the (long) editor
-   accordion is just pushed below it instead of competing for space. */
-#page-builder-workspace.pb-desktop-mode {
-    grid-template-columns: 1fr;
-}
-
-#page-builder-workspace.pb-desktop-mode .form-builder-right-col {
-    order: -1;
-    position: static;
 }
 
 /* Form Builder Live Preview Workspace Sizing */
