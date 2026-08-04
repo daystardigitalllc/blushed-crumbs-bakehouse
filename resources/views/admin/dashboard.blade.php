@@ -1549,7 +1549,7 @@
                     <p class="subtitle">Edit your homepage's text, images, and section order. Changes go live when you save.</p>
                 </div>
 
-                <div class="form-builder-workspace" style="display:grid; grid-template-columns:1.3fr 0.7fr; gap:30px; align-items:start;">
+                <div class="form-builder-workspace" id="page-builder-workspace" style="display:grid; grid-template-columns:1.3fr 0.7fr; gap:30px; align-items:start;">
                 <div class="form-builder-left-col">
                 <div class="form-builder-card" style="border:1px solid var(--theme-section-bg, #ddd6fe);">
                     <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">

@@ -254,10 +254,12 @@ window.refreshPageBuilderPreview = function() {
 };
 
 // Renders the preview iframe at a real desktop width (1280px) and scales it down
-// with a CSS transform to fit the sidebar column, so the storefront's desktop
-// breakpoint actually renders instead of just squeezing the mobile layout into a
-// narrow box. Mobile mode is just the iframe at its natural container width, since
-// that's already a mobile-sized viewport.
+// with a CSS transform to show the storefront's actual desktop breakpoint. A true
+// desktop render scaled to fit the narrow sidebar column would be ~30% scale and
+// unreadable, so desktop mode also drops #page-builder-workspace to one column
+// (see .pb-desktop-mode in style.css) and moves the preview above the editor,
+// giving it real width to render at a legible scale. Mobile mode keeps the normal
+// two-column split -- a narrow column is already the right shape for it.
 window.PAGE_BUILDER_DESKTOP_PREVIEW_WIDTH = 1280;
 window.pageBuilderPreviewDevice = 'mobile';
 
@@ -265,7 +267,15 @@ window.setPreviewDevice = function(mode, btnEl) {
     window.pageBuilderPreviewDevice = mode;
     document.querySelectorAll('.preview-device-btn').forEach(b => b.classList.remove('active'));
     if (btnEl) btnEl.classList.add('active');
-    window.applyPageBuilderPreviewDevice();
+
+    const workspace = document.getElementById('page-builder-workspace');
+    const box = document.getElementById('page-builder-preview-scale-box');
+    if (workspace) workspace.classList.toggle('pb-desktop-mode', mode === 'desktop');
+    if (box) box.style.height = mode === 'desktop' ? '860px' : '640px';
+
+    // Layout class change above must land (and the resulting width reflow
+    // complete) before measuring box.clientWidth for the scale calculation.
+    requestAnimationFrame(() => window.applyPageBuilderPreviewDevice());
 };
 
 window.applyPageBuilderPreviewDevice = function() {
