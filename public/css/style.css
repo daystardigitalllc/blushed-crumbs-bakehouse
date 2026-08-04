@@ -8751,6 +8751,31 @@ body.theme-sunny_whisk {
     box-shadow: 0 4px 12px rgba(230, 115, 153, 0.25) !important;
 }
 
+.preview-device-toggle {
+    display: flex;
+    background: #f1f1f1;
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.preview-device-btn {
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.preview-device-btn.active {
+    background: #ffffff;
+    color: #27272a;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
 /* Form Builder Live Preview Workspace Sizing */
 @media (max-width: 992px) {
     .form-builder-workspace {

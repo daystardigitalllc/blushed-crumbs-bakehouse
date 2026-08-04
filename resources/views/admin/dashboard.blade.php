@@ -1886,17 +1886,26 @@
                 <!-- LIVE PREVIEW PANEL -->
                 <div class="form-builder-right-col" style="position:sticky; top:20px;">
                     <div class="form-builder-card" style="padding:16px; border:1px solid var(--theme-section-bg, #ddd6fe);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                            <strong style="font-size:0.9rem; color:#27272a;">Live Preview</strong>
-                            <div style="display:flex; gap:8px;">
-                                <button type="button" class="btn btn-sm btn-outline" onclick="refreshPageBuilderPreview()" title="Refresh preview" style="padding:4px 10px; font-size:0.78rem;">↻ Refresh</button>
-                                <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-sm btn-outline" title="Open in new tab" style="padding:4px 10px; font-size:0.78rem;">Open ↗</a>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <strong style="font-size:0.9rem; color:#27272a;">Preview</strong>
+                                <span id="page-builder-preview-status" style="display:none; font-size:0.74rem; color:#a855f7; font-weight:600;">Updating preview…</span>
+                            </div>
+                            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                <div class="preview-device-toggle">
+                                    <button type="button" class="preview-device-btn active" data-device="mobile" onclick="setPreviewDevice('mobile', this)">Mobile</button>
+                                    <button type="button" class="preview-device-btn" data-device="desktop" onclick="setPreviewDevice('desktop', this)">Desktop</button>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline" onclick="refreshPageBuilderPreview()" title="Discard draft preview and show what's actually live" style="padding:4px 10px; font-size:0.78rem;">↻ Show Live</button>
+                                <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-sm btn-outline" title="Open the live site in a new tab" style="padding:4px 10px; font-size:0.78rem;">Open ↗</a>
                             </div>
                         </div>
-                        <div style="border:8px solid #27272a; border-radius:18px; overflow:hidden; background:#27272a;">
-                            <iframe id="page-builder-preview-iframe" src="{{ $tenant->publicUrl() }}" title="Live storefront preview" style="width:100%; height:640px; border:0; display:block; background:#fff;"></iframe>
+                        <div id="page-builder-preview-wrapper" style="border:8px solid #27272a; border-radius:18px; overflow:hidden; background:#27272a;">
+                            <div id="page-builder-preview-scale-box" style="width:100%; height:640px; overflow:hidden; position:relative; background:#fff;">
+                                <iframe id="page-builder-preview-iframe" src="{{ $tenant->publicUrl() }}" title="Storefront preview" style="width:100%; height:100%; border:0; display:block; background:#fff; transform-origin:top left;"></iframe>
+                            </div>
                         </div>
-                        <p style="font-size:0.76rem; color:#999; margin-top:8px; margin-bottom:0;">Updates after you click <strong>Save All Changes</strong>, or hit Refresh to check current live content.</p>
+                        <p style="font-size:0.76rem; color:#999; margin-top:8px; margin-bottom:0;">Shows your unsaved edits as you type — nothing here is public until you click <strong>Save All Changes</strong>. Use <strong>Show Live</strong> to see what's actually published right now.</p>
                     </div>
                 </div>
                 </div>

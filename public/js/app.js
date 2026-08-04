@@ -242,12 +242,56 @@ function updateSectionOrderInputs() {
 window.refreshPageBuilderPreview = function() {
     const frame = document.getElementById('page-builder-preview-iframe');
     if (!frame) return;
+    // Drops any in-progress draft (srcdoc, set by the live-typing preview) and
+    // goes back to the real saved page -- srcdoc otherwise takes rendering
+    // precedence over src even after src is reassigned.
+    frame.removeAttribute('srcdoc');
     // Re-assigning src (rather than frame.contentWindow.location.reload()) sidesteps
     // any cross-origin restriction when the tenant is on a custom domain, and forces
     // a fresh fetch instead of a cached document.
     const base = frame.src.split('?')[0];
     frame.src = base + '?_preview=' + Date.now();
 };
+
+// Renders the preview iframe at a real desktop width (1280px) and scales it down
+// with a CSS transform to fit the sidebar column, so the storefront's desktop
+// breakpoint actually renders instead of just squeezing the mobile layout into a
+// narrow box. Mobile mode is just the iframe at its natural container width, since
+// that's already a mobile-sized viewport.
+window.PAGE_BUILDER_DESKTOP_PREVIEW_WIDTH = 1280;
+window.pageBuilderPreviewDevice = 'mobile';
+
+window.setPreviewDevice = function(mode, btnEl) {
+    window.pageBuilderPreviewDevice = mode;
+    document.querySelectorAll('.preview-device-btn').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    window.applyPageBuilderPreviewDevice();
+};
+
+window.applyPageBuilderPreviewDevice = function() {
+    const box = document.getElementById('page-builder-preview-scale-box');
+    const iframe = document.getElementById('page-builder-preview-iframe');
+    if (!box || !iframe) return;
+
+    if (window.pageBuilderPreviewDevice === 'desktop') {
+        const desktopWidth = window.PAGE_BUILDER_DESKTOP_PREVIEW_WIDTH;
+        const containerWidth = box.clientWidth;
+        const scale = containerWidth / desktopWidth;
+        iframe.style.width = desktopWidth + 'px';
+        iframe.style.height = (box.clientHeight / scale) + 'px';
+        iframe.style.transform = 'scale(' + scale + ')';
+    } else {
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.transform = 'none';
+    }
+};
+
+window.addEventListener('resize', function() {
+    if (window.pageBuilderPreviewDevice === 'desktop') {
+        window.applyPageBuilderPreviewDevice();
+    }
+});
 
 window.saveSectionManagerForm = function() {
     updateSectionOrderInputs();
@@ -334,7 +378,71 @@ document.addEventListener('DOMContentLoaded', () => {
     initGalleryFiltering();
     handleHashNavigation();
     initEntranceAnimations();
+    initPageBuilderLivePreview();
 });
+
+// Debounced "preview my unsaved edits" for the Page Builder tab. Never saves
+// anything -- posts the current (in-progress) form state to a preview-only
+// endpoint that renders the real storefront template without persisting, and
+// drops the returned HTML into the preview iframe via srcdoc. Explicit Save
+// is still required to actually publish; this only lets the baker see what
+// their edits would look like first.
+function initPageBuilderLivePreview() {
+    const form = document.getElementById('section-manager-form');
+    if (!form) return;
+
+    let debounceTimer = null;
+    let abortController = null;
+
+    form.addEventListener('input', schedulePageBuilderPreview);
+    form.addEventListener('change', schedulePageBuilderPreview);
+
+    function schedulePageBuilderPreview() {
+        const statusEl = document.getElementById('page-builder-preview-status');
+        if (statusEl) { statusEl.textContent = 'Updating preview…'; statusEl.style.display = 'inline'; }
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(renderDraftPreview, 900);
+    }
+
+    function renderDraftPreview() {
+        const iframe = document.getElementById('page-builder-preview-iframe');
+        const statusEl = document.getElementById('page-builder-preview-status');
+        if (!iframe) return;
+
+        if (window.updateSectionOrderInputs) window.updateSectionOrderInputs();
+
+        // Strip file inputs -- this fires on every keystroke and must never
+        // upload/write files to disk. Already-uploaded media is represented
+        // by a text/hidden input holding the resulting URL, which IS sent.
+        const formData = new FormData(form);
+        form.querySelectorAll('input[type="file"]').forEach(el => {
+            if (el.name) formData.delete(el.name);
+        });
+
+        if (abortController) abortController.abort();
+        abortController = new AbortController();
+
+        fetch('/dashboard/sections/preview', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+            },
+            body: formData,
+            signal: abortController.signal
+        })
+        .then(res => res.text())
+        .then(html => {
+            iframe.removeAttribute('src');
+            iframe.srcdoc = html;
+            if (statusEl) statusEl.style.display = 'none';
+        })
+        .catch(err => {
+            if (err.name === 'AbortError') return;
+            console.error('Page builder preview error:', err);
+            if (statusEl) statusEl.textContent = 'Preview update failed';
+        });
+    }
+}
 
 // Scroll-triggered entrance animations, theme-agnostic (works on every storefront theme
 // since they all share this markup/CSS). Progressive enhancement: sections are only
