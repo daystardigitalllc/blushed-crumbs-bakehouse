@@ -2248,42 +2248,44 @@
                     <p class="subtitle">Manage reviews and testimonials shown on your storefront.</p>
                 </div>
 
-                <!-- ADD NEW REVIEW CARD -->
-                <div class="form-builder-card" style="margin-bottom:20px; border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                    <h4 style="color:#5c1d37; margin-bottom:12px;">Add New Client Review</h4>
-                    <form id="add-review-form" style="display:flex; flex-direction:column; gap:12px;">
-                        <div>
-                            <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Client Name</label>
-                            <input type="text" id="rev-client-name" class="form-control" placeholder="e.g. Lynne Escue" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                        </div>
-                        <div>
-                            <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Review Text</label>
-                            <textarea id="rev-text" class="form-control" placeholder="Paste client review text here..." required style="width:100%; height:90px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Publish Review to Storefront</button>
-                    </form>
-                </div>
-
-                <!-- PUBLISHED REVIEWS LIST -->
-                <div class="form-builder-card">
-                    <h4>Published Reviews</h4>
-                    <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Currently live on your storefront:</p>
-
-                    <div id="admin-reviews-list" style="display:flex; flex-direction:column; gap:12px;">
-                        @forelse($reviews as $rev)
-                            <div class="review-item-row" data-id="{{ $rev->id }}" style="background:white; padding:16px; border-radius:12px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:flex-start; gap:15px;">
-                                <div>
-                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                                        <strong style="color:#5c1d37; font-size:1rem;">{{ $rev->client_name }}</strong>
-                                        <span style="color:#ffc107; font-size:0.9rem;">★★★★★</span>
-                                    </div>
-                                    <p style="font-size:0.9rem; color:#555; margin:0; line-height:1.5;">"{{ $rev->review_text }}"</p>
-                                </div>
-                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteReview({{ $rev->id }}, this)">Delete</button>
+                <div class="reviews-tab-grid" style="display:grid; grid-template-columns:minmax(280px, 380px) 1fr; gap:20px; align-items:start;">
+                    <!-- ADD NEW REVIEW CARD -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
+                        <h4 style="color:#5c1d37; margin-bottom:12px;">Add New Client Review</h4>
+                        <form id="add-review-form" style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Client Name</label>
+                                <input type="text" id="rev-client-name" class="form-control" placeholder="e.g. Lynne Escue" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
                             </div>
-                        @empty
-                            <p style="color:#888; text-align:center; padding:20px;">No reviews added yet. Use the form above to publish client reviews!</p>
-                        @endforelse
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Review Text</label>
+                                <textarea id="rev-text" class="form-control" placeholder="Paste client review text here..." required style="width:100%; height:90px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Publish Review to Storefront</button>
+                        </form>
+                    </div>
+
+                    <!-- PUBLISHED REVIEWS LIST -->
+                    <div class="form-builder-card">
+                        <h4>Published Reviews</h4>
+                        <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Currently live on your storefront:</p>
+
+                        <div id="admin-reviews-list" style="display:flex; flex-direction:column; gap:12px;">
+                            @forelse($reviews as $rev)
+                                <div class="review-item-row" data-id="{{ $rev->id }}" style="background:white; padding:16px; border-radius:12px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:flex-start; gap:15px;">
+                                    <div>
+                                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                                            <strong style="color:#5c1d37; font-size:1rem;">{{ $rev->client_name }}</strong>
+                                            <span style="color:#ffc107; font-size:0.9rem;">★★★★★</span>
+                                        </div>
+                                        <p style="font-size:0.9rem; color:#555; margin:0; line-height:1.5;">"{{ $rev->review_text }}"</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteReview({{ $rev->id }}, this)">Delete</button>
+                                </div>
+                            @empty
+                                <p style="color:#888; text-align:center; padding:20px;">No reviews added yet. Use the form above to publish client reviews!</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
