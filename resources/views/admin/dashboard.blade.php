@@ -2712,23 +2712,6 @@
                         </form>
                     </div>
 
-                    <!-- BAKER SUPPORT & CUSTOM CODE REQUESTS CARD -->
-                    <div class="form-builder-card" style="margin-bottom:20px; border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff);">
-                        <h4 style="color:var(--dark-text); margin-bottom:4px;">Support &amp; Custom Code Requests</h4>
-                        <p style="font-size:0.88rem; color:#666; margin-bottom:14px;">Request custom features, theme tweaks, or code assistance (Pro Tier perk).</p>
-                        <form id="support-request-form" style="display:flex; flex-direction:column; gap:12px;">
-                            <div>
-                                <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Subject</label>
-                                <input type="text" class="form-control" placeholder="e.g. Custom theme tweak request" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                            </div>
-                            <div>
-                                <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Description</label>
-                                <textarea class="form-control" placeholder="Describe custom code or support request..." required style="width:100%; height:100px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary); align-self:flex-start;">Send Support Request</button>
-                        </form>
-                    </div>
-
                     <!-- SUPPORT TICKET FORM CARD -->
                     <div class="form-builder-card">
                         <h4 style="font-size:1.2rem; font-weight:700; color:#1e293b; margin-bottom:12px;">Submit Support Ticket</h4>
