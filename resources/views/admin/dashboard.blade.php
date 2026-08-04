@@ -1588,10 +1588,10 @@
                                             <strong style="color:#27272a; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $secName }}</strong>
                                         </div>
 
-                                        <div style="display:flex; align-items:center; gap:4px; flex-shrink:0;" onclick="event.stopPropagation()">
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:1px 6px; font-size:0.7rem; line-height:1.6;" aria-label="Move up">↑</button>
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:1px 6px; font-size:0.7rem; line-height:1.6;" aria-label="Move down">↓</button>
-                                            <label class="toggle-switch" style="transform:scale(0.65); margin:0 -6px;">
+                                        <div style="display:flex; align-items:center; gap:0; flex-shrink:0;" onclick="event.stopPropagation()">
+                                            <button type="button" class="section-move-btn" onclick="moveSectionUp(this)" aria-label="Move up" title="Move up">↑</button>
+                                            <button type="button" class="section-move-btn" onclick="moveSectionDown(this)" aria-label="Move down" title="Move down">↓</button>
+                                            <label class="toggle-switch" style="transform:scale(0.65); margin:0 -6px 0 -2px;">
                                                 <input type="hidden" name="sections[{{ $secId }}][enabled]" value="0">
                                                 <input type="checkbox" name="sections[{{ $secId }}][enabled]" value="1" {{ !empty($sec['enabled']) ? 'checked' : '' }}>
                                                 <span class="toggle-slider"></span>

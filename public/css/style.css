@@ -8751,6 +8751,28 @@ body.theme-sunny_whisk {
     box-shadow: 0 4px 12px rgba(230, 115, 153, 0.25) !important;
 }
 
+/* Section reorder arrows in the Page Builder accordion header -- deliberately
+   NOT .btn-outline (its padding/border/border-radius are !important, so an
+   inline style override on that class silently does nothing). Plain, minimal,
+   icon-only so the row doesn't compete visually with the section title. */
+.section-move-btn {
+    background: transparent;
+    border: none;
+    color: #a1a1aa;
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 4px 5px;
+    margin: 0;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.section-move-btn:hover {
+    color: #27272a;
+    background: #eeeeee;
+}
+
 .preview-device-toggle {
     display: flex;
     background: #f1f1f1;
