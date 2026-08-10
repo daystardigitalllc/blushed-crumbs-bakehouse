@@ -4995,6 +4995,364 @@ body.theme-lavender_bloom #section-manager-msg {
     border-color: #e2cdec !important;
 }
 
+/* 11. 🌿 SAGE & SOURDOUGH THEME — admin dashboard only. The storefront's own
+   sage/cream CSS lives in public/css/themes/sage_sourdough.css (loaded only
+   by storefront pages); the Baker Admin Portal (resources/views/admin/
+   dashboard.blade.php) extends layouts/app.blade.php, which only loads this
+   file — so it needs its own copy of the theme's variables to re-skin.
+   --theme-accent-bg stays dark (every theme's .admin-sidebar hardcodes
+   white text, so a light sidebar would be illegible) while --primary and
+   --theme-section-bg carry sage green through as the dominant color across
+   the sidebar's active state, buttons, focus rings, and the main content
+   background. Starter/free tier (see Tenant::getStarterThemes()). */
+body.theme-sage_sourdough {
+    --primary: #4a6350;
+    --primary-hover: #3a4f40;
+    --pink-bg: #f4f1e8;
+    --dark-text: #334437;
+    --theme-heading-font: 'Fraunces', serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #f4f1e8;
+    --theme-accent-bg: #334437;
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #f4f1e8;
+}
+
+body.theme-sage_sourdough .btn-primary,
+body.theme-sage_sourdough .nav-order-btn {
+    background: #4a6350 !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 20px rgba(74, 99, 80, 0.3) !important;
+}
+
+body.theme-sage_sourdough .btn-primary:hover,
+body.theme-sage_sourdough .nav-order-btn:hover {
+    background: #3a4f40 !important;
+    color: #ffffff !important;
+}
+
+body.theme-sage_sourdough .admin-mobile-header {
+    background: #334437 !important;
+}
+
+body.theme-sage_sourdough .admin-main-content input[type="text"],
+body.theme-sage_sourdough .admin-main-content input[type="number"],
+body.theme-sage_sourdough .admin-main-content input[type="email"],
+body.theme-sage_sourdough .admin-main-content input[type="tel"],
+body.theme-sage_sourdough .admin-main-content input[type="url"],
+body.theme-sage_sourdough .admin-main-content select,
+body.theme-sage_sourdough .admin-main-content textarea {
+    border: 1.5px solid #d8d2c2 !important;
+    background-color: #ffffff !important;
+    color: #334437 !important;
+}
+
+body.theme-sage_sourdough .admin-main-content input:focus,
+body.theme-sage_sourdough .admin-main-content select:focus,
+body.theme-sage_sourdough .admin-main-content textarea:focus {
+    border-color: #4a6350 !important;
+    box-shadow: 0 0 0 4px rgba(74, 99, 80, 0.2) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-sage_sourdough .admin-main-content label {
+    color: #334437 !important;
+}
+
+body.theme-sage_sourdough .status-select:focus {
+    border-color: #4a6350;
+    box-shadow: 0 0 0 3px rgba(74, 99, 80, 0.2);
+}
+
+body.theme-sage_sourdough .btn-outline {
+    background: transparent !important;
+    border: 2px solid #4a6350 !important;
+    color: #4a6350 !important;
+}
+
+body.theme-sage_sourdough .btn-outline:hover {
+    background: #f4f1e8 !important;
+}
+
+body.theme-sage_sourdough .reorder-btn {
+    background: #f4f1e8 !important;
+    border: 1px solid #d8d2c2 !important;
+    color: #334437 !important;
+}
+
+body.theme-sage_sourdough .reorder-btn:hover:not(:disabled) {
+    background: #4a6350 !important;
+    border-color: #4a6350 !important;
+    color: #ffffff !important;
+}
+
+body.theme-sage_sourdough .category-card-exact,
+body.theme-sage_sourdough .cloud-review-card,
+body.theme-sage_sourdough .category-image-frame,
+body.theme-sage_sourdough .form-builder-card,
+body.theme-sage_sourdough .order-card,
+body.theme-sage_sourdough .add-review-box,
+body.theme-sage_sourdough .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #d8d2c2 !important;
+}
+
+body.theme-sage_sourdough .order-modal-card {
+    border-radius: 22px !important;
+    border: 3px solid #4a6350 !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(51, 68, 55, 0.22) !important;
+}
+
+body.theme-sage_sourdough .sticky-order-summary-bar {
+    background: #f4f1e8 !important;
+    border: 2px solid #4a6350 !important;
+}
+
+body.theme-sage_sourdough .product,
+body.theme-sage_sourdough .option-chip {
+    border-radius: 14px !important;
+    border: 2px solid #d8d2c2 !important;
+    background: #ffffff !important;
+    color: #334437 !important;
+}
+
+body.theme-sage_sourdough .product.selected,
+body.theme-sage_sourdough .option-chip.selected {
+    background: #4a6350 !important;
+    color: #ffffff !important;
+    border-color: #4a6350 !important;
+    box-shadow: 0 8px 20px rgba(74, 99, 80, 0.45) !important;
+}
+
+body.theme-sage_sourdough .next-btn {
+    background: #4a6350 !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 20px rgba(74, 99, 80, 0.3) !important;
+}
+
+/* ── Page Builder / Section Studio tab ──
+   Same approach as lavender_bloom: attribute selectors catch the repeated
+   inline hex values in that tab's mostly hard-coded template. */
+body.theme-sage_sourdough #tab-page-builder .form-builder-card {
+    border-color: #d8d2c2 !important;
+}
+
+body.theme-sage_sourdough #tab-page-builder h4,
+body.theme-sage_sourdough #tab-page-builder h6,
+body.theme-sage_sourdough #tab-page-builder strong {
+    color: #334437 !important;
+}
+
+body.theme-sage_sourdough #tab-page-builder .section-manager-row {
+    border-color: #d8d2c2 !important;
+}
+
+body.theme-sage_sourdough #tab-page-builder .section-accordion-header {
+    background: #f4f1e8 !important;
+}
+
+body.theme-sage_sourdough #tab-page-builder .section-accordion-body {
+    border-top-color: #d8d2c2 !important;
+}
+
+body.theme-sage_sourdough #tab-page-builder .drag-handle,
+body.theme-sage_sourdough #tab-page-builder .accordion-arrow {
+    color: #4a6350 !important;
+}
+
+body.theme-sage_sourdough #tab-page-builder [style*="border:1px solid #eee"] {
+    background: #f4f1e8 !important;
+    border-color: #d8d2c2 !important;
+}
+
+body.theme-sage_sourdough #section-manager-msg {
+    background: #f4f1e8 !important;
+    color: #334437 !important;
+    border-color: #d8d2c2 !important;
+}
+
+/* 12. 🍒 CHERRY BAKESHOP THEME — admin dashboard only. The storefront's own
+   cherry/cream CSS lives in public/css/themes/cherry_bakeshop.css (loaded
+   only by storefront pages); the Baker Admin Portal (resources/views/admin/
+   dashboard.blade.php) extends layouts/app.blade.php, which only loads this
+   file — so it needs its own copy of the theme's variables to re-skin.
+   --theme-accent-bg stays dark (every theme's .admin-sidebar hardcodes
+   white text, so a light sidebar would be illegible) while --primary and
+   --theme-section-bg carry cherry red through as the dominant color across
+   the sidebar's active state, buttons, focus rings, and the main content
+   background. Starter/free tier (see Tenant::getStarterThemes()). */
+body.theme-cherry_bakeshop {
+    --primary: #a0293f;
+    --primary-hover: #7f2032;
+    --pink-bg: #fff5f0;
+    --dark-text: #4a2833;
+    --theme-heading-font: 'Fredoka', sans-serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #fff5f0;
+    --theme-accent-bg: #4a1420;
+    font-family: 'Nunito', sans-serif;
+    background-color: #fff5f0;
+}
+
+body.theme-cherry_bakeshop .btn-primary,
+body.theme-cherry_bakeshop .nav-order-btn {
+    background: #a0293f !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 20px rgba(160, 41, 63, 0.3) !important;
+}
+
+body.theme-cherry_bakeshop .btn-primary:hover,
+body.theme-cherry_bakeshop .nav-order-btn:hover {
+    background: #7f2032 !important;
+    color: #ffffff !important;
+}
+
+body.theme-cherry_bakeshop .admin-mobile-header {
+    background: #a0293f !important;
+}
+
+body.theme-cherry_bakeshop .admin-main-content input[type="text"],
+body.theme-cherry_bakeshop .admin-main-content input[type="number"],
+body.theme-cherry_bakeshop .admin-main-content input[type="email"],
+body.theme-cherry_bakeshop .admin-main-content input[type="tel"],
+body.theme-cherry_bakeshop .admin-main-content input[type="url"],
+body.theme-cherry_bakeshop .admin-main-content select,
+body.theme-cherry_bakeshop .admin-main-content textarea {
+    border: 1.5px solid #f0d9c8 !important;
+    background-color: #ffffff !important;
+    color: #4a2833 !important;
+}
+
+body.theme-cherry_bakeshop .admin-main-content input:focus,
+body.theme-cherry_bakeshop .admin-main-content select:focus,
+body.theme-cherry_bakeshop .admin-main-content textarea:focus {
+    border-color: #a0293f !important;
+    box-shadow: 0 0 0 4px rgba(160, 41, 63, 0.2) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-cherry_bakeshop .admin-main-content label {
+    color: #4a2833 !important;
+}
+
+body.theme-cherry_bakeshop .status-select:focus {
+    border-color: #a0293f;
+    box-shadow: 0 0 0 3px rgba(160, 41, 63, 0.2);
+}
+
+body.theme-cherry_bakeshop .btn-outline {
+    background: transparent !important;
+    border: 2px solid #a0293f !important;
+    color: #a0293f !important;
+}
+
+body.theme-cherry_bakeshop .btn-outline:hover {
+    background: #fff5f0 !important;
+}
+
+body.theme-cherry_bakeshop .reorder-btn {
+    background: #fff5f0 !important;
+    border: 1px solid #f0d9c8 !important;
+    color: #4a2833 !important;
+}
+
+body.theme-cherry_bakeshop .reorder-btn:hover:not(:disabled) {
+    background: #a0293f !important;
+    border-color: #a0293f !important;
+    color: #ffffff !important;
+}
+
+body.theme-cherry_bakeshop .category-card-exact,
+body.theme-cherry_bakeshop .cloud-review-card,
+body.theme-cherry_bakeshop .category-image-frame,
+body.theme-cherry_bakeshop .form-builder-card,
+body.theme-cherry_bakeshop .order-card,
+body.theme-cherry_bakeshop .add-review-box,
+body.theme-cherry_bakeshop .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #f0d9c8 !important;
+}
+
+body.theme-cherry_bakeshop .order-modal-card {
+    border-radius: 26px !important;
+    border: 3px solid #a0293f !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(160, 41, 63, 0.25) !important;
+}
+
+body.theme-cherry_bakeshop .sticky-order-summary-bar {
+    background: #fff5f0 !important;
+    border: 2px solid #a0293f !important;
+}
+
+body.theme-cherry_bakeshop .product,
+body.theme-cherry_bakeshop .option-chip {
+    border-radius: 20px !important;
+    border: 2px solid #f0d9c8 !important;
+    background: #ffffff !important;
+    color: #4a2833 !important;
+}
+
+body.theme-cherry_bakeshop .product.selected,
+body.theme-cherry_bakeshop .option-chip.selected {
+    background: #a0293f !important;
+    color: #ffffff !important;
+    border-color: #a0293f !important;
+    box-shadow: 0 8px 20px rgba(160, 41, 63, 0.35) !important;
+}
+
+body.theme-cherry_bakeshop .next-btn {
+    background: #a0293f !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 20px rgba(160, 41, 63, 0.3) !important;
+}
+
+/* ── Page Builder / Section Studio tab ──
+   Same approach as lavender_bloom: attribute selectors catch the repeated
+   inline hex values in that tab's mostly hard-coded template. */
+body.theme-cherry_bakeshop #tab-page-builder .form-builder-card {
+    border-color: #f0d9c8 !important;
+}
+
+body.theme-cherry_bakeshop #tab-page-builder h4,
+body.theme-cherry_bakeshop #tab-page-builder h6,
+body.theme-cherry_bakeshop #tab-page-builder strong {
+    color: #4a2833 !important;
+}
+
+body.theme-cherry_bakeshop #tab-page-builder .section-manager-row {
+    border-color: #f0d9c8 !important;
+}
+
+body.theme-cherry_bakeshop #tab-page-builder .section-accordion-header {
+    background: #fff5f0 !important;
+}
+
+body.theme-cherry_bakeshop #tab-page-builder .section-accordion-body {
+    border-top-color: #f0d9c8 !important;
+}
+
+body.theme-cherry_bakeshop #tab-page-builder .drag-handle,
+body.theme-cherry_bakeshop #tab-page-builder .accordion-arrow {
+    color: #a0293f !important;
+}
+
+body.theme-cherry_bakeshop #tab-page-builder [style*="border:1px solid #eee"] {
+    background: #fff5f0 !important;
+    border-color: #f0d9c8 !important;
+}
+
+body.theme-cherry_bakeshop #section-manager-msg {
+    background: #fff5f0 !important;
+    color: #4a2833 !important;
+    border-color: #f0d9c8 !important;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;

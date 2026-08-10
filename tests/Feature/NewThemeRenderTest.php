@@ -34,6 +34,32 @@ class NewThemeRenderTest extends TestCase
         $this->assertContains('cherry_bakeshop', $starter);
     }
 
+    /**
+     * The admin dashboard (layouts/app.blade.php) only ever loads
+     * public/css/style.css, never a theme's own public/css/themes/{id}.css
+     * (that's storefront-only) — so a theme's admin re-skinning MUST live in
+     * style.css or the sidebar/buttons/inputs silently stay the default pink
+     * no matter what the storefront looks like. This guards against that
+     * exact class of bug recurring for a new theme.
+     */
+    public function test_new_themes_have_admin_dashboard_color_overrides_in_the_right_file(): void
+    {
+        $styleCss = file_get_contents(public_path('css/style.css'));
+
+        foreach (['sage_sourdough', 'cherry_bakeshop'] as $themeId) {
+            $this->assertMatchesRegularExpression(
+                "/body\.theme-{$themeId}\s*\{[^}]*--primary:/s",
+                $styleCss,
+                "public/css/style.css is missing a --primary override for body.theme-{$themeId} — the admin dashboard won't re-color for this theme."
+            );
+            $this->assertStringContainsString(
+                "body.theme-{$themeId} .btn-primary",
+                $styleCss,
+                "public/css/style.css is missing a .btn-primary override for body.theme-{$themeId} — generic admin buttons will stay the default pink."
+            );
+        }
+    }
+
     /** @dataProvider themeProvider */
     public function test_storefront_pages_render_for_new_theme(string $themeId): void
     {
