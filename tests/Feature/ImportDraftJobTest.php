@@ -36,7 +36,7 @@ class ImportDraftJobTest extends TestCase
             'domain' => Str::random(8) . '.test',
             'owner_name' => 'Test Owner',
             'email' => Str::random(8) . '@example.com',
-            'plan_tier' => 'standard',
+            'plan_tier' => 'free',
             'theme_id' => 'rustic_kitchen',
             'is_active' => true,
         ], $overrides));
@@ -333,7 +333,7 @@ class ImportDraftJobTest extends TestCase
      */
     public function test_unpaid_tenant_picking_a_pro_theme_falls_back_to_starter_and_stashes_choice()
     {
-        $tenant = $this->makeTenant(['plan_tier' => 'standard', 'theme_id' => 'rustic_kitchen']);
+        $tenant = $this->makeTenant(['plan_tier' => 'free', 'theme_id' => 'rustic_kitchen']);
         $draft = OnboardingDraft::create([
             'tenant_id' => $tenant->id,
             'version' => 1,

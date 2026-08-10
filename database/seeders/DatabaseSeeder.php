@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'slug' => 'doughmain-admin',
             'owner_name' => 'Austin Hayes',
             'email' => 'austinhayes144@gmail.com',
-            'plan_tier' => 'standard',
+            'plan_tier' => 'free',
             'theme_id' => 'sweet_elegant',
             'onboarding_completed' => true,
             'is_active' => true,
@@ -58,13 +58,13 @@ class DatabaseSeeder extends Seeder
                 'secondary_color' => '#6d28d9',
             ],
             'pricing_plans' => [
-                'standard' => [
+                'free' => [
                     'name' => 'DoughMain Free',
-                    'price' => 29,
+                    'price' => 0,
                     'features' => [
                         'DoughMain subdomain',
                         'AI website creation',
-                        'Theme selection',
+                        '5 starter themes',
                         'Product management',
                         'Ordering system',
                         'Customer management',
@@ -73,13 +73,14 @@ class DatabaseSeeder extends Seeder
                 ],
                 'pro' => [
                     'name' => 'DoughMain Pro',
-                    'price' => 50,
+                    'price' => 29,
                     'features' => [
-                        'Everything in DoughMain',
+                        'Everything in Free',
                         'Custom domain support',
+                        'Email marketing & campaigns',
+                        '6 additional premium themes',
+                        'Remove Doughmain.pro branding',
                         'Priority support',
-                        'Advanced analytics',
-                        'Custom code requests',
                     ],
                 ],
             ],

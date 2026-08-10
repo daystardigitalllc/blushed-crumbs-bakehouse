@@ -26,7 +26,7 @@ class OnboardingSendResumeRemindersTest extends TestCase
             'slug' => 'reminder-test-' . Str::random(8),
             'owner_name' => 'Test Owner',
             'email' => Str::random(8) . '@example.com',
-            'plan_tier' => 'standard',
+            'plan_tier' => 'free',
             'theme_id' => 'rustic_kitchen',
             'is_active' => true,
         ]);

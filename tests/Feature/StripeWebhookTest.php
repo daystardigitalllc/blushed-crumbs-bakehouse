@@ -28,7 +28,7 @@ class StripeWebhookTest extends TestCase
             'slug' => 'stripe-test-' . Str::random(8),
             'owner_name' => 'Test Owner',
             'email' => Str::random(8) . '@example.com',
-            'plan_tier' => 'standard',
+            'plan_tier' => 'free',
             'theme_id' => 'rustic_kitchen',
             'is_active' => true,
         ], $overrides));
@@ -55,7 +55,7 @@ class StripeWebhookTest extends TestCase
     public function test_valid_signature_upgrades_tenant_to_pro_and_applies_stashed_theme()
     {
         config(['services.stripe.webhook_secret' => self::SECRET]);
-        $tenant = $this->makeTenant(['plan_tier' => 'standard', 'pending_pro_theme_id' => 'sweet_elegant', 'subdomain' => 'stripetest']);
+        $tenant = $this->makeTenant(['plan_tier' => 'free', 'pending_pro_theme_id' => 'sweet_elegant', 'subdomain' => 'stripetest']);
 
         $payload = json_encode([
             'id' => 'evt_test_1',
@@ -107,7 +107,7 @@ class StripeWebhookTest extends TestCase
             'CONTENT_TYPE' => 'application/json',
         ], $payload)->assertStatus(200);
 
-        $this->assertSame('standard', $tenant->fresh()->plan_tier);
+        $this->assertSame('free', $tenant->fresh()->plan_tier);
     }
 
     public function test_legacy_get_callback_no_longer_grants_pro_from_query_string()
@@ -117,7 +117,7 @@ class StripeWebhookTest extends TestCase
         $this->get('/stripe/callback?client_reference_id=' . $tenant->id)
             ->assertRedirect('/login');
 
-        $this->assertSame('standard', $tenant->fresh()->plan_tier);
+        $this->assertSame('free', $tenant->fresh()->plan_tier);
         $this->assertFalse((bool) $tenant->fresh()->onboarding_completed);
     }
 }

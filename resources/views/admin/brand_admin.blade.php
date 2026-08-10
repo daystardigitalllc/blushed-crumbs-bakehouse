@@ -340,7 +340,7 @@
                                     </td>
                                     <td>
                                         <span class="badge {{ $tenant->plan_tier === 'pro' ? 'badge-pro' : 'badge-standard' }}">
-                                            {{ strtoupper($tenant->plan_tier ?? 'standard') }} (${{ $tenant->plan_tier === 'pro' ? '50' : '29' }}/mo)
+                                            {{ $tenant->plan_tier === 'pro' ? 'PRO ($29/mo)' : strtoupper($tenant->plan_tier ?? 'free') }}
                                         </span>
                                     </td>
                                     <td>

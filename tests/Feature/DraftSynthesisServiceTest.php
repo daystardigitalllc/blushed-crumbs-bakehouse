@@ -37,7 +37,7 @@ class DraftSynthesisServiceTest extends TestCase
             'subdomain' => Str::random(8),
             'owner_name' => 'Test Owner',
             'email' => Str::random(8) . '@example.com',
-            'plan_tier' => 'standard',
+            'plan_tier' => 'free',
             'theme_id' => 'rustic_kitchen',
             'is_active' => true,
         ], $overrides));
@@ -229,7 +229,7 @@ class DraftSynthesisServiceTest extends TestCase
     {
         config(['services.gemini.key' => '']);
 
-        $tenant = $this->makeTenant(['plan_tier' => 'standard', 'subdomain' => 'not-blushedcrumbs']);
+        $tenant = $this->makeTenant(['plan_tier' => 'free', 'subdomain' => 'not-blushedcrumbs']);
         $draft = $this->makeDraft($tenant); // no selected_plan in basics — defaults to free/starter
         $this->seedExtractedImage($draft, $tenant);
 

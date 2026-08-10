@@ -35,11 +35,10 @@ class BrandController extends Controller
         $tickets = \App\Models\SupportTicket::with('tenant')->latest()->get();
         $ordersCount = \App\Models\Order::count();
 
-        // Calculate platform MRR
+        // Calculate platform MRR — $29/mo is the actual Stripe Pro price
+        // (the only paid tier that exists; 'free'/'canceled' contribute $0).
         $mrr = $tenants->reduce(function ($total, $t) {
-            if ($t->plan_tier === 'pro') return $total + 50;
-            if ($t->plan_tier === 'standard') return $total + 29;
-            return $total;
+            return $t->plan_tier === 'pro' ? $total + 29 : $total;
         }, 0);
 
         return view('admin.brand_admin', [
