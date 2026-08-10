@@ -90,7 +90,7 @@ class ImportDraftJob implements ShouldQueue
 
         try {
             DB::transaction(function () use ($draft, $tenant, $manifest) {
-                $this->applyProducts($tenant, $manifest['products']);
+                $this->applyProducts($tenant, $draft->id, $manifest['products']);
                 $this->applyGallery($tenant, $manifest['gallery']);
                 $this->applySiteContent($tenant, $draft);
                 $this->applyBackgroundImages($tenant, $manifest['gallery']);
@@ -306,19 +306,42 @@ class ImportDraftJob implements ShouldQueue
 
     // ─── Phase C: DB writes (inside the transaction) ───
 
-    private function applyProducts(Tenant $tenant, array $plan): void
+    private function applyProducts(Tenant $tenant, int $draftId, array $plan): void
     {
         foreach ($plan as $entry) {
             $payload = $entry['payload'];
 
             if ($entry['action'] === 'create') {
+                // `price` is a legacy NOT NULL column with no default; the AI
+                // doesn't always manage to read a price off a photographed
+                // menu, and the baker can leave price_min blank through
+                // review without knowing this column exists underneath it.
+                // Creating the row anyway would violate the NOT NULL
+                // constraint and crash the whole import — including every
+                // other product, the gallery, and the site content — over
+                // one line item. Skipping just this product and recording
+                // it as an event (surfaced via the dashboard's
+                // onboardingNeedsAttention banner) matches how a single bad
+                // extraction file is handled elsewhere in this pipeline: it
+                // degrades instead of taking everything else down with it.
+                if (($payload['price_min'] ?? null) === null) {
+                    OnboardingEvent::create([
+                        'draft_id' => $draftId,
+                        'tenant_id' => $tenant->id,
+                        'type' => 'product_skipped_no_price',
+                        'message' => Str::limit($payload['name'] ?? 'Unnamed product', 200),
+                    ]);
+
+                    continue;
+                }
+
                 Product::withoutGlobalScopes()->create([
                     'tenant_id' => $tenant->id,
                     'name' => $payload['name'],
                     'description' => $payload['description'] ?? null,
                     'slug' => $entry['slug'],
-                    'price' => $payload['price_min'] ?? null,
-                    'price_min' => $payload['price_min'] ?? null,
+                    'price' => $payload['price_min'],
+                    'price_min' => $payload['price_min'],
                     'price_max' => $payload['price_max'] ?? null,
                     'category' => $payload['category'] ?? 'Cake', // matches the column's own DB default — explicit null would bypass it
                     'is_active' => true,
@@ -513,11 +536,17 @@ class ImportDraftJob implements ShouldQueue
 
         Log::warning('Onboarding import failed.', ['draft_id' => $draft->id, 'reason' => $reason]);
 
+        // onboarding_events.message is a varchar(255) column; $reason often
+        // embeds a full SQL exception message (query + bound values), which
+        // routinely exceeds that. An untruncated insert here throws its own
+        // "Data too long for column" exception, masking the real failure
+        // and leaving nothing readable in the events log — the full $reason
+        // is still captured above via Log::warning.
         OnboardingEvent::create([
             'draft_id' => $draft->id,
             'tenant_id' => $draft->tenant_id,
             'type' => 'import_failed',
-            'message' => $reason,
+            'message' => Str::limit($reason, 250),
         ]);
     }
 }

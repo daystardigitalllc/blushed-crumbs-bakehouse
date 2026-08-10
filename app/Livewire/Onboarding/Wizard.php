@@ -127,7 +127,7 @@ class Wizard extends Component
                 }
             }
         }
-        $this->step = $this->stepForStatus($draft->status);
+        $this->step = $this->stepForStatus($draft);
     }
 
     #[Computed]
@@ -304,7 +304,11 @@ class Wizard extends Component
     public function buildSite(): void
     {
         $draft = $this->draft();
-        abort_unless($draft->status === 'ready_for_review', 403);
+        // 'failed' is included so the building_failed screen's "Try again"
+        // button (which calls this same method) can actually retry — see
+        // ImportDraftJob::handle(), which already tolerates re-entry from a
+        // prior failed attempt for exactly this reason.
+        abort_unless(in_array($draft->status, ['ready_for_review', 'failed'], true), 403);
 
         ImportDraftJob::dispatch($draft->id);
         $this->step = 'building';
@@ -322,15 +326,23 @@ class Wizard extends Component
         }
     }
 
-    private function stepForStatus(string $status): string
+    private function stepForStatus(OnboardingDraft $draft): string
     {
-        return match ($status) {
+        return match ($draft->status) {
             'collecting' => empty($this->basicsForm['business_name']) ? 'basics' : 'upload',
             'extracting', 'synthesizing' => 'analyzing',
             'ready_for_review' => 'review',
             'importing' => 'building',
             'imported' => 'done',
-            'failed' => 'analyzing_failed',
+            // 'failed' is ambiguous on its own — it's set both by
+            // SynthesizeDraftJob (analysis stage) and ImportDraftJob (build
+            // stage). proposed_content is only ever written by a successful
+            // synthesis, so its presence tells us which stage actually
+            // failed — otherwise every import-stage failure got mislabeled
+            // as an analysis failure on page reload, and its "Try again"
+            // button (continueToAnalysis) looped back to 'analyzing' without
+            // ever re-dispatching the import, trapping the user.
+            'failed' => $draft->proposed_content !== null ? 'building_failed' : 'analyzing_failed',
             default => 'basics',
         };
     }

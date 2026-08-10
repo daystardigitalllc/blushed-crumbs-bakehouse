@@ -127,7 +127,11 @@ class SynthesizeDraftJob implements ShouldQueue
             'draft_id' => $draft->id,
             'tenant_id' => $draft->tenant_id,
             'type' => 'draft_synthesis_failed',
-            'message' => 'AI copy generation failed after retries: ' . $exception->getMessage(),
+            // onboarding_events.message is varchar(255) — an untruncated
+            // exception message can exceed that and throw its own "Data too
+            // long for column" error, masking the real failure. Full detail
+            // is already in Log::error above.
+            'message' => Str::limit('AI copy generation failed after retries: ' . $exception->getMessage(), 250),
         ]);
     }
 

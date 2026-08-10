@@ -215,6 +215,57 @@ class WizardTest extends TestCase
             ->assertStatus(403);
     }
 
+    public function test_build_site_retries_from_a_failed_import()
+    {
+        Bus::fake();
+
+        $user = $this->makeUser();
+        $draft = OnboardingDraft::create([
+            'tenant_id' => $user->tenant_id,
+            'version' => 1,
+            'status' => 'failed',
+            'proposed_content' => ['tagline' => 'Fresh bread daily'],
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(Wizard::class, ['draft' => $draft])
+            ->set('step', 'building_failed')
+            ->call('buildSite')
+            ->assertSet('step', 'building');
+
+        Bus::assertDispatched(ImportDraftJob::class, fn ($job) => $job->draftId === $draft->id);
+    }
+
+    public function test_reloading_a_failed_import_shows_building_failed_not_analyzing_failed()
+    {
+        $user = $this->makeUser();
+        $draft = OnboardingDraft::create([
+            'tenant_id' => $user->tenant_id,
+            'version' => 1,
+            'status' => 'failed',
+            'proposed_content' => ['tagline' => 'Fresh bread daily'], // synthesis already succeeded once
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(Wizard::class, ['draft' => $draft])
+            ->assertSet('step', 'building_failed');
+    }
+
+    public function test_reloading_a_failed_synthesis_shows_analyzing_failed()
+    {
+        $user = $this->makeUser();
+        $draft = OnboardingDraft::create([
+            'tenant_id' => $user->tenant_id,
+            'version' => 1,
+            'status' => 'failed',
+            'proposed_content' => null, // synthesis never completed
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(Wizard::class, ['draft' => $draft])
+            ->assertSet('step', 'analyzing_failed');
+    }
+
     public function test_progress_bar_reflects_file_status_counts()
     {
         $user = $this->makeUser();

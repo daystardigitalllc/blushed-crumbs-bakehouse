@@ -120,6 +120,42 @@ class ImportDraftJobTest extends TestCase
         $this->assertFileExists(public_path($gallery->image_url));
     }
 
+    /**
+     * Regression: a product the AI couldn't find a price for (e.g. an
+     * "Assorted Gourmet Cookies" tray photographed with no visible price)
+     * used to crash the entire import — `price` is a legacy NOT NULL
+     * column and this write left it null, throwing a SQL integrity
+     * exception that killed the transaction and rolled back every other
+     * product, the gallery, and the site content along with it. It must
+     * now skip just that product and let everything else import.
+     */
+    public function test_import_skips_a_product_with_no_detected_price_instead_of_failing_everything()
+    {
+        $tenant = $this->makeTenant();
+        $draft = $this->makeReadyDraft($tenant);
+        $this->seedGalleryItem($draft, $tenant);
+        $this->seedProductItem($draft, $tenant, ['name' => 'Chocolate Cake', 'price_min' => 45, 'price_max' => 60]);
+        $this->seedProductItem($draft, $tenant, ['name' => 'Assorted Gourmet Cookies']); // no price_min/price_max
+
+        ImportDraftJob::dispatch($draft->id);
+
+        $draft->refresh();
+        $tenant->refresh();
+
+        $this->assertSame('imported', $draft->status);
+        $this->assertTrue((bool) $tenant->onboarding_completed);
+
+        $products = Product::withoutGlobalScopes()->where('tenant_id', $tenant->id)->get();
+        $this->assertSame(1, $products->count());
+        $this->assertSame('Chocolate Cake', $products->first()->name);
+
+        $this->assertDatabaseHas('onboarding_events', [
+            'draft_id' => $draft->id,
+            'type' => 'product_skipped_no_price',
+            'message' => 'Assorted Gourmet Cookies',
+        ]);
+    }
+
     public function test_import_copies_the_uploaded_logo_and_sets_tenant_logo_path()
     {
         $tenant = $this->makeTenant();
