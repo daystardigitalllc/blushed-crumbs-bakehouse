@@ -387,7 +387,13 @@ class ImportDraftJob implements ShouldQueue
 
             GalleryItem::withoutGlobalScopes()->create([
                 'tenant_id' => $tenant->id,
-                'title' => $payload['alt_text'] ?? 'Gallery Photo', // galleries.title is NOT NULL, no DB default
+                // galleries.title is a legacy varchar(255) NOT NULL column
+                // (alt_text itself was widened to TEXT after a prior
+                // production incident — see
+                // 2026_07_29_000001_widen_alt_text_columns_to_text — but
+                // title still gets fed the same Gemini-generated
+                // description, which routinely runs past 255 chars).
+                'title' => Str::limit($payload['alt_text'] ?? 'Gallery Photo', 250),
                 'category' => $payload['category'] ?? 'Single Tier', // matches the column's own DB default
                 'image_url' => $entry['public_path'],
                 'alt_text' => $payload['alt_text'] ?? null,

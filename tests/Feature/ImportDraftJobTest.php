@@ -156,6 +156,31 @@ class ImportDraftJobTest extends TestCase
         ]);
     }
 
+    /**
+     * Regression: galleries.title is a legacy varchar(255) NOT NULL column
+     * fed directly from Gemini's alt_text description, which — same as the
+     * alt_text column itself before it was widened to TEXT (see
+     * 2026_07_29_000001_widen_alt_text_columns_to_text) — routinely runs
+     * well past 255 characters and used to throw a truncation error that
+     * crashed the whole import.
+     */
+    public function test_import_truncates_a_gallery_title_too_long_for_its_column()
+    {
+        $tenant = $this->makeTenant();
+        $draft = $this->makeReadyDraft($tenant);
+        $longAltText = str_repeat('A very long AI-generated description of this photo. ', 10);
+        $this->seedGalleryItem($draft, $tenant, ['alt_text' => $longAltText]);
+
+        ImportDraftJob::dispatch($draft->id);
+
+        $draft->refresh();
+        $this->assertSame('imported', $draft->status);
+
+        $gallery = GalleryItem::withoutGlobalScopes()->where('tenant_id', $tenant->id)->first();
+        $this->assertNotNull($gallery);
+        $this->assertLessThanOrEqual(255, strlen($gallery->title));
+    }
+
     public function test_import_copies_the_uploaded_logo_and_sets_tenant_logo_path()
     {
         $tenant = $this->makeTenant();
