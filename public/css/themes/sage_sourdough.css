@@ -1,0 +1,732 @@
+/* 🌿 SAGE & SOURDOUGH THEME — deep sage green & warm cream, arch-window
+   photo frames, farm-to-table warmth. Starter/free tier (see
+   Tenant::getStarterThemes()). */
+body.theme-sage_sourdough {
+    --primary: #4a6350;
+    --primary-hover: #3a4f40;
+    --pink-bg: #f4f1e8;
+    --dark-text: #334437;
+    --theme-heading-font: 'Fraunces', serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #f4f1e8;
+    --theme-accent-bg: #334437;
+    --sg-forest: #334437;
+    --sg-sage: #4a6350;
+    --sg-sage-light: #6b8a6f;
+    --sg-cream: #f4f1e8;
+    --sg-gold: #e8c079;
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #ffffff;
+}
+
+body.theme-sage_sourdough h1,
+body.theme-sage_sourdough h2,
+body.theme-sage_sourdough h3,
+body.theme-sage_sourdough .section-title-script,
+body.theme-sage_sourdough .whimsical-col-right h2 {
+    font-family: 'Fraunces', serif !important;
+    font-weight: 600 !important;
+    color: var(--sg-forest) !important;
+    letter-spacing: 0;
+}
+
+body.theme-sage_sourdough .subheading {
+    font-family: 'Nunito Sans', sans-serif !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--sg-sage) !important;
+    font-size: 0.85rem !important;
+}
+
+body.theme-sage_sourdough .sg-kicker {
+    display: inline-block;
+    font-family: 'Nunito Sans', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    color: var(--sg-sage);
+    margin-bottom: 10px;
+}
+
+body.theme-sage_sourdough .sg-kicker-light {
+    color: var(--sg-gold);
+}
+
+body.theme-sage_sourdough .hero-cloud-elementor-top,
+body.theme-sage_sourdough .hero-cloud-elementor-bottom,
+body.theme-sage_sourdough .raining-cake {
+    display: none !important;
+}
+
+body.theme-sage_sourdough .site-header {
+    background: transparent !important;
+}
+
+body.theme-sage_sourdough .icon,
+body.theme-sage_sourdough .sg-icon {
+    color: var(--sg-sage);
+}
+
+body.theme-sage_sourdough .sg-logo-stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--sg-forest);
+}
+
+body.theme-sage_sourdough .btn-primary,
+body.theme-sage_sourdough .nav-order-btn {
+    background: var(--sg-sage) !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    box-shadow: 0 8px 20px rgba(74, 99, 80, 0.25) !important;
+}
+
+body.theme-sage_sourdough .btn-primary:hover,
+body.theme-sage_sourdough .nav-order-btn:hover {
+    background: var(--primary-hover) !important;
+}
+
+body.theme-sage_sourdough .hero-buttons .btn-secondary {
+    background: transparent !important;
+    color: var(--sg-forest) !important;
+    border: 2px solid var(--sg-forest) !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+}
+
+body.theme-sage_sourdough .hero-buttons .btn-secondary:hover {
+    background: var(--sg-forest) !important;
+    color: #ffffff !important;
+}
+
+/* ── Section band system ── */
+body.theme-sage_sourdough .sg-section {
+    padding: 90px 25px;
+}
+
+body.theme-sage_sourdough .sg-band-white {
+    background: #ffffff;
+}
+
+body.theme-sage_sourdough .sg-band-cream {
+    background: var(--sg-cream);
+}
+
+body.theme-sage_sourdough .sg-band-sage {
+    background: var(--sg-sage);
+    background-image: radial-gradient(rgba(255,255,255,0.06) 1.5px, transparent 1.5px);
+    background-size: 22px 22px;
+}
+
+body.theme-sage_sourdough .sg-band-sage h2,
+body.theme-sage_sourdough .sg-band-sage h3,
+body.theme-sage_sourdough .sg-band-sage p {
+    color: #ffffff !important;
+}
+
+body.theme-sage_sourdough .sg-section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--sg-forest);
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+body.theme-sage_sourdough .sg-text-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--sg-sage);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Signature shape — arch/doorway window frame, this theme's visual signature */
+body.theme-sage_sourdough .sg-arch-frame {
+    overflow: hidden;
+    border-radius: 50% 50% 12px 12px / 35% 35% 12px 12px;
+    box-shadow: 0 25px 55px rgba(51, 68, 55, 0.25);
+    border: 6px solid var(--sg-cream);
+    background: var(--sg-cream);
+}
+
+body.theme-sage_sourdough .sg-arch-frame img,
+body.theme-sage_sourdough .sg-arch-frame video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+body.theme-sage_sourdough .sg-media-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--sg-cream);
+    color: var(--sg-sage);
+}
+
+/* Hero */
+body.theme-sage_sourdough .sg-hero {
+    background: var(--sg-cream);
+    padding: 130px 40px 100px 40px;
+}
+
+body.theme-sage_sourdough .sg-hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+body.theme-sage_sourdough .sg-hero-copy h1 {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.15;
+    margin-bottom: 30px;
+}
+
+body.theme-sage_sourdough .sg-hero-media .sg-arch-frame {
+    aspect-ratio: 4 / 5;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+/* Circular-turned-arch photo + copy alternating rows */
+body.theme-sage_sourdough .sg-about-row {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+}
+
+body.theme-sage_sourdough .sg-about-row-reverse {
+    grid-template-columns: 1.2fr 0.8fr;
+}
+
+body.theme-sage_sourdough .sg-about-row-reverse .sg-arch-frame {
+    order: 2;
+}
+
+body.theme-sage_sourdough .sg-arch-frame-sm {
+    aspect-ratio: 4 / 5;
+}
+
+body.theme-sage_sourdough .sg-arch-frame-md {
+    aspect-ratio: 4 / 5;
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+body.theme-sage_sourdough .sg-about-copy p {
+    line-height: 1.75;
+    margin-bottom: 10px;
+    color: var(--sg-forest);
+}
+
+body.theme-sage_sourdough .sg-highlight-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+body.theme-sage_sourdough .sg-highlight-list li {
+    color: var(--sg-forest);
+    line-height: 1.6;
+}
+
+body.theme-sage_sourdough .sg-highlight-emoji {
+    font-size: 1.2rem;
+    margin-right: 4px;
+}
+
+/* Categories shelf row */
+body.theme-sage_sourdough .sg-shelf-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 34px;
+    margin-top: 10px;
+}
+
+body.theme-sage_sourdough .sg-shelf-card {
+    text-align: center;
+    max-width: 260px;
+}
+
+body.theme-sage_sourdough .sg-shelf-frame {
+    width: 190px;
+    height: 220px;
+    border-radius: 50% 50% 10px 10px / 35% 35% 10px 10px;
+    overflow: hidden;
+    margin: 0 auto 16px auto;
+    border: 5px solid #ffffff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-sage_sourdough .sg-shelf-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-sage_sourdough .sg-shelf-card h3 {
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+body.theme-sage_sourdough .sg-shelf-card p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Whimsical section — textured sage band */
+body.theme-sage_sourdough .sg-whimsical {
+    background-color: var(--sg-forest) !important;
+    background-image: radial-gradient(rgba(255,255,255,0.05) 1.5px, transparent 1.5px);
+    background-size: 22px 22px;
+    color: #ffffff !important;
+}
+
+body.theme-sage_sourdough .sg-whimsical h2 {
+    color: var(--sg-gold) !important;
+}
+
+body.theme-sage_sourdough .sg-arch-frame-md img {
+    width: 100%;
+    border-radius: inherit;
+}
+
+/* How It Works — connected vertical timeline (this theme's process signature) */
+body.theme-sage_sourdough .sg-timeline {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    counter-reset: sg-step;
+}
+
+body.theme-sage_sourdough .sg-timeline::before {
+    content: '';
+    position: absolute;
+    left: 22px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: repeating-linear-gradient(to bottom, var(--sg-gold) 0, var(--sg-gold) 6px, transparent 6px, transparent 12px);
+}
+
+body.theme-sage_sourdough .sg-timeline-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    counter-increment: sg-step;
+    position: relative;
+}
+
+body.theme-sage_sourdough .sg-timeline-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--sg-sage);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 6px #ffffff;
+}
+
+body.theme-sage_sourdough .sg-timeline-num::before {
+    content: counter(sg-step);
+    color: #ffffff;
+    font-weight: 700;
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+}
+
+body.theme-sage_sourdough .sg-timeline-copy h3 {
+    color: var(--sg-forest);
+    margin-bottom: 4px;
+}
+
+body.theme-sage_sourdough .sg-timeline-copy p {
+    color: #555;
+    font-size: 0.95rem;
+}
+
+/* Reviews */
+body.theme-sage_sourdough .sg-review-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 30px auto 0 auto;
+}
+
+body.theme-sage_sourdough .sg-review-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px 28px 24px 28px;
+    max-width: 320px;
+    box-shadow: 0 12px 30px rgba(51, 68, 55, 0.1);
+    border-top: 4px solid var(--sg-gold);
+    position: relative;
+}
+
+body.theme-sage_sourdough .sg-quote-icon {
+    color: var(--sg-gold);
+    font-size: 1.8rem;
+    display: block;
+    margin-bottom: 6px;
+}
+
+body.theme-sage_sourdough .sg-review-card p {
+    font-style: italic;
+    color: #333;
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+body.theme-sage_sourdough .sg-review-card h4 {
+    color: var(--sg-forest) !important;
+    font-weight: 700;
+}
+
+/* FAQ accordion */
+body.theme-sage_sourdough .sg-accordion-item {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 18px 24px;
+    border-left: 4px solid var(--sg-sage);
+    box-shadow: 0 6px 18px rgba(51, 68, 55, 0.06);
+}
+
+body.theme-sage_sourdough .sg-accordion-item summary {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--sg-forest);
+    cursor: pointer;
+}
+
+body.theme-sage_sourdough .sg-accordion-item p {
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+/* Featured gallery */
+body.theme-sage_sourdough .sg-featured-grid .gallery-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 12px 12px 16px 12px;
+    border: 1px solid rgba(51, 68, 55, 0.08);
+}
+
+body.theme-sage_sourdough .sg-featured-grid .gallery-card-img-wrap {
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+body.theme-sage_sourdough .sg-featured-grid .gallery-card-info h4 {
+    color: var(--sg-forest);
+    font-weight: 700;
+}
+
+/* CTA banner */
+body.theme-sage_sourdough .cta-video-banner::before {
+    background: linear-gradient(135deg, rgba(51, 68, 55, 0.6) 0%, rgba(51, 68, 55, 0.4) 100%) !important;
+}
+
+body.theme-sage_sourdough .cta-video-banner h2 {
+    color: var(--sg-gold) !important;
+}
+
+body.theme-sage_sourdough .cta-video-banner p,
+body.theme-sage_sourdough .video-overlay-content h2,
+body.theme-sage_sourdough .video-overlay-content p {
+    color: #ffffff !important;
+}
+
+/* Page hero (About / Gallery) */
+body.theme-sage_sourdough .sg-page-hero {
+    text-align: center;
+    padding: 130px 25px 60px 25px;
+    background: var(--sg-cream);
+}
+
+body.theme-sage_sourdough .sg-page-hero-kicker {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--sg-sage);
+    font-weight: 800;
+    display: block;
+    margin-bottom: 10px;
+}
+
+body.theme-sage_sourdough .sg-page-hero-title {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--sg-forest);
+}
+
+/* About page — meet the baker */
+body.theme-sage_sourdough .sg-meet-baker {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+}
+
+body.theme-sage_sourdough .sg-meet-baker h2 {
+    margin-bottom: 14px;
+}
+
+body.theme-sage_sourdough .sg-meet-baker p {
+    line-height: 1.75;
+    margin-bottom: 20px;
+    color: var(--sg-forest);
+}
+
+body.theme-sage_sourdough .sg-quote-card {
+    background: var(--sg-cream);
+    border-left: 4px solid var(--sg-gold);
+    padding: 20px 24px;
+    border-radius: 10px;
+}
+
+body.theme-sage_sourdough .sg-quote-card p {
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+body.theme-sage_sourdough .sg-quote-card span {
+    font-weight: 700;
+    color: var(--sg-forest);
+    font-size: 0.9rem;
+}
+
+body.theme-sage_sourdough .sg-ingredients-list {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+}
+
+body.theme-sage_sourdough .sg-ingredient-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+body.theme-sage_sourdough .sg-icon-circle {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--sg-sage);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+body.theme-sage_sourdough .sg-ingredient-row h3 {
+    margin-bottom: 6px;
+    color: var(--sg-forest);
+}
+
+body.theme-sage_sourdough .sg-ingredient-row p {
+    font-size: 0.92rem;
+    color: #444;
+}
+
+body.theme-sage_sourdough .sg-specialties-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 26px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+body.theme-sage_sourdough .sg-specialty-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 320px;
+    text-align: left;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    border-top: 4px solid var(--sg-gold);
+}
+
+body.theme-sage_sourdough .sg-specialty-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--sg-sage);
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+/* ── Admin dashboard, themed to match ── */
+body.theme-sage_sourdough .admin-mobile-header {
+    background: #334437 !important;
+}
+
+body.theme-sage_sourdough .admin-main-content input[type="text"],
+body.theme-sage_sourdough .admin-main-content input[type="number"],
+body.theme-sage_sourdough .admin-main-content input[type="email"],
+body.theme-sage_sourdough .admin-main-content input[type="tel"],
+body.theme-sage_sourdough .admin-main-content input[type="url"],
+body.theme-sage_sourdough .admin-main-content select,
+body.theme-sage_sourdough .admin-main-content textarea {
+    border: 1.5px solid #d8d2c2 !important;
+    background-color: #ffffff !important;
+    color: #334437 !important;
+}
+
+body.theme-sage_sourdough .admin-main-content input:focus,
+body.theme-sage_sourdough .admin-main-content select:focus,
+body.theme-sage_sourdough .admin-main-content textarea:focus {
+    border-color: #4a6350 !important;
+    box-shadow: 0 0 0 4px rgba(74, 99, 80, 0.2) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-sage_sourdough .admin-main-content label {
+    color: #334437 !important;
+}
+
+body.theme-sage_sourdough .status-select:focus {
+    border-color: #4a6350;
+    box-shadow: 0 0 0 3px rgba(74, 99, 80, 0.2);
+}
+
+body.theme-sage_sourdough .btn-outline {
+    background: transparent !important;
+    border: 2px solid #4a6350 !important;
+    color: #4a6350 !important;
+}
+
+body.theme-sage_sourdough .btn-outline:hover {
+    background: #4a6350 !important;
+    color: #ffffff !important;
+}
+
+body.theme-sage_sourdough .reorder-btn {
+    background: #f4f1e8 !important;
+    border: 1px solid #d8d2c2 !important;
+    color: #334437 !important;
+}
+
+body.theme-sage_sourdough .reorder-btn:hover:not(:disabled) {
+    background: #4a6350 !important;
+    border-color: #4a6350 !important;
+    color: #ffffff !important;
+}
+
+body.theme-sage_sourdough .category-card-exact,
+body.theme-sage_sourdough .cloud-review-card,
+body.theme-sage_sourdough .category-image-frame,
+body.theme-sage_sourdough .form-builder-card,
+body.theme-sage_sourdough .order-card,
+body.theme-sage_sourdough .add-review-box,
+body.theme-sage_sourdough .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #d8d2c2;
+}
+
+body.theme-sage_sourdough .order-modal-card {
+    border-radius: 22px !important;
+    border: 2px solid #4a6350 !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(51, 68, 55, 0.25) !important;
+}
+
+body.theme-sage_sourdough .sticky-order-summary-bar {
+    background: #f4f1e8 !important;
+    border: 2px solid #4a6350 !important;
+}
+
+body.theme-sage_sourdough .product,
+body.theme-sage_sourdough .option-chip {
+    border-radius: 14px !important;
+    border: 2px solid #d8d2c2 !important;
+    background: #ffffff !important;
+    color: #334437 !important;
+}
+
+body.theme-sage_sourdough .product.selected,
+body.theme-sage_sourdough .option-chip.selected {
+    background: #4a6350 !important;
+    color: #ffffff !important;
+    border-color: #4a6350 !important;
+    box-shadow: 0 8px 20px rgba(74, 99, 80, 0.3) !important;
+}
+
+body.theme-sage_sourdough .next-btn {
+    background: #4a6350 !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 20px rgba(74, 99, 80, 0.25) !important;
+}
+
+@media (max-width: 860px) {
+    body.theme-sage_sourdough .sg-hero-inner,
+    body.theme-sage_sourdough .sg-about-row,
+    body.theme-sage_sourdough .sg-about-row-reverse,
+    body.theme-sage_sourdough .sg-meet-baker {
+        grid-template-columns: 1fr;
+    }
+
+    body.theme-sage_sourdough .sg-about-row-reverse .sg-arch-frame {
+        order: 0;
+    }
+
+    body.theme-sage_sourdough .sg-hero {
+        text-align: center;
+        padding: 100px 25px 60px 25px;
+    }
+
+    body.theme-sage_sourdough .sg-hero-media .sg-arch-frame,
+    body.theme-sage_sourdough .sg-arch-frame-sm,
+    body.theme-sage_sourdough .sg-arch-frame-md {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+}

@@ -528,7 +528,7 @@ class Tenant extends Model implements TenancyContract
     public static function getStarterThemes(): array
     {
         $all = static::getAllThemes();
-        $starterKeys = ['rustic_kitchen', 'modern_bakery', 'country_farmhouse'];
+        $starterKeys = ['rustic_kitchen', 'modern_bakery', 'country_farmhouse', 'sage_sourdough', 'cherry_bakeshop'];
         $starter = [];
         foreach ($starterKeys as $key) {
             if (isset($all[$key])) {
@@ -649,6 +649,20 @@ class Tenant extends Model implements TenancyContract
                 'subtitle' => 'Orchid purple & soft lavender, boutique product tiles, craft-shop editorial energy',
                 'preview_bg' => '#f6eefa',
                 'preview_accent' => '#8e4fa3',
+            ],
+            'sage_sourdough' => [
+                'id' => 'sage_sourdough',
+                'name' => '🌿 Sage & Sourdough',
+                'subtitle' => 'Deep sage green & warm cream, arch-window photo frames, farm-to-table warmth',
+                'preview_bg' => '#f4f1e8',
+                'preview_accent' => '#4a6350',
+            ],
+            'cherry_bakeshop' => [
+                'id' => 'cherry_bakeshop',
+                'name' => '🍒 Cherry Bakeshop',
+                'subtitle' => 'Retro cherry red & cream, scalloped edges, vintage bakeshop charm',
+                'preview_bg' => '#fff5f0',
+                'preview_accent' => '#a0293f',
             ],
         ];
     }

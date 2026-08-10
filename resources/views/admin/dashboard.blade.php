@@ -2554,17 +2554,17 @@
                         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px;">
                             @php
                                 $themes = $tenant->getAvailableThemesForTenant();
-                                $starterThemeIds = ['rustic_kitchen', 'modern_bakery', 'country_farmhouse'];
+                                $starterThemeIds = array_keys(\App\Models\Tenant::getStarterThemes());
                                 usort($themes, fn($a, $b) => in_array($b['id'], $starterThemeIds) <=> in_array($a['id'], $starterThemeIds));
                                 $currentTheme = $tenant->theme_id ?? 'sweet_elegant';
                             @endphp
                             @foreach($themes as $t)
                                 @php
-                                    $isStarterTheme = in_array($t['id'], ['rustic_kitchen', 'modern_bakery', 'country_farmhouse']);
+                                    $isStarterTheme = in_array($t['id'], $starterThemeIds);
                                     $isLockedTheme = ($tenant->plan_tier !== 'pro') && !$isStarterTheme;
                                 @endphp
-                                <div class="bakery-theme-card" 
-                                     onclick="{{ $isLockedTheme ? "alert('Upgrade to Pro ($29/mo) to unlock this premium theme!')" : "selectBakeryTheme('".$t['id']."', this)" }}" 
+                                <div class="bakery-theme-card"
+                                     onclick="{{ $isLockedTheme ? "alert('Upgrade to Pro ($29/mo) to unlock this premium theme!')" : "selectBakeryTheme('".$t['id']."', this, ".\Illuminate\Support\Js::from($t['name']).")" }}"
                                      style="border:{{ $currentTheme === $t['id'] ? '3px solid var(--primary)' : '2px solid #ddd' }}; background:white; padding:22px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
                                     <div style="height:80px; background:{{ $t['preview_bg'] }}; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; border:1px solid #eee;">
                                         <span style="font-weight:800; color:{{ $t['preview_accent'] }}; font-size:1.1rem;">{{ $t['name'] }}</span>

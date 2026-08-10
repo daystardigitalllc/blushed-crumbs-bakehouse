@@ -61,7 +61,9 @@ body {
 .site-header:has(+ #storefront-view .midnight-hero),
 .site-header:has(+ #storefront-view .petal-hero),
 .site-header:has(+ #storefront-view .sw-hero),
-.site-header:has(+ #storefront-view .db-hero) {
+.site-header:has(+ #storefront-view .db-hero),
+.site-header:has(+ #storefront-view .sg-hero),
+.site-header:has(+ #storefront-view .cb-hero) {
     position: absolute;
     top: 0;
     left: 0;
@@ -710,6 +712,28 @@ body.theme-lavender_bloom {
     --footer-link-color: #f3d9ff;
     --footer-link-font: 'Poppins', sans-serif;
     --footer-link-size: 1rem;
+    --footer-link-weight: 600;
+}
+
+/* ─── Sage & Sourdough (deep sage green & warm cream) ─── */
+body.theme-sage_sourdough {
+    --footer-bg: #263630;
+    --footer-text: #f4f1e8;
+    --footer-border-top: 4px solid #e8c079;
+    --footer-link-color: #e8c079;
+    --footer-link-font: 'Fraunces', serif;
+    --footer-link-size: 1.05rem;
+    --footer-link-weight: 600;
+}
+
+/* ─── Cherry Bakeshop (retro cherry red & cream) ─── */
+body.theme-cherry_bakeshop {
+    --footer-bg: #4a1420;
+    --footer-text: #fff5f0;
+    --footer-border-top: 4px dashed #f6c9a0;
+    --footer-link-color: #f6c9a0;
+    --footer-link-font: 'Fredoka', sans-serif;
+    --footer-link-size: 1.05rem;
     --footer-link-weight: 600;
 }
 

@@ -1,0 +1,756 @@
+/* 🍒 CHERRY BAKESHOP THEME — retro cherry red & cream, scalloped edges,
+   vintage bakeshop charm. Starter/free tier (see Tenant::getStarterThemes()). */
+body.theme-cherry_bakeshop {
+    --primary: #a0293f;
+    --primary-hover: #7f2032;
+    --pink-bg: #fff5f0;
+    --dark-text: #4a2833;
+    --theme-heading-font: 'Fredoka', sans-serif;
+    --theme-card-bg: #ffffff;
+    --theme-section-bg: #fff5f0;
+    --theme-accent-bg: #4a1420;
+    --cb-cherry: #a0293f;
+    --cb-cherry-dark: #7f2032;
+    --cb-cream: #fff5f0;
+    --cb-ink: #4a2833;
+    --cb-peach: #f6c9a0;
+    font-family: 'Nunito', sans-serif;
+    background-color: #ffffff;
+}
+
+body.theme-cherry_bakeshop h1,
+body.theme-cherry_bakeshop h2,
+body.theme-cherry_bakeshop h3,
+body.theme-cherry_bakeshop .section-title-script,
+body.theme-cherry_bakeshop .whimsical-col-right h2 {
+    font-family: 'Fredoka', sans-serif !important;
+    font-weight: 600 !important;
+    color: var(--cb-ink) !important;
+    letter-spacing: 0;
+}
+
+body.theme-cherry_bakeshop .subheading {
+    font-family: 'Nunito', sans-serif !important;
+    font-weight: 800 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--cb-cherry) !important;
+    font-size: 0.85rem !important;
+}
+
+body.theme-cherry_bakeshop .cb-kicker {
+    display: inline-block;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    color: var(--cb-cherry);
+    margin-bottom: 10px;
+}
+
+body.theme-cherry_bakeshop .cb-kicker-light {
+    color: var(--cb-peach);
+}
+
+body.theme-cherry_bakeshop .hero-cloud-elementor-top,
+body.theme-cherry_bakeshop .hero-cloud-elementor-bottom,
+body.theme-cherry_bakeshop .raining-cake {
+    display: none !important;
+}
+
+body.theme-cherry_bakeshop .site-header {
+    background: transparent !important;
+}
+
+body.theme-cherry_bakeshop .icon,
+body.theme-cherry_bakeshop .cb-icon {
+    color: var(--cb-cherry);
+}
+
+body.theme-cherry_bakeshop .cb-logo-stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--cb-cherry);
+}
+
+body.theme-cherry_bakeshop .btn-primary,
+body.theme-cherry_bakeshop .nav-order-btn {
+    background: var(--cb-cherry) !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    box-shadow: 0 8px 20px rgba(160, 41, 63, 0.3) !important;
+}
+
+body.theme-cherry_bakeshop .btn-primary:hover,
+body.theme-cherry_bakeshop .nav-order-btn:hover {
+    background: var(--cb-cherry-dark) !important;
+}
+
+body.theme-cherry_bakeshop .hero-buttons .btn-secondary {
+    background: transparent !important;
+    color: var(--cb-cherry) !important;
+    border: 2px solid var(--cb-cherry) !important;
+    box-shadow: none !important;
+    border-radius: 30px !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+}
+
+body.theme-cherry_bakeshop .hero-buttons .btn-secondary:hover {
+    background: var(--cb-cherry) !important;
+    color: #ffffff !important;
+}
+
+/* ── Section band system ── */
+body.theme-cherry_bakeshop .cb-section {
+    padding: 90px 25px;
+}
+
+body.theme-cherry_bakeshop .cb-band-white {
+    background: #ffffff;
+}
+
+body.theme-cherry_bakeshop .cb-band-cream {
+    background: var(--cb-cream);
+}
+
+body.theme-cherry_bakeshop .cb-band-cherry {
+    background: var(--cb-cherry);
+}
+
+body.theme-cherry_bakeshop .cb-band-cherry h2,
+body.theme-cherry_bakeshop .cb-band-cherry h3,
+body.theme-cherry_bakeshop .cb-band-cherry p {
+    color: #ffffff !important;
+}
+
+body.theme-cherry_bakeshop .cb-section-title {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    color: var(--cb-ink);
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+body.theme-cherry_bakeshop .cb-text-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--cb-cherry);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Signature shape — thick cream "badge" frame photo with retro ribbon corner */
+body.theme-cherry_bakeshop .cb-badge-frame {
+    overflow: hidden;
+    border-radius: 22px;
+    box-shadow: 0 25px 55px rgba(160, 41, 63, 0.25);
+    border: 8px solid #ffffff;
+    outline: 3px solid var(--cb-cherry);
+    outline-offset: -3px;
+    background: var(--cb-cream);
+    position: relative;
+}
+
+body.theme-cherry_bakeshop .cb-badge-frame img,
+body.theme-cherry_bakeshop .cb-badge-frame video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+body.theme-cherry_bakeshop .cb-media-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cb-cream);
+    color: var(--cb-cherry);
+}
+
+/* Signature shape — scalloped strip divider (repeating radial gradient) */
+body.theme-cherry_bakeshop .cb-scallop-divider {
+    height: 24px;
+    width: 100%;
+    background: radial-gradient(circle at 12px 0, transparent 12px, var(--cb-cream) 12.5px) 0 -12px / 24px 24px repeat-x;
+}
+
+body.theme-cherry_bakeshop .cb-scallop-divider-top {
+    height: 24px;
+    background: radial-gradient(circle at 12px 24px, transparent 12px, var(--cb-cherry) 12.5px) 0 12px / 24px 24px repeat-x;
+    position: relative;
+    z-index: 2;
+}
+
+/* Hero */
+body.theme-cherry_bakeshop .cb-hero {
+    background: var(--cb-cream);
+    background-image: radial-gradient(rgba(160,41,63,0.08) 2px, transparent 2px);
+    background-size: 26px 26px;
+    padding: 130px 40px 0 40px;
+    overflow: hidden;
+}
+
+body.theme-cherry_bakeshop .cb-hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding-bottom: 90px;
+}
+
+body.theme-cherry_bakeshop .cb-hero-copy h1 {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.15;
+    margin-bottom: 30px;
+}
+
+body.theme-cherry_bakeshop .cb-hero-media {
+    position: relative;
+}
+
+body.theme-cherry_bakeshop .cb-hero-media .cb-badge-frame {
+    aspect-ratio: 1;
+    max-width: 400px;
+    margin: 0 auto;
+    transform: rotate(-2deg);
+}
+
+body.theme-cherry_bakeshop .cb-ribbon {
+    position: absolute;
+    top: 10px;
+    right: calc(50% - 200px + 10px);
+    background: var(--cb-cherry);
+    color: #ffffff;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 8px 18px;
+    border-radius: 999px;
+    box-shadow: 0 8px 18px rgba(160, 41, 63, 0.35);
+    transform: rotate(8deg);
+}
+
+/* Badge photo + copy alternating rows (About / Highlights) */
+body.theme-cherry_bakeshop .cb-about-row {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+}
+
+body.theme-cherry_bakeshop .cb-about-row-reverse {
+    grid-template-columns: 1.2fr 0.8fr;
+}
+
+body.theme-cherry_bakeshop .cb-about-row-reverse .cb-badge-frame {
+    order: 2;
+}
+
+body.theme-cherry_bakeshop .cb-badge-frame-sm {
+    aspect-ratio: 1;
+}
+
+body.theme-cherry_bakeshop .cb-badge-frame-md {
+    aspect-ratio: 1;
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+body.theme-cherry_bakeshop .cb-about-copy p {
+    line-height: 1.75;
+    margin-bottom: 10px;
+    color: var(--cb-ink);
+}
+
+body.theme-cherry_bakeshop .cb-highlight-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+body.theme-cherry_bakeshop .cb-highlight-list li {
+    color: var(--cb-ink);
+    line-height: 1.6;
+}
+
+body.theme-cherry_bakeshop .cb-highlight-emoji {
+    font-size: 1.2rem;
+    margin-right: 4px;
+}
+
+/* Categories shelf row */
+body.theme-cherry_bakeshop .cb-shelf-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 34px;
+    margin-top: 10px;
+}
+
+body.theme-cherry_bakeshop .cb-shelf-card {
+    text-align: center;
+    max-width: 260px;
+}
+
+body.theme-cherry_bakeshop .cb-shelf-frame {
+    width: 190px;
+    height: 190px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 0 auto 16px auto;
+    border: 5px solid #ffffff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.theme-cherry_bakeshop .cb-shelf-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.theme-cherry_bakeshop .cb-shelf-card h3 {
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+body.theme-cherry_bakeshop .cb-shelf-card p {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+
+/* Whimsical section — polka-dot cream band */
+body.theme-cherry_bakeshop .cb-whimsical {
+    background-color: var(--cb-cream) !important;
+    background-image: radial-gradient(rgba(160,41,63,0.1) 2px, transparent 2px);
+    background-size: 26px 26px;
+    color: var(--cb-ink) !important;
+}
+
+body.theme-cherry_bakeshop .cb-whimsical h2 {
+    color: var(--cb-cherry) !important;
+}
+
+body.theme-cherry_bakeshop .cb-whimsical .whimsical-bullet-list li {
+    color: var(--cb-ink) !important;
+}
+
+body.theme-cherry_bakeshop .cb-badge-frame-md img {
+    width: 100%;
+    border-radius: inherit;
+}
+
+/* How It Works — numbered rows with cherry circle */
+body.theme-cherry_bakeshop .cb-steps-list {
+    max-width: 750px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    counter-reset: cb-step;
+}
+
+body.theme-cherry_bakeshop .cb-step-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    counter-increment: cb-step;
+}
+
+body.theme-cherry_bakeshop .cb-step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--cb-cherry);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--cb-peach);
+}
+
+body.theme-cherry_bakeshop .cb-step-num::before {
+    content: counter(cb-step);
+    color: #ffffff;
+    font-weight: 700;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.2rem;
+}
+
+body.theme-cherry_bakeshop .cb-step-copy h3 {
+    color: var(--cb-ink);
+    margin-bottom: 4px;
+}
+
+body.theme-cherry_bakeshop .cb-step-copy p {
+    color: #555;
+    font-size: 0.95rem;
+}
+
+/* Reviews — speech-bubble cards */
+body.theme-cherry_bakeshop .cb-review-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 28px;
+    max-width: 1100px;
+    margin: 30px auto 0 auto;
+}
+
+body.theme-cherry_bakeshop .cb-review-card {
+    background: #ffffff;
+    border-radius: 20px 20px 20px 4px;
+    padding: 26px 26px 22px 26px;
+    max-width: 320px;
+    box-shadow: 0 12px 30px rgba(160, 41, 63, 0.12);
+    border: 2px solid var(--cb-peach);
+}
+
+body.theme-cherry_bakeshop .cb-review-card p {
+    font-style: italic;
+    color: #333;
+    margin-bottom: 14px;
+    line-height: 1.6;
+}
+
+body.theme-cherry_bakeshop .cb-review-card h4 {
+    color: var(--cb-cherry) !important;
+    font-weight: 700;
+}
+
+/* FAQ */
+body.theme-cherry_bakeshop .cb-faq-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px 24px;
+    border-left: 5px solid var(--cb-cherry);
+    box-shadow: 0 6px 18px rgba(160, 41, 63, 0.08);
+}
+
+body.theme-cherry_bakeshop .cb-faq-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--cb-cherry);
+    margin-bottom: 6px;
+}
+
+body.theme-cherry_bakeshop .cb-faq-card p {
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Featured gallery */
+body.theme-cherry_bakeshop .cb-featured-grid .gallery-card {
+    background: var(--cb-cream);
+    border-radius: 18px;
+    padding: 14px 14px 18px 14px;
+}
+
+body.theme-cherry_bakeshop .cb-featured-grid .gallery-card-img-wrap {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+body.theme-cherry_bakeshop .cb-featured-grid .gallery-card-info h4 {
+    color: var(--cb-cherry);
+    font-weight: 700;
+}
+
+/* CTA banner */
+body.theme-cherry_bakeshop .cb-cta-banner {
+    padding: 0 !important;
+}
+
+body.theme-cherry_bakeshop .cta-video-banner::before {
+    background: linear-gradient(135deg, rgba(160, 41, 63, 0.5) 0%, rgba(160, 41, 63, 0.3) 100%) !important;
+}
+
+body.theme-cherry_bakeshop .cta-video-banner p,
+body.theme-cherry_bakeshop .video-overlay-content h2,
+body.theme-cherry_bakeshop .video-overlay-content p {
+    color: #ffffff !important;
+}
+
+/* Page hero (About / Gallery) */
+body.theme-cherry_bakeshop .cb-page-hero {
+    text-align: center;
+    padding: 130px 25px 60px 25px;
+    background: var(--cb-cream);
+    background-image: radial-gradient(rgba(160,41,63,0.08) 2px, transparent 2px);
+    background-size: 26px 26px;
+}
+
+body.theme-cherry_bakeshop .cb-page-hero-kicker {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--cb-cherry);
+    font-weight: 800;
+    display: block;
+    margin-bottom: 10px;
+}
+
+body.theme-cherry_bakeshop .cb-page-hero-title {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--cb-ink);
+}
+
+/* About page — meet the baker */
+body.theme-cherry_bakeshop .cb-meet-baker {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 60px;
+    align-items: center;
+}
+
+body.theme-cherry_bakeshop .cb-meet-baker h2 {
+    margin-bottom: 14px;
+}
+
+body.theme-cherry_bakeshop .cb-meet-baker p {
+    line-height: 1.75;
+    margin-bottom: 20px;
+    color: var(--cb-ink);
+}
+
+body.theme-cherry_bakeshop .cb-quote-card {
+    background: var(--cb-cream);
+    border-left: 5px solid var(--cb-cherry);
+    padding: 20px 24px;
+    border-radius: 14px;
+}
+
+body.theme-cherry_bakeshop .cb-quote-card p {
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+body.theme-cherry_bakeshop .cb-quote-card span {
+    font-weight: 700;
+    color: var(--cb-cherry);
+    font-size: 0.9rem;
+}
+
+body.theme-cherry_bakeshop .cb-ingredients-list {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+}
+
+body.theme-cherry_bakeshop .cb-ingredient-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+body.theme-cherry_bakeshop .cb-icon-circle {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--cb-cherry);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+body.theme-cherry_bakeshop .cb-ingredient-row h3 {
+    margin-bottom: 6px;
+    color: var(--cb-ink);
+}
+
+body.theme-cherry_bakeshop .cb-ingredient-row p {
+    font-size: 0.92rem;
+    color: #444;
+}
+
+body.theme-cherry_bakeshop .cb-specialties-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 26px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+body.theme-cherry_bakeshop .cb-specialty-card {
+    background: #ffffff;
+    border-radius: 20px 20px 20px 4px;
+    padding: 30px;
+    max-width: 320px;
+    text-align: left;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    border: 2px solid var(--cb-peach);
+}
+
+body.theme-cherry_bakeshop .cb-specialty-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--cb-cherry);
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+/* ── Admin dashboard, themed to match ── */
+body.theme-cherry_bakeshop .admin-mobile-header {
+    background: #a0293f !important;
+}
+
+body.theme-cherry_bakeshop .admin-main-content input[type="text"],
+body.theme-cherry_bakeshop .admin-main-content input[type="number"],
+body.theme-cherry_bakeshop .admin-main-content input[type="email"],
+body.theme-cherry_bakeshop .admin-main-content input[type="tel"],
+body.theme-cherry_bakeshop .admin-main-content input[type="url"],
+body.theme-cherry_bakeshop .admin-main-content select,
+body.theme-cherry_bakeshop .admin-main-content textarea {
+    border: 1.5px solid #f0d9c8 !important;
+    background-color: #ffffff !important;
+    color: #4a2833 !important;
+}
+
+body.theme-cherry_bakeshop .admin-main-content input:focus,
+body.theme-cherry_bakeshop .admin-main-content select:focus,
+body.theme-cherry_bakeshop .admin-main-content textarea:focus {
+    border-color: #a0293f !important;
+    box-shadow: 0 0 0 4px rgba(160, 41, 63, 0.2) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-cherry_bakeshop .admin-main-content label {
+    color: #4a2833 !important;
+}
+
+body.theme-cherry_bakeshop .status-select:focus {
+    border-color: #a0293f;
+    box-shadow: 0 0 0 3px rgba(160, 41, 63, 0.2);
+}
+
+body.theme-cherry_bakeshop .btn-outline {
+    background: transparent !important;
+    border: 2px solid #a0293f !important;
+    color: #a0293f !important;
+}
+
+body.theme-cherry_bakeshop .btn-outline:hover {
+    background: #a0293f !important;
+    color: #ffffff !important;
+}
+
+body.theme-cherry_bakeshop .reorder-btn {
+    background: #fff5f0 !important;
+    border: 1px solid #f0d9c8 !important;
+    color: #4a2833 !important;
+}
+
+body.theme-cherry_bakeshop .reorder-btn:hover:not(:disabled) {
+    background: #a0293f !important;
+    border-color: #a0293f !important;
+    color: #ffffff !important;
+}
+
+body.theme-cherry_bakeshop .category-card-exact,
+body.theme-cherry_bakeshop .cloud-review-card,
+body.theme-cherry_bakeshop .category-image-frame,
+body.theme-cherry_bakeshop .form-builder-card,
+body.theme-cherry_bakeshop .order-card,
+body.theme-cherry_bakeshop .add-review-box,
+body.theme-cherry_bakeshop .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid #f0d9c8;
+}
+
+body.theme-cherry_bakeshop .order-modal-card {
+    border-radius: 26px !important;
+    border: 3px solid #a0293f !important;
+    background: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(160, 41, 63, 0.25) !important;
+}
+
+body.theme-cherry_bakeshop .sticky-order-summary-bar {
+    background: #fff5f0 !important;
+    border: 2px solid #a0293f !important;
+}
+
+body.theme-cherry_bakeshop .product,
+body.theme-cherry_bakeshop .option-chip {
+    border-radius: 20px !important;
+    border: 2px solid #f0d9c8 !important;
+    background: #ffffff !important;
+    color: #4a2833 !important;
+}
+
+body.theme-cherry_bakeshop .product.selected,
+body.theme-cherry_bakeshop .option-chip.selected {
+    background: #a0293f !important;
+    color: #ffffff !important;
+    border-color: #a0293f !important;
+    box-shadow: 0 8px 20px rgba(160, 41, 63, 0.35) !important;
+}
+
+body.theme-cherry_bakeshop .next-btn {
+    background: #a0293f !important;
+    color: #ffffff !important;
+    border-radius: 30px !important;
+    box-shadow: 0 8px 20px rgba(160, 41, 63, 0.3) !important;
+}
+
+@media (max-width: 860px) {
+    body.theme-cherry_bakeshop .cb-hero-inner,
+    body.theme-cherry_bakeshop .cb-about-row,
+    body.theme-cherry_bakeshop .cb-about-row-reverse,
+    body.theme-cherry_bakeshop .cb-meet-baker {
+        grid-template-columns: 1fr;
+    }
+
+    body.theme-cherry_bakeshop .cb-about-row-reverse .cb-badge-frame {
+        order: 0;
+    }
+
+    body.theme-cherry_bakeshop .cb-hero {
+        text-align: center;
+        padding: 100px 25px 0 25px;
+    }
+
+    body.theme-cherry_bakeshop .cb-hero-media .cb-badge-frame,
+    body.theme-cherry_bakeshop .cb-badge-frame-sm,
+    body.theme-cherry_bakeshop .cb-badge-frame-md {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    body.theme-cherry_bakeshop .cb-ribbon {
+        right: calc(50% - 150px + 10px);
+    }
+}

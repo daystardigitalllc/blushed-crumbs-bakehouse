@@ -3550,7 +3550,7 @@ function saveAdminCalendarState() {
 }
 
 // Global Bakery Theme Switcher
-window.selectBakeryTheme = function(themeId, cardEl) {
+window.selectBakeryTheme = function(themeId, cardEl, themeName) {
     document.querySelectorAll('.bakery-theme-card').forEach(c => {
         c.style.borderColor = '#ddd';
         const badge = c.querySelector('.theme-badge');
@@ -3580,7 +3580,8 @@ window.selectBakeryTheme = function(themeId, cardEl) {
             const msgEl = document.getElementById('theme-status-msg');
             if (msgEl) {
                 msgEl.style.display = 'inline-block';
-                msgEl.innerHTML = `Theme updated to <strong>${themeId.replace('_', ' ').toUpperCase()}</strong>. <a href="/" target="_blank" style="color:#e67399; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Storefront ↗</a>`;
+                const displayName = themeName || themeId.replace(/_/g, ' ').toUpperCase();
+                msgEl.innerHTML = `Theme updated to <strong>${displayName}</strong>. <a href="/" target="_blank" style="color:#e67399; font-weight:700; text-decoration:underline; margin-left:8px;">View Live Storefront ↗</a>`;
             }
         }
     })
