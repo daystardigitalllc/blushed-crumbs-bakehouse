@@ -25,9 +25,41 @@
                 <input type="text" class="ob-input" wire:model="basicsForm.hours" placeholder="Mon-Sat 9-5">
             </label>
             <label class="ob-field">
-                <span>Location</span>
+                <span>Location <span class="ob-field-optional">(short description, shown on your site)</span></span>
                 <input type="text" class="ob-input" wire:model="basicsForm.location" placeholder="City, State">
             </label>
+
+            <div class="ob-field-hint" style="margin:8px 0 -4px;">Contact details below are optional, but they power your Google listing info and a real "Contact Us" section — without them those stay blank.</div>
+            <label class="ob-field">
+                <span>Street address</span>
+                <input type="text" class="ob-input" wire:model="basicsForm.address_line1" placeholder="123 Main St">
+            </label>
+            <div class="ob-field-row">
+                <label class="ob-field">
+                    <span>City</span>
+                    <input type="text" class="ob-input" wire:model="basicsForm.city">
+                </label>
+                <label class="ob-field">
+                    <span>State</span>
+                    <input type="text" class="ob-input" wire:model="basicsForm.state" placeholder="TN">
+                </label>
+                <label class="ob-field">
+                    <span>ZIP</span>
+                    <input type="text" class="ob-input" wire:model="basicsForm.postal_code">
+                </label>
+            </div>
+            <div class="ob-field-row">
+                <label class="ob-field">
+                    <span>Phone</span>
+                    <input type="text" class="ob-input" wire:model="basicsForm.phone" placeholder="(555) 555-5555">
+                </label>
+                <label class="ob-field">
+                    <span>Public contact email</span>
+                    <input type="email" class="ob-input" wire:model="basicsForm.contact_email">
+                    @error('basicsForm.contact_email') <small class="ob-field-error">{{ $message }}</small> @enderror
+                </label>
+            </div>
+
             <label class="ob-field">
                 <span>Instagram</span>
                 <input type="text" class="ob-input" wire:model="basicsForm.instagram" placeholder="@yourbakery">
@@ -45,6 +77,20 @@
                     <img src="{{ $logo->temporaryUrl() }}" alt="Logo preview" class="ob-logo-preview">
                 @endif
             </label>
+
+            <div class="ob-field-hint" style="margin:8px 0 -4px;">Got a few real customer quotes? Add up to 3 — totally optional, but it beats an empty reviews section.</div>
+            @foreach ($reviewsForm as $i => $review)
+                <div class="ob-field-row">
+                    <label class="ob-field">
+                        <span>Customer name</span>
+                        <input type="text" class="ob-input" wire:model="reviewsForm.{{ $i }}.name" placeholder="e.g. Sarah M.">
+                    </label>
+                    <label class="ob-field" style="flex:2;">
+                        <span>Their quote</span>
+                        <input type="text" class="ob-input" wire:model="reviewsForm.{{ $i }}.quote" placeholder="What did they say?">
+                    </label>
+                </div>
+            @endforeach
 
             <button type="submit" class="ob-btn ob-btn-primary" wire:loading.attr="disabled" wire:target="saveBasics">
                 Continue
@@ -70,8 +116,14 @@
 
         <livewire:onboarding.file-grid :draft-id="$draftId" wire:key="file-grid-{{ $draftId }}" />
 
+        @if ($lowPhotoWarningAcknowledged && $this->uploadedPhotoCount < 5)
+            <div class="ob-field-hint" style="background:#fef3c7; border:1px solid #f59e0b; color:#92400e; padding:12px 16px; border-radius:10px; font-weight:500;">
+                Sites built from fewer than 5 photos tend to look sparse — the same photo ends up reused across several sections. Add a few more if you have them, or continue and add more later from your dashboard.
+            </div>
+        @endif
+
         <button type="button" class="ob-btn ob-btn-primary" wire:click="continueToAnalysis">
-            Analyze my files
+            {{ $lowPhotoWarningAcknowledged ? 'Continue anyway' : 'Analyze my files' }}
         </button>
     @elseif ($step === 'analyzing')
         <div wire:poll.visible.2s="checkProgress">

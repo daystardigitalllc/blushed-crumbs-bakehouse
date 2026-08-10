@@ -389,8 +389,34 @@ class ImportDraftJob implements ShouldQueue
             $tenant->site_content = $draft->proposed_content;
         }
 
+        $this->applyContactDetails($tenant, $draft->basics ?? []);
+
         if (!empty($draft->theme_id)) {
             $this->applyThemeChoice($tenant, $draft->theme_id);
+        }
+    }
+
+    /**
+     * Writes the baker's own typed contact info onto the real Tenant columns
+     * (used by SEO/schema.org output and NAP display) — never invented by AI,
+     * and never overwrites a value already on the tenant record.
+     */
+    private function applyContactDetails(Tenant $tenant, array $basics): void
+    {
+        $map = [
+            'phone' => 'phone',
+            'contact_email' => 'email',
+            'address_line1' => 'address_line1',
+            'city' => 'city',
+            'state' => 'state',
+            'postal_code' => 'postal_code',
+        ];
+
+        foreach ($map as $basicsKey => $tenantField) {
+            $value = trim((string) ($basics[$basicsKey] ?? ''));
+            if ($value !== '' && empty($tenant->{$tenantField})) {
+                $tenant->{$tenantField} = $value;
+            }
         }
     }
 

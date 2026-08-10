@@ -464,6 +464,18 @@ class DraftSynthesisService
             'contact_facebook' => $basics['facebook'] ?? null,
         ], fn ($v) => $v !== null && $v !== '');
 
+        // Real quotes the baker typed in on the basics step — the only source
+        // of 'reviews' content anywhere in this pipeline; Gemini never
+        // fabricates testimonials (see Tenant::getDefaultSiteContent()).
+        $realReviews = collect($basics['reviews'] ?? [])
+            ->filter(fn ($r) => trim($r['name'] ?? '') !== '' && trim($r['quote'] ?? '') !== '')
+            ->map(fn ($r) => ['name' => $r['name'], 'quote' => $r['quote'], 'stars' => 5])
+            ->values()
+            ->all();
+        if (!empty($realReviews)) {
+            $contactFromBasics['reviews'] = $realReviews;
+        }
+
         // Only let Gemini's copy override a default when it actually said
         // something — a blank/empty field from the model must never clobber
         // a perfectly good static default.

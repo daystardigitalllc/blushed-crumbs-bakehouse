@@ -209,20 +209,16 @@
                     </div>
                 </section>
             @elseif($secId === 'reviews')
+                @php
+                    $dbReviews = (isset($reviews) && count($reviews) > 0) ? $reviews : [];
+                    $aiReviews = $tenant->getSiteContent('reviews', []);
+                    $displayReviews = !empty($dbReviews) ? $dbReviews : $aiReviews;
+                @endphp
+                @if(!empty($displayReviews))
                 <!-- Customer Reviews Section -->
                 <section id="reviews" class="reviews-section">
                     <h2 class="section-title-script">What Our Customers Say</h2>
                     <div class="reviews-grid" id="public-reviews-grid">
-                        @php
-                            $defaultReviews = [
-                                ['name' => 'Sarah M.', 'quote' => 'The custom cake for our celebration was absolute perfection! Tasted even better than it looked!'],
-                                ['name' => 'Jessica & David K.', 'quote' => 'Hands down the best pastries and baked goods in town. Fresh, flavorful, and stunning presentation!'],
-                                ['name' => 'Emily R.', 'quote' => 'Ordering online was effortless and pickup was smooth. Our guests raved about the dessert table!']
-                            ];
-                            $dbReviews = (isset($reviews) && count($reviews) > 0) ? $reviews : [];
-                            $aiReviews = $tenant->getSiteContent('reviews', []);
-                            $displayReviews = !empty($dbReviews) ? $dbReviews : (!empty($aiReviews) ? $aiReviews : $defaultReviews);
-                        @endphp
                         @foreach($displayReviews as $rev)
                             <div class="cloud-review-card">
                                 <p>"{{ is_array($rev) ? ($rev['quote'] ?? $rev['text'] ?? '') : ($rev->review_text ?? '') }}"</p>
@@ -231,6 +227,7 @@
                         @endforeach
                     </div>
                 </section>
+                @endif
             @elseif($secId === 'faq')
                 <!-- FAQ & Bakery Policies Section -->
                 <section class="faq-policies-section" style="padding:70px 25px; background:#ffffff; text-align:center;">

@@ -4,7 +4,9 @@ namespace App\Livewire\Onboarding;
 
 use App\Models\Onboarding\OnboardingDraft;
 use App\Models\Onboarding\OnboardingDraftItem;
+use App\Models\Onboarding\OnboardingFile;
 use App\Models\Tenant;
+use App\Services\Onboarding\TenantMediaPath;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
@@ -19,6 +21,8 @@ class ReviewPanel extends Component
 {
     #[Locked]
     public int $draftId;
+
+    public ?int $logoJustSet = null;
 
     public function mount(int $draftId): void
     {
@@ -97,6 +101,62 @@ class ReviewPanel extends Component
         $item->save();
 
         unset($this->categories, $this->products, $this->galleryImages);
+    }
+
+    /**
+     * Lets the baker override the AI's hero-photo guess. `is_hero` is what
+     * ImportDraftJob::applyBackgroundImages() reads to pick the hero-slot
+     * image — see DraftSynthesisService::pickHero() for the AI-only path
+     * this replaces once a baker makes an explicit choice.
+     */
+    public function setHero(int $itemId): void
+    {
+        OnboardingDraftItem::where('draft_id', $this->draftId)
+            ->where('type', 'gallery_image')
+            ->get()
+            ->each(function (OnboardingDraftItem $item) use ($itemId) {
+                $payload = $item->payload_final ?? [];
+                $isTarget = $item->id === $itemId;
+                if (($payload['is_hero'] ?? false) !== $isTarget) {
+                    $payload['is_hero'] = $isTarget;
+                    $item->payload_final = $payload;
+                    $item->save();
+                }
+            });
+
+        unset($this->galleryImages);
+    }
+
+    /**
+     * Copies an already-uploaded gallery photo into the draft's private logo
+     * slot, same destination Wizard::storeLogo() writes to — so a baker can
+     * pick their logo from photos they already uploaded instead of finding
+     * and re-uploading a separate cropped file.
+     */
+    public function setLogoFromFile(int $sourceFileId): void
+    {
+        $file = OnboardingFile::where('draft_id', $this->draftId)->findOrFail($sourceFileId);
+        $draft = $this->draft();
+
+        $dir = TenantMediaPath::draftLogoDir($draft->tenant_id, $draft->id);
+        TenantMediaPath::ensureDir($dir);
+
+        foreach (glob($dir . '/*') ?: [] as $existing) {
+            @unlink($existing);
+        }
+
+        $extension = pathinfo($file->path, PATHINFO_EXTENSION) ?: 'jpg';
+        $destination = "{$dir}/logo.{$extension}";
+
+        if (!@copy($file->path, $destination)) {
+            return;
+        }
+
+        $draft->logo_path = $destination;
+        $draft->save();
+
+        unset($this->draft);
+        $this->logoJustSet = $sourceFileId;
     }
 
     public function changeTheme(string $themeId): void

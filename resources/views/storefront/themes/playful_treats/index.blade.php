@@ -215,22 +215,18 @@
                     </div>
                 </section>
             @elseif($secId === 'reviews')
+                @php
+                    $dbReviews = (isset($reviews) && count($reviews) > 0) ? $reviews : [];
+                    $aiReviews = $tenant->getSiteContent('reviews', []);
+                    $displayReviews = !empty($dbReviews) ? $dbReviews : $aiReviews;
+                @endphp
+                @if(!empty($displayReviews))
                 <!-- Reviews — swipeable carousel -->
                 <section id="reviews" class="reviews-section">
                     <h2 class="section-title-script">Sweet Words from Our Customers</h2>
                     <div class="playful-carousel">
                         <button type="button" class="playful-carousel-btn" aria-label="Previous reviews" onclick="document.getElementById('playful-reviews-track').scrollBy({left:-320, behavior:'smooth'})">‹</button>
                         <div class="playful-carousel-track" id="playful-reviews-track">
-                            @php
-                                $defaultReviews = [
-                                    ['name' => 'Sarah M.', 'quote' => 'The custom cake for our celebration was absolute perfection! Tasted even better than it looked!'],
-                                    ['name' => 'Jessica & David K.', 'quote' => 'Hands down the best pastries and baked goods in town. Fresh, flavorful, and stunning presentation!'],
-                                    ['name' => 'Emily R.', 'quote' => 'Ordering online was effortless and pickup was smooth. Our guests raved about the dessert table!']
-                                ];
-                                $dbReviews = (isset($reviews) && count($reviews) > 0) ? $reviews : [];
-                                $aiReviews = $tenant->getSiteContent('reviews', []);
-                                $displayReviews = !empty($dbReviews) ? $dbReviews : (!empty($aiReviews) ? $aiReviews : $defaultReviews);
-                            @endphp
                             @foreach($displayReviews as $rev)
                                 <div class="playful-review-card">
                                     <p>"{{ is_array($rev) ? ($rev['quote'] ?? $rev['text'] ?? '') : ($rev->review_text ?? '') }}"</p>
@@ -241,6 +237,7 @@
                         <button type="button" class="playful-carousel-btn" aria-label="Next reviews" onclick="document.getElementById('playful-reviews-track').scrollBy({left:320, behavior:'smooth'})">›</button>
                     </div>
                 </section>
+                @endif
             @elseif($secId === 'faq')
                 <!-- FAQ & Bakery Policies -->
                 <section class="faq-policies-section" style="padding:70px 25px; background:#ffffff; text-align:center;">

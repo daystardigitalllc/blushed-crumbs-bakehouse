@@ -62,6 +62,10 @@
 
     <section class="ob-review-section">
         <h2>Gallery ({{ $this->galleryImages->count() }})</h2>
+        <p class="ob-field-hint">Not loving the AI's pick for hero photo or logo? Set your own below.</p>
+        @if ($logoJustSet)
+            <p class="ob-field-hint" style="color:#15803d; font-weight:600;">Logo updated ✓</p>
+        @endif
         <div class="ob-gallery-grid">
             @forelse ($this->galleryImages as $image)
                 <div wire:key="gallery-{{ $image->id }}" class="ob-gallery-tile">
@@ -78,6 +82,14 @@
                     <button type="button" class="ob-btn-icon ob-gallery-remove" wire:click="rejectItem({{ $image->id }}, 'gallery_image')" aria-label="Remove photo">
                         &times;
                     </button>
+                    <div class="ob-gallery-tile-actions">
+                        @unless ($image->payload_final['is_hero'] ?? false)
+                            <button type="button" class="ob-gallery-tile-btn" wire:click="setHero({{ $image->id }})">Set as hero</button>
+                        @endunless
+                        @if ($image->source_file_id)
+                            <button type="button" class="ob-gallery-tile-btn" wire:click="setLogoFromFile({{ $image->source_file_id }})">Use as logo</button>
+                        @endif
+                    </div>
                 </div>
             @empty
                 <p class="ob-review-empty">No photos to review yet.</p>

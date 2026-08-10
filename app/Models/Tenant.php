@@ -193,11 +193,10 @@ class Tenant extends Model implements TenancyContract
                 'Quality Ingredients: Only the best goes into every batch we bake.',
                 'Small-Batch Care: Handcrafted in small batches, never mass-produced.',
             ],
-            'reviews' => [
-                ['name' => 'Sarah M.', 'quote' => 'Absolutely amazing!! The care put into my order was obvious and it tasted incredible!', 'stars' => 5],
-                ['name' => 'Emily R.', 'quote' => 'Ordered for my child\'s birthday and it was perfect. Pickup was super easy too.', 'stars' => 5],
-                ['name' => 'Jessica K.', 'quote' => 'I was truly SO surprised with how delicious everything was. Will definitely order again!', 'stars' => 5],
-            ],
+            // Deliberately empty — a fake testimonial is worse than none.
+            // Themes hide the reviews section entirely when this (and any
+            // real reviews) is empty rather than falling back to canned quotes.
+            'reviews' => [],
             'faqs' => [
                 ['q' => '📅 How far in advance should I order?', 'a' => 'We require at least 3 days advance notice for custom orders. For larger or multi-part orders, we recommend booking 2-4 weeks in advance.'],
                 ['q' => '💳 What is the deposit requirement?', 'a' => 'A deposit is required at booking to secure your date. Remaining balance is due prior to pickup or delivery.'],

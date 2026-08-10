@@ -269,6 +269,17 @@ body.ob-shell {
   color: var(--ob-color-secondary);
 }
 
+.ob-field-row {
+  display: flex;
+  gap: var(--ob-space-2);
+  flex-wrap: wrap;
+}
+
+.ob-field-row > .ob-field {
+  flex: 1;
+  min-width: 120px;
+}
+
 .ob-input {
   min-height: 44px;
   padding: 0 var(--ob-space-2);
@@ -616,6 +627,35 @@ body.ob-shell {
   color: #fff;
   min-width: 28px;
   min-height: 28px;
+}
+
+.ob-gallery-tile-actions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+}
+
+.ob-gallery-tile-btn {
+  flex: 1;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ob-color-secondary);
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 4px 2px;
+  cursor: pointer;
+  min-height: 24px;
+}
+
+.ob-gallery-tile-btn:hover {
+  background: #fff;
+  color: var(--ob-color-primary);
 }
 
 @media (max-width: 640px) {

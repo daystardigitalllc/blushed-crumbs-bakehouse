@@ -66,9 +66,28 @@ class Wizard extends Component
         'bakery_type' => '',
         'hours' => '',
         'location' => '',
+        'phone' => '',
+        'contact_email' => '',
+        'address_line1' => '',
+        'city' => '',
+        'state' => '',
+        'postal_code' => '',
         'instagram' => '',
         'facebook' => '',
         'selected_plan' => 'free',
+    ];
+
+    /**
+     * Optional real customer quotes — up to 3. Kept out of $basicsForm since
+     * it's an array-of-arrays (Livewire handles wire:model="reviewsForm.0.name"
+     * fine either way, but this keeps saveBasics()'s validation rules simpler
+     * to read). Left blank by a baker, the reviews section just doesn't
+     * render — see Tenant::getDefaultSiteContent()'s 'reviews' => [] comment.
+     */
+    public array $reviewsForm = [
+        ['name' => '', 'quote' => ''],
+        ['name' => '', 'quote' => ''],
+        ['name' => '', 'quote' => ''],
     ];
 
     /** A single logo image — Livewire's own uploader is fine here (unlike the bulk uploader, one file has no 20-file/session-lock concerns). */
@@ -101,6 +120,13 @@ class Wizard extends Component
         }
 
         $this->basicsForm = array_merge($this->basicsForm, $draft->basics ?? []);
+        if (!empty($draft->basics['reviews']) && is_array($draft->basics['reviews'])) {
+            foreach ($draft->basics['reviews'] as $i => $review) {
+                if (isset($this->reviewsForm[$i])) {
+                    $this->reviewsForm[$i] = array_merge($this->reviewsForm[$i], $review);
+                }
+            }
+        }
         $this->step = $this->stepForStatus($draft->status);
     }
 
@@ -159,14 +185,27 @@ class Wizard extends Component
             'basicsForm.bakery_type' => 'nullable|in:' . implode(',', array_keys(self::BAKERY_TYPE_OPTIONS)),
             'basicsForm.hours' => 'nullable|string|max:255',
             'basicsForm.location' => 'nullable|string|max:255',
+            'basicsForm.phone' => 'nullable|string|max:30',
+            'basicsForm.contact_email' => 'nullable|email|max:255',
+            'basicsForm.address_line1' => 'nullable|string|max:255',
+            'basicsForm.city' => 'nullable|string|max:120',
+            'basicsForm.state' => 'nullable|string|max:60',
+            'basicsForm.postal_code' => 'nullable|string|max:20',
             'basicsForm.instagram' => 'nullable|string|max:255',
             'basicsForm.facebook' => 'nullable|string|max:255',
             'basicsForm.selected_plan' => 'in:free,pro',
             'logo' => 'nullable|image|max:5120',
+            'reviewsForm.*.name' => 'nullable|string|max:100',
+            'reviewsForm.*.quote' => 'nullable|string|max:500',
         ]);
 
         $draft = $this->draft();
-        $draft->basics = $validated['basicsForm'];
+        $draft->basics = array_merge($validated['basicsForm'], [
+            'reviews' => collect($validated['reviewsForm'])
+                ->filter(fn ($r) => trim($r['name'] ?? '') !== '' && trim($r['quote'] ?? '') !== '')
+                ->values()
+                ->all(),
+        ]);
         $draft->last_activity_at = now();
 
         if ($this->logo) {
@@ -212,10 +251,29 @@ class Wizard extends Component
         return $destination;
     }
 
+    /** Soft floor, not enforced — see continueToAnalysis()'s low-photo nudge. */
+    private const MIN_RECOMMENDED_PHOTOS = 5;
+
+    public bool $lowPhotoWarningAcknowledged = false;
+
+    #[Computed]
+    public function uploadedPhotoCount(): int
+    {
+        return \App\Models\Onboarding\OnboardingFile::where('draft_id', $this->draftId)
+            ->where('kind', 'image')
+            ->count();
+    }
+
     public function continueToAnalysis(): void
     {
         if ($this->draft()->status === 'ready_for_review') {
             $this->step = 'review';
+
+            return;
+        }
+
+        if (!$this->lowPhotoWarningAcknowledged && $this->uploadedPhotoCount() < self::MIN_RECOMMENDED_PHOTOS) {
+            $this->lowPhotoWarningAcknowledged = true; // next click proceeds regardless
 
             return;
         }
