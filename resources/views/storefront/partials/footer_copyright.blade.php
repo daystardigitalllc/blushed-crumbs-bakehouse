@@ -1,0 +1,3 @@
+{{-- Shared by every theme's footer so the Pro branding-removal gate below
+     lives in exactly one place instead of 50 duplicated copyright lines. --}}
+<p class="copyright-text">Copyright &copy; {{ now()->year }} {{ $tenant->name ?? 'Bakery' }} | <a href="{{ route('legal.index') }}" class="footer-link">Legal Hub</a> &middot; <a href="{{ route('storefront.privacy') }}" class="footer-link">Privacy</a> &middot; <a href="{{ route('storefront.terms') }}" class="footer-link">Terms</a>@if(($tenant->plan_tier ?? 'free') !== 'pro') | Powered by <a href="https://doughmain.pro" target="_blank" class="footer-link footer-brand-link">Doughmain.pro</a>@endif</p>

@@ -99,4 +99,19 @@ class NewThemeRenderTest extends TestCase
             'cherry_bakeshop' => ['cherry_bakeshop'],
         ];
     }
+
+    public function test_pro_branding_removal_gate(): void
+    {
+        $free = $this->tenantWithTheme('sage_sourdough', 'free');
+        $pro = $this->tenantWithTheme('cherry_bakeshop', 'pro');
+
+        $freeResponse = $this->get("/?bakery={$free->subdomain}");
+        $freeResponse->assertStatus(200);
+        $freeResponse->assertSee('Powered by');
+        $freeResponse->assertSee('Doughmain.pro', false);
+
+        $proResponse = $this->get("/?bakery={$pro->subdomain}");
+        $proResponse->assertStatus(200);
+        $proResponse->assertDontSee('Powered by');
+    }
 }
