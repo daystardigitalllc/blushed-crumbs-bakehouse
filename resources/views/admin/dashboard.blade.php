@@ -1501,18 +1501,24 @@
                     <!-- RIGHT COLUMN: Real-Time Mobile Preview Drawer -->
                     <div class="form-builder-right-col" style="position: sticky; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%;">
                         
-                        <div style="font-weight: 700; font-size: 0.85rem; color: #5c1d37; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
-                            <span>📱 Storefront Form Preview</span>
-                            <span style="background: #e67399; color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; text-transform: none; font-weight: 800;">Real-Time</span>
+                        <div style="width:100%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <div style="font-weight: 700; font-size: 0.85rem; color: #5c1d37; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
+                                <span>Storefront Form Preview</span>
+                                <span style="background: #e67399; color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; text-transform: none; font-weight: 800;">Real-Time</span>
+                            </div>
+                            <div class="preview-device-toggle">
+                                <button type="button" class="preview-device-btn active" data-device="mobile" onclick="setOrderFormPreviewDevice('mobile', this)">Mobile</button>
+                                <button type="button" class="preview-device-btn" data-device="desktop" onclick="setOrderFormPreviewDevice('desktop', this)">Desktop</button>
+                            </div>
                         </div>
 
-                        <!-- Phone Frame Mockup -->
-                        <div class="mobile-phone-frame" style="width: 100%; max-width: 320px; height: 560px; background: #ffffff; border: 12px solid #2d2419; border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column;">
+                        <!-- Phone/Desktop Frame Mockup -->
+                        <div id="order-form-preview-frame" class="mobile-phone-frame" style="width: 100%; max-width: 320px; height: 560px; background: #ffffff; border: 12px solid #2d2419; border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column; transition: max-width 0.25s ease, border-radius 0.25s ease, border-width 0.25s ease;">
                             <!-- Speaker / Notch -->
-                            <div style="width: 110px; height: 18px; background: #2d2419; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; justify-content: center; align-items: center;">
+                            <div class="order-form-preview-notch" style="width: 110px; height: 18px; background: #2d2419; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; justify-content: center; align-items: center;">
                                 <div style="width: 40px; height: 4px; background: #555; border-radius: 10px;"></div>
                             </div>
-                            
+
                             <!-- Phone screen viewport -->
                             <div class="phone-screen-viewport" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 32px 16px 24px 16px; background: #fff5f8; font-family: 'Outfit', sans-serif;">
                                 <!-- Storefront Header mockup -->
@@ -1526,9 +1532,9 @@
                                     <!-- Populated dynamically via Javascript based on window._customFields -->
                                 </div>
                             </div>
-                            
+
                             <!-- Home Bar -->
-                            <div style="height: 15px; background: #ffffff; display: flex; justify-content: center; align-items: center; border-top: 1px solid #eee;">
+                            <div class="order-form-preview-home-bar" style="height: 15px; background: #ffffff; display: flex; justify-content: center; align-items: center; border-top: 1px solid #eee;">
                                 <div style="width: 80px; height: 4px; background: #ccc; border-radius: 10px;"></div>
                             </div>
                         </div>
@@ -1549,8 +1555,10 @@
                     <p class="subtitle">Edit your homepage's text, images, and section order. Changes go live when you save.</p>
                 </div>
 
-                <div class="form-builder-card" style="border:1px solid var(--theme-section-bg, #ddd6fe);">
-                    <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
+                <div class="form-builder-workspace" id="page-builder-workspace" style="display:grid; grid-template-columns:0.8fr 1.2fr; gap:30px; align-items:start;">
+                <div class="form-builder-left-col">
+                <div class="form-builder-card" style="border:1px solid var(--theme-section-bg, #ddd6fe); padding:18px;">
+                    <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
                         <button class="btn btn-primary" onclick="saveSectionManagerForm()" style="background:var(--primary); border-color:var(--primary);">Save All Changes</button>
                     </div>
 
@@ -1569,37 +1577,37 @@
                             $bullets = data_get($siteContent, 'whimsical_bullets', []);
                         @endphp
 
-                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:10px;">
+                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:6px;">
                             @foreach($orderedSections as $secId => $sec)
                                 @php
                                     // Defensive: strips any leading emoji from section names saved to a
                                     // tenant's DB before Tenant::getDefaultSectionSettings() dropped them.
                                     $secName = trim(preg_replace('/^[^\p{L}\p{N}]+/u', '', $sec['name'] ?? $secId));
                                 @endphp
-                                <div class="section-manager-row" data-id="{{ $secId }}" style="background:white; border-radius:10px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-manager-row" data-id="{{ $secId }}" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
 
                                     <!-- ACCORDION HEADER ROW -->
-                                    <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; cursor:pointer; background:#fafafa; user-select:none;">
-                                        <div style="display:flex; align-items:center; gap:12px;">
-                                            <span class="drag-handle" style="cursor:grab; font-weight:800; color:#a1a1aa; font-size:1.1rem;" onclick="event.stopPropagation()">⠿</span>
+                                    <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; cursor:pointer; background:#fafafa; user-select:none;">
+                                        <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                                            <span class="drag-handle" style="cursor:grab; font-weight:800; color:#a1a1aa; font-size:0.9rem; flex-shrink:0;" onclick="event.stopPropagation()">⠿</span>
                                             <input type="hidden" class="section-order-input" name="sections[{{ $secId }}][order]" value="{{ $sec['order'] ?? 1 }}">
-                                            <strong style="color:#27272a; font-size:0.95rem;">{{ $secName }}</strong>
+                                            <strong style="color:#27272a; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $secName }}</strong>
                                         </div>
 
-                                        <div style="display:flex; align-items:center; gap:8px;" onclick="event.stopPropagation()">
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionUp(this)" style="padding:3px 9px; font-size:0.78rem;" aria-label="Move up">↑</button>
-                                            <button type="button" class="btn btn-sm btn-outline" onclick="moveSectionDown(this)" style="padding:3px 9px; font-size:0.78rem;" aria-label="Move down">↓</button>
-                                            <label class="toggle-switch" style="transform:scale(0.8);">
+                                        <div style="display:flex; align-items:center; gap:0; flex-shrink:0;" onclick="event.stopPropagation()">
+                                            <button type="button" class="section-move-btn" onclick="moveSectionUp(this)" aria-label="Move up" title="Move up">↑</button>
+                                            <button type="button" class="section-move-btn" onclick="moveSectionDown(this)" aria-label="Move down" title="Move down">↓</button>
+                                            <label class="toggle-switch" style="transform:scale(0.65); margin:0 -6px 0 -2px;">
                                                 <input type="hidden" name="sections[{{ $secId }}][enabled]" value="0">
                                                 <input type="checkbox" name="sections[{{ $secId }}][enabled]" value="1" {{ !empty($sec['enabled']) ? 'checked' : '' }}>
                                                 <span class="toggle-slider"></span>
                                             </label>
-                                            <span class="accordion-arrow" style="font-size:0.9rem; color:#a1a1aa; margin-left:4px; transition:transform 0.2s ease;">▾</span>
+                                            <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                         </div>
                                     </div>
 
                                     <!-- EXPANDABLE ACCORDION BODY WITH SECTION COPY & CONTENT EDITORS -->
-                                    <div class="section-accordion-body" style="display:none; padding:18px; border-top:1px solid #eee; background:#ffffff;">
+                                    <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
                                         @if($secId === 'hero')
                                             <div style="margin-bottom:12px; padding:12px; border-radius:10px; border:1px solid #eee;">
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Background (Image or Video)</label>
@@ -1737,13 +1745,15 @@
                                                 <input type="text" name="marquee_text" value="{{ data_get($siteContent, 'marquee_text', 'Custom Cakes') }}" placeholder="e.g. Fresh Sourdough" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
                                                 <span style="font-size:0.75rem; color:#888;">The repeating scrolling text banner shown on the homepage.</span>
                                             </div>
-                                            <div style="display:flex; flex-direction:column; gap:6px;">
-                                                <label style="font-weight:600; font-size:0.82rem; color:#555;">Specialty Bullets</label>
-                                                <input type="text" name="whimsical_bullet_1" value="{{ $bullets[0] ?? '' }}" placeholder="Bullet 1..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
-                                                <input type="text" name="whimsical_bullet_2" value="{{ $bullets[1] ?? '' }}" placeholder="Bullet 2..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
-                                                <input type="text" name="whimsical_bullet_3" value="{{ $bullets[2] ?? '' }}" placeholder="Bullet 3..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
-                                                <input type="text" name="whimsical_bullet_4" value="{{ $bullets[3] ?? '' }}" placeholder="Bullet 4..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
-                                                <input type="text" name="whimsical_bullet_5" value="{{ $bullets[4] ?? '' }}" placeholder="Bullet 5..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                            <div>
+                                                <label style="font-weight:600; font-size:0.82rem; color:#555; display:block; margin-bottom:6px;">Specialty Bullets</label>
+                                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                                    <input type="text" name="whimsical_bullet_1" value="{{ $bullets[0] ?? '' }}" placeholder="Bullet 1..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                    <input type="text" name="whimsical_bullet_2" value="{{ $bullets[1] ?? '' }}" placeholder="Bullet 2..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                    <input type="text" name="whimsical_bullet_3" value="{{ $bullets[2] ?? '' }}" placeholder="Bullet 3..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                    <input type="text" name="whimsical_bullet_4" value="{{ $bullets[3] ?? '' }}" placeholder="Bullet 4..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                    <input type="text" name="whimsical_bullet_5" value="{{ $bullets[4] ?? '' }}" placeholder="Bullet 5..." style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
                                             </div>
 
                                         @elseif($secId === 'promo_video')
@@ -1876,6 +1886,34 @@
                             @endforeach
                         </div>
                     </form>
+                </div>
+                </div>
+
+                <!-- LIVE PREVIEW PANEL -->
+                <div class="form-builder-right-col" style="position:sticky; top:20px;">
+                    <div class="form-builder-card" style="padding:16px; border:1px solid var(--theme-section-bg, #ddd6fe);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <strong style="font-size:0.9rem; color:#27272a;">Preview</strong>
+                                <span id="page-builder-preview-status" style="display:none; font-size:0.74rem; color:#a855f7; font-weight:600;">Updating preview…</span>
+                            </div>
+                            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                <div class="preview-device-toggle">
+                                    <button type="button" class="preview-device-btn active" data-device="mobile" onclick="setPreviewDevice('mobile', this)">Mobile</button>
+                                    <button type="button" class="preview-device-btn" data-device="desktop" onclick="setPreviewDevice('desktop', this)">Desktop</button>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline" onclick="refreshPageBuilderPreview()" title="Discard draft preview and show what's actually live" style="padding:4px 10px; font-size:0.78rem;">↻ Show Live</button>
+                                <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-sm btn-outline" title="Open the live site in a new tab" style="padding:4px 10px; font-size:0.78rem;">Open ↗</a>
+                            </div>
+                        </div>
+                        <div id="page-builder-preview-wrapper" style="border:8px solid #27272a; border-radius:18px; overflow:hidden; background:#27272a;">
+                            <div id="page-builder-preview-scale-box" style="width:100%; height:640px; overflow:hidden; position:relative; background:#fff;">
+                                <iframe id="page-builder-preview-iframe" src="{{ $tenant->publicUrl() }}" title="Storefront preview" style="width:100%; height:100%; border:0; display:block; background:#fff; transform-origin:top left;"></iframe>
+                            </div>
+                        </div>
+                        <p style="font-size:0.76rem; color:#999; margin-top:8px; margin-bottom:0;">Shows your unsaved edits as you type — nothing here is public until you click <strong>Save All Changes</strong>. Use <strong>Show Live</strong> to see what's actually published right now.</p>
+                    </div>
+                </div>
                 </div>
             </div>
 
@@ -2078,59 +2116,61 @@
                     </form>
                 </div>
 
-                <div class="form-builder-card">
-                    <h4>Upload Photo From Device</h4>
-                    <form id="add-gallery-form" action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:18px;">
-                        @csrf
-                        <div>
-                            <label>Gallery Category</label>
-                            <select id="gal-category" name="category">
-                                @foreach($galleryCategories as $cat)
-                                    <option value="{{ $cat }}">{{ $cat }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- DEVICE FILE PICKER & DROPZONE -->
-                        <div>
-                            <label>Select Image Files From Your Device</label>
-                            <div id="gal-device-dropzone" style="border:2px dashed var(--primary); background:var(--theme-section-bg, #fff7fa); padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
-                                <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photos from device or drag images here</p>
-                                <span style="font-size:12px; color:#888;">Select multiple at once — Supports JPG, PNG, WEBP, GIF (Up to 10MB each)</span>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px;">
+                    <div class="form-builder-card">
+                        <h4>Upload Photo From Device</h4>
+                        <form id="add-gallery-form" action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:18px;">
+                            @csrf
+                            <div>
+                                <label>Gallery Category</label>
+                                <select id="gal-category" name="category">
+                                    @foreach($galleryCategories as $cat)
+                                        <option value="{{ $cat }}">{{ $cat }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <input type="file" id="gal-image-file" name="images[]" accept="image/*" multiple style="display:none;" required>
-                        </div>
 
-                        <!-- LIVE PREVIEW CONTAINER -->
-                        <div id="gal-upload-preview" style="display:none;">
-                            <div id="gal-preview-grid" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;"></div>
-                            <p style="font-weight:700; color:#28a745; margin-top:10px; font-size:0.9rem; text-align:center;" id="gal-preview-status">Photos ready for publish</p>
-                        </div>
-
-                        <button type="submit" id="gal-submit-btn" class="btn btn-primary" style="padding:14px;">Publish Photos to Live Gallery</button>
-                    </form>
-                </div>
-
-                <div class="form-builder-card">
-                    <h4>Current Published Gallery Photos</h4>
-                    <div id="admin-gallery-list">
-                        @foreach($gallery as $item)
-                            <div class="admin-gallery-item-row" data-id="{{ $item->id }}" style="display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-                                <div style="display:flex; align-items:center; gap:15px;">
-                                    @php $src = $item->image_url ?? $item->image_path; @endphp
-                                    <img src="{{ asset($src) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
-                                    <select class="gallery-item-category-select" onchange="updateGalleryItemCategory({{ $item->id }}, this)" style="padding:7px 10px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem; font-weight:600; color:var(--primary);">
-                                        @foreach($galleryCategories as $cat)
-                                            <option value="{{ $cat }}" {{ $item->category === $cat ? 'selected' : '' }}>{{ $cat }}</option>
-                                        @endforeach
-                                        @if(!in_array($item->category, $galleryCategories, true))
-                                            <option value="{{ $item->category }}" selected>{{ $item->category }} (removed)</option>
-                                        @endif
-                                    </select>
+                            <!-- DEVICE FILE PICKER & DROPZONE -->
+                            <div>
+                                <label>Select Image Files From Your Device</label>
+                                <div id="gal-device-dropzone" style="border:2px dashed var(--primary); background:var(--theme-section-bg, #fff7fa); padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
+                                    <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photos from device or drag images here</p>
+                                    <span style="font-size:12px; color:#888;">Select multiple at once — Supports JPG, PNG, WEBP, GIF (Up to 10MB each)</span>
                                 </div>
-                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
+                                <input type="file" id="gal-image-file" name="images[]" accept="image/*" multiple style="display:none;" required>
                             </div>
-                        @endforeach
+
+                            <!-- LIVE PREVIEW CONTAINER -->
+                            <div id="gal-upload-preview" style="display:none;">
+                                <div id="gal-preview-grid" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;"></div>
+                                <p style="font-weight:700; color:#28a745; margin-top:10px; font-size:0.9rem; text-align:center;" id="gal-preview-status">Photos ready for publish</p>
+                            </div>
+
+                            <button type="submit" id="gal-submit-btn" class="btn btn-primary" style="padding:14px;">Publish Photos to Live Gallery</button>
+                        </form>
+                    </div>
+
+                    <div class="form-builder-card">
+                        <h4>Current Published Gallery Photos</h4>
+                        <div id="admin-gallery-list">
+                            @foreach($gallery as $item)
+                                <div class="admin-gallery-item-row" data-id="{{ $item->id }}" style="display:flex; align-items:center; justify-content:space-between; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+                                    <div style="display:flex; align-items:center; gap:15px;">
+                                        @php $src = $item->image_url ?? $item->image_path; @endphp
+                                        <img src="{{ asset($src) }}" style="width:55px; height:55px; object-fit:cover; border-radius:10px;">
+                                        <select class="gallery-item-category-select" onchange="updateGalleryItemCategory({{ $item->id }}, this)" style="padding:7px 10px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem; font-weight:600; color:var(--primary);">
+                                            @foreach($galleryCategories as $cat)
+                                                <option value="{{ $cat }}" {{ $item->category === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                                            @endforeach
+                                            @if(!in_array($item->category, $galleryCategories, true))
+                                                <option value="{{ $item->category }}" selected>{{ $item->category }} (removed)</option>
+                                            @endif
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2248,42 +2288,44 @@
                     <p class="subtitle">Manage reviews and testimonials shown on your storefront.</p>
                 </div>
 
-                <!-- ADD NEW REVIEW CARD -->
-                <div class="form-builder-card" style="margin-bottom:20px; border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                    <h4 style="color:#5c1d37; margin-bottom:12px;">Add New Client Review</h4>
-                    <form id="add-review-form" style="display:flex; flex-direction:column; gap:12px;">
-                        <div>
-                            <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Client Name</label>
-                            <input type="text" id="rev-client-name" class="form-control" placeholder="e.g. Lynne Escue" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                        </div>
-                        <div>
-                            <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Review Text</label>
-                            <textarea id="rev-text" class="form-control" placeholder="Paste client review text here..." required style="width:100%; height:90px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Publish Review to Storefront</button>
-                    </form>
-                </div>
-
-                <!-- PUBLISHED REVIEWS LIST -->
-                <div class="form-builder-card">
-                    <h4>Published Reviews</h4>
-                    <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Currently live on your storefront:</p>
-
-                    <div id="admin-reviews-list" style="display:flex; flex-direction:column; gap:12px;">
-                        @forelse($reviews as $rev)
-                            <div class="review-item-row" data-id="{{ $rev->id }}" style="background:white; padding:16px; border-radius:12px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:flex-start; gap:15px;">
-                                <div>
-                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                                        <strong style="color:#5c1d37; font-size:1rem;">{{ $rev->client_name }}</strong>
-                                        <span style="color:#ffc107; font-size:0.9rem;">★★★★★</span>
-                                    </div>
-                                    <p style="font-size:0.9rem; color:#555; margin:0; line-height:1.5;">"{{ $rev->review_text }}"</p>
-                                </div>
-                                <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteReview({{ $rev->id }}, this)">Delete</button>
+                <div class="reviews-tab-grid" style="display:grid; grid-template-columns:minmax(280px, 380px) 1fr; gap:20px; align-items:start;">
+                    <!-- ADD NEW REVIEW CARD -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
+                        <h4 style="color:#5c1d37; margin-bottom:12px;">Add New Client Review</h4>
+                        <form id="add-review-form" style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Client Name</label>
+                                <input type="text" id="rev-client-name" class="form-control" placeholder="e.g. Lynne Escue" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
                             </div>
-                        @empty
-                            <p style="color:#888; text-align:center; padding:20px;">No reviews added yet. Use the form above to publish client reviews!</p>
-                        @endforelse
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Review Text</label>
+                                <textarea id="rev-text" class="form-control" placeholder="Paste client review text here..." required style="width:100%; height:90px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Publish Review to Storefront</button>
+                        </form>
+                    </div>
+
+                    <!-- PUBLISHED REVIEWS LIST -->
+                    <div class="form-builder-card">
+                        <h4>Published Reviews</h4>
+                        <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Currently live on your storefront:</p>
+
+                        <div id="admin-reviews-list" style="display:flex; flex-direction:column; gap:12px;">
+                            @forelse($reviews as $rev)
+                                <div class="review-item-row" data-id="{{ $rev->id }}" style="background:white; padding:16px; border-radius:12px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:flex-start; gap:15px;">
+                                    <div>
+                                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                                            <strong style="color:#5c1d37; font-size:1rem;">{{ $rev->client_name }}</strong>
+                                            <span style="color:#ffc107; font-size:0.9rem;">★★★★★</span>
+                                        </div>
+                                        <p style="font-size:0.9rem; color:#555; margin:0; line-height:1.5;">"{{ $rev->review_text }}"</p>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteReview({{ $rev->id }}, this)">Delete</button>
+                                </div>
+                            @empty
+                                <p style="color:#888; text-align:center; padding:20px;">No reviews added yet. Use the form above to publish client reviews!</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2709,23 +2751,6 @@
                             @if(session('success'))
                                 <div style="margin-top:10px; color:#059669; font-size:0.9rem; font-weight:600; text-align:center;">{{ session('success') }}</div>
                             @endif
-                        </form>
-                    </div>
-
-                    <!-- BAKER SUPPORT & CUSTOM CODE REQUESTS CARD -->
-                    <div class="form-builder-card" style="margin-bottom:20px; border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff);">
-                        <h4 style="color:var(--dark-text); margin-bottom:4px;">Support &amp; Custom Code Requests</h4>
-                        <p style="font-size:0.88rem; color:#666; margin-bottom:14px;">Request custom features, theme tweaks, or code assistance (Pro Tier perk).</p>
-                        <form id="support-request-form" style="display:flex; flex-direction:column; gap:12px;">
-                            <div>
-                                <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Subject</label>
-                                <input type="text" class="form-control" placeholder="e.g. Custom theme tweak request" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                            </div>
-                            <div>
-                                <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text); display:block; margin-bottom:4px;">Description</label>
-                                <textarea class="form-control" placeholder="Describe custom code or support request..." required style="width:100%; height:100px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary" style="background:var(--primary); border-color:var(--primary); align-self:flex-start;">Send Support Request</button>
                         </form>
                     </div>
 
@@ -3606,16 +3631,17 @@
                     <p style="font-size:0.75rem; color:#999; margin:10px 0 0;">Fees and misc add to the total; discount subtracts. Leave amount at 0 to skip a row.</p>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Total Amount ($)</label>
-                    <input type="number" step="0.01" id="edit-invoice-total" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
-                    <p style="font-size:0.78rem; color:#999; margin:5px 0 0;">Auto-filled from subtotal + adjustments above — feel free to type your own final number instead.</p>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom: 15px;">
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Total Amount ($)</label>
+                        <input type="number" step="0.01" id="edit-invoice-total" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Deposit Amount ($)</label>
+                        <input type="number" step="0.01" id="edit-invoice-deposit" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                    </div>
                 </div>
-
-                <div style="margin-bottom: 15px;">
-                    <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Required Deposit Amount ($)</label>
-                    <input type="number" step="0.01" id="edit-invoice-deposit" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
-                </div>
+                <p style="font-size:0.78rem; color:#999; margin:-10px 0 15px;">Total is auto-filled from subtotal + adjustments above — feel free to type your own final number instead.</p>
 
                 <div style="margin-bottom: 20px;">
                     <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Baker Notes & Payment Instructions</label>

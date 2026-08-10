@@ -680,6 +680,168 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * Renders the real storefront theme template using whatever is currently
+     * typed into the Page Builder form -- WITHOUT persisting anything -- so the
+     * dashboard preview iframe can show unsaved edits. Field-parsing logic is
+     * intentionally kept in lockstep with saveSectionSettings() above; the only
+     * difference is the final step mutates $tenant in memory instead of calling
+     * ->update(). Never add a ->save()/->update() call to this method.
+     */
+    public function previewSectionSettings(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        $sectionsData = $request->input('sections', []);
+        $defaults = Tenant::getDefaultSectionSettings();
+
+        $updatedSections = [];
+        foreach ($defaults as $secId => $defaultSec) {
+            $incoming = $sectionsData[$secId] ?? [];
+            $updatedSections[$secId] = [
+                'id' => $secId,
+                'name' => $defaultSec['name'],
+                'enabled' => filter_var($incoming['enabled'] ?? true, FILTER_VALIDATE_BOOLEAN),
+                'order' => isset($incoming['order']) ? (float) $incoming['order'] : ($defaultSec['order'] ?? 1),
+            ];
+        }
+
+        $currentContent = $tenant->site_content ?? Tenant::getDefaultSiteContent();
+
+        $highlightsInput = $request->input('highlights', []);
+        $processedHighlights = [];
+        foreach ($highlightsInput as $hl) {
+            if (!empty($hl['title'])) {
+                $processedHighlights[] = [
+                    'icon' => $hl['icon'] ?? '🎂',
+                    'title' => $hl['title'],
+                    'desc' => $hl['desc'] ?? '',
+                ];
+            }
+        }
+
+        $howInput = $request->input('how_it_works', []);
+        $processedHow = [];
+        foreach ($howInput as $step) {
+            if (!empty($step['title'])) {
+                $processedHow[] = [
+                    'title' => $step['title'],
+                    'desc' => $step['desc'] ?? '',
+                ];
+            }
+        }
+
+        $bullets = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $bulletVal = $request->input("whimsical_bullet_$i");
+            if (!empty($bulletVal)) {
+                $bullets[] = $bulletVal;
+            }
+        }
+
+        $reviewsInput = $request->input('reviews', []);
+        $processedReviews = [];
+        foreach ($reviewsInput as $rev) {
+            if (!empty($rev['name']) && !empty($rev['quote'])) {
+                $processedReviews[] = [
+                    'name' => $rev['name'],
+                    'quote' => $rev['quote'],
+                    'stars' => isset($rev['stars']) ? (int)$rev['stars'] : 5,
+                ];
+            }
+        }
+
+        $faqsInput = $request->input('faqs', []);
+        $processedFaqs = [];
+        foreach ($faqsInput as $faq) {
+            if (!empty($faq['q']) && !empty($faq['a'])) {
+                $processedFaqs[] = [
+                    'q' => $faq['q'],
+                    'a' => $faq['a'],
+                ];
+            }
+        }
+
+        // Preview never accepts file uploads (this endpoint fires on every
+        // keystroke and must not write to disk) -- the client strips file
+        // inputs before sending, so this always reflects the existing
+        // image_url that a real upload would already have populated.
+        $categoriesInput = $request->input('categories', []);
+        $processedCategories = [];
+        foreach ($categoriesInput as $cat) {
+            if (!empty($cat['title'])) {
+                $processedCategories[] = [
+                    'title' => $cat['title'],
+                    'desc' => $cat['desc'] ?? '',
+                    'image_url' => $cat['image_url'] ?? '',
+                ];
+            }
+        }
+
+        $featuredImagesRaw = $request->input('featured_gallery_images', '[]');
+        $featuredImagesDecoded = json_decode($featuredImagesRaw, true);
+        $processedFeaturedImages = [];
+        if (is_array($featuredImagesDecoded)) {
+            foreach ($featuredImagesDecoded as $fImg) {
+                if (!empty($fImg['path'])) {
+                    $processedFeaturedImages[] = [
+                        'path' => $fImg['path'],
+                        'title' => $fImg['title'] ?? '',
+                    ];
+                }
+            }
+        }
+
+        $updatedContent = array_merge($currentContent, [
+            'hero_subheading' => $request->input('hero_subheading', $currentContent['hero_subheading'] ?? ''),
+            'hero_headline' => $request->input('hero_headline', $currentContent['hero_headline'] ?? ''),
+            'hero_cta_primary' => $request->input('hero_cta_primary', $currentContent['hero_cta_primary'] ?? ''),
+            'hero_cta_secondary' => $request->input('hero_cta_secondary', $currentContent['hero_cta_secondary'] ?? ''),
+            'hero_bg_url' => $request->input('hero_bg_url', $currentContent['hero_bg_url'] ?? ''),
+            'about_title' => $request->input('about_title', $currentContent['about_title'] ?? ''),
+            'about_bio' => $request->input('about_bio', $currentContent['about_bio'] ?? ''),
+            'categories' => !empty($processedCategories) ? $processedCategories : ($currentContent['categories'] ?? []),
+            'highlights' => !empty($processedHighlights) ? $processedHighlights : ($currentContent['highlights'] ?? []),
+            'promo_video_url' => $request->input('promo_video_url', $currentContent['promo_video_url'] ?? ''),
+            'promo_headline' => $request->input('promo_headline', $currentContent['promo_headline'] ?? ''),
+            'promo_subtext' => $request->input('promo_subtext', $currentContent['promo_subtext'] ?? ''),
+            'how_it_works' => !empty($processedHow) ? $processedHow : ($currentContent['how_it_works'] ?? []),
+            'whimsical_title' => $request->input('whimsical_title', $currentContent['whimsical_title'] ?? ''),
+            'whimsical_image_url' => $request->input('whimsical_image_url', $currentContent['whimsical_image_url'] ?? ''),
+            'whimsical_bullets' => !empty($bullets) ? $bullets : ($currentContent['whimsical_bullets'] ?? []),
+            'reviews' => !empty($processedReviews) ? $processedReviews : ($currentContent['reviews'] ?? []),
+            'faqs' => !empty($processedFaqs) ? $processedFaqs : ($currentContent['faqs'] ?? []),
+            'cta_banner_url' => $request->input('cta_banner_url', $currentContent['cta_banner_url'] ?? ''),
+            'cta_headline' => $request->input('cta_headline', $currentContent['cta_headline'] ?? ''),
+            'cta_subtext' => $request->input('cta_subtext', $currentContent['cta_subtext'] ?? ''),
+            'cta_btn_text' => $request->input('cta_btn_text', $currentContent['cta_btn_text'] ?? ''),
+            'cta_btn_action' => $request->input('cta_btn_action', $currentContent['cta_btn_action'] ?? 'order'),
+            'marquee_text' => $request->input('marquee_text', $currentContent['marquee_text'] ?? ''),
+            'featured_gallery_title' => $request->input('featured_gallery_title', $currentContent['featured_gallery_title'] ?? ''),
+            'featured_gallery_images' => $processedFeaturedImages,
+        ]);
+
+        // In-memory only -- deliberately no ->save()/->update() call.
+        $tenant->section_settings = $updatedSections;
+        $tenant->site_content = $updatedContent;
+
+        if (empty($tenant->booking_settings)) {
+            $tenant->booking_settings = [
+                'lead_time_enabled' => true,
+                'lead_time_days' => 3,
+                'recurring_closed_days' => [0, 1],
+                'blocked_dates' => [],
+            ];
+        }
+
+        $products = Product::where('tenant_id', $tenant->id)->where('is_active', true)->orderBy('sort_order')->get();
+        $maxReviews = $tenant->max_reviews_display ?? 3;
+        $reviews = Review::where('tenant_id', $tenant->id)->where('is_featured', true)->latest()->limit($maxReviews)->get();
+        $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
+
+        return view($tenant->themeView('index'), compact('tenant', 'products', 'reviews', 'gallery'));
+    }
+
     public function uploadMedia(Request $request)
     {
         $request->validate([

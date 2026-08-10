@@ -7672,6 +7672,10 @@ body.theme-sunny_whisk {
         white-space: normal !important;
     }
 
+    .reviews-tab-grid {
+        grid-template-columns: 1fr !important;
+    }
+
     .admin-main-content {
         padding: 25px 16px !important;
         width: 100% !important;
@@ -8745,6 +8749,83 @@ body.theme-sunny_whisk {
     border-color: var(--primary, #e67399) !important;
     color: #ffffff !important;
     box-shadow: 0 4px 12px rgba(230, 115, 153, 0.25) !important;
+}
+
+/* Section reorder arrows in the Page Builder accordion header -- deliberately
+   NOT .btn-outline (its padding/border/border-radius are !important, so an
+   inline style override on that class silently does nothing). Plain, minimal,
+   icon-only so the row doesn't compete visually with the section title. */
+.section-move-btn {
+    background: transparent;
+    border: none;
+    color: #a1a1aa;
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 4px 5px;
+    margin: 0;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.section-move-btn:hover {
+    color: #27272a;
+    background: #eeeeee;
+}
+
+.preview-device-toggle {
+    display: flex;
+    background: #f1f1f1;
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.preview-device-btn {
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.preview-device-btn.active {
+    background: #ffffff;
+    color: #27272a;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+/* Order Form Builder preview: desktop mode widens the phone-frame mockup and
+   drops the phone-specific chrome (notch, home bar), since a real desktop
+   order form isn't inside a handset. Unlike the Page Builder's iframe-based
+   preview, this frame renders real (unscaled) DOM content, so it's just a
+   container resize -- no scale transform involved. */
+#order-form-preview-frame.desktop-mode {
+    max-width: 480px !important;
+    height: 460px !important;
+    border-width: 3px !important;
+    border-radius: 14px !important;
+}
+
+#order-form-preview-frame.desktop-mode .order-form-preview-notch,
+#order-form-preview-frame.desktop-mode .order-form-preview-home-bar {
+    display: none;
+}
+
+#order-form-preview-frame.desktop-mode .phone-screen-viewport {
+    padding: 20px 24px !important;
+}
+
+/* Prevents an explicitly-sized iframe (used for the desktop/tablet preview
+   scale trick) from forcing its CSS Grid track to grow to fit it -- grid
+   tracks default to min-width:auto, which respects a child's intrinsic
+   content size unless overridden. Without this, switching preview modes
+   could blow the two-column layout out past the page edge. */
+.form-builder-right-col {
+    min-width: 0;
 }
 
 /* Form Builder Live Preview Workspace Sizing */
