@@ -511,44 +511,40 @@ class AdminController extends Controller
     }
 
     /**
-     * Persist the tenant's custom brand colors (primary/secondary/button/text).
-     * Each field is nullable -- clearing a color picker back to blank restores
-     * that theme's own default, since the storefront override partial only
-     * emits a <style> rule for colors that are actually set here.
+     * Parses `section_colors[secId][slot]` inputs into a clean array, keeping
+     * only known section ids / color slots and valid #rrggbb values, and
+     * dropping any section with no actual overrides entirely -- so a tenant
+     * who's never touched colors gets section_colors == [], not a wall of
+     * empty sub-arrays. Shared verbatim by saveSectionSettings() and
+     * previewSectionSettings() so a save and its preview never disagree.
      */
-    public function saveBrandColors(Request $request)
+    private function processSectionColorsInput(Request $request): array
     {
-        $tenant = $this->tenant($request);
+        $slots = ['bg', 'heading', 'text', 'button_bg', 'button_text'];
+        $sectionIds = array_keys(Tenant::getDefaultSectionSettings());
+        $incoming = $request->input('section_colors', []);
 
-        // Blade sends an empty string (not an absent field) for a color the
-        // baker has toggled off / reset to the theme default -- normalize
-        // to null first so "nullable" actually short-circuits the regex
-        // instead of failing validation on ''.
-        $request->merge([
-            'primary_color' => $request->input('primary_color') ?: null,
-            'secondary_color' => $request->input('secondary_color') ?: null,
-            'button_color' => $request->input('button_color') ?: null,
-            'text_color' => $request->input('text_color') ?: null,
-        ]);
+        $colors = [];
+        foreach ($sectionIds as $secId) {
+            $secColors = $incoming[$secId] ?? [];
+            if (!is_array($secColors)) {
+                continue;
+            }
 
-        $data = $request->validate([
-            'primary_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
-            'secondary_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
-            'button_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
-            'text_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
-        ]);
+            $clean = [];
+            foreach ($slots as $slot) {
+                $val = $secColors[$slot] ?? null;
+                if (is_string($val) && preg_match('/^#[0-9A-Fa-f]{6}$/', $val)) {
+                    $clean[$slot] = $val;
+                }
+            }
 
-        $tenant->update([
-            'primary_color' => $data['primary_color'] ?? null,
-            'secondary_color' => $data['secondary_color'] ?? null,
-            'button_color' => $data['button_color'] ?? null,
-            'text_color' => $data['text_color'] ?? null,
-        ]);
+            if (!empty($clean)) {
+                $colors[$secId] = $clean;
+            }
+        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Brand colors saved!',
-        ]);
+        return $colors;
     }
 
     public function saveSectionSettings(Request $request)
@@ -724,6 +720,7 @@ class AdminController extends Controller
         $tenant->update([
             'section_settings' => $updatedSections,
             'site_content' => $updatedContent,
+            'section_colors' => $this->processSectionColorsInput($request),
         ]);
 
         return response()->json([
@@ -891,6 +888,7 @@ class AdminController extends Controller
         // In-memory only -- deliberately no ->save()/->update() call.
         $tenant->section_settings = $updatedSections;
         $tenant->site_content = $updatedContent;
+        $tenant->section_colors = $this->processSectionColorsInput($request);
 
         if (empty($tenant->booking_settings)) {
             $tenant->booking_settings = [

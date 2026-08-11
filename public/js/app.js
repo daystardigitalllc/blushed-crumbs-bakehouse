@@ -418,61 +418,31 @@ window.saveBusinessInfoForm = function() {
     });
 };
 
-window.toggleBrandColorInput = function(checkboxEl) {
+// Per-section color pickers (Page Builder accordion). Unlike the old
+// tenant-wide Brand Colors card, these inputs live inside #section-manager-
+// form itself, so unchecking one and clicking "Save All Changes" is enough
+// to clear it -- a disabled color input is simply omitted from FormData,
+// and the backend rebuilds section_colors from scratch on every save rather
+// than merging, so nothing needs to explicitly signal "clear this."
+window.toggleSectionColorInput = function(checkboxEl) {
     const targetId = checkboxEl.getAttribute('data-target');
-    const input = document.getElementById('color-' + targetId);
+    const input = document.getElementById(targetId);
     if (!input) return;
 
     if (checkboxEl.checked) {
         input.disabled = false;
     } else {
-        // Reset back to the theme's own default so the swatch shown matches
-        // what the storefront will actually render once the override clears.
         input.value = input.getAttribute('data-default') || input.value;
         input.disabled = true;
     }
-};
 
-window.saveBrandColorsForm = function() {
-    const form = document.getElementById('brand-colors-form');
-    if (!form) return;
-
-    const formData = new FormData(form);
-    // A disabled color input isn't included in FormData at all, but the
-    // backend needs an explicit empty value to know "clear this override"
-    // rather than "field not submitted, leave as-is".
-    form.querySelectorAll('.brand-color-toggle').forEach(checkbox => {
-        if (!checkbox.checked) {
-            formData.set(checkbox.getAttribute('data-target'), '');
-        }
-    });
-
-    const msgEl = document.getElementById('brand-colors-msg');
-
-    fetch('/dashboard/settings/colors', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-            'Accept': 'application/json'
-        },
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            if (msgEl) {
-                msgEl.style.display = 'block';
-                msgEl.textContent = data.message;
-                setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
-            }
-            window.showToast('Brand colors saved!', 'success');
-        } else {
-            window.showToast(data.message || 'Failed to save brand colors.', 'error');
-        }
-    })
-    .catch(err => {
-        window.showToast('Error saving brand colors: ' + err.message, 'error');
-    });
+    // Section color changes should reflect in the live preview same as any
+    // other Page Builder field -- toggling a checkbox isn't an 'input'/
+    // 'change' event on the color input itself, so nothing would otherwise
+    // trigger a re-render.
+    if (window.renderPageBuilderDraftPreview) {
+        window.renderPageBuilderDraftPreview();
+    }
 };
 
 // Global Mobile Sidebar Drawer Toggle

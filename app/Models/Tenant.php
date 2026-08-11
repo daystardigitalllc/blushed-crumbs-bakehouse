@@ -61,10 +61,7 @@ class Tenant extends Model implements TenancyContract
         'stripe_subscription_id',
         'theme_id',
         'pending_pro_theme_id',
-        'primary_color',
-        'secondary_color',
-        'button_color',
-        'text_color',
+        'section_colors',
         'logo_path',
         'gallery_images',
         'gallery_categories',
@@ -92,6 +89,7 @@ class Tenant extends Model implements TenancyContract
         'form_schema' => 'array',
         'site_content' => 'array',
         'section_settings' => 'array',
+        'section_colors' => 'array',
         'booking_settings' => 'array',
         'ai_generated_content' => 'array',
         'gallery_images' => 'array',
@@ -280,6 +278,170 @@ class Tenant extends Model implements TenancyContract
         ];
     }
 
+    /**
+     * Per-theme CSS selectors for each Page Builder section's background,
+     * heading, body text, and button -- the map a per-section color override
+     * needs to know WHERE to inject a rule. Hand-audited per theme (section
+     * markup is not consistent across themes; several are fully bespoke).
+     *
+     * 'bg_mode' controls how the background override is generated:
+     *   - 'flat'    : background-color override only (safe -- preserves any
+     *                 separate background-image texture/pattern on the same
+     *                 element).
+     *   - 'gradient': the section's default look is a gradient or photo set
+     *                 via inline style in the blade file. A flat color
+     *                 override still works (background !important beats an
+     *                 inline non-important style) but replaces that
+     *                 gradient/photo entirely rather than tinting it --
+     *                 surfaced to the baker as a warning in the UI.
+     *   - 'skip'    : background override intentionally not offered (e.g.
+     *                 modern_bakery's glassmorphism sections -- painting
+     *                 them an opaque color removes the blur effect that's
+     *                 the whole visual identity of that section).
+     *
+     * 'button' is null wherever that section renders no button in that
+     * theme. Some entries need TWO selectors (space-separated) since a
+     * theme's primary + secondary CTA are separate classes.
+     */
+    public static function sectionColorSelectorMap(): array
+    {
+        // Shared by the four themes with a copy-pasted skeleton for most
+        // sections (sweet_elegant, rustic_kitchen, playful_treats,
+        // country_farmhouse) -- defined once, then only the real
+        // differences are overridden per theme below.
+        $sharedSkeleton = [
+            'highlights' => ['bg' => '.highlights-bar', 'bg_mode' => 'flat', 'heading' => '.highlight-item h4', 'text' => '.highlight-item p', 'button' => null],
+            'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => '.whimsical-col-right h2', 'text' => '.whimsical-bullet-list li', 'button' => null],
+            'reviews' => ['bg' => '#reviews.reviews-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null],
+            'faq' => ['bg' => '.faq-policies-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.faq-policies-section p', 'button' => null],
+            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
+            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null],
+            'how_it_works' => ['bg' => '.how-it-works-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.how-it-works-section p', 'button' => null],
+        ];
+
+        $map = [];
+
+        foreach (['sweet_elegant', 'rustic_kitchen', 'playful_treats', 'country_farmhouse'] as $t) {
+            $map[$t] = $sharedSkeleton;
+            $map[$t]['hero'] = ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h1', 'text' => '.subheading', 'button' => '.btn-primary, .btn-secondary'];
+            $map[$t]['about'] = ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h2', 'text' => 'p', 'button' => '.btn-primary'];
+            $map[$t]['categories'] = ['bg' => '#categories.categories-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => 'p', 'button' => null];
+            $map[$t]['promo_video'] = ['bg' => '.video-promo-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2, .video-promo-banner h2', 'text' => '.cta-content p, .video-promo-banner p', 'button' => '.video-promo-banner .btn-primary'];
+        }
+
+        // hero/about backgrounds are inline in the blade for these 4 --
+        // 'skip' above is deliberate (see bg_mode docblock); heading/text/
+        // button still work fine since those ARE real class selectors.
+        $map['country_farmhouse']['categories'] = ['bg' => '.farmhouse-menu-index-list', 'bg_mode' => 'flat', 'heading' => 'h2', 'text' => '.farmhouse-menu-item p', 'button' => '.farmhouse-menu-index .btn'];
+
+        $map['modern_bakery'] = [
+            'hero' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h1', 'text' => null, 'button' => '.btn-primary, .btn-secondary'],
+            'about' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h2', 'text' => 'p', 'button' => '.btn-primary'],
+            'highlights' => ['bg' => '.highlights-bar', 'bg_mode' => 'flat', 'heading' => '.highlight-item h4', 'text' => '.highlight-item p', 'button' => null],
+            'promo_video' => ['bg' => '.modern-promo-teaser', 'bg_mode' => 'flat', 'heading' => '.modern-promo-teaser h2', 'text' => '.modern-promo-teaser p', 'button' => '.modern-promo-teaser .btn-primary'],
+            'categories' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => '.btn-primary'],
+            'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'gradient', 'heading' => '.modern-cakes-banner h2', 'text' => '.whimsical-bullet-list li', 'button' => '.whimsical-section .btn-primary'],
+            'how_it_works' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => null],
+            'reviews' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null],
+            'faq' => ['bg' => '.modern-orders-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.modern-accordion-item p', 'button' => null],
+            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
+            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null],
+        ];
+
+        $map['artisan_sourdough'] = [
+            'hero' => ['bg' => '.petal-hero', 'bg_mode' => 'gradient', 'heading' => 'h1', 'text' => null, 'button' => '.btn-primary, .btn-secondary'],
+            'about' => ['bg' => '.petal-about', 'bg_mode' => 'flat', 'heading' => 'h2', 'text' => '.petal-about-copy p', 'button' => '.btn-primary'],
+            'highlights' => ['bg' => '.petal-features-row', 'bg_mode' => 'flat', 'heading' => '.petal-feature-card h4', 'text' => '.petal-feature-card p', 'button' => null],
+            'promo_video' => ['bg' => '.petal-promo', 'bg_mode' => 'gradient', 'heading' => '.petal-promo h2', 'text' => '.petal-promo p', 'button' => '.petal-promo .btn-primary'],
+            'categories' => ['bg' => '#categories.categories-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.petal-pick-card p', 'button' => null],
+            'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => '.whimsical-col-right h2', 'text' => '.whimsical-bullet-list li', 'button' => null],
+            'how_it_works' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => '.petal-step-row p', 'button' => null],
+            'reviews' => ['bg' => '#reviews.reviews-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null],
+            'faq' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => '.petal-accordion-item p', 'button' => null],
+            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
+            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null],
+        ];
+
+        $map['clean_minimal'] = [
+            'hero' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.midnight-hero-copy h1', 'text' => '.midnight-hero-copy p', 'button' => '.midnight-hero-copy .btn-primary'],
+            'about' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h2', 'text' => 'p', 'button' => '.btn-primary'],
+            'highlights' => ['bg' => '.midnight-included', 'bg_mode' => 'skip', 'heading' => '.midnight-included-grid h4', 'text' => '.midnight-included-grid p', 'button' => null],
+            'promo_video' => ['bg' => '.midnight-spotlight', 'bg_mode' => 'flat', 'heading' => '.midnight-spotlight h2', 'text' => null, 'button' => '.midnight-spotlight .btn-primary'],
+            'categories' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => null],
+            'whimsical' => ['bg' => '.midnight-editorial', 'bg_mode' => 'skip', 'heading' => '.midnight-editorial-content h2', 'text' => '.midnight-editorial-content p', 'button' => null],
+            'how_it_works' => ['bg' => '.midnight-process-wrap', 'bg_mode' => 'flat', 'heading' => '.midnight-process-card .subheading', 'text' => '.midnight-process-step p', 'button' => null],
+            'reviews' => ['bg' => '#reviews.reviews-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null],
+            'faq' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h3', 'text' => '.midnight-feature-item p', 'button' => null],
+            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
+            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null],
+        ];
+
+        foreach (['sunny_whisk' => 'sw', 'daily_batch' => 'db', 'lavender_bloom' => 'lb', 'cherry_bakeshop' => 'cb', 'sage_sourdough' => 'sg'] as $t => $p) {
+            $map[$t] = [
+                'hero' => ['bg' => $t === 'sunny_whisk' ? '.sw-hero-band' : ".{$p}-hero", 'bg_mode' => 'flat', 'heading' => "h1", 'text' => null, 'button' => '.btn-primary, .btn-secondary'],
+                'about' => ['bg' => ".{$p}-about-row", 'bg_mode' => 'skip', 'heading' => 'h2', 'text' => ".{$p}-about-copy p, .{$p}-about-copy-card p", 'button' => null],
+                'highlights' => ['bg' => ".{$p}-about-row, .sw-process", 'bg_mode' => 'skip', 'heading' => 'h4', 'text' => ".{$p}-highlight-list li, .sw-process-row p", 'button' => $t === 'sunny_whisk' ? '.sw-process-row .btn-primary' : null],
+                'promo_video' => ['bg' => ".{$p}-promo-banner, .video-promo-banner", 'bg_mode' => 'gradient', 'heading' => '.cta-content h2, .video-promo-banner h2', 'text' => '.cta-content p, .video-promo-banner p', 'button' => '.btn-primary'],
+                'categories' => ['bg' => "#categories", 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-shelf-card p", 'button' => null],
+                'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-whimsical h2", 'text' => '.whimsical-bullet-list li', 'button' => null],
+                'how_it_works' => ['bg' => "#{$p}-band-white, .how-it-works-section", 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-step-copy p", 'button' => null],
+                'reviews' => ['bg' => '#reviews', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-review-card p", 'button' => null],
+                'faq' => ['bg' => '.faq-policies-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-faq-card p, .{$p}-accordion-item p", 'button' => null],
+                'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
+                'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => '.gallery-card-info h4', 'button' => null],
+            ];
+        }
+
+        return $map;
+    }
+
+    /**
+     * The specific selector map for THIS tenant's active theme, falling back
+     * to sweet_elegant's map for any theme not covered above (shouldn't
+     * happen in practice -- every real theme_id is covered).
+     */
+    public function sectionColorSelectors(): array
+    {
+        $map = self::sectionColorSelectorMap();
+        return $map[$this->theme_id] ?? $map['sweet_elegant'];
+    }
+
+    /**
+     * Best-effort "what does this look like today" swatch values, used only
+     * to pre-fill a section's color pickers before a baker has overridden
+     * anything -- reads the theme's own palette variables rather than trying
+     * to parse the exact computed color of every one of the ~50 distinct
+     * per-section selectors (many of which are inline gradients with no
+     * single resolvable color). Close enough for a starting swatch; it's
+     * cosmetic only since the picker stays disabled until explicitly enabled.
+     */
+    public function themePaletteDefaults(): array
+    {
+        $fallback = ['bg' => '#ffffff', 'heading' => '#2c2419', 'text' => '#2c2419', 'button_bg' => '#c94b75', 'button_text' => '#ffffff'];
+
+        $css = @file_get_contents(public_path($this->themeCssPath()));
+        if (!$css || !preg_match('/body\.theme-' . preg_quote($this->theme_id, '/') . '\s*\{([^}]*)\}/s', $css, $block)) {
+            return $fallback;
+        }
+
+        $vars = $fallback;
+        if (preg_match('/--theme-card-bg:\s*(#[0-9a-fA-F]{3,8})/', $block[1], $m)) {
+            $vars['bg'] = $m[1];
+        }
+        if (preg_match('/--dark-text:\s*(#[0-9a-fA-F]{3,8})/', $block[1], $m)) {
+            $vars['heading'] = $m[1];
+            $vars['text'] = $m[1];
+        }
+        if (preg_match('/--primary:\s*(#[0-9a-fA-F]{3,8})/', $block[1], $m)) {
+            $vars['button_bg'] = $m[1];
+        }
+        if (preg_match('/\.btn-primary[^{]*\{[^}]*color:\s*(#[0-9a-fA-F]{3,8})/s', $css, $m)) {
+            $vars['button_text'] = $m[1];
+        }
+
+        return $vars;
+    }
+
     public function getOrderedSections()
     {
         $sections = $this->section_settings ?? self::getDefaultSectionSettings();
@@ -320,65 +482,6 @@ class Tenant extends Model implements TenancyContract
     {
         $path = "css/themes/{$this->theme_id}.css";
         return file_exists(public_path($path)) ? $path : 'css/themes/sweet_elegant.css';
-    }
-
-    /**
-     * The theme's own baked-in brand colors (--primary, --theme-accent-bg,
-     * --dark-text, and the .btn-primary background), parsed straight from
-     * its CSS file. Used only to pre-fill the dashboard color pickers with
-     * "what the theme already looks like" -- the live storefront override
-     * (customColorOverrides()) never reads this; it only applies once a
-     * tenant has actually chosen their own color.
-     */
-    public function themeDefaultColors(): array
-    {
-        $fallback = ['primary' => '#c94b75', 'secondary' => '#401829', 'button' => '#c94b75', 'text' => '#2c2419'];
-
-        $css = @file_get_contents(public_path($this->themeCssPath()));
-        if (!$css || !preg_match('/body\.theme-' . preg_quote($this->theme_id, '/') . '\s*\{([^}]*)\}/s', $css, $block)) {
-            return $fallback;
-        }
-
-        $vars = $fallback;
-        if (preg_match('/--primary:\s*(#[0-9a-fA-F]{3,8})/', $block[1], $m)) {
-            $vars['primary'] = $m[1];
-        }
-        if (preg_match('/--theme-accent-bg:\s*(#[0-9a-fA-F]{3,8})/', $block[1], $m)) {
-            $vars['secondary'] = $m[1];
-        }
-        if (preg_match('/--dark-text:\s*(#[0-9a-fA-F]{3,8})/', $block[1], $m)) {
-            $vars['text'] = $m[1];
-        }
-
-        if (preg_match('/\.btn-primary[^{]*\{[^}]*background:\s*(#[0-9a-fA-F]{3,8})/s', $css, $m)) {
-            $vars['button'] = $m[1];
-        } else {
-            $vars['button'] = $vars['primary'];
-        }
-
-        return $vars;
-    }
-
-    /**
-     * Only the color fields this tenant has actually customized, keyed by
-     * the CSS custom property each one overrides -- empty when nothing's
-     * been set, so the storefront color-override partial can skip
-     * rendering entirely for every tenant still on theme defaults.
-     */
-    public function customColorOverrides(): array
-    {
-        $overrides = [];
-        if (!empty($this->primary_color)) {
-            $overrides['--primary'] = $this->primary_color;
-            $overrides['--primary-hover'] = $this->primary_color;
-        }
-        if (!empty($this->secondary_color)) {
-            $overrides['--theme-accent-bg'] = $this->secondary_color;
-        }
-        if (!empty($this->text_color)) {
-            $overrides['--dark-text'] = $this->text_color;
-        }
-        return $overrides;
     }
 
     /**

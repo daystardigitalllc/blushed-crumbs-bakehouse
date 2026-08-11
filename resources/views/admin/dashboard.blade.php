@@ -1903,6 +1903,8 @@
                                         @else
                                             <p style="font-size:0.85rem; color:#666; margin:0;">No additional settings for this section — use Save to apply its order and visibility.</p>
                                         @endif
+
+                                        @include('admin.partials.section_color_picker', ['secId' => $secId])
                                     </div>
                                 </div>
                             @endforeach
@@ -2730,47 +2732,6 @@
                             </div>
 
                             <button type="button" class="btn btn-primary" onclick="saveBusinessInfoForm()" style="background:var(--primary); border-color:var(--primary);">Save Business Info & SEO</button>
-                        </form>
-                    </div>
-
-                    <!-- BRAND COLORS CARD -->
-                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa); margin-bottom:20px;">
-                        <h4 style="color:var(--dark-text); margin-bottom:6px;">Brand Colors</h4>
-                        <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Override your theme's default colors. Turn a color off to go back to your theme's original look.</p>
-
-                        <div id="brand-colors-msg" style="display:none; margin-bottom:14px; background:var(--theme-section-bg, #d1fae5); color:var(--dark-text); padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid var(--theme-section-bg, #a7f3d0);"></div>
-
-                        <form id="brand-colors-form">
-                            @csrf
-                            <input type="hidden" name="subdomain" value="{{ $tenant->subdomain ?? $tenant->slug }}">
-                            @php
-                                $themeDefaultColors = $tenant->themeDefaultColors();
-                            @endphp
-                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
-                                @foreach([
-                                    ['key' => 'primary_color', 'label' => 'Primary Color', 'default' => $themeDefaultColors['primary'], 'hint' => 'Your main brand color -- heading accents, links, borders, tags, and price text across the site.'],
-                                    ['key' => 'secondary_color', 'label' => 'Secondary Color', 'default' => $themeDefaultColors['secondary'], 'hint' => 'Dark accent backgrounds, like banner strips and footer-adjacent sections.'],
-                                    ['key' => 'button_color', 'label' => 'Button Color', 'default' => $themeDefaultColors['button'], 'hint' => 'The "Order Now" buttons specifically -- these don\'t reuse Primary Color.'],
-                                    ['key' => 'text_color', 'label' => 'Text Color', 'default' => $themeDefaultColors['text'], 'hint' => 'Main body and heading text color.'],
-                                ] as $colorField)
-                                    @php $currentVal = $tenant->{$colorField['key']}; @endphp
-                                    <div>
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                                            <input type="checkbox" class="brand-color-toggle" data-target="{{ $colorField['key'] }}" {{ $currentVal ? 'checked' : '' }} onchange="toggleBrandColorInput(this)">
-                                            {{ $colorField['label'] }}
-                                        </label>
-                                        <input type="color"
-                                               name="{{ $colorField['key'] }}"
-                                               id="color-{{ $colorField['key'] }}"
-                                               value="{{ $currentVal ?: $colorField['default'] }}"
-                                               data-default="{{ $colorField['default'] }}"
-                                               {{ $currentVal ? '' : 'disabled' }}
-                                               style="width:100%; height:42px; border-radius:8px; border:1px solid #ccc; cursor:pointer;">
-                                        <p style="font-size:0.76rem; color:#888; margin:6px 0 0 0; line-height:1.4;">{{ $colorField['hint'] }}</p>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <button type="button" class="btn btn-primary" onclick="saveBrandColorsForm()" style="background:var(--primary); border-color:var(--primary); margin-top:16px;">Save Brand Colors</button>
                         </form>
                     </div>
 
