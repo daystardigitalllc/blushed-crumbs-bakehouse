@@ -122,7 +122,7 @@
                 <section class="midnight-process-wrap">
                     <div class="midnight-process-card">
                         <span class="subheading">Farm to Table</span>
-                        <p>Ordering your custom order in 3 simple steps</p>
+                        <p>{{ $tenant->getSiteContent('how_it_works_subtitle', 'Ordering your custom order in 3 simple steps') }}</p>
                         @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp
                         @foreach($steps as $idx => $step)
                             <div class="midnight-process-step">

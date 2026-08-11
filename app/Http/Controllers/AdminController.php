@@ -726,6 +726,8 @@ class AdminController extends Controller
             'promo_headline' => $request->input('promo_headline', $currentContent['promo_headline'] ?? ''),
             'promo_subtext' => $request->input('promo_subtext', $currentContent['promo_subtext'] ?? ''),
             'how_it_works' => !empty($processedHow) ? $processedHow : ($currentContent['how_it_works'] ?? []),
+            'how_it_works_title' => $request->input('how_it_works_title', $currentContent['how_it_works_title'] ?? ''),
+            'how_it_works_subtitle' => $request->input('how_it_works_subtitle', $currentContent['how_it_works_subtitle'] ?? ''),
             'whimsical_title' => $request->input('whimsical_title', $currentContent['whimsical_title'] ?? ''),
             'whimsical_image_url' => $request->input('whimsical_image_url', $currentContent['whimsical_image_url'] ?? ''),
             'whimsical_bullets' => !empty($bullets) ? $bullets : ($currentContent['whimsical_bullets'] ?? []),
@@ -757,6 +759,8 @@ class AdminController extends Controller
             'gallery_empty_title' => $request->input('gallery_empty_title', $currentContent['gallery_empty_title'] ?? ''),
             'gallery_empty_text' => $request->input('gallery_empty_text', $currentContent['gallery_empty_text'] ?? ''),
             'policy_intro_text' => $request->input('policy_intro_text', $currentContent['policy_intro_text'] ?? ''),
+            'policy_product_singular' => $request->input('policy_product_singular', $currentContent['policy_product_singular'] ?? ''),
+            'policy_product_plural' => $request->input('policy_product_plural', $currentContent['policy_product_plural'] ?? ''),
         ]);
 
         $tenant->update([
@@ -901,6 +905,8 @@ class AdminController extends Controller
             'promo_headline' => $request->input('promo_headline', $currentContent['promo_headline'] ?? ''),
             'promo_subtext' => $request->input('promo_subtext', $currentContent['promo_subtext'] ?? ''),
             'how_it_works' => !empty($processedHow) ? $processedHow : ($currentContent['how_it_works'] ?? []),
+            'how_it_works_title' => $request->input('how_it_works_title', $currentContent['how_it_works_title'] ?? ''),
+            'how_it_works_subtitle' => $request->input('how_it_works_subtitle', $currentContent['how_it_works_subtitle'] ?? ''),
             'whimsical_title' => $request->input('whimsical_title', $currentContent['whimsical_title'] ?? ''),
             'whimsical_image_url' => $request->input('whimsical_image_url', $currentContent['whimsical_image_url'] ?? ''),
             'whimsical_bullets' => !empty($bullets) ? $bullets : ($currentContent['whimsical_bullets'] ?? []),
@@ -932,6 +938,8 @@ class AdminController extends Controller
             'gallery_empty_title' => $request->input('gallery_empty_title', $currentContent['gallery_empty_title'] ?? ''),
             'gallery_empty_text' => $request->input('gallery_empty_text', $currentContent['gallery_empty_text'] ?? ''),
             'policy_intro_text' => $request->input('policy_intro_text', $currentContent['policy_intro_text'] ?? ''),
+            'policy_product_singular' => $request->input('policy_product_singular', $currentContent['policy_product_singular'] ?? ''),
+            'policy_product_plural' => $request->input('policy_product_plural', $currentContent['policy_product_plural'] ?? ''),
         ]);
 
         // In-memory only -- deliberately no ->save()/->update() call.

@@ -219,7 +219,7 @@
             @elseif($secId === 'how_it_works')
                 <!-- How It Works — horizontal step-card grid -->
                 <section class="how-it-works-section lb-section lb-band-white">
-                    <h2 class="lb-section-title" style="text-align:center;">How To Order</h2>
+                    <h2 class="lb-section-title" style="text-align:center;">{{ $tenant->getSiteContent('how_it_works_title', 'How To Order') }}</h2>
                     <div class="lb-steps-grid">
                         @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp
                         @foreach($steps as $idx => $step)

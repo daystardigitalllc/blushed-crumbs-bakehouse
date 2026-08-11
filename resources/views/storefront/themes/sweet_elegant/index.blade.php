@@ -219,8 +219,8 @@
             @elseif($secId === 'how_it_works')
                 <!-- How It Works Section -->
                 <section class="how-it-works-section" style="padding:70px 25px; text-align:center; background:var(--pink-bg);">
-                    <h2 class="section-title-script" style="margin-bottom:15px;">How Custom Ordering Works</h2>
-                    <p style="max-width:600px; margin:0 auto 40px auto; color:var(--dark-text); font-size:1.05rem;">Ordering your dream cake in 3 simple steps</p>
+                    <h2 class="section-title-script" style="margin-bottom:15px;">{{ $tenant->getSiteContent('how_it_works_title', 'How Custom Ordering Works') }}</h2>
+                    <p style="max-width:600px; margin:0 auto 40px auto; color:var(--dark-text); font-size:1.05rem;">{{ $tenant->getSiteContent('how_it_works_subtitle', 'Ordering your dream cake in 3 simple steps') }}</p>
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:25px; max-width:1100px; margin:0 auto;">
                         @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp
                         @foreach($steps as $idx => $step)

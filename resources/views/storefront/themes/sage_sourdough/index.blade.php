@@ -235,7 +235,7 @@
                 <!-- How It Works — connected vertical timeline -->
                 <section class="how-it-works-section sg-section sg-band-white">
                     <span class="sg-kicker" style="display:block; text-align:center;">Getting Started</span>
-                    <h2 class="sg-section-title" style="text-align:center;">How To Order</h2>
+                    <h2 class="sg-section-title" style="text-align:center;">{{ $tenant->getSiteContent('how_it_works_title', 'How To Order') }}</h2>
                     <div class="sg-timeline">
                         @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp
                         @foreach($steps as $idx => $step)

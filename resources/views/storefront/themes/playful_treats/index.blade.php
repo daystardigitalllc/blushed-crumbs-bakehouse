@@ -219,8 +219,8 @@
                 <section class="how-it-works-section playful-order-section">
                     <div class="playful-order-callout">
                         <span class="material-symbols-outlined">local_shipping</span>
-                        <h2>How To Order</h2>
-                        <p>Learn more about our ordering process</p>
+                        <h2>{{ $tenant->getSiteContent('how_it_works_title', 'How To Order') }}</h2>
+                        <p>{{ $tenant->getSiteContent('how_it_works_subtitle', 'Learn more about our ordering process') }}</p>
                     </div>
                     <div class="playful-steps-list">
                         @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp

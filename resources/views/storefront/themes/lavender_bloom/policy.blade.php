@@ -90,7 +90,7 @@
                 <ul class="lb-policy-list">
                     <li><strong>All Sales Are Final:</strong> Refunds are not provided for any reason. Each order requires hours of planning and preparation well before baking &amp; decorating begins.</li>
                     <li><strong>Minor Design Variations:</strong> Minor variations of color or handcrafted design will not be eligible for a refund.</li>
-                    <li><strong>Major Flavor Errors:</strong> If a major flavor error is discovered after pickup (e.g. an entirely different flavor than ordered), please contact me immediately. If confirmed, a refund or store credit will be issued for the portion of the cake that was incorrect.</li>
+                    <li><strong>Major Flavor Errors:</strong> If a major flavor error is discovered after pickup (e.g. an entirely different flavor than ordered), please contact me immediately. If confirmed, a refund or store credit will be issued for the portion of the {{ $tenant->getSiteContent('policy_product_singular', 'cake') }} that was incorrect.</li>
                     <li><strong>Non-Refundable Scenarios:</strong> Refunds are not given for a change of mind, flavor preference, or failure to read this policy.</li>
                 </ul>
                 <div class="lb-policy-note-box">
@@ -133,7 +133,7 @@
                 </div>
                 <ul class="lb-policy-list">
                     <li><strong>Inspiration Photos:</strong> Inspiration photos are always welcome to help convey your vision.</li>
-                    <li><strong>Handcrafted Originals:</strong> I do not create exact copies of another baker's work. Every cake is handcrafted and will feature its own unique artistic details.</li>
+                    <li><strong>Handcrafted Originals:</strong> I do not create exact copies of another baker's work. Every {{ $tenant->getSiteContent('policy_product_singular', 'cake') }} is handcrafted and will feature its own unique artistic details.</li>
                     <li><strong>Artistic Variance:</strong> Exact color matches, decor placement, and handmade elements may vary slightly from inspiration photos.</li>
                 </ul>
             </div>
@@ -158,11 +158,11 @@
             <div class="lb-policy-card">
                 <div class="lb-policy-card-header">
                     <span class="material-symbols-outlined lb-policy-card-icon">cake</span>
-                    <h3>Cakes &amp; Allergy Disclosure</h3>
+                    <h3>{{ ucfirst($tenant->getSiteContent('policy_product_plural', 'cakes')) }} &amp; Allergy Disclosure</h3>
                 </div>
                 <ul class="lb-policy-list">
-                    <li><strong>Layer Construction:</strong> All standard cakes start at 2 layers. For taller cakes, additional layers can be added for <strong>${{ $tenant->getSiteContent('policy_extra_layer_fee', '20') }} per layer</strong>.</li>
-                    <li><strong>Internal Support:</strong> All tiered and large custom cakes include internal dowels and bubble straws for structural support. Please be mindful of internal supports when cutting &amp; serving.</li>
+                    <li><strong>Layer Construction:</strong> All standard {{ $tenant->getSiteContent('policy_product_plural', 'cakes') }} start at 2 layers. For taller {{ $tenant->getSiteContent('policy_product_plural', 'cakes') }}, additional layers can be added for <strong>${{ $tenant->getSiteContent('policy_extra_layer_fee', '20') }} per layer</strong>.</li>
+                    <li><strong>Internal Support:</strong> All tiered and large custom {{ $tenant->getSiteContent('policy_product_plural', 'cakes') }} include internal dowels and bubble straws for structural support. Please be mindful of internal supports when cutting &amp; serving.</li>
                     <li><strong>Allergy Responsibility:</strong> It is your sole responsibility to state ANY food allergies when placing your order. We will NOT be held responsible for any allergy-related issues if not properly stated in the order form.</li>
                 </ul>
             </div>

@@ -1804,6 +1804,16 @@
 
                                         @elseif($secId === 'how_it_works')
                                             @php $hwList = data_get($siteContent, 'how_it_works', []); @endphp
+                                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:12px;">
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Heading</label>
+                                                    <input type="text" name="how_it_works_title" value="{{ data_get($siteContent, 'how_it_works_title') }}" placeholder="How Custom Ordering Works" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                                <div>
+                                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Subtitle</label>
+                                                    <input type="text" name="how_it_works_subtitle" value="{{ data_get($siteContent, 'how_it_works_subtitle') }}" placeholder="Ordering your treats in 3 simple steps" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                                </div>
+                                            </div>
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
                                                 @for($s = 0; $s < 3; $s++)
                                                     <div style="padding:12px; border-radius:10px; border:1px solid #eee;">
@@ -2112,6 +2122,25 @@
                                     <div>
                                         <label style="font-weight:600; font-size:0.82rem; color:#555;">Intro Paragraph</label>
                                         <input type="text" name="policy_intro_text" value="{{ data_get($siteContent, 'policy_intro_text') }}" placeholder="Please read carefully before placing your order..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">Product Wording</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">The "Cakes &amp; Allergy Disclosure" card (and a couple other mentions on this page) uses whatever word you set here — change it if you don't sell cakes.</p>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Singular (e.g. "cake")</label>
+                                            <input type="text" name="policy_product_singular" value="{{ data_get($siteContent, 'policy_product_singular') }}" placeholder="cake" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Plural (e.g. "cakes")</label>
+                                            <input type="text" name="policy_product_plural" value="{{ data_get($siteContent, 'policy_product_plural') }}" placeholder="cakes" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
                                     </div>
                                 </div>
                             </div>

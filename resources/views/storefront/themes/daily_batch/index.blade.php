@@ -230,7 +230,7 @@
             @elseif($secId === 'how_it_works')
                 <!-- How It Works — numbered steps -->
                 <section class="how-it-works-section db-section db-band-white">
-                    <h2 class="db-section-title" style="text-align:center;">How To Order</h2>
+                    <h2 class="db-section-title" style="text-align:center;">{{ $tenant->getSiteContent('how_it_works_title', 'How To Order') }}</h2>
                     <div class="db-steps-list">
                         @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp
                         @foreach($steps as $idx => $step)

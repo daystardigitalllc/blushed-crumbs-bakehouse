@@ -223,7 +223,7 @@
                 <!-- How It Works — elegant numbered list -->
                 <section style="padding:90px 25px; text-align:center;">
                     <span class="subheading">Getting Started</span>
-                    <h2 class="section-title-script" style="margin:10px 0 40px 0;">How Ordering Works</h2>
+                    <h2 class="section-title-script" style="margin:10px 0 40px 0;">{{ $tenant->getSiteContent('how_it_works_title', 'How Ordering Works') }}</h2>
                     <div class="petal-steps-list">
                         @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp
                         @foreach($steps as $idx => $step)

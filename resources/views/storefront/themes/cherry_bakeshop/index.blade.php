@@ -237,7 +237,7 @@
                 <!-- How It Works — numbered cherry-circle rows -->
                 <section class="how-it-works-section cb-section cb-band-white">
                     <span class="cb-kicker" style="display:block; text-align:center;">Getting Started</span>
-                    <h2 class="cb-section-title" style="text-align:center;">How To Order</h2>
+                    <h2 class="cb-section-title" style="text-align:center;">{{ $tenant->getSiteContent('how_it_works_title', 'How To Order') }}</h2>
                     <div class="cb-steps-list">
                         @php $steps = $tenant->getSiteContent('how_it_works', []); @endphp
                         @foreach($steps as $idx => $step)

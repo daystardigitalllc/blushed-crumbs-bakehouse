@@ -125,6 +125,8 @@ class Tenant extends Model implements TenancyContract
             'promo_subtext',
             'promo_bg_image_url',
             'how_it_works',
+            'how_it_works_title',
+            'how_it_works_subtitle',
             'categories',
             'whimsical_title',
             'whimsical_bullets',
@@ -175,6 +177,8 @@ class Tenant extends Model implements TenancyContract
             'policy_pickup_hours',
             'policy_closed_days',
             'policy_extra_layer_fee',
+            'policy_product_singular',
+            'policy_product_plural',
         ];
     }
 
