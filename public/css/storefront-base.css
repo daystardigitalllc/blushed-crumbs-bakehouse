@@ -3424,7 +3424,7 @@ body.theme-cherry_bakeshop {
 
     .hero-buttons {
         flex-direction: column !important;
-        gap: 10px !important;
+        gap: 14px !important;
         max-width: 260px !important;
         margin: 0 auto !important;
     }
@@ -3432,7 +3432,7 @@ body.theme-cherry_bakeshop {
     .hero-buttons .btn {
         width: 100% !important;
         text-align: center !important;
-        padding: 10px 20px !important;
+        padding: 12px 20px !important;
         font-size: 0.9rem !important;
     }
 
