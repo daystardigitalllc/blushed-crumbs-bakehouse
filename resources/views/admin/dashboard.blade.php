@@ -2137,10 +2137,12 @@
                                 <a id="page-builder-open-live-link" href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-sm btn-outline" title="Open the live site in a new tab" style="padding:4px 10px; font-size:0.78rem;">Open ↗</a>
                             </div>
                         </div>
-                        <div id="page-builder-preview-wrapper" style="border:8px solid #27272a; border-radius:18px; overflow:hidden; background:#27272a;">
+                        <div id="page-builder-preview-wrapper" class="mobile-mode" style="border:8px solid #27272a; border-radius:18px; overflow:hidden; background:#27272a;">
+                            <div class="page-builder-preview-notch"></div>
                             <div id="page-builder-preview-scale-box" style="width:100%; height:640px; overflow:hidden; position:relative; background:#fff;">
                                 <iframe id="page-builder-preview-iframe" src="{{ $tenant->publicUrl() }}" title="Storefront preview" style="width:100%; height:100%; border:0; display:block; background:#fff; transform-origin:top left;"></iframe>
                             </div>
+                            <div class="page-builder-preview-home-bar"></div>
                         </div>
                         <p style="font-size:0.76rem; color:#999; margin-top:8px; margin-bottom:0;">Shows your unsaved edits as you type — nothing here is public until you click <strong>Save All Changes</strong>. Use <strong>Show Live</strong> to see what's actually published right now.</p>
                     </div>

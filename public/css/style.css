@@ -9210,6 +9210,64 @@ body.theme-sunny_whisk {
     padding: 20px 24px !important;
 }
 
+/* Page Builder preview: "mobile" mode wraps the scaled iframe in an actual
+   phone-shaped bezel (narrow, notch, home bar) instead of just a plain
+   rounded rectangle at any width -- "desktop" mode keeps the original plain
+   frame untouched. The width constraint lives here (not just in the scale
+   math) so box.clientWidth, which the JS scale calculation reads, is
+   actually phone-narrow in mobile mode. */
+#page-builder-preview-wrapper.mobile-mode {
+    max-width: 360px;
+    margin: 0 auto;
+    border-width: 14px 8px;
+    border-radius: 32px;
+    position: relative;
+    padding-top: 18px;
+}
+
+#page-builder-preview-wrapper.mobile-mode #page-builder-preview-scale-box {
+    height: 600px !important;
+    border-radius: 14px;
+}
+
+#page-builder-preview-wrapper .page-builder-preview-notch,
+#page-builder-preview-wrapper .page-builder-preview-home-bar {
+    display: none;
+}
+
+#page-builder-preview-wrapper.mobile-mode .page-builder-preview-notch {
+    display: flex;
+    width: 100px;
+    height: 16px;
+    background: #27272a;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    justify-content: center;
+    align-items: center;
+}
+
+#page-builder-preview-wrapper.mobile-mode .page-builder-preview-notch::after {
+    content: '';
+    width: 36px;
+    height: 4px;
+    background: #555;
+    border-radius: 10px;
+}
+
+#page-builder-preview-wrapper.mobile-mode .page-builder-preview-home-bar {
+    display: block;
+    width: 90px;
+    height: 4px;
+    background: #52525b;
+    border-radius: 10px;
+    margin: 8px auto 0 auto;
+}
+
 /* Prevents an explicitly-sized iframe (used for the desktop/tablet preview
    scale trick) from forcing its CSS Grid track to grow to fit it -- grid
    tracks default to min-width:auto, which respects a child's intrinsic

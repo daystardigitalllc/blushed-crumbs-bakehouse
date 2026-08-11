@@ -277,9 +277,17 @@ window.setPreviewDevice = function(mode, btnEl) {
 };
 
 window.applyPageBuilderPreviewDevice = function() {
+    const wrapper = document.getElementById('page-builder-preview-wrapper');
     const box = document.getElementById('page-builder-preview-scale-box');
     const iframe = document.getElementById('page-builder-preview-iframe');
     if (!box || !iframe) return;
+
+    // Toggled before reading box.clientWidth/clientHeight below -- the
+    // phone-bezel CSS (narrower max-width, shorter scale-box) has to already
+    // be applied for the scale math to measure the right container size.
+    if (wrapper) {
+        wrapper.classList.toggle('mobile-mode', window.pageBuilderPreviewDevice !== 'desktop');
+    }
 
     const containerWidth = box.clientWidth;
     // 0 while the Page Builder tab's ancestor is display:none -- bail rather
@@ -297,9 +305,7 @@ window.applyPageBuilderPreviewDevice = function() {
 };
 
 window.addEventListener('resize', function() {
-    if (window.pageBuilderPreviewDevice === 'desktop') {
-        window.applyPageBuilderPreviewDevice();
-    }
+    window.applyPageBuilderPreviewDevice();
 });
 
 // Page Builder's page-switcher (Home/About/Menu/Gallery/Policy tabs above the
