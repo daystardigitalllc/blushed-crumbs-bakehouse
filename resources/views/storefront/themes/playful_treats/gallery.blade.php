@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/storefront-base.css') }}">
     <link rel="stylesheet" href="{{ asset($tenant->themeCssPath()) }}">
+    @include('storefront.partials.color_override')
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 
@@ -46,8 +47,8 @@
 <div id="gallery-page-view">
     <section class="playful-page-hero">
         <span class="playful-page-hero-kicker">Follow Along</span>
-        <h1 class="playful-page-hero-title">Our Gallery</h1>
-        <p style="font-size:1.05rem; color:var(--dark-text); max-width:600px; margin:14px auto 0 auto; padding:0 15px;">Explore our latest custom creations uploaded directly from our kitchen!</p>
+        <h1 class="playful-page-hero-title">{{ $tenant->getSiteContent('gallery_hero_title', 'Our Gallery') }}</h1>
+        <p style="font-size:1.05rem; color:var(--dark-text); max-width:600px; margin:14px auto 0 auto; padding:0 15px;">{{ $tenant->getSiteContent('gallery_hero_text', 'Explore our latest custom creations uploaded directly from our kitchen!') }}</p>
     </section>
 
     <section class="gallery-page-section" style="padding-top:0;">
@@ -75,8 +76,8 @@
             @empty
                 <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #888;">
                     <span class="material-symbols-outlined playful-icon" style="font-size: 3rem; display: block; margin-bottom: 12px;">photo_camera</span>
-                    <h3 style="color: var(--dark-text); margin-bottom: 8px;">No Gallery Photos Published Yet</h3>
-                    <p style="font-size: 0.95rem;">Upload photos directly from your phone, tablet, or computer in the Baker Admin Portal under <strong>Device Gallery</strong> to display them here live!</p>
+                    <h3 style="color: var(--dark-text); margin-bottom: 8px;">{{ $tenant->getSiteContent('gallery_empty_title', 'No Gallery Photos Published Yet') }}</h3>
+                    <p style="font-size: 0.95rem;">{!! $tenant->getSiteContent('gallery_empty_text', 'Upload photos directly from your phone, tablet, or computer in the Baker Admin Portal under <strong>Device Gallery</strong> to display them here live!') !!}</p>
                 </div>
             @endforelse
         </div>

@@ -13,6 +13,7 @@
     <!-- CSS Assets -->
     <link rel="stylesheet" href="{{ asset('css/storefront-base.css') }}">
     <link rel="stylesheet" href="{{ asset($tenant->themeCssPath()) }}">
+    @include('storefront.partials.color_override')
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 

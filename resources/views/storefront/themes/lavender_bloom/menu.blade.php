@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/storefront-base.css') }}">
     <link rel="stylesheet" href="{{ asset($tenant->themeCssPath()) }}">
+    @include('storefront.partials.color_override')
     <style>
         .lb-menu-hero-section {
             background: var(--lb-lavender, #f6eefa);
@@ -148,9 +149,9 @@
 
 <div id="menu-page-view">
     <section class="lb-menu-hero-section">
-        <span class="lb-menu-hero-subtitle">OUR OFFERINGS</span>
-        <h1 class="lb-menu-hero-title">Menu &amp; Pricing</h1>
-        <p style="font-size:1.05rem; color:var(--lb-ink); opacity:0.85; max-width:650px; margin:0 auto 24px auto;">Explore our handcrafted baked goods and custom options.</p>
+        <span class="lb-menu-hero-subtitle">{{ $tenant->getSiteContent('menu_hero_subtitle', 'OUR OFFERINGS') }}</span>
+        <h1 class="lb-menu-hero-title">{{ $tenant->getSiteContent('menu_hero_title', 'Menu & Pricing') }}</h1>
+        <p style="font-size:1.05rem; color:var(--lb-ink); opacity:0.85; max-width:650px; margin:0 auto 24px auto;">{{ $tenant->getSiteContent('menu_hero_text', 'Explore our handcrafted baked goods and custom options.') }}</p>
         <button onclick="openOrderModal()" class="btn btn-primary" style="padding:12px 32px; font-size:0.95rem; border-radius:30px;">
             Order Custom Creation <span class="material-symbols-outlined" style="font-size:1.1rem; vertical-align:-3px;">cake</span>
         </button>
@@ -171,9 +172,9 @@
         <!-- NO MENU CONFIGURED PLACEHOLDER -->
         <section style="max-width:700px; margin:70px auto; padding:60px 30px; text-align:center; background:var(--theme-card-bg, #ffffff); border-radius:24px; border:2px dashed var(--lb-purple, #8e4fa3); box-shadow:0 10px 30px rgba(94,44,120,0.06);">
             <div class="material-symbols-outlined lb-icon" style="font-size:3.5rem; margin-bottom:16px;">bakery_dining</div>
-            <h2 style="font-family:var(--theme-heading-font); color:var(--lb-ink); font-size:1.8rem; margin-bottom:12px;">Menu Coming Soon</h2>
+            <h2 style="font-family:var(--theme-heading-font); color:var(--lb-ink); font-size:1.8rem; margin-bottom:12px;">{{ $tenant->getSiteContent('menu_empty_title', 'Menu Coming Soon') }}</h2>
             <p style="font-size:1.05rem; color:#666; max-width:500px; margin:0 auto 24px auto; line-height:1.6;">
-                This bakery hasn't set up their menu yet. Please check back later or request a custom quote directly!
+                {{ $tenant->getSiteContent('menu_empty_text', "This bakery hasn't set up their menu yet. Please check back later or request a custom quote directly!") }}
             </p>
             <button onclick="openOrderModal()" class="btn btn-primary" style="padding:12px 30px; font-size:0.9rem; border-radius:30px;">
                 Request Custom Order Quote <span class="material-symbols-outlined" style="font-size:1rem; vertical-align:-2px;">cake</span>

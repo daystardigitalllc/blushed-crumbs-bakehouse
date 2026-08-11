@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/storefront-base.css') }}">
     <link rel="stylesheet" href="{{ asset($tenant->themeCssPath()) }}">
+    @include('storefront.partials.color_override')
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 
@@ -46,7 +47,7 @@
 <div id="gallery-page-view">
     <section class="petal-page-hero">
         <span class="subheading">Take A Look</span>
-        <h1 class="petal-page-hero-title">Gallery</h1>
+        <h1 class="petal-page-hero-title">{{ $tenant->getSiteContent('gallery_hero_title', 'Gallery') }}</h1>
     </section>
 
     <section class="gallery-page-section" style="padding-top:60px;">
@@ -74,8 +75,8 @@
             @empty
                 <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #888;">
                     <span class="material-symbols-outlined petal-icon" style="font-size: 3rem; display: block; margin-bottom: 12px;">photo_camera</span>
-                    <h3 style="color: var(--dark-text); margin-bottom: 8px;">No Gallery Photos Published Yet</h3>
-                    <p style="font-size: 0.95rem;">Upload photos directly from your phone, tablet, or computer in the Baker Admin Portal under <strong>Device Gallery</strong> to display them here live!</p>
+                    <h3 style="color: var(--dark-text); margin-bottom: 8px;">{{ $tenant->getSiteContent('gallery_empty_title', 'No Gallery Photos Published Yet') }}</h3>
+                    <p style="font-size: 0.95rem;">{!! $tenant->getSiteContent('gallery_empty_text', 'Upload photos directly from your phone, tablet, or computer in the Baker Admin Portal under <strong>Device Gallery</strong> to display them here live!') !!}</p>
                 </div>
             @endforelse
         </div>

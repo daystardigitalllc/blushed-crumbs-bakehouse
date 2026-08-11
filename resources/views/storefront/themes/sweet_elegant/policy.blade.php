@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=Outfit:wght@500;600;700&family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/storefront-base.css') }}">
     <link rel="stylesheet" href="{{ asset($tenant->themeCssPath()) }}">
+    @include('storefront.partials.color_override')
     <style>
         .policy-hero-section {
             background: var(--theme-section-bg, var(--pink-bg, #fff7fa));
@@ -142,7 +143,7 @@
         <span class="policy-hero-subtitle">TERMS &amp; GUIDELINES</span>
         <h1 class="policy-hero-title">Bakery Policy</h1>
         <p style="font-size:1.05rem; color:var(--dark-text); opacity:0.85; max-width:650px; margin:0 auto 24px auto;">
-            Please read carefully before placing your order. These policies ensure every custom order receives the highest standard of care and quality.
+            {{ $tenant->getSiteContent('policy_intro_text', 'Please read carefully before placing your order. These policies ensure every custom order receives the highest standard of care and quality.') }}
         </p>
         <button onclick="openOrderModal()" class="btn btn-primary" style="padding:12px 32px; font-size:1.05rem; border-radius:30px;">
             I Agree — Order Now 🍰

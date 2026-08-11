@@ -168,6 +168,7 @@ Route::middleware(['auth', 'tenant.owner'])->prefix('dashboard')->group(function
     Route::post('/settings/email', [AdminController::class, 'saveEmailRouting'])->name('admin.settings.email.save');
     Route::post('/theme', [AdminController::class, 'saveTheme'])->name('admin.theme.save');
     Route::post('/settings/business', [AdminController::class, 'saveBusinessInfo'])->name('admin.settings.business');
+    Route::post('/settings/colors', [AdminController::class, 'saveBrandColors'])->name('admin.settings.colors');
     Route::post('/sections', [AdminController::class, 'saveSectionSettings'])->name('admin.sections.save');
     Route::post('/sections/preview', [AdminController::class, 'previewSectionSettings'])->name('admin.sections.preview');
     Route::post('/upload-media', [AdminController::class, 'uploadMedia'])->name('admin.media.upload');

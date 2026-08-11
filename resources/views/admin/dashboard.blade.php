@@ -2577,7 +2577,121 @@
                                 </div>
                             </div>
 
+                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
+                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">About Page Copy</h5>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                                    <div style="grid-column:1/-1;">
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Customer Testimonial Quote</label>
+                                        <input type="text" name="about_testimonial_quote" value="{{ data_get($siteContent, 'about_testimonial_quote') }}" placeholder="Ordering from {{ $tenant->name }} was absolute perfection!..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Testimonial Name</label>
+                                        <input type="text" name="about_testimonial_name" value="{{ data_get($siteContent, 'about_testimonial_name') }}" placeholder="Happy Client" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Testimonial Role</label>
+                                        <input type="text" name="about_testimonial_role" value="{{ data_get($siteContent, 'about_testimonial_role') }}" placeholder="Verified Customer" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
+                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Menu Page Copy</h5>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Eyebrow</label>
+                                        <input type="text" name="menu_hero_subtitle" value="{{ data_get($siteContent, 'menu_hero_subtitle') }}" placeholder="OUR OFFERINGS" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Title</label>
+                                        <input type="text" name="menu_hero_title" value="{{ data_get($siteContent, 'menu_hero_title') }}" placeholder="Menu & Pricing" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div style="grid-column:1/-1;">
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Subtext</label>
+                                        <input type="text" name="menu_hero_text" value="{{ data_get($siteContent, 'menu_hero_text') }}" placeholder="Explore our handcrafted baked goods and custom options." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">"No Menu Yet" Title</label>
+                                        <input type="text" name="menu_empty_title" value="{{ data_get($siteContent, 'menu_empty_title') }}" placeholder="Menu Coming Soon" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div style="grid-column:span 2;">
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">"No Menu Yet" Text</label>
+                                        <input type="text" name="menu_empty_text" value="{{ data_get($siteContent, 'menu_empty_text') }}" placeholder="This bakery hasn't set up their menu yet..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
+                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Gallery Page Copy</h5>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Title</label>
+                                        <input type="text" name="gallery_hero_title" value="{{ data_get($siteContent, 'gallery_hero_title') }}" placeholder="Our Gallery" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div style="grid-column:span 2;">
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Subtext</label>
+                                        <input type="text" name="gallery_hero_text" value="{{ data_get($siteContent, 'gallery_hero_text') }}" placeholder="Explore our latest custom creations..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">"No Photos Yet" Title</label>
+                                        <input type="text" name="gallery_empty_title" value="{{ data_get($siteContent, 'gallery_empty_title') }}" placeholder="No Gallery Photos Published Yet" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div style="grid-column:span 2;">
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">"No Photos Yet" Text</label>
+                                        <input type="text" name="gallery_empty_text" value="{{ data_get($siteContent, 'gallery_empty_text') }}" placeholder="Upload photos directly from your phone..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
+                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Policy Page Intro</h5>
+                                <div>
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Intro Paragraph</label>
+                                    <input type="text" name="policy_intro_text" value="{{ data_get($siteContent, 'policy_intro_text') }}" placeholder="Please read carefully before placing your order..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                </div>
+                            </div>
+
                             <button type="button" class="btn btn-primary" onclick="saveBusinessInfoForm()" style="background:var(--primary); border-color:var(--primary);">Save Business Info & SEO</button>
+                        </form>
+                    </div>
+
+                    <!-- BRAND COLORS CARD -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa); margin-bottom:20px;">
+                        <h4 style="color:var(--dark-text); margin-bottom:6px;">Brand Colors</h4>
+                        <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Override your theme's default colors. Turn a color off to go back to your theme's original look.</p>
+
+                        <div id="brand-colors-msg" style="display:none; margin-bottom:14px; background:var(--theme-section-bg, #d1fae5); color:var(--dark-text); padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid var(--theme-section-bg, #a7f3d0);"></div>
+
+                        <form id="brand-colors-form">
+                            @csrf
+                            <input type="hidden" name="subdomain" value="{{ $tenant->subdomain ?? $tenant->slug }}">
+                            @php
+                                $themeDefaultColors = $tenant->themeDefaultColors();
+                            @endphp
+                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+                                @foreach([
+                                    ['key' => 'primary_color', 'label' => 'Primary Color', 'default' => $themeDefaultColors['primary']],
+                                    ['key' => 'secondary_color', 'label' => 'Secondary Color', 'default' => $themeDefaultColors['secondary']],
+                                    ['key' => 'button_color', 'label' => 'Button Color', 'default' => $themeDefaultColors['button']],
+                                    ['key' => 'text_color', 'label' => 'Text Color', 'default' => $themeDefaultColors['text']],
+                                ] as $colorField)
+                                    @php $currentVal = $tenant->{$colorField['key']}; @endphp
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                                            <input type="checkbox" class="brand-color-toggle" data-target="{{ $colorField['key'] }}" {{ $currentVal ? 'checked' : '' }} onchange="toggleBrandColorInput(this)">
+                                            {{ $colorField['label'] }}
+                                        </label>
+                                        <input type="color"
+                                               name="{{ $colorField['key'] }}"
+                                               id="color-{{ $colorField['key'] }}"
+                                               value="{{ $currentVal ?: $colorField['default'] }}"
+                                               data-default="{{ $colorField['default'] }}"
+                                               {{ $currentVal ? '' : 'disabled' }}
+                                               style="width:100%; height:42px; border-radius:8px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                @endforeach
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="saveBrandColorsForm()" style="background:var(--primary); border-color:var(--primary); margin-top:16px;">Save Brand Colors</button>
                         </form>
                     </div>
 

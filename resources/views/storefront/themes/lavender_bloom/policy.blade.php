@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/storefront-base.css') }}">
     <link rel="stylesheet" href="{{ asset($tenant->themeCssPath()) }}">
+    @include('storefront.partials.color_override')
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 
@@ -55,7 +56,7 @@
         <span class="lb-page-hero-kicker">Terms &amp; Guidelines</span>
         <h1 class="lb-page-hero-title">Bakery Policy</h1>
         <p style="font-size:1.05rem; color:var(--lb-ink); opacity:0.85; max-width:650px; margin:14px auto 24px auto; padding:0 15px;">
-            Please read carefully before placing your order. These policies ensure every custom order receives the highest standard of care and quality.
+            {{ $tenant->getSiteContent('policy_intro_text', 'Please read carefully before placing your order. These policies ensure every custom order receives the highest standard of care and quality.') }}
         </p>
         <button onclick="openOrderModal()" class="btn btn-primary" style="padding:12px 32px; font-size:1.05rem; border-radius:30px;">
             I Agree — Order Now
