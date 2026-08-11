@@ -1663,11 +1663,11 @@
                                         @elseif($secId === 'about')
                                             <div>
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Title</label>
-                                                <input type="text" name="about_title" value="{{ data_get($siteContent, 'about_title') }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; margin-bottom:12px;">
+                                                <input type="text" id="about_title_home" name="about_title" value="{{ data_get($siteContent, 'about_title') }}" oninput="var m=document.getElementById('about_title_page_about'); if(m) m.value=this.value;" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; margin-bottom:12px;">
                                             </div>
                                             <div>
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Story / Bio</label>
-                                                <textarea name="about_bio" rows="4" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;">{{ data_get($siteContent, 'about_bio') }}</textarea>
+                                                <textarea id="about_bio_home" name="about_bio" rows="4" oninput="var m=document.getElementById('about_bio_page_about'); if(m) m.value=this.value;" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;">{{ data_get($siteContent, 'about_bio') }}</textarea>
                                             </div>
 
                                         @elseif($secId === 'highlights')
@@ -1926,11 +1926,27 @@
                             </div>
                             <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
                                 <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">Founder Story</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">Also shown on your homepage's <strong>About / Our Story</strong> section.</p>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Title</label>
+                                        <input type="text" id="about_title_page_about" value="{{ data_get($siteContent, 'about_title') }}" placeholder="About Our Bakery" oninput="var m=document.getElementById('about_title_home'); if(m) m.value=this.value;" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; margin-bottom:12px;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Story / Bio</label>
+                                        <textarea id="about_bio_page_about" rows="4" oninput="var m=document.getElementById('about_bio_home'); if(m) m.value=this.value;" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;">{{ data_get($siteContent, 'about_bio') }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
                                     <strong style="color:#27272a; font-size:0.85rem;">Customer Testimonial</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
                                 <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
-                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">The Section Title &amp; Story/Bio shown on this page are the same ones from the <strong>About / Our Story</strong> section on the Home tab.</p>
                                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                         <div style="grid-column:1/-1;">
                                             <label style="font-weight:600; font-size:0.82rem; color:#555;">Customer Testimonial Quote</label>
