@@ -253,11 +253,14 @@ window.refreshPageBuilderPreview = function() {
     frame.src = base + '?_preview=' + Date.now();
 };
 
-// "Desktop" mode renders the iframe at a tablet-ish width and scales it down
-// with a CSS transform to show a wider breakpoint than mobile -- deliberately
-// NOT a true 1280px desktop render, since scaling that down to fit the fixed
-// sidebar column would be ~30% scale and unreadable. This keeps the sidebar
-// column exactly where it always is; only what's inside the frame changes.
+// Both modes render the iframe at a fixed target width and scale it down
+// with a CSS transform to fit the preview box, rather than letting either
+// mode fall back to the container's natural width -- on a wide screen the
+// preview column can easily exceed 768px on its own, which made "mobile"
+// (previously just width:100%) render exactly as wide as desktop and look
+// like the toggle did nothing. Forcing a real phone-width viewport for
+// mobile guarantees the two modes always actually differ.
+window.PAGE_BUILDER_MOBILE_PREVIEW_WIDTH = 390;
 window.PAGE_BUILDER_DESKTOP_PREVIEW_WIDTH = 820;
 window.pageBuilderPreviewDevice = 'mobile';
 
@@ -278,18 +281,19 @@ window.applyPageBuilderPreviewDevice = function() {
     const iframe = document.getElementById('page-builder-preview-iframe');
     if (!box || !iframe) return;
 
-    if (window.pageBuilderPreviewDevice === 'desktop') {
-        const previewWidth = window.PAGE_BUILDER_DESKTOP_PREVIEW_WIDTH;
-        const containerWidth = box.clientWidth;
-        const scale = Math.min(1, containerWidth / previewWidth);
-        iframe.style.width = previewWidth + 'px';
-        iframe.style.height = (box.clientHeight / scale) + 'px';
-        iframe.style.transform = 'scale(' + scale + ')';
-    } else {
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.transform = 'none';
-    }
+    const containerWidth = box.clientWidth;
+    // 0 while the Page Builder tab's ancestor is display:none -- bail rather
+    // than divide by a zero-derived scale, which would set an "Infinitypx"
+    // height and a scale(0) transform that collapses the iframe to nothing.
+    if (containerWidth === 0) return;
+
+    const previewWidth = window.pageBuilderPreviewDevice === 'desktop'
+        ? window.PAGE_BUILDER_DESKTOP_PREVIEW_WIDTH
+        : window.PAGE_BUILDER_MOBILE_PREVIEW_WIDTH;
+    const scale = Math.min(1, containerWidth / previewWidth);
+    iframe.style.width = previewWidth + 'px';
+    iframe.style.height = (box.clientHeight / scale) + 'px';
+    iframe.style.transform = 'scale(' + scale + ')';
 };
 
 window.addEventListener('resize', function() {
@@ -1236,6 +1240,14 @@ function initAdminPortal() {
 
             if (btn.dataset.tab === 'tab-calendar' && window.initAdminCalendarUI) {
                 window.initAdminCalendarUI();
+            }
+
+            // The preview iframe's scale-to-fit math reads box.clientWidth,
+            // which is 0 while this tab's ancestor is display:none -- has to
+            // be re-applied once the tab is actually visible, not just on
+            // page load (when Page Builder usually isn't the active tab yet).
+            if (btn.dataset.tab === 'tab-page-builder' && window.applyPageBuilderPreviewDevice) {
+                window.applyPageBuilderPreviewDevice();
             }
 
             // Auto-close mobile drawer when a tab is selected
