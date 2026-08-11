@@ -298,6 +298,43 @@ window.addEventListener('resize', function() {
     }
 });
 
+// Page Builder's page-switcher (Home/About/Menu/Gallery/Policy tabs above the
+// editor sidebar). Swaps which accordion panel is visible and re-renders the
+// preview for that page, carrying forward whatever's currently typed in the
+// form (an unsaved edit shouldn't look discarded just from switching tabs).
+window.switchPageBuilderPage = function(page, btnEl) {
+    document.querySelectorAll('.pagebuilder-page-tab').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    document.querySelectorAll('.pagebuilder-page-panel').forEach(p => { p.style.display = 'none'; });
+    const panel = document.getElementById('pagebuilder-page-panel-' + page) ||
+        document.querySelector('.pagebuilder-page-panel[data-page="' + page + '"]');
+    if (panel) panel.style.display = 'flex';
+
+    const pageInput = document.getElementById('page-builder-active-page');
+    if (pageInput) pageInput.value = page;
+
+    const urls = window.PAGE_BUILDER_PAGE_URLS || {};
+    const liveUrl = urls[page];
+    if (liveUrl) {
+        const frame = document.getElementById('page-builder-preview-iframe');
+        // Reset to this page's real published URL first -- this is the
+        // fallback refreshPageBuilderPreview() ("Show Live") reloads from,
+        // and it's immediately overlaid below by the fresh draft render
+        // (srcdoc always wins over src once both are present).
+        if (frame) {
+            frame.removeAttribute('srcdoc');
+            frame.src = liveUrl;
+        }
+        const openLink = document.getElementById('page-builder-open-live-link');
+        if (openLink) openLink.href = liveUrl;
+    }
+
+    if (window.renderPageBuilderDraftPreview) {
+        window.renderPageBuilderDraftPreview();
+    }
+};
+
 // Order Form Builder preview device toggle. Unlike the Page Builder preview,
 // this mockup is plain DOM (populated by renderLivePreview() from
 // window._customFields), not an iframe -- so switching devices is just a
@@ -472,6 +509,12 @@ function initPageBuilderLivePreview() {
 
     form.addEventListener('input', schedulePageBuilderPreview);
     form.addEventListener('change', schedulePageBuilderPreview);
+
+    // Exposed so switchPageBuilderPage() can force an immediate re-render when
+    // the baker changes page tabs -- a tab click isn't a form input/change
+    // event, so without this the preview would keep showing whichever page
+    // was last edited instead of the newly selected one.
+    window.renderPageBuilderDraftPreview = renderDraftPreview;
 
     function schedulePageBuilderPreview() {
         const statusEl = document.getElementById('page-builder-preview-status');

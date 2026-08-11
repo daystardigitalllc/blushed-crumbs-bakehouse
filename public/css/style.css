@@ -9138,6 +9138,39 @@ body.theme-sunny_whisk {
     padding: 2px;
 }
 
+/* Page Builder's page-switcher (Home/About/Menu/Gallery/Policy) -- sits above
+   the editor sidebar, distinct from .preview-device-toggle's small pill style
+   since these need to read as primary navigation, not a secondary setting. */
+.pagebuilder-page-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #eee;
+}
+
+.pagebuilder-page-tab {
+    border: none;
+    background: transparent;
+    color: #71717a;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 9px 16px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.pagebuilder-page-tab:hover {
+    color: #27272a;
+}
+
+.pagebuilder-page-tab.active {
+    color: var(--primary, #a855f7);
+    border-bottom-color: var(--primary, #a855f7);
+}
+
 .preview-device-btn {
     border: none;
     background: transparent;

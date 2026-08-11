@@ -473,19 +473,6 @@ class AdminController extends Controller
             'policy_pickup_hours' => 'nullable|string|max:100',
             'policy_closed_days' => 'nullable|string|max:100',
             'policy_extra_layer_fee' => 'nullable|string|max:10',
-            'about_testimonial_quote' => 'nullable|string|max:500',
-            'about_testimonial_name' => 'nullable|string|max:100',
-            'about_testimonial_role' => 'nullable|string|max:100',
-            'menu_hero_subtitle' => 'nullable|string|max:100',
-            'menu_hero_title' => 'nullable|string|max:150',
-            'menu_hero_text' => 'nullable|string|max:500',
-            'menu_empty_title' => 'nullable|string|max:150',
-            'menu_empty_text' => 'nullable|string|max:500',
-            'gallery_hero_title' => 'nullable|string|max:150',
-            'gallery_hero_text' => 'nullable|string|max:500',
-            'gallery_empty_title' => 'nullable|string|max:150',
-            'gallery_empty_text' => 'nullable|string|max:1000',
-            'policy_intro_text' => 'nullable|string|max:600',
         ]);
 
         $tenant->update([
@@ -513,19 +500,6 @@ class AdminController extends Controller
             'policy_pickup_hours' => $data['policy_pickup_hours'] ?? ($currentContent['policy_pickup_hours'] ?? '10:00am – 4:00pm'),
             'policy_closed_days' => $data['policy_closed_days'] ?? ($currentContent['policy_closed_days'] ?? 'Sundays or Mondays'),
             'policy_extra_layer_fee' => $data['policy_extra_layer_fee'] ?? ($currentContent['policy_extra_layer_fee'] ?? '20'),
-            'about_testimonial_quote' => $data['about_testimonial_quote'] ?? ($currentContent['about_testimonial_quote'] ?? ''),
-            'about_testimonial_name' => $data['about_testimonial_name'] ?? ($currentContent['about_testimonial_name'] ?? ''),
-            'about_testimonial_role' => $data['about_testimonial_role'] ?? ($currentContent['about_testimonial_role'] ?? ''),
-            'menu_hero_subtitle' => $data['menu_hero_subtitle'] ?? ($currentContent['menu_hero_subtitle'] ?? ''),
-            'menu_hero_title' => $data['menu_hero_title'] ?? ($currentContent['menu_hero_title'] ?? ''),
-            'menu_hero_text' => $data['menu_hero_text'] ?? ($currentContent['menu_hero_text'] ?? ''),
-            'menu_empty_title' => $data['menu_empty_title'] ?? ($currentContent['menu_empty_title'] ?? ''),
-            'menu_empty_text' => $data['menu_empty_text'] ?? ($currentContent['menu_empty_text'] ?? ''),
-            'gallery_hero_title' => $data['gallery_hero_title'] ?? ($currentContent['gallery_hero_title'] ?? ''),
-            'gallery_hero_text' => $data['gallery_hero_text'] ?? ($currentContent['gallery_hero_text'] ?? ''),
-            'gallery_empty_title' => $data['gallery_empty_title'] ?? ($currentContent['gallery_empty_title'] ?? ''),
-            'gallery_empty_text' => $data['gallery_empty_text'] ?? ($currentContent['gallery_empty_text'] ?? ''),
-            'policy_intro_text' => $data['policy_intro_text'] ?? ($currentContent['policy_intro_text'] ?? ''),
         ]);
         $tenant->update(['site_content' => $updatedContent]);
 
@@ -732,6 +706,19 @@ class AdminController extends Controller
             'marquee_text' => $request->input('marquee_text', $currentContent['marquee_text'] ?? ''),
             'featured_gallery_title' => $request->input('featured_gallery_title', $currentContent['featured_gallery_title'] ?? ''),
             'featured_gallery_images' => $processedFeaturedImages,
+            'about_testimonial_quote' => $request->input('about_testimonial_quote', $currentContent['about_testimonial_quote'] ?? ''),
+            'about_testimonial_name' => $request->input('about_testimonial_name', $currentContent['about_testimonial_name'] ?? ''),
+            'about_testimonial_role' => $request->input('about_testimonial_role', $currentContent['about_testimonial_role'] ?? ''),
+            'menu_hero_subtitle' => $request->input('menu_hero_subtitle', $currentContent['menu_hero_subtitle'] ?? ''),
+            'menu_hero_title' => $request->input('menu_hero_title', $currentContent['menu_hero_title'] ?? ''),
+            'menu_hero_text' => $request->input('menu_hero_text', $currentContent['menu_hero_text'] ?? ''),
+            'menu_empty_title' => $request->input('menu_empty_title', $currentContent['menu_empty_title'] ?? ''),
+            'menu_empty_text' => $request->input('menu_empty_text', $currentContent['menu_empty_text'] ?? ''),
+            'gallery_hero_title' => $request->input('gallery_hero_title', $currentContent['gallery_hero_title'] ?? ''),
+            'gallery_hero_text' => $request->input('gallery_hero_text', $currentContent['gallery_hero_text'] ?? ''),
+            'gallery_empty_title' => $request->input('gallery_empty_title', $currentContent['gallery_empty_title'] ?? ''),
+            'gallery_empty_text' => $request->input('gallery_empty_text', $currentContent['gallery_empty_text'] ?? ''),
+            'policy_intro_text' => $request->input('policy_intro_text', $currentContent['policy_intro_text'] ?? ''),
         ]);
 
         $tenant->update([
@@ -886,6 +873,19 @@ class AdminController extends Controller
             'marquee_text' => $request->input('marquee_text', $currentContent['marquee_text'] ?? ''),
             'featured_gallery_title' => $request->input('featured_gallery_title', $currentContent['featured_gallery_title'] ?? ''),
             'featured_gallery_images' => $processedFeaturedImages,
+            'about_testimonial_quote' => $request->input('about_testimonial_quote', $currentContent['about_testimonial_quote'] ?? ''),
+            'about_testimonial_name' => $request->input('about_testimonial_name', $currentContent['about_testimonial_name'] ?? ''),
+            'about_testimonial_role' => $request->input('about_testimonial_role', $currentContent['about_testimonial_role'] ?? ''),
+            'menu_hero_subtitle' => $request->input('menu_hero_subtitle', $currentContent['menu_hero_subtitle'] ?? ''),
+            'menu_hero_title' => $request->input('menu_hero_title', $currentContent['menu_hero_title'] ?? ''),
+            'menu_hero_text' => $request->input('menu_hero_text', $currentContent['menu_hero_text'] ?? ''),
+            'menu_empty_title' => $request->input('menu_empty_title', $currentContent['menu_empty_title'] ?? ''),
+            'menu_empty_text' => $request->input('menu_empty_text', $currentContent['menu_empty_text'] ?? ''),
+            'gallery_hero_title' => $request->input('gallery_hero_title', $currentContent['gallery_hero_title'] ?? ''),
+            'gallery_hero_text' => $request->input('gallery_hero_text', $currentContent['gallery_hero_text'] ?? ''),
+            'gallery_empty_title' => $request->input('gallery_empty_title', $currentContent['gallery_empty_title'] ?? ''),
+            'gallery_empty_text' => $request->input('gallery_empty_text', $currentContent['gallery_empty_text'] ?? ''),
+            'policy_intro_text' => $request->input('policy_intro_text', $currentContent['policy_intro_text'] ?? ''),
         ]);
 
         // In-memory only -- deliberately no ->save()/->update() call.
@@ -906,7 +906,14 @@ class AdminController extends Controller
         $reviews = Review::where('tenant_id', $tenant->id)->where('is_featured', true)->latest()->limit($maxReviews)->get();
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
 
-        return view($tenant->themeView('index'), compact('tenant', 'products', 'reviews', 'gallery'));
+        // Restricted to a known list -- $page flows straight into themeView()'s
+        // view name, so an unvalidated value here would let the client request
+        // an arbitrary Blade view.
+        $page = in_array($request->input('page'), ['index', 'about', 'menu', 'gallery', 'policy'], true)
+            ? $request->input('page')
+            : 'index';
+
+        return view($tenant->themeView($page), compact('tenant', 'products', 'reviews', 'gallery'));
     }
 
     public function uploadMedia(Request $request)

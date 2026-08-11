@@ -1552,8 +1552,26 @@
             <div id="tab-page-builder" class="tab-content">
                 <div class="section-header">
                     <h3>Page Builder</h3>
-                    <p class="subtitle">Edit your homepage's text, images, and section order. Changes go live when you save.</p>
+                    <p class="subtitle">Edit your site's text, images, and section order. Changes go live when you save.</p>
                 </div>
+
+                <div class="pagebuilder-page-tabs">
+                    <button type="button" class="pagebuilder-page-tab active" data-page="index" onclick="switchPageBuilderPage('index', this)">🏠 Home</button>
+                    <button type="button" class="pagebuilder-page-tab" data-page="about" onclick="switchPageBuilderPage('about', this)">About</button>
+                    <button type="button" class="pagebuilder-page-tab" data-page="menu" onclick="switchPageBuilderPage('menu', this)">Menu</button>
+                    <button type="button" class="pagebuilder-page-tab" data-page="gallery" onclick="switchPageBuilderPage('gallery', this)">Gallery</button>
+                    <button type="button" class="pagebuilder-page-tab" data-page="policy" onclick="switchPageBuilderPage('policy', this)">Policy</button>
+                </div>
+
+                <script>
+                    window.PAGE_BUILDER_PAGE_URLS = {
+                        index: {!! json_encode($tenant->publicUrl()) !!},
+                        about: {!! json_encode($tenant->publicUrl('about')) !!},
+                        menu: {!! json_encode($tenant->publicUrl('menu')) !!},
+                        gallery: {!! json_encode($tenant->publicUrl('gallery')) !!},
+                        policy: {!! json_encode($tenant->publicUrl('policy')) !!}
+                    };
+                </script>
 
                 <div class="form-builder-workspace" id="page-builder-workspace" style="display:grid; grid-template-columns:0.8fr 1.2fr; gap:30px; align-items:start;">
                 <div class="form-builder-left-col">
@@ -1571,13 +1589,17 @@
                              posts to an un-scoped /dashboard/sections URL and would silently land on
                              the superadmin's own tenant instead. See AdminController::tenant(). --}}
                         <input type="hidden" name="subdomain" value="{{ $tenant->subdomain ?? $tenant->slug }}">
+                        {{-- Which page tab is active -- irrelevant to what gets saved (a save always
+                             applies to the whole tenant), but read by the live-preview endpoint so it
+                             renders the page the baker is actually looking at. --}}
+                        <input type="hidden" id="page-builder-active-page" name="page" value="index">
                         @php
                             $orderedSections = $tenant->getOrderedSections();
                             $siteContent = $tenant->site_content ?? App\Models\Tenant::getDefaultSiteContent();
                             $bullets = data_get($siteContent, 'whimsical_bullets', []);
                         @endphp
 
-                        <div id="section-manager-list" style="display:flex; flex-direction:column; gap:6px;">
+                        <div id="section-manager-list" class="pagebuilder-page-panel" data-page="index" style="display:flex; flex-direction:column; gap:6px;">
                             @foreach($orderedSections as $secId => $sec)
                                 @php
                                     // Defensive: strips any leading emoji from section names saved to a
@@ -1885,6 +1907,136 @@
                                 </div>
                             @endforeach
                         </div>
+
+                        <!-- ABOUT PAGE PANEL -->
+                        <div id="pagebuilder-page-panel-about" class="pagebuilder-page-panel" data-page="about" style="display:none; flex-direction:column; gap:6px;">
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">Customer Testimonial</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">The Section Title &amp; Story/Bio shown on this page are the same ones from the <strong>About / Our Story</strong> section on the Home tab.</p>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                                        <div style="grid-column:1/-1;">
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Customer Testimonial Quote</label>
+                                            <input type="text" name="about_testimonial_quote" value="{{ data_get($siteContent, 'about_testimonial_quote') }}" placeholder="Ordering from {{ $tenant->name }} was absolute perfection!..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Testimonial Name</label>
+                                            <input type="text" name="about_testimonial_name" value="{{ data_get($siteContent, 'about_testimonial_name') }}" placeholder="Happy Client" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Testimonial Role</label>
+                                            <input type="text" name="about_testimonial_role" value="{{ data_get($siteContent, 'about_testimonial_role') }}" placeholder="Verified Customer" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MENU PAGE PANEL -->
+                        <div id="pagebuilder-page-panel-menu" class="pagebuilder-page-panel" data-page="menu" style="display:none; flex-direction:column; gap:6px;">
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">Hero Banner</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Eyebrow</label>
+                                            <input type="text" name="menu_hero_subtitle" value="{{ data_get($siteContent, 'menu_hero_subtitle') }}" placeholder="OUR OFFERINGS" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Title</label>
+                                            <input type="text" name="menu_hero_title" value="{{ data_get($siteContent, 'menu_hero_title') }}" placeholder="Menu & Pricing" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                        <div style="grid-column:1/-1;">
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Subtext</label>
+                                            <input type="text" name="menu_hero_text" value="{{ data_get($siteContent, 'menu_hero_text') }}" placeholder="Explore our handcrafted baked goods and custom options." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">"No Menu Yet" Placeholder</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">Shown only until you upload a menu image/PDF or add products in the <strong>Menu Manager</strong>.</p>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Title</label>
+                                            <input type="text" name="menu_empty_title" value="{{ data_get($siteContent, 'menu_empty_title') }}" placeholder="Menu Coming Soon" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Text</label>
+                                            <input type="text" name="menu_empty_text" value="{{ data_get($siteContent, 'menu_empty_text') }}" placeholder="This bakery hasn't set up their menu yet..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GALLERY PAGE PANEL -->
+                        <div id="pagebuilder-page-panel-gallery" class="pagebuilder-page-panel" data-page="gallery" style="display:none; flex-direction:column; gap:6px;">
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">Hero Banner</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Title</label>
+                                            <input type="text" name="gallery_hero_title" value="{{ data_get($siteContent, 'gallery_hero_title') }}" placeholder="Our Gallery" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                        <div style="grid-column:span 2;">
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Subtext</label>
+                                            <input type="text" name="gallery_hero_text" value="{{ data_get($siteContent, 'gallery_hero_text') }}" placeholder="Explore our latest custom creations..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">"No Photos Yet" Placeholder</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">Shown only until you upload a photo in <strong>Device Gallery</strong>.</p>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Title</label>
+                                            <input type="text" name="gallery_empty_title" value="{{ data_get($siteContent, 'gallery_empty_title') }}" placeholder="No Gallery Photos Published Yet" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                        <div>
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Text</label>
+                                            <input type="text" name="gallery_empty_text" value="{{ data_get($siteContent, 'gallery_empty_text') }}" placeholder="Upload photos directly from your phone..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- POLICY PAGE PANEL -->
+                        <div id="pagebuilder-page-panel-policy" class="pagebuilder-page-panel" data-page="policy" style="display:none; flex-direction:column; gap:6px;">
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">Intro Text</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">The deposit %, fees, and hours further down this page are still under <strong>Settings → Business Info & SEO → Policy Page Numbers</strong>.</p>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Intro Paragraph</label>
+                                        <input type="text" name="policy_intro_text" value="{{ data_get($siteContent, 'policy_intro_text') }}" placeholder="Please read carefully before placing your order..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 </div>
@@ -1903,7 +2055,7 @@
                                     <button type="button" class="preview-device-btn" data-device="desktop" onclick="setPreviewDevice('desktop', this)">Desktop</button>
                                 </div>
                                 <button type="button" class="btn btn-sm btn-outline" onclick="refreshPageBuilderPreview()" title="Discard draft preview and show what's actually live" style="padding:4px 10px; font-size:0.78rem;">↻ Show Live</button>
-                                <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-sm btn-outline" title="Open the live site in a new tab" style="padding:4px 10px; font-size:0.78rem;">Open ↗</a>
+                                <a id="page-builder-open-live-link" href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-sm btn-outline" title="Open the live site in a new tab" style="padding:4px 10px; font-size:0.78rem;">Open ↗</a>
                             </div>
                         </div>
                         <div id="page-builder-preview-wrapper" style="border:8px solid #27272a; border-radius:18px; overflow:hidden; background:#27272a;">
@@ -2577,80 +2729,6 @@
                                 </div>
                             </div>
 
-                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
-                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">About Page Copy</h5>
-                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
-                                    <div style="grid-column:1/-1;">
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Customer Testimonial Quote</label>
-                                        <input type="text" name="about_testimonial_quote" value="{{ data_get($siteContent, 'about_testimonial_quote') }}" placeholder="Ordering from {{ $tenant->name }} was absolute perfection!..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                    <div>
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Testimonial Name</label>
-                                        <input type="text" name="about_testimonial_name" value="{{ data_get($siteContent, 'about_testimonial_name') }}" placeholder="Happy Client" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                    <div>
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Testimonial Role</label>
-                                        <input type="text" name="about_testimonial_role" value="{{ data_get($siteContent, 'about_testimonial_role') }}" placeholder="Verified Customer" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
-                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Menu Page Copy</h5>
-                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
-                                    <div>
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Eyebrow</label>
-                                        <input type="text" name="menu_hero_subtitle" value="{{ data_get($siteContent, 'menu_hero_subtitle') }}" placeholder="OUR OFFERINGS" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                    <div>
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Title</label>
-                                        <input type="text" name="menu_hero_title" value="{{ data_get($siteContent, 'menu_hero_title') }}" placeholder="Menu & Pricing" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                    <div style="grid-column:1/-1;">
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Subtext</label>
-                                        <input type="text" name="menu_hero_text" value="{{ data_get($siteContent, 'menu_hero_text') }}" placeholder="Explore our handcrafted baked goods and custom options." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                    <div>
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">"No Menu Yet" Title</label>
-                                        <input type="text" name="menu_empty_title" value="{{ data_get($siteContent, 'menu_empty_title') }}" placeholder="Menu Coming Soon" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                    <div style="grid-column:span 2;">
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">"No Menu Yet" Text</label>
-                                        <input type="text" name="menu_empty_text" value="{{ data_get($siteContent, 'menu_empty_text') }}" placeholder="This bakery hasn't set up their menu yet..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
-                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Gallery Page Copy</h5>
-                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
-                                    <div>
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Title</label>
-                                        <input type="text" name="gallery_hero_title" value="{{ data_get($siteContent, 'gallery_hero_title') }}" placeholder="Our Gallery" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                    <div style="grid-column:span 2;">
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Subtext</label>
-                                        <input type="text" name="gallery_hero_text" value="{{ data_get($siteContent, 'gallery_hero_text') }}" placeholder="Explore our latest custom creations..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                    <div>
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">"No Photos Yet" Title</label>
-                                        <input type="text" name="gallery_empty_title" value="{{ data_get($siteContent, 'gallery_empty_title') }}" placeholder="No Gallery Photos Published Yet" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                    <div style="grid-column:span 2;">
-                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">"No Photos Yet" Text</label>
-                                        <input type="text" name="gallery_empty_text" value="{{ data_get($siteContent, 'gallery_empty_text') }}" placeholder="Upload photos directly from your phone..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
-                                <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Policy Page Intro</h5>
-                                <div>
-                                    <label style="font-weight:600; font-size:0.82rem; color:#555;">Intro Paragraph</label>
-                                    <input type="text" name="policy_intro_text" value="{{ data_get($siteContent, 'policy_intro_text') }}" placeholder="Please read carefully before placing your order..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                </div>
-                            </div>
-
                             <button type="button" class="btn btn-primary" onclick="saveBusinessInfoForm()" style="background:var(--primary); border-color:var(--primary);">Save Business Info & SEO</button>
                         </form>
                     </div>
@@ -2670,10 +2748,10 @@
                             @endphp
                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
                                 @foreach([
-                                    ['key' => 'primary_color', 'label' => 'Primary Color', 'default' => $themeDefaultColors['primary']],
-                                    ['key' => 'secondary_color', 'label' => 'Secondary Color', 'default' => $themeDefaultColors['secondary']],
-                                    ['key' => 'button_color', 'label' => 'Button Color', 'default' => $themeDefaultColors['button']],
-                                    ['key' => 'text_color', 'label' => 'Text Color', 'default' => $themeDefaultColors['text']],
+                                    ['key' => 'primary_color', 'label' => 'Primary Color', 'default' => $themeDefaultColors['primary'], 'hint' => 'Your main brand color -- heading accents, links, borders, tags, and price text across the site.'],
+                                    ['key' => 'secondary_color', 'label' => 'Secondary Color', 'default' => $themeDefaultColors['secondary'], 'hint' => 'Dark accent backgrounds, like banner strips and footer-adjacent sections.'],
+                                    ['key' => 'button_color', 'label' => 'Button Color', 'default' => $themeDefaultColors['button'], 'hint' => 'The "Order Now" buttons specifically -- these don\'t reuse Primary Color.'],
+                                    ['key' => 'text_color', 'label' => 'Text Color', 'default' => $themeDefaultColors['text'], 'hint' => 'Main body and heading text color.'],
                                 ] as $colorField)
                                     @php $currentVal = $tenant->{$colorField['key']}; @endphp
                                     <div>
@@ -2688,6 +2766,7 @@
                                                data-default="{{ $colorField['default'] }}"
                                                {{ $currentVal ? '' : 'disabled' }}
                                                style="width:100%; height:42px; border-radius:8px; border:1px solid #ccc; cursor:pointer;">
+                                        <p style="font-size:0.76rem; color:#888; margin:6px 0 0 0; line-height:1.4;">{{ $colorField['hint'] }}</p>
                                     </div>
                                 @endforeach
                             </div>
