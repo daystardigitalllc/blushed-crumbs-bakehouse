@@ -473,6 +473,19 @@ class AdminController extends Controller
             'policy_pickup_hours' => 'nullable|string|max:100',
             'policy_closed_days' => 'nullable|string|max:100',
             'policy_extra_layer_fee' => 'nullable|string|max:10',
+            'about_testimonial_quote' => 'nullable|string|max:500',
+            'about_testimonial_name' => 'nullable|string|max:100',
+            'about_testimonial_role' => 'nullable|string|max:100',
+            'menu_hero_subtitle' => 'nullable|string|max:100',
+            'menu_hero_title' => 'nullable|string|max:150',
+            'menu_hero_text' => 'nullable|string|max:500',
+            'menu_empty_title' => 'nullable|string|max:150',
+            'menu_empty_text' => 'nullable|string|max:500',
+            'gallery_hero_title' => 'nullable|string|max:150',
+            'gallery_hero_text' => 'nullable|string|max:500',
+            'gallery_empty_title' => 'nullable|string|max:150',
+            'gallery_empty_text' => 'nullable|string|max:1000',
+            'policy_intro_text' => 'nullable|string|max:600',
         ]);
 
         $tenant->update([
@@ -500,6 +513,19 @@ class AdminController extends Controller
             'policy_pickup_hours' => $data['policy_pickup_hours'] ?? ($currentContent['policy_pickup_hours'] ?? '10:00am – 4:00pm'),
             'policy_closed_days' => $data['policy_closed_days'] ?? ($currentContent['policy_closed_days'] ?? 'Sundays or Mondays'),
             'policy_extra_layer_fee' => $data['policy_extra_layer_fee'] ?? ($currentContent['policy_extra_layer_fee'] ?? '20'),
+            'about_testimonial_quote' => $data['about_testimonial_quote'] ?? ($currentContent['about_testimonial_quote'] ?? ''),
+            'about_testimonial_name' => $data['about_testimonial_name'] ?? ($currentContent['about_testimonial_name'] ?? ''),
+            'about_testimonial_role' => $data['about_testimonial_role'] ?? ($currentContent['about_testimonial_role'] ?? ''),
+            'menu_hero_subtitle' => $data['menu_hero_subtitle'] ?? ($currentContent['menu_hero_subtitle'] ?? ''),
+            'menu_hero_title' => $data['menu_hero_title'] ?? ($currentContent['menu_hero_title'] ?? ''),
+            'menu_hero_text' => $data['menu_hero_text'] ?? ($currentContent['menu_hero_text'] ?? ''),
+            'menu_empty_title' => $data['menu_empty_title'] ?? ($currentContent['menu_empty_title'] ?? ''),
+            'menu_empty_text' => $data['menu_empty_text'] ?? ($currentContent['menu_empty_text'] ?? ''),
+            'gallery_hero_title' => $data['gallery_hero_title'] ?? ($currentContent['gallery_hero_title'] ?? ''),
+            'gallery_hero_text' => $data['gallery_hero_text'] ?? ($currentContent['gallery_hero_text'] ?? ''),
+            'gallery_empty_title' => $data['gallery_empty_title'] ?? ($currentContent['gallery_empty_title'] ?? ''),
+            'gallery_empty_text' => $data['gallery_empty_text'] ?? ($currentContent['gallery_empty_text'] ?? ''),
+            'policy_intro_text' => $data['policy_intro_text'] ?? ($currentContent['policy_intro_text'] ?? ''),
         ]);
         $tenant->update(['site_content' => $updatedContent]);
 
@@ -507,6 +533,47 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'Business info & SEO saved!',
             'site_content' => $tenant->fresh()->site_content,
+        ]);
+    }
+
+    /**
+     * Persist the tenant's custom brand colors (primary/secondary/button/text).
+     * Each field is nullable -- clearing a color picker back to blank restores
+     * that theme's own default, since the storefront override partial only
+     * emits a <style> rule for colors that are actually set here.
+     */
+    public function saveBrandColors(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        // Blade sends an empty string (not an absent field) for a color the
+        // baker has toggled off / reset to the theme default -- normalize
+        // to null first so "nullable" actually short-circuits the regex
+        // instead of failing validation on ''.
+        $request->merge([
+            'primary_color' => $request->input('primary_color') ?: null,
+            'secondary_color' => $request->input('secondary_color') ?: null,
+            'button_color' => $request->input('button_color') ?: null,
+            'text_color' => $request->input('text_color') ?: null,
+        ]);
+
+        $data = $request->validate([
+            'primary_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'secondary_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'button_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'text_color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+        ]);
+
+        $tenant->update([
+            'primary_color' => $data['primary_color'] ?? null,
+            'secondary_color' => $data['secondary_color'] ?? null,
+            'button_color' => $data['button_color'] ?? null,
+            'text_color' => $data['text_color'] ?? null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Brand colors saved!',
         ]);
     }
 

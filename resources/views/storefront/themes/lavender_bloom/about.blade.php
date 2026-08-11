@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/storefront-base.css') }}">
     <link rel="stylesheet" href="{{ asset($tenant->themeCssPath()) }}">
+    @include('storefront.partials.color_override')
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
 
@@ -78,8 +79,8 @@
                 <h2>{{ $tenant->getSiteContent('about_title', 'About Our Bakery') }}</h2>
                 <p>{{ $tenant->getSiteContent('about_bio', 'Welcome to ' . ($tenant->name ?? 'our bakehouse') . '! We specialize in artisanal custom cakes, gourmet treats, and unforgettable dessert experiences. Every order is baked fresh with love and attention to detail.') }}</p>
                 <div class="lb-quote-card">
-                    <p>"Ordering from {{ $tenant->name }} was absolute perfection! The cake was breathtaking and tasted amazing."</p>
-                    <span>Happy Client, Verified Customer</span>
+                    <p>"{{ $tenant->getSiteContent('about_testimonial_quote', 'Ordering from ' . $tenant->name . ' was absolute perfection! The cake was breathtaking and tasted amazing.') }}"</p>
+                    <span>{{ $tenant->getSiteContent('about_testimonial_name', 'Happy Client') }}, {{ $tenant->getSiteContent('about_testimonial_role', 'Verified Customer') }}</span>
                 </div>
             </div>
         </div>

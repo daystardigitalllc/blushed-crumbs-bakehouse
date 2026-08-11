@@ -61,6 +61,10 @@ class Tenant extends Model implements TenancyContract
         'stripe_subscription_id',
         'theme_id',
         'pending_pro_theme_id',
+        'primary_color',
+        'secondary_color',
+        'button_color',
+        'text_color',
         'logo_path',
         'gallery_images',
         'gallery_categories',
@@ -141,6 +145,19 @@ class Tenant extends Model implements TenancyContract
             'featured_gallery_images',
             'about_title',
             'about_bio',
+            'about_testimonial_quote',
+            'about_testimonial_name',
+            'about_testimonial_role',
+            'menu_hero_subtitle',
+            'menu_hero_title',
+            'menu_hero_text',
+            'menu_empty_title',
+            'menu_empty_text',
+            'gallery_hero_title',
+            'gallery_hero_text',
+            'gallery_empty_title',
+            'gallery_empty_text',
+            'policy_intro_text',
             'contact_hours',
             'contact_location',
             'contact_instagram',
@@ -304,6 +321,65 @@ class Tenant extends Model implements TenancyContract
     {
         $path = "css/themes/{$this->theme_id}.css";
         return file_exists(public_path($path)) ? $path : 'css/themes/sweet_elegant.css';
+    }
+
+    /**
+     * The theme's own baked-in brand colors (--primary, --theme-accent-bg,
+     * --dark-text, and the .btn-primary background), parsed straight from
+     * its CSS file. Used only to pre-fill the dashboard color pickers with
+     * "what the theme already looks like" -- the live storefront override
+     * (customColorOverrides()) never reads this; it only applies once a
+     * tenant has actually chosen their own color.
+     */
+    public function themeDefaultColors(): array
+    {
+        $fallback = ['primary' => '#c94b75', 'secondary' => '#401829', 'button' => '#c94b75', 'text' => '#2c2419'];
+
+        $css = @file_get_contents(public_path($this->themeCssPath()));
+        if (!$css || !preg_match('/body\.theme-' . preg_quote($this->theme_id, '/') . '\s*\{([^}]*)\}/s', $css, $block)) {
+            return $fallback;
+        }
+
+        $vars = $fallback;
+        if (preg_match('/--primary:\s*(#[0-9a-fA-F]{3,8})/', $block[1], $m)) {
+            $vars['primary'] = $m[1];
+        }
+        if (preg_match('/--theme-accent-bg:\s*(#[0-9a-fA-F]{3,8})/', $block[1], $m)) {
+            $vars['secondary'] = $m[1];
+        }
+        if (preg_match('/--dark-text:\s*(#[0-9a-fA-F]{3,8})/', $block[1], $m)) {
+            $vars['text'] = $m[1];
+        }
+
+        if (preg_match('/\.btn-primary[^{]*\{[^}]*background:\s*(#[0-9a-fA-F]{3,8})/s', $css, $m)) {
+            $vars['button'] = $m[1];
+        } else {
+            $vars['button'] = $vars['primary'];
+        }
+
+        return $vars;
+    }
+
+    /**
+     * Only the color fields this tenant has actually customized, keyed by
+     * the CSS custom property each one overrides -- empty when nothing's
+     * been set, so the storefront color-override partial can skip
+     * rendering entirely for every tenant still on theme defaults.
+     */
+    public function customColorOverrides(): array
+    {
+        $overrides = [];
+        if (!empty($this->primary_color)) {
+            $overrides['--primary'] = $this->primary_color;
+            $overrides['--primary-hover'] = $this->primary_color;
+        }
+        if (!empty($this->secondary_color)) {
+            $overrides['--theme-accent-bg'] = $this->secondary_color;
+        }
+        if (!empty($this->text_color)) {
+            $overrides['--dark-text'] = $this->text_color;
+        }
+        return $overrides;
     }
 
     /**
