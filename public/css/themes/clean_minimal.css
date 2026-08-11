@@ -11,7 +11,7 @@ body.theme-clean_minimal {
     --theme-section-bg: #f7f5f1;
     --theme-accent-bg: #0f2438;
     font-family: 'Poppins', sans-serif;
-    background-color: #f7f5f1;
+    background-color: var(--theme-section-bg, #f7f5f1);
 }
 
 body.theme-clean_minimal h1,
@@ -21,14 +21,14 @@ body.theme-clean_minimal .section-title-script,
 body.theme-clean_minimal .whimsical-col-right h2 {
     font-family: 'Playfair Display', serif !important;
     font-weight: 700 !important;
-    color: #14304a !important;
+    color: var(--dark-text, #14304a) !important;
     letter-spacing: 0;
 }
 
 body.theme-clean_minimal .subheading {
     font-family: 'Great Vibes', cursive !important;
     font-weight: 400 !important;
-    color: #b8935a !important;
+    color: var(--primary, #b8935a) !important;
     font-size: 1.7rem !important;
 }
 
@@ -48,25 +48,25 @@ body.theme-clean_minimal .site-header {
    background instead, where white text would disappear. */
 body.theme-clean_minimal .site-header:has(+ #storefront-view .midnight-hero) .nav-links a,
 body.theme-clean_minimal .site-header:has(+ #storefront-view .midnight-hero) .logo span {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-clean_minimal .site-header:has(+ #storefront-view .midnight-hero) .nav-links a:hover {
-    color: #b8935a !important;
+    color: var(--primary, #b8935a) !important;
 }
 
 body.theme-clean_minimal .categories-section,
 body.theme-clean_minimal .reviews-section {
-    background: #f7f5f1 !important;
+    background: var(--theme-section-bg, #f7f5f1) !important;
 }
 
 body.theme-clean_minimal .highlights-bar {
-    background: #f7f5f1 !important;
+    background: var(--theme-section-bg, #f7f5f1) !important;
 }
 
 body.theme-clean_minimal .video-promo-banner h2,
 body.theme-clean_minimal .video-overlay-content h2 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 /* Without this, the theme-wide "h1,h2,h3{color:dark}" rule above (more
@@ -75,23 +75,23 @@ body.theme-clean_minimal .video-overlay-content h2 {
    headline in dark navy on its own dark scrim - unreadable. */
 body.theme-clean_minimal .cta-video-banner h2,
 body.theme-clean_minimal .cta-video-banner p {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-clean_minimal .whimsical-section {
-    background-color: #0f2438 !important;
-    color: #f7f5f1 !important;
+    background-color: var(--theme-accent-bg, #0f2438) !important;
+    color: var(--theme-section-bg, #f7f5f1) !important;
 }
 
 body.theme-clean_minimal .whimsical-section h2 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-clean_minimal .btn-primary,
 body.theme-clean_minimal .nav-order-btn {
     background: transparent !important;
-    color: #14304a !important;
-    border: 1px solid #14304a !important;
+    color: var(--dark-text, #14304a) !important;
+    border: 1px solid var(--dark-text, #14304a) !important;
     border-radius: 2px !important;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -101,8 +101,8 @@ body.theme-clean_minimal .nav-order-btn {
 
 body.theme-clean_minimal .btn-primary:hover,
 body.theme-clean_minimal .nav-order-btn:hover {
-    background: #14304a !important;
-    color: #ffffff !important;
+    background: var(--dark-text, #14304a) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-clean_minimal .category-card-exact,
@@ -110,7 +110,7 @@ body.theme-clean_minimal .cloud-review-card,
 body.theme-clean_minimal .category-image-frame {
     border-radius: 4px !important;
     border: 1px solid #e5ded0 !important;
-    background: #ffffff !important;
+    background: var(--theme-card-bg, #ffffff) !important;
     box-shadow: 0 4px 16px rgba(15, 36, 56, 0.06) !important;
 }
 
@@ -125,12 +125,12 @@ body.theme-clean_minimal .cta-video-banner::before {
 body.theme-clean_minimal .order-modal-card {
     border-radius: 6px !important;
     border: 1px solid #e5ded0 !important;
-    background: #ffffff !important;
+    background: var(--theme-card-bg, #ffffff) !important;
     box-shadow: 0 10px 40px rgba(15, 36, 56, 0.12) !important;
 }
 
 body.theme-clean_minimal .sticky-order-summary-bar {
-    background: #f7f5f1 !important;
+    background: var(--theme-section-bg, #f7f5f1) !important;
     border: 1px solid #e5ded0 !important;
 }
 
@@ -138,21 +138,21 @@ body.theme-clean_minimal .product,
 body.theme-clean_minimal .option-chip {
     border-radius: 4px !important;
     border: 1px solid #e5ded0 !important;
-    background: #ffffff !important;
-    color: #14304a !important;
+    background: var(--theme-card-bg, #ffffff) !important;
+    color: var(--dark-text, #14304a) !important;
 }
 
 body.theme-clean_minimal .product.selected,
 body.theme-clean_minimal .option-chip.selected {
-    background: #14304a !important;
-    color: #ffffff !important;
-    border-color: #14304a !important;
+    background: var(--dark-text, #14304a) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
+    border-color: var(--dark-text, #14304a) !important;
     box-shadow: 0 2px 8px rgba(15, 36, 56, 0.15) !important;
 }
 
 body.theme-clean_minimal .next-btn {
-    background: #14304a !important;
-    color: #ffffff !important;
+    background: var(--dark-text, #14304a) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 4px !important;
     box-shadow: none !important;
 }
@@ -166,12 +166,12 @@ body.theme-clean_minimal .next-btn {
    the other themes' .rustic-*/.playful-*/.modern-*/.farmhouse-* classes. */
 
 body.theme-clean_minimal .midnight-icon {
-    color: #b8935a;
+    color: var(--primary, #b8935a);
 }
 
 /* Hero — navy band, oval photo left, copy right */
 body.theme-clean_minimal .midnight-hero {
-    background: linear-gradient(120deg, #0f2438 0%, #14304a 55%, #1c3d5a 100%);
+    background: linear-gradient(120deg, var(--theme-accent-bg, #0f2438) 0%, var(--dark-text, #14304a) 55%, #1c3d5a 100%);
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
@@ -202,7 +202,7 @@ body.theme-clean_minimal .midnight-hero-media-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #b8935a 0%, #14304a 100%);
+    background: linear-gradient(160deg, var(--primary, #b8935a) 0%, var(--dark-text, #14304a) 100%);
 }
 
 body.theme-clean_minimal .midnight-hero-copy .subheading {
@@ -210,7 +210,7 @@ body.theme-clean_minimal .midnight-hero-copy .subheading {
 }
 
 body.theme-clean_minimal .midnight-hero-copy h1 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     font-size: clamp(2rem, 3.6vw, 2.8rem);
     line-height: 1.2;
     margin: 8px 0 18px 0;
@@ -225,13 +225,13 @@ body.theme-clean_minimal .midnight-hero-copy p {
 }
 
 body.theme-clean_minimal .midnight-hero-copy .btn-primary {
-    border-color: #ffffff !important;
-    color: #ffffff !important;
+    border-color: var(--theme-card-bg, #ffffff) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-clean_minimal .midnight-hero-copy .btn-primary:hover {
-    background: #ffffff !important;
-    color: #14304a !important;
+    background: var(--theme-card-bg, #ffffff) !important;
+    color: var(--dark-text, #14304a) !important;
 }
 
 /* Highlights, re-purposed as "What's Included" - cream bg, icon row */
@@ -252,7 +252,7 @@ body.theme-clean_minimal .midnight-included-icon {
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border: 1px solid #e5ded0;
     display: flex;
     align-items: center;
@@ -262,7 +262,7 @@ body.theme-clean_minimal .midnight-included-icon {
 
 body.theme-clean_minimal .midnight-included-grid h4 {
     font-family: 'Playfair Display', serif;
-    color: #14304a;
+    color: var(--dark-text, #14304a);
     font-size: 1.05rem;
     margin-bottom: 8px;
 }
@@ -275,14 +275,14 @@ body.theme-clean_minimal .midnight-included-grid p {
 
 /* How It Works, re-purposed as a white process card floating on navy */
 body.theme-clean_minimal .midnight-process-wrap {
-    background: #0f2438;
+    background: var(--theme-accent-bg, #0f2438);
     padding: 80px 25px;
 }
 
 body.theme-clean_minimal .midnight-process-card {
     max-width: 640px;
     margin: 0 auto;
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 4px;
     padding: 55px 45px;
     text-align: center;
@@ -318,9 +318,9 @@ body.theme-clean_minimal .midnight-process-num {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: #f7f5f1;
-    border: 1px solid #b8935a;
-    color: #b8935a;
+    background: var(--theme-section-bg, #f7f5f1);
+    border: 1px solid var(--primary, #b8935a);
+    color: var(--primary, #b8935a);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -340,14 +340,14 @@ body.theme-clean_minimal .midnight-process-step p {
 
 body.theme-clean_minimal .midnight-process-step .material-symbols-outlined {
     margin-left: auto;
-    color: #b8935a;
+    color: var(--primary, #b8935a);
 }
 
 /* Promo, re-purposed as a centered "Premium Spotlight" product callout */
 body.theme-clean_minimal .midnight-spotlight {
     text-align: center;
     padding: 90px 25px;
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
 }
 
 body.theme-clean_minimal .midnight-spotlight-media {
@@ -367,7 +367,7 @@ body.theme-clean_minimal .midnight-spotlight-media img {
 body.theme-clean_minimal .midnight-spotlight-price {
     font-family: 'Playfair Display', serif;
     font-size: 1.6rem;
-    color: #14304a;
+    color: var(--dark-text, #14304a);
     margin-bottom: 24px;
     display: block;
 }
@@ -388,7 +388,7 @@ body.theme-clean_minimal .midnight-trust-row > div {
 body.theme-clean_minimal .midnight-trust-row .material-symbols-outlined {
     display: block;
     margin: 0 auto 8px auto;
-    color: #b8935a;
+    color: var(--primary, #b8935a);
     font-size: 1.6rem;
 }
 
@@ -424,8 +424,8 @@ body.theme-clean_minimal .midnight-recipe-badge {
     position: absolute;
     top: 12px;
     left: 12px;
-    background: #ffffff;
-    color: #b8935a;
+    background: var(--theme-card-bg, #ffffff);
+    color: var(--primary, #b8935a);
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -458,7 +458,7 @@ body.theme-clean_minimal .midnight-editorial-content {
 }
 
 body.theme-clean_minimal .midnight-editorial-content h2 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     margin-bottom: 20px;
 }
 
@@ -481,7 +481,7 @@ body.theme-clean_minimal .midnight-features-col {
 }
 
 body.theme-clean_minimal .midnight-features-col:first-child {
-    background: #f7f5f1;
+    background: var(--theme-section-bg, #f7f5f1);
 }
 
 body.theme-clean_minimal .midnight-features-col h3 {
@@ -495,7 +495,7 @@ body.theme-clean_minimal .midnight-feature-item {
 body.theme-clean_minimal .midnight-feature-item h4 {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #14304a;
+    color: var(--dark-text, #14304a);
     margin-bottom: 4px;
 }
 
@@ -514,7 +514,7 @@ body.theme-clean_minimal .midnight-grid .gallery-card-img-wrap {
 body.theme-clean_minimal .midnight-page-hero {
     text-align: center;
     padding: 100px 20px 55px 20px;
-    background: #0f2438;
+    background: var(--theme-accent-bg, #0f2438);
 }
 
 body.theme-clean_minimal .midnight-page-hero .subheading {
@@ -522,7 +522,7 @@ body.theme-clean_minimal .midnight-page-hero .subheading {
 }
 
 body.theme-clean_minimal .midnight-page-hero-title {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     font-size: 2.6rem;
     max-width: 750px;
     margin: 0 auto;
@@ -558,7 +558,7 @@ body.theme-clean_minimal .midnight-about-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #0f2438 0%, #b8935a 100%);
+    background: linear-gradient(160deg, var(--theme-accent-bg, #0f2438) 0%, var(--primary, #b8935a) 100%);
 }
 
 body.theme-clean_minimal .midnight-about-copy p {
@@ -588,14 +588,14 @@ body.theme-clean_minimal .midnight-icon-circle {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: #14304a;
+    background: var(--dark-text, #14304a);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 body.theme-clean_minimal .midnight-icon-circle .material-symbols-outlined {
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     font-size: 1.35rem;
 }
 

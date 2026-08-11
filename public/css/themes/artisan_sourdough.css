@@ -11,7 +11,7 @@ body.theme-artisan_sourdough {
     --theme-section-bg: #f3e3dc;
     --theme-accent-bg: #c9a08f;
     font-family: 'Poppins', sans-serif;
-    background-color: #c9a08f;
+    background-color: var(--theme-accent-bg, #c9a08f);
 }
 
 body.theme-artisan_sourdough h1,
@@ -21,7 +21,7 @@ body.theme-artisan_sourdough .section-title-script,
 body.theme-artisan_sourdough .whimsical-col-right h2 {
     font-family: 'Fraunces', serif !important;
     font-weight: 600 !important;
-    color: #2b2118 !important;
+    color: var(--dark-text, #2b2118) !important;
     letter-spacing: 0;
 }
 
@@ -30,7 +30,7 @@ body.theme-artisan_sourdough .subheading {
     font-weight: 600 !important;
     text-transform: uppercase;
     letter-spacing: 2px !important;
-    color: #8b5a45 !important;
+    color: var(--primary, #8b5a45) !important;
     font-size: 0.8rem !important;
 }
 
@@ -51,7 +51,7 @@ body.theme-artisan_sourdough .site-header {
    better there; keep it conditional either way for correctness. */
 body.theme-artisan_sourdough .site-header:has(+ #storefront-view .petal-hero) .nav-links a,
 body.theme-artisan_sourdough .site-header:has(+ #storefront-view .petal-hero) .logo span {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-artisan_sourdough .site-header:has(+ #storefront-view .petal-hero) .nav-links a:hover {
@@ -70,31 +70,31 @@ body.theme-artisan_sourdough .site-header:has(+ #storefront-view .petal-hero) {
 
 body.theme-artisan_sourdough .categories-section,
 body.theme-artisan_sourdough .reviews-section {
-    background: #f3e3dc !important;
+    background: var(--theme-section-bg, #f3e3dc) !important;
 }
 
 body.theme-artisan_sourdough .highlights-bar {
-    background: #f3e3dc !important;
+    background: var(--theme-section-bg, #f3e3dc) !important;
 }
 
 body.theme-artisan_sourdough .video-promo-banner h2,
 body.theme-artisan_sourdough .video-overlay-content h2 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-artisan_sourdough .whimsical-section {
-    background-color: #c9a08f !important;
-    color: #2b2118 !important;
+    background-color: var(--theme-accent-bg, #c9a08f) !important;
+    color: var(--dark-text, #2b2118) !important;
 }
 
 body.theme-artisan_sourdough .whimsical-section h2 {
-    color: #2b2118 !important;
+    color: var(--dark-text, #2b2118) !important;
 }
 
 body.theme-artisan_sourdough .btn-primary,
 body.theme-artisan_sourdough .nav-order-btn {
-    background: #8b5a45 !important;
-    color: #ffffff !important;
+    background: var(--primary, #8b5a45) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 30px !important;
     box-shadow: 0 4px 12px rgba(169, 131, 108, 0.3) !important;
 }
@@ -104,7 +104,7 @@ body.theme-artisan_sourdough .cloud-review-card,
 body.theme-artisan_sourdough .category-image-frame {
     border-radius: 16px !important;
     border: 1px solid #e8dccc !important;
-    background: #ffffff !important;
+    background: var(--theme-card-bg, #ffffff) !important;
     box-shadow: 0 8px 24px rgba(43, 33, 24, 0.06) !important;
 }
 
@@ -117,41 +117,41 @@ body.theme-artisan_sourdough .cta-video-banner::before {
 
 body.theme-artisan_sourdough .cta-video-banner h2,
 body.theme-artisan_sourdough .cta-video-banner p {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 /* Order Form Modal Theme Rules - Petal & Crumb */
 body.theme-artisan_sourdough .order-modal-card {
     border-radius: 16px !important;
     border: 1px solid #e8dccc !important;
-    background: #f3e3dc !important;
+    background: var(--theme-section-bg, #f3e3dc) !important;
     box-shadow: 0 12px 35px rgba(43, 33, 24, 0.15) !important;
 }
 
 body.theme-artisan_sourdough .sticky-order-summary-bar {
-    background: #f3e3dc !important;
+    background: var(--theme-section-bg, #f3e3dc) !important;
     border: 2px solid #e8dccc !important;
 }
 
 body.theme-artisan_sourdough .product,
 body.theme-artisan_sourdough .option-chip {
     border-radius: 10px !important;
-    border: 1px solid #8b5a45 !important;
-    background: #ffffff !important;
-    color: #2b2118 !important;
+    border: 1px solid var(--primary, #8b5a45) !important;
+    background: var(--theme-card-bg, #ffffff) !important;
+    color: var(--dark-text, #2b2118) !important;
 }
 
 body.theme-artisan_sourdough .product.selected,
 body.theme-artisan_sourdough .option-chip.selected {
-    background: #8b5a45 !important;
-    color: #ffffff !important;
-    border-color: #74483a !important;
+    background: var(--primary, #8b5a45) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
+    border-color: var(--primary-hover, #74483a) !important;
     box-shadow: 0 4px 12px rgba(169, 131, 108, 0.35) !important;
 }
 
 body.theme-artisan_sourdough .next-btn {
-    background: #8b5a45 !important;
-    color: #ffffff !important;
+    background: var(--primary, #8b5a45) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 10px !important;
     box-shadow: 0 4px 12px rgba(169, 131, 108, 0.35) !important;
 }
@@ -166,7 +166,7 @@ body.theme-artisan_sourdough .next-btn {
    classes. */
 
 body.theme-artisan_sourdough .petal-icon {
-    color: #8b5a45;
+    color: var(--primary, #8b5a45);
 }
 
 /* Hero — big rounded card floating on the mauve page background */
@@ -181,7 +181,7 @@ body.theme-artisan_sourdough .petal-hero {
     padding: 110px 50px 60px 50px;
     border-radius: 32px;
     overflow: hidden;
-    background: linear-gradient(135deg, #f3e3dc 0%, #ecd5cb 100%);
+    background: linear-gradient(135deg, var(--theme-section-bg, #f3e3dc) 0%, #ecd5cb 100%);
     box-shadow: 0 30px 60px rgba(43, 33, 24, 0.18);
 }
 
@@ -206,7 +206,7 @@ body.theme-artisan_sourdough .petal-hero-media-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #8b5a45 0%, #2b2118 100%);
+    background: linear-gradient(160deg, var(--primary, #8b5a45) 0%, var(--dark-text, #2b2118) 100%);
 }
 
 body.theme-artisan_sourdough .petal-hero-copy h1 {
@@ -246,7 +246,7 @@ body.theme-artisan_sourdough .petal-about-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #8b5a45 0%, #2b2118 100%);
+    background: linear-gradient(160deg, var(--primary, #8b5a45) 0%, var(--dark-text, #2b2118) 100%);
 }
 
 body.theme-artisan_sourdough .petal-about-copy p {
@@ -267,14 +267,14 @@ body.theme-artisan_sourdough .petal-features-row {
 }
 
 body.theme-artisan_sourdough .petal-feature-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 16px;
     padding: 28px 24px;
     box-shadow: 0 8px 24px rgba(43, 33, 24, 0.06);
 }
 
 body.theme-artisan_sourdough .petal-feature-card.is-accent {
-    background: #c9a08f;
+    background: var(--theme-accent-bg, #c9a08f);
 }
 
 body.theme-artisan_sourdough .petal-feature-card h4 {
@@ -317,7 +317,7 @@ body.theme-artisan_sourdough .petal-pick-badge {
     top: 12px;
     left: 12px;
     background: rgba(255, 255, 255, 0.92);
-    color: #8b5a45;
+    color: var(--primary, #8b5a45);
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -339,7 +339,7 @@ body.theme-artisan_sourdough .petal-pick-card p {
 
 /* Promo, re-purposed as a full-width soft-mauve banner */
 body.theme-artisan_sourdough .petal-promo {
-    background: linear-gradient(135deg, #ecd5cb 0%, #c9a08f 100%);
+    background: linear-gradient(135deg, #ecd5cb 0%, var(--theme-accent-bg, #c9a08f) 100%);
     text-align: center;
     padding: 80px 25px;
 }
@@ -380,9 +380,9 @@ body.theme-artisan_sourdough .petal-step-num {
     width: 46px;
     height: 46px;
     border-radius: 50%;
-    background: #ffffff;
-    border: 1px solid #8b5a45;
-    color: #8b5a45;
+    background: var(--theme-card-bg, #ffffff);
+    border: 1px solid var(--primary, #8b5a45);
+    color: var(--primary, #8b5a45);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -411,7 +411,7 @@ body.theme-artisan_sourdough .petal-accordion {
 }
 
 body.theme-artisan_sourdough .petal-accordion-item {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 14px;
     padding: 4px 22px;
 }
@@ -424,7 +424,7 @@ body.theme-artisan_sourdough .petal-accordion-item summary {
     justify-content: space-between;
     padding: 16px 0;
     font-weight: 600;
-    color: #2b2118;
+    color: var(--dark-text, #2b2118);
 }
 
 body.theme-artisan_sourdough .petal-accordion-item summary::-webkit-details-marker {
@@ -434,7 +434,7 @@ body.theme-artisan_sourdough .petal-accordion-item summary::-webkit-details-mark
 body.theme-artisan_sourdough .petal-accordion-item summary::after {
     content: '+';
     font-size: 1.3rem;
-    color: #8b5a45;
+    color: var(--primary, #8b5a45);
     transition: transform 0.2s ease;
 }
 
@@ -489,14 +489,14 @@ body.theme-artisan_sourdough .petal-icon-circle {
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: #8b5a45;
+    background: var(--primary, #8b5a45);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 body.theme-artisan_sourdough .petal-icon-circle .material-symbols-outlined {
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     font-size: 1.4rem;
 }
 

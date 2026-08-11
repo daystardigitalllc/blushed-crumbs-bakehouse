@@ -10,7 +10,7 @@ body.theme-modern_bakery {
     --theme-section-bg: rgba(255, 255, 255, 0.35);
     --theme-accent-bg: #1e1b4b;
     font-family: 'Inter', sans-serif;
-    background-color: #eef2ff;
+    background-color: var(--pink-bg, #eef2ff);
     background-image:
         radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.35), transparent 45%),
         radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.28), transparent 45%),
@@ -26,7 +26,7 @@ body.theme-modern_bakery .section-title-script,
 body.theme-modern_bakery .whimsical-col-right h2 {
     font-family: 'Inter', sans-serif !important;
     font-weight: 800 !important;
-    color: #1e1b4b !important;
+    color: var(--dark-text, #1e1b4b) !important;
     letter-spacing: -1.2px !important;
 }
 
@@ -57,7 +57,7 @@ body.theme-modern_bakery .reviews-section {
    page's own shifting background blobs - the blur made this read as a
    flat, muddy grey band rather than an intentional trust bar. */
 body.theme-modern_bakery .highlights-bar {
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%) !important;
+    background: linear-gradient(135deg, var(--theme-accent-bg, #1e1b4b) 0%, #312e81 100%) !important;
 }
 
 body.theme-modern_bakery .video-promo-banner h2,
@@ -127,14 +127,14 @@ body.theme-modern_bakery .option-chip {
     border-radius: 14px !important;
     border: 1px solid rgba(67, 56, 202, 0.25) !important;
     background: rgba(255, 255, 255, 0.6) !important;
-    color: #1e1b4b !important;
+    color: var(--dark-text, #1e1b4b) !important;
 }
 
 body.theme-modern_bakery .product.selected,
 body.theme-modern_bakery .option-chip.selected {
     background: rgba(67, 56, 202, 0.9) !important;
     color: #ffffff !important;
-    border-color: #4338ca !important;
+    border-color: var(--primary, #4338ca) !important;
     box-shadow: 0 8px 20px rgba(67, 56, 202, 0.4) !important;
 }
 
@@ -217,7 +217,7 @@ body.theme-modern_bakery .modern-hero-media-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #4338ca 0%, #ec4899 100%);
+    background: linear-gradient(160deg, var(--primary, #4338ca) 0%, #ec4899 100%);
 }
 
 body.theme-modern_bakery .modern-hero-badge {
@@ -249,7 +249,7 @@ body.theme-modern_bakery .modern-hero-badge {
 body.theme-modern_bakery .modern-marquee {
     overflow: hidden;
     white-space: nowrap;
-    background: #1e1b4b;
+    background: var(--theme-accent-bg, #1e1b4b);
     padding: 10px 0;
 }
 
@@ -361,7 +361,7 @@ body.theme-modern_bakery .modern-meet-baker {
     max-width: 1100px;
     margin: 0 auto;
     padding: 80px 40px;
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    background: linear-gradient(135deg, var(--theme-accent-bg, #1e1b4b) 0%, #312e81 100%);
     border-radius: 32px;
 }
 
@@ -384,7 +384,7 @@ body.theme-modern_bakery .modern-meet-baker-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #4338ca 0%, #ec4899 100%);
+    background: linear-gradient(160deg, var(--primary, #4338ca) 0%, #ec4899 100%);
 }
 
 body.theme-modern_bakery .modern-meet-baker h2 {
@@ -557,7 +557,7 @@ body.theme-modern_bakery .modern-icon-circle {
     width: 54px;
     height: 54px;
     border-radius: 50%;
-    background: linear-gradient(160deg, #4338ca 0%, #ec4899 100%);
+    background: linear-gradient(160deg, var(--primary, #4338ca) 0%, #ec4899 100%);
     display: flex;
     align-items: center;
     justify-content: center;

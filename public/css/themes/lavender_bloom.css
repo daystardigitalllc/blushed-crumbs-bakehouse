@@ -10,13 +10,13 @@ body.theme-lavender_bloom {
     --theme-card-bg: #ffffff;
     --theme-section-bg: #f6eefa;
     --theme-accent-bg: #3b1f47;
-    --lb-purple: #8e4fa3;
+    --lb-purple: var(--primary, #8e4fa3);
     --lb-purple-dark: #6b3480;
-    --lb-ink: #3b1f47;
-    --lb-lavender: #f6eefa;
+    --lb-ink: var(--dark-text, #3b1f47);
+    --lb-lavender: var(--theme-section-bg, #f6eefa);
     --lb-lavender-deep: #ecdcf5;
     font-family: 'Poppins', sans-serif;
-    background-color: #ffffff;
+    background-color: var(--theme-card-bg, #ffffff);
 }
 
 body.theme-lavender_bloom h1,
@@ -26,7 +26,7 @@ body.theme-lavender_bloom .section-title-script,
 body.theme-lavender_bloom .whimsical-col-right h2 {
     font-family: 'Playfair Display', serif !important;
     font-weight: 700 !important;
-    color: #3b1f47 !important;
+    color: var(--dark-text, #3b1f47) !important;
     letter-spacing: 0;
 }
 
@@ -35,7 +35,7 @@ body.theme-lavender_bloom .subheading {
     font-weight: 700 !important;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #8e4fa3 !important;
+    color: var(--primary, #8e4fa3) !important;
     font-size: 0.85rem !important;
     opacity: 0.85;
 }
@@ -54,7 +54,7 @@ body.theme-lavender_bloom .site-header {
 }
 
 body.theme-lavender_bloom .lb-header-top {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     padding: 14px 0;
 }
 
@@ -87,7 +87,7 @@ body.theme-lavender_bloom .lb-header-nav-band .nav-links {
 }
 
 body.theme-lavender_bloom .lb-header-nav-band .nav-links a:not(.nav-order-btn) {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     font-weight: 600;
     font-size: 0.95rem;
     text-transform: uppercase;
@@ -101,7 +101,7 @@ body.theme-lavender_bloom .lb-header-nav-band .nav-links a.active {
 
 body.theme-lavender_bloom .lb-header-nav-band .nav-order-btn {
     margin-left: auto;
-    background: #ffffff !important;
+    background: var(--theme-card-bg, #ffffff) !important;
     color: var(--lb-purple) !important;
     box-shadow: none !important;
 }
@@ -127,8 +127,8 @@ body.theme-lavender_bloom .lb-logo-stamp {
 
 body.theme-lavender_bloom .btn-primary,
 body.theme-lavender_bloom .nav-order-btn {
-    background: #8e4fa3 !important;
-    color: #ffffff !important;
+    background: var(--primary, #8e4fa3) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 30px !important;
     font-size: 0.9rem !important;
     font-weight: 600 !important;
@@ -137,21 +137,21 @@ body.theme-lavender_bloom .nav-order-btn {
 
 body.theme-lavender_bloom .btn-primary:hover,
 body.theme-lavender_bloom .nav-order-btn:hover {
-    background: #7a3f8d !important;
+    background: var(--primary-hover, #7a3f8d) !important;
 }
 
 body.theme-lavender_bloom .hero-buttons .btn-secondary {
     background: transparent !important;
-    color: #8e4fa3 !important;
-    border: 2px solid #8e4fa3 !important;
+    color: var(--primary, #8e4fa3) !important;
+    border: 2px solid var(--primary, #8e4fa3) !important;
     box-shadow: none !important;
     font-size: 0.9rem !important;
     font-weight: 600 !important;
 }
 
 body.theme-lavender_bloom .hero-buttons .btn-secondary:hover {
-    background: #8e4fa3 !important;
-    color: #ffffff !important;
+    background: var(--primary, #8e4fa3) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 /* ── Section band system ── */
@@ -160,7 +160,7 @@ body.theme-lavender_bloom .lb-section {
 }
 
 body.theme-lavender_bloom .lb-band-white {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
 }
 
 body.theme-lavender_bloom .lb-band-lavender {
@@ -168,12 +168,12 @@ body.theme-lavender_bloom .lb-band-lavender {
 }
 
 body.theme-lavender_bloom .lb-band-purple {
-    background: linear-gradient(135deg, #6b3480 0%, #8e4fa3 100%);
+    background: linear-gradient(135deg, #6b3480 0%, var(--primary, #8e4fa3) 100%);
 }
 
 body.theme-lavender_bloom .lb-band-purple .lb-section-title,
 body.theme-lavender_bloom .lb-band-purple h2 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-lavender_bloom .lb-section-title {
@@ -195,7 +195,7 @@ body.theme-lavender_bloom .lb-text-link {
 
 /* Hero — soft lavender gradient band, rounded-rectangle photo frame */
 body.theme-lavender_bloom .lb-hero {
-    background: linear-gradient(120deg, #f6eefa 0%, #ffffff 55%, #f0e0f7 100%);
+    background: linear-gradient(120deg, var(--theme-section-bg, #f6eefa) 0%, var(--theme-card-bg, #ffffff) 55%, #f0e0f7 100%);
     padding: 130px 40px 100px 40px;
 }
 
@@ -221,7 +221,7 @@ body.theme-lavender_bloom .lb-hero-media {
     border-radius: 28px;
     overflow: hidden;
     box-shadow: 0 25px 60px rgba(94, 44, 120, 0.22);
-    border: 6px solid #ffffff;
+    border: 6px solid var(--theme-card-bg, #ffffff);
 }
 
 body.theme-lavender_bloom .lb-hero-media img,
@@ -274,7 +274,7 @@ body.theme-lavender_bloom .lb-meet-baker-img {
     border-radius: 28px;
     overflow: hidden;
     box-shadow: 0 20px 50px rgba(94, 44, 120, 0.2);
-    border: 6px solid #ffffff;
+    border: 6px solid var(--theme-card-bg, #ffffff);
 }
 
 body.theme-lavender_bloom .lb-about-photo img,
@@ -296,7 +296,7 @@ body.theme-lavender_bloom .lb-photo-placeholder {
 
 body.theme-lavender_bloom .lb-about-copy-card,
 body.theme-lavender_bloom .lb-meet-baker-copy-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 24px;
     padding: 40px;
     box-shadow: 0 12px 30px rgba(94, 44, 120, 0.1);
@@ -336,7 +336,7 @@ body.theme-lavender_bloom .lb-highlight-icon {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     font-size: 1.6rem;
     margin-bottom: 12px;
     box-shadow: 0 10px 25px rgba(94, 44, 120, 0.12);
@@ -385,7 +385,7 @@ body.theme-lavender_bloom .lb-category-frame img {
 
 body.theme-lavender_bloom .lb-category-banner {
     background: var(--lb-purple);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     text-align: center;
     padding: 14px 16px;
     font-weight: 700;
@@ -416,7 +416,7 @@ body.theme-lavender_bloom .lb-whimsical-badge {
     border-radius: 50%;
     overflow: hidden;
     margin: 0 auto 20px auto;
-    border: 4px solid #ffffff;
+    border: 4px solid var(--theme-card-bg, #ffffff);
     box-shadow: 0 10px 25px rgba(94, 44, 120, 0.16);
 }
 
@@ -437,7 +437,7 @@ body.theme-lavender_bloom .lb-whimsical-chip {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 14px;
     padding: 16px 18px;
     box-shadow: 0 8px 20px rgba(94, 44, 120, 0.1);
@@ -476,7 +476,7 @@ body.theme-lavender_bloom .lb-step-num {
     height: 48px;
     border-radius: 50%;
     background: var(--lb-purple);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     font-weight: 800;
     font-family: 'Poppins', sans-serif;
     font-size: 1.2rem;
@@ -516,7 +516,7 @@ body.theme-lavender_bloom .lb-review-card {
 
 body.theme-lavender_bloom .lb-review-card p {
     font-style: italic;
-    color: #3b1f47;
+    color: var(--dark-text, #3b1f47);
     margin-bottom: 14px;
     line-height: 1.6;
 }
@@ -528,7 +528,7 @@ body.theme-lavender_bloom .lb-review-card h4 {
 
 /* FAQ */
 body.theme-lavender_bloom .lb-faq-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 16px;
     padding: 20px 24px;
     border-left: 5px solid var(--lb-purple);
@@ -572,13 +572,13 @@ body.theme-lavender_bloom .cta-video-banner::before {
 }
 
 body.theme-lavender_bloom .cta-video-banner h2 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-lavender_bloom .cta-video-banner p,
 body.theme-lavender_bloom .video-overlay-content h2,
 body.theme-lavender_bloom .video-overlay-content p {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 /* Page hero (About / Gallery) */
@@ -613,7 +613,7 @@ body.theme-lavender_bloom .lb-policy-container {
 }
 
 body.theme-lavender_bloom .lb-policy-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border: 1px solid var(--lb-lavender-deep);
     border-radius: 20px;
     padding: 32px;
@@ -729,7 +729,7 @@ body.theme-lavender_bloom .lb-icon-circle {
     height: 54px;
     border-radius: 50%;
     background: var(--lb-purple);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -759,7 +759,7 @@ body.theme-lavender_bloom .lb-specialties-row {
 }
 
 body.theme-lavender_bloom .lb-specialty-card {
-    background: linear-gradient(160deg, #ffffff 0%, var(--lb-lavender) 100%);
+    background: linear-gradient(160deg, var(--theme-card-bg, #ffffff) 0%, var(--lb-lavender) 100%);
     border-radius: 20px;
     padding: 30px;
     max-width: 320px;
@@ -770,7 +770,7 @@ body.theme-lavender_bloom .lb-specialty-card {
 
 body.theme-lavender_bloom .lb-specialty-card h3,
 body.theme-lavender_bloom .lb-specialty-card p {
-    color: #3b1f47 !important;
+    color: var(--dark-text, #3b1f47) !important;
 }
 
 body.theme-lavender_bloom .lb-specialty-badge {
@@ -780,7 +780,7 @@ body.theme-lavender_bloom .lb-specialty-badge {
     letter-spacing: 1px;
     text-transform: uppercase;
     background: var(--lb-purple);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     padding: 4px 12px;
     border-radius: 20px;
     margin-bottom: 14px;
@@ -788,7 +788,7 @@ body.theme-lavender_bloom .lb-specialty-badge {
 
 /* ── Admin dashboard, themed to match ── */
 body.theme-lavender_bloom .admin-mobile-header {
-    background: #3b1f47 !important;
+    background: var(--theme-accent-bg, #3b1f47) !important;
 }
 
 body.theme-lavender_bloom .admin-main-content input[type="text"],
@@ -799,47 +799,47 @@ body.theme-lavender_bloom .admin-main-content input[type="url"],
 body.theme-lavender_bloom .admin-main-content select,
 body.theme-lavender_bloom .admin-main-content textarea {
     border: 1.5px solid #e2cdec !important;
-    background-color: #ffffff !important;
-    color: #3b1f47 !important;
+    background-color: var(--theme-card-bg, #ffffff) !important;
+    color: var(--dark-text, #3b1f47) !important;
 }
 
 body.theme-lavender_bloom .admin-main-content input:focus,
 body.theme-lavender_bloom .admin-main-content select:focus,
 body.theme-lavender_bloom .admin-main-content textarea:focus {
-    border-color: #8e4fa3 !important;
+    border-color: var(--primary, #8e4fa3) !important;
     box-shadow: 0 0 0 4px rgba(142, 79, 163, 0.25) !important;
-    background-color: #ffffff !important;
+    background-color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-lavender_bloom .admin-main-content label {
-    color: #3b1f47 !important;
+    color: var(--dark-text, #3b1f47) !important;
 }
 
 body.theme-lavender_bloom .status-select:focus {
-    border-color: #8e4fa3;
+    border-color: var(--primary, #8e4fa3);
     box-shadow: 0 0 0 3px rgba(142, 79, 163, 0.25);
 }
 
 body.theme-lavender_bloom .btn-outline {
     background: transparent !important;
-    border: 2px solid #8e4fa3 !important;
-    color: #8e4fa3 !important;
+    border: 2px solid var(--primary, #8e4fa3) !important;
+    color: var(--primary, #8e4fa3) !important;
 }
 
 body.theme-lavender_bloom .btn-outline:hover {
-    background: #f6eefa !important;
+    background: var(--theme-section-bg, #f6eefa) !important;
 }
 
 body.theme-lavender_bloom .reorder-btn {
-    background: #f6eefa !important;
+    background: var(--theme-section-bg, #f6eefa) !important;
     border: 1px solid #e2cdec !important;
-    color: #3b1f47 !important;
+    color: var(--dark-text, #3b1f47) !important;
 }
 
 body.theme-lavender_bloom .reorder-btn:hover:not(:disabled) {
-    background: #8e4fa3 !important;
-    border-color: #8e4fa3 !important;
-    color: #ffffff !important;
+    background: var(--primary, #8e4fa3) !important;
+    border-color: var(--primary, #8e4fa3) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-lavender_bloom .category-card-exact,
@@ -849,41 +849,41 @@ body.theme-lavender_bloom .form-builder-card,
 body.theme-lavender_bloom .order-card,
 body.theme-lavender_bloom .add-review-box,
 body.theme-lavender_bloom .payment-methods-card {
-    background: #ffffff !important;
+    background: var(--theme-card-bg, #ffffff) !important;
     border: 1px solid #e2cdec;
 }
 
 body.theme-lavender_bloom .order-modal-card {
     border-radius: 28px !important;
-    border: 3px solid #8e4fa3 !important;
-    background: #ffffff !important;
+    border: 3px solid var(--primary, #8e4fa3) !important;
+    background: var(--theme-card-bg, #ffffff) !important;
     box-shadow: 0 15px 40px rgba(94, 44, 120, 0.22) !important;
 }
 
 body.theme-lavender_bloom .sticky-order-summary-bar {
-    background: #f6eefa !important;
-    border: 2px solid #8e4fa3 !important;
+    background: var(--theme-section-bg, #f6eefa) !important;
+    border: 2px solid var(--primary, #8e4fa3) !important;
 }
 
 body.theme-lavender_bloom .product,
 body.theme-lavender_bloom .option-chip {
     border-radius: 20px !important;
     border: 2px solid #e2cdec !important;
-    background: #ffffff !important;
-    color: #3b1f47 !important;
+    background: var(--theme-card-bg, #ffffff) !important;
+    color: var(--dark-text, #3b1f47) !important;
 }
 
 body.theme-lavender_bloom .product.selected,
 body.theme-lavender_bloom .option-chip.selected {
-    background: #8e4fa3 !important;
-    color: #ffffff !important;
-    border-color: #8e4fa3 !important;
+    background: var(--primary, #8e4fa3) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
+    border-color: var(--primary, #8e4fa3) !important;
     box-shadow: 0 8px 20px rgba(142, 79, 163, 0.35) !important;
 }
 
 body.theme-lavender_bloom .next-btn {
-    background: #8e4fa3 !important;
-    color: #ffffff !important;
+    background: var(--primary, #8e4fa3) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 30px !important;
     box-shadow: 0 8px 20px rgba(142, 79, 163, 0.3) !important;
 }

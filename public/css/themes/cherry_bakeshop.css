@@ -9,13 +9,13 @@ body.theme-cherry_bakeshop {
     --theme-card-bg: #ffffff;
     --theme-section-bg: #fff5f0;
     --theme-accent-bg: #4a1420;
-    --cb-cherry: #a0293f;
-    --cb-cherry-dark: #7f2032;
-    --cb-cream: #fff5f0;
-    --cb-ink: #4a2833;
+    --cb-cherry: var(--primary, #a0293f);
+    --cb-cherry-dark: var(--primary-hover, #7f2032);
+    --cb-cream: var(--theme-section-bg, #fff5f0);
+    --cb-ink: var(--dark-text, #4a2833);
     --cb-peach: #f6c9a0;
     font-family: 'Nunito', sans-serif;
-    background-color: #ffffff;
+    background-color: var(--theme-card-bg, #ffffff);
 }
 
 body.theme-cherry_bakeshop h1,
@@ -81,7 +81,7 @@ body.theme-cherry_bakeshop .cb-logo-stamp {
 body.theme-cherry_bakeshop .btn-primary,
 body.theme-cherry_bakeshop .nav-order-btn {
     background: var(--cb-cherry) !important;
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 30px !important;
     font-size: 0.9rem !important;
     font-weight: 700 !important;
@@ -105,7 +105,7 @@ body.theme-cherry_bakeshop .hero-buttons .btn-secondary {
 
 body.theme-cherry_bakeshop .hero-buttons .btn-secondary:hover {
     background: var(--cb-cherry) !important;
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 /* ── Section band system ── */
@@ -114,7 +114,7 @@ body.theme-cherry_bakeshop .cb-section {
 }
 
 body.theme-cherry_bakeshop .cb-band-white {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
 }
 
 body.theme-cherry_bakeshop .cb-band-cream {
@@ -128,7 +128,7 @@ body.theme-cherry_bakeshop .cb-band-cherry {
 body.theme-cherry_bakeshop .cb-band-cherry h2,
 body.theme-cherry_bakeshop .cb-band-cherry h3,
 body.theme-cherry_bakeshop .cb-band-cherry p {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-cherry_bakeshop .cb-section-title {
@@ -153,7 +153,7 @@ body.theme-cherry_bakeshop .cb-badge-frame {
     overflow: hidden;
     border-radius: 22px;
     box-shadow: 0 25px 55px rgba(160, 41, 63, 0.25);
-    border: 8px solid #ffffff;
+    border: 8px solid var(--theme-card-bg, #ffffff);
     outline: 3px solid var(--cb-cherry);
     outline-offset: -3px;
     background: var(--cb-cream);
@@ -234,7 +234,7 @@ body.theme-cherry_bakeshop .cb-ribbon {
     top: 10px;
     right: calc(50% - 200px + 10px);
     background: var(--cb-cherry);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     font-family: 'Fredoka', sans-serif;
     font-weight: 600;
     font-size: 0.9rem;
@@ -316,9 +316,9 @@ body.theme-cherry_bakeshop .cb-shelf-frame {
     border-radius: 20px;
     overflow: hidden;
     margin: 0 auto 16px auto;
-    border: 5px solid #ffffff;
+    border: 5px solid var(--theme-card-bg, #ffffff);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -331,7 +331,7 @@ body.theme-cherry_bakeshop .cb-shelf-frame img {
 }
 
 body.theme-cherry_bakeshop .cb-shelf-card h3 {
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     margin-bottom: 6px;
 }
 
@@ -392,7 +392,7 @@ body.theme-cherry_bakeshop .cb-step-num {
 
 body.theme-cherry_bakeshop .cb-step-num::before {
     content: counter(cb-step);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     font-weight: 700;
     font-family: 'Fredoka', sans-serif;
     font-size: 1.2rem;
@@ -419,7 +419,7 @@ body.theme-cherry_bakeshop .cb-review-row {
 }
 
 body.theme-cherry_bakeshop .cb-review-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 20px 20px 20px 4px;
     padding: 26px 26px 22px 26px;
     max-width: 320px;
@@ -441,7 +441,7 @@ body.theme-cherry_bakeshop .cb-review-card h4 {
 
 /* FAQ */
 body.theme-cherry_bakeshop .cb-faq-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 18px;
     padding: 20px 24px;
     border-left: 5px solid var(--cb-cherry);
@@ -491,7 +491,7 @@ body.theme-cherry_bakeshop .cta-video-banner::before {
 body.theme-cherry_bakeshop .cta-video-banner p,
 body.theme-cherry_bakeshop .video-overlay-content h2,
 body.theme-cherry_bakeshop .video-overlay-content p {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 /* Page hero (About / Gallery) */
@@ -574,7 +574,7 @@ body.theme-cherry_bakeshop .cb-icon-circle {
     height: 54px;
     border-radius: 50%;
     background: var(--cb-cherry);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -601,7 +601,7 @@ body.theme-cherry_bakeshop .cb-specialties-row {
 }
 
 body.theme-cherry_bakeshop .cb-specialty-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 20px 20px 20px 4px;
     padding: 30px;
     max-width: 320px;
@@ -617,7 +617,7 @@ body.theme-cherry_bakeshop .cb-specialty-badge {
     letter-spacing: 1px;
     text-transform: uppercase;
     background: var(--cb-cherry);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     padding: 4px 12px;
     border-radius: 20px;
     margin-bottom: 14px;

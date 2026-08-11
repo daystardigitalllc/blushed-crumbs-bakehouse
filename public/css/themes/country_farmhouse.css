@@ -12,7 +12,7 @@ body.theme-country_farmhouse {
     --theme-section-bg: #f6efe1;
     --theme-accent-bg: #2b2117;
     font-family: 'Open Sans', sans-serif;
-    background-color: #f6efe1;
+    background-color: var(--theme-section-bg, #f6efe1);
 }
 
 body.theme-country_farmhouse h1,
@@ -23,7 +23,7 @@ body.theme-country_farmhouse .section-title-script,
 body.theme-country_farmhouse .whimsical-col-right h2 {
     font-family: 'Oswald', sans-serif !important;
     font-weight: 700 !important;
-    color: #2b2117 !important;
+    color: var(--dark-text, #2b2117) !important;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -44,12 +44,12 @@ body.theme-country_farmhouse .reviews-section {
 }
 
 body.theme-country_farmhouse .highlights-bar {
-    background: #2b2117 !important;
+    background: var(--theme-accent-bg, #2b2117) !important;
 }
 
 body.theme-country_farmhouse .video-promo-banner h2,
 body.theme-country_farmhouse .video-overlay-content h2 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 /* Without this, the theme-wide "h1,h2,h3{color:dark}" rule above (more
@@ -58,22 +58,22 @@ body.theme-country_farmhouse .video-overlay-content h2 {
    headline in dark charcoal on its own dark scrim - unreadable. */
 body.theme-country_farmhouse .cta-video-banner h2,
 body.theme-country_farmhouse .cta-video-banner p {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-country_farmhouse .whimsical-section {
-    background-color: #2b2117 !important;
-    color: #f6efe1 !important;
+    background-color: var(--dark-text, #2b2117) !important;
+    color: var(--theme-section-bg, #f6efe1) !important;
 }
 
 body.theme-country_farmhouse .whimsical-section h2 {
-    color: #f6efe1 !important;
+    color: var(--theme-section-bg, #f6efe1) !important;
 }
 
 body.theme-country_farmhouse .btn-primary,
 body.theme-country_farmhouse .nav-order-btn {
-    background: #c1810a !important;
-    color: #ffffff !important;
+    background: var(--primary, #c1810a) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 4px !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -85,15 +85,15 @@ body.theme-country_farmhouse .cloud-review-card,
 body.theme-country_farmhouse .category-image-frame {
     border-radius: 4px !important;
     border: 1px solid #e2d5bc !important;
-    background: #ffffff !important;
+    background: var(--theme-card-bg, #ffffff) !important;
     box-shadow: 0 4px 12px rgba(43, 33, 23, 0.06) !important;
 }
 
 /* Order Form Modal Theme Rules - Artisan Deli */
 body.theme-country_farmhouse .order-modal-card {
     border-radius: 4px !important;
-    border: 2px solid #c1810a !important;
-    background: #f6efe1 !important;
+    border: 2px solid var(--primary, #c1810a) !important;
+    background: var(--theme-section-bg, #f6efe1) !important;
     box-shadow: 0 12px 35px rgba(43, 33, 23, 0.15) !important;
 }
 
@@ -105,22 +105,22 @@ body.theme-country_farmhouse .sticky-order-summary-bar {
 body.theme-country_farmhouse .product,
 body.theme-country_farmhouse .option-chip {
     border-radius: 4px !important;
-    border: 1px solid #c1810a !important;
-    background: #ffffff !important;
-    color: #2b2117 !important;
+    border: 1px solid var(--primary, #c1810a) !important;
+    background: var(--theme-card-bg, #ffffff) !important;
+    color: var(--dark-text, #2b2117) !important;
 }
 
 body.theme-country_farmhouse .product.selected,
 body.theme-country_farmhouse .option-chip.selected {
-    background: #c1810a !important;
-    color: #ffffff !important;
-    border-color: #a66d08 !important;
+    background: var(--primary, #c1810a) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
+    border-color: var(--primary-hover, #a66d08) !important;
     box-shadow: 0 4px 12px rgba(193, 129, 10, 0.35) !important;
 }
 
 body.theme-country_farmhouse .next-btn {
-    background: #c1810a !important;
-    color: #ffffff !important;
+    background: var(--primary, #c1810a) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 4px !important;
     box-shadow: 0 4px 12px rgba(193, 129, 10, 0.35) !important;
 }
@@ -136,7 +136,7 @@ body.theme-country_farmhouse .next-btn {
    .rustic-*/.playful-*/.modern-* classes. */
 
 body.theme-country_farmhouse .farmhouse-icon {
-    color: #c1810a;
+    color: var(--primary, #c1810a);
 }
 
 /* cta-video-banner's shared ::before scrim is a flat 18-32% black wash -
@@ -153,11 +153,11 @@ body.theme-country_farmhouse .cta-video-banner::before {
    background instead, where white text would disappear. */
 body.theme-country_farmhouse .site-header:has(+ #storefront-view .farmhouse-hero) .nav-links a,
 body.theme-country_farmhouse .site-header:has(+ #storefront-view .farmhouse-hero) .logo span {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-country_farmhouse .site-header:has(+ #storefront-view .farmhouse-hero) .nav-links a:hover {
-    color: #c1810a !important;
+    color: var(--primary, #c1810a) !important;
 }
 
 body.theme-country_farmhouse .nav-links a {
@@ -175,7 +175,7 @@ body.theme-country_farmhouse .farmhouse-hero {
     justify-content: center;
     text-align: center;
     overflow: hidden;
-    background-color: #2b2117;
+    background-color: var(--dark-text, #2b2117);
 }
 
 body.theme-country_farmhouse .farmhouse-hero-media {
@@ -206,14 +206,14 @@ body.theme-country_farmhouse .farmhouse-hero-copy {
 }
 
 body.theme-country_farmhouse .farmhouse-hero-copy .subheading {
-    color: #f6efe1 !important;
+    color: var(--theme-section-bg, #f6efe1) !important;
     opacity: 0.85;
     font-size: 0.85rem !important;
     letter-spacing: 3px !important;
 }
 
 body.theme-country_farmhouse .farmhouse-hero-copy h1 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     font-size: clamp(2.6rem, 6vw, 4.4rem);
     line-height: 1.05;
     margin: 14px 0 22px 0;
@@ -231,7 +231,7 @@ body.theme-country_farmhouse .farmhouse-scroll-cue {
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    color: #f6efe1;
+    color: var(--theme-section-bg, #f6efe1);
     opacity: 0.8;
     font-size: 0.7rem;
     text-transform: uppercase;
@@ -286,7 +286,7 @@ body.theme-country_farmhouse .farmhouse-about-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #2b2117 0%, #c1810a 100%);
+    background: linear-gradient(160deg, var(--theme-accent-bg, #2b2117) 0%, var(--primary, #c1810a) 100%);
 }
 
 body.theme-country_farmhouse .farmhouse-about-copy p {
@@ -329,7 +329,7 @@ body.theme-country_farmhouse .farmhouse-menu-index-media-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #2b2117 0%, #c1810a 100%);
+    background: linear-gradient(160deg, var(--theme-accent-bg, #2b2117) 0%, var(--primary, #c1810a) 100%);
 }
 
 body.theme-country_farmhouse .farmhouse-tabs {
@@ -345,24 +345,24 @@ body.theme-country_farmhouse .farmhouse-tabs {
 
 body.theme-country_farmhouse .farmhouse-tab {
     background: rgba(246, 239, 225, 0.95);
-    color: #2b2117;
+    color: var(--dark-text, #2b2117);
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 0.95rem;
     padding: 10px 22px;
-    border-left: 4px solid #c1810a;
+    border-left: 4px solid var(--primary, #c1810a);
 }
 
 body.theme-country_farmhouse .farmhouse-tab.is-accent {
-    background: #c1810a;
-    color: #ffffff;
-    border-left-color: #2b2117;
+    background: var(--primary, #c1810a);
+    color: var(--theme-card-bg, #ffffff);
+    border-left-color: var(--dark-text, #2b2117);
 }
 
 body.theme-country_farmhouse .farmhouse-menu-index-list {
-    background: #c1810a;
+    background: var(--primary, #c1810a);
     padding: 45px 40px;
     display: flex;
     flex-direction: column;
@@ -371,7 +371,7 @@ body.theme-country_farmhouse .farmhouse-menu-index-list {
 }
 
 body.theme-country_farmhouse .farmhouse-menu-index-list h2 {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     margin-bottom: 6px;
 }
 
@@ -381,7 +381,7 @@ body.theme-country_farmhouse .farmhouse-menu-item {
 }
 
 body.theme-country_farmhouse .farmhouse-menu-item h4 {
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     font-size: 1.05rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -426,7 +426,7 @@ body.theme-country_farmhouse .farmhouse-contact-phone {
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
     font-size: 1.5rem;
-    color: #2b2117;
+    color: var(--dark-text, #2b2117);
     margin-bottom: 20px;
 }
 
@@ -440,8 +440,8 @@ body.theme-country_farmhouse .farmhouse-social-icon {
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: #c1810a;
-    color: #ffffff;
+    background: var(--primary, #c1810a);
+    color: var(--theme-card-bg, #ffffff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -465,7 +465,7 @@ body.theme-country_farmhouse .farmhouse-hours-block h3 {
 body.theme-country_farmhouse .farmhouse-hours-block p {
     font-family: 'Great Vibes', cursive;
     font-size: 1.7rem;
-    color: #2b2117;
+    color: var(--dark-text, #2b2117);
     line-height: 1.3;
 }
 
@@ -495,8 +495,8 @@ body.theme-country_farmhouse .farmhouse-map-placeholder {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: #2b2117;
-    color: #f6efe1;
+    background: var(--theme-accent-bg, #2b2117);
+    color: var(--theme-section-bg, #f6efe1);
     text-align: center;
     padding: 30px;
     font-size: 0.9rem;
@@ -513,7 +513,7 @@ body.theme-country_farmhouse .farmhouse-page-hero-kicker {
     text-transform: uppercase;
     letter-spacing: 3px;
     font-weight: 700;
-    color: #c1810a;
+    color: var(--primary, #c1810a);
     margin-bottom: 12px;
     font-size: 0.85rem;
 }
@@ -545,14 +545,14 @@ body.theme-country_farmhouse .farmhouse-icon-circle {
     width: 54px;
     height: 54px;
     border-radius: 50%;
-    background: #c1810a;
+    background: var(--primary, #c1810a);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 body.theme-country_farmhouse .farmhouse-icon-circle .material-symbols-outlined {
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     font-size: 1.5rem;
 }
 

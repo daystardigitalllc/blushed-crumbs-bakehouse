@@ -12,14 +12,14 @@ body.theme-sunny_whisk {
     --theme-section-bg: #bdeaf5;
     --theme-accent-bg: #14213d;
     --sw-sky: #7dd8ea;
-    --sw-sky-light: #bdeaf5;
+    --sw-sky-light: var(--theme-section-bg, #bdeaf5);
     --sw-mustard: #f5c518;
     --sw-mustard-dark: #e0af0a;
     --sw-pink: #ffb6d5;
     --sw-pink-dark: #ff8fc0;
-    --sw-ink: #14213d;
+    --sw-ink: var(--dark-text, #14213d);
     font-family: 'Open Sans', sans-serif;
-    background-color: #eaf8fc;
+    background-color: var(--pink-bg, #eaf8fc);
 }
 
 body.theme-sunny_whisk h1,
@@ -29,7 +29,7 @@ body.theme-sunny_whisk .section-title-script,
 body.theme-sunny_whisk .whimsical-col-right h2 {
     font-family: 'Poppins', sans-serif !important;
     font-weight: 800 !important;
-    color: #14213d !important;
+    color: var(--dark-text, #14213d) !important;
     letter-spacing: 0;
 }
 
@@ -38,7 +38,7 @@ body.theme-sunny_whisk .subheading {
     font-weight: 800 !important;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #ff4f9e !important;
+    color: var(--primary, #ff4f9e) !important;
     font-size: 0.95rem !important;
 }
 
@@ -59,22 +59,22 @@ body.theme-sunny_whisk .sw-icon {
 
 body.theme-sunny_whisk .btn-primary,
 body.theme-sunny_whisk .nav-order-btn {
-    background: #ff4f9e !important;
-    color: #ffffff !important;
+    background: var(--primary, #ff4f9e) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 30px !important;
     box-shadow: 0 8px 25px rgba(255, 79, 158, 0.35) !important;
 }
 
 body.theme-sunny_whisk .hero-buttons .btn-secondary {
     background: rgba(20, 33, 61, 0.08) !important;
-    color: #14213d !important;
-    border: 2px solid #14213d !important;
+    color: var(--dark-text, #14213d) !important;
+    border: 2px solid var(--theme-accent-bg, #14213d) !important;
     box-shadow: none !important;
 }
 
 body.theme-sunny_whisk .hero-buttons .btn-secondary:hover {
-    background: #14213d !important;
-    color: #ffffff !important;
+    background: var(--theme-accent-bg, #14213d) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 /* ── Diagonal band system ──
@@ -115,7 +115,7 @@ body.theme-sunny_whisk .sw-band-pink::before {
 }
 
 body.theme-sunny_whisk .sw-band-white::before {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
 }
 
 body.theme-sunny_whisk .sw-section-title {
@@ -171,7 +171,7 @@ body.theme-sunny_whisk .sw-hero-copy h1 {
 }
 
 body.theme-sunny_whisk .sw-hero-media {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 28px;
     padding: 14px;
     box-shadow: 0 25px 60px rgba(20, 33, 61, 0.25);
@@ -202,7 +202,7 @@ body.theme-sunny_whisk .sw-hero-media-placeholder {
 body.theme-sunny_whisk .sw-about-card {
     max-width: 1100px;
     margin: 0 auto;
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 28px;
     padding: 50px;
     display: grid;
@@ -300,7 +300,7 @@ body.theme-sunny_whisk .sw-shelf-frame {
     border-radius: 50%;
     overflow: hidden;
     margin: 0 auto 16px auto;
-    border: 5px solid #ffffff;
+    border: 5px solid var(--theme-card-bg, #ffffff);
     box-shadow: 0 10px 25px rgba(20, 33, 61, 0.2);
     background: var(--sw-mustard);
     display: flex;
@@ -327,7 +327,7 @@ body.theme-sunny_whisk .sw-shelf-card p {
 /* Whimsical section — deep navy band */
 body.theme-sunny_whisk .sw-whimsical {
     background-color: var(--sw-ink) !important;
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-sunny_whisk .sw-whimsical h2 {
@@ -369,7 +369,7 @@ body.theme-sunny_whisk .sw-step-num {
 
 body.theme-sunny_whisk .sw-step-num::before {
     content: counter(sw-step);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     font-weight: 800;
     font-family: 'Poppins', sans-serif;
     font-size: 1.2rem;
@@ -396,7 +396,7 @@ body.theme-sunny_whisk .sw-review-row {
 }
 
 body.theme-sunny_whisk .sw-review-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 20px;
     padding: 28px;
     max-width: 320px;
@@ -418,7 +418,7 @@ body.theme-sunny_whisk .sw-review-card h4 {
 
 /* FAQ */
 body.theme-sunny_whisk .sw-faq-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 16px;
     padding: 20px 24px;
     border-left: 5px solid var(--sw-mustard);
@@ -441,7 +441,7 @@ body.theme-sunny_whisk .sw-faq-card p {
 /* Featured gallery — the big mustard diagonal photo grid */
 body.theme-sunny_whisk .sw-featured-grid .gallery-card-img-wrap {
     aspect-ratio: 1 / 1;
-    border: 4px solid #ffffff;
+    border: 4px solid var(--theme-card-bg, #ffffff);
     border-radius: 14px;
     box-shadow: 0 10px 25px rgba(20, 33, 61, 0.15);
     overflow: hidden;
@@ -456,7 +456,7 @@ body.theme-sunny_whisk .cta-video-banner h2,
 body.theme-sunny_whisk .cta-video-banner p,
 body.theme-sunny_whisk .video-overlay-content h2,
 body.theme-sunny_whisk .video-overlay-content p {
-    color: #ffffff !important;
+    color: var(--theme-card-bg, #ffffff) !important;
 }
 
 /* Page hero (About / Gallery) */
@@ -559,7 +559,7 @@ body.theme-sunny_whisk .sw-icon-circle {
     height: 54px;
     border-radius: 50%;
     background: var(--primary);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -586,7 +586,7 @@ body.theme-sunny_whisk .sw-specialties-row {
 }
 
 body.theme-sunny_whisk .sw-specialty-card {
-    background: #ffffff;
+    background: var(--theme-card-bg, #ffffff);
     border-radius: 20px;
     padding: 30px;
     max-width: 320px;
@@ -602,7 +602,7 @@ body.theme-sunny_whisk .sw-specialty-badge {
     letter-spacing: 1px;
     text-transform: uppercase;
     background: var(--primary);
-    color: #ffffff;
+    color: var(--theme-card-bg, #ffffff);
     padding: 4px 12px;
     border-radius: 20px;
     margin-bottom: 14px;
@@ -610,7 +610,7 @@ body.theme-sunny_whisk .sw-specialty-badge {
 
 /* ── Admin dashboard, themed to match (same approach as playful_treats) ── */
 body.theme-sunny_whisk .admin-mobile-header {
-    background: #14213d !important;
+    background: var(--theme-accent-bg, #14213d) !important;
 }
 
 body.theme-sunny_whisk .admin-main-content input[type="text"],
@@ -621,31 +621,31 @@ body.theme-sunny_whisk .admin-main-content input[type="url"],
 body.theme-sunny_whisk .admin-main-content select,
 body.theme-sunny_whisk .admin-main-content textarea {
     border: 1.5px solid #7dd8ea !important;
-    background-color: #ffffff !important;
-    color: #14213d !important;
+    background-color: var(--theme-card-bg, #ffffff) !important;
+    color: var(--dark-text, #14213d) !important;
 }
 
 body.theme-sunny_whisk .admin-main-content input:focus,
 body.theme-sunny_whisk .admin-main-content select:focus,
 body.theme-sunny_whisk .admin-main-content textarea:focus {
-    border-color: #ff4f9e !important;
+    border-color: var(--primary, #ff4f9e) !important;
     box-shadow: 0 0 0 4px rgba(255, 79, 158, 0.2) !important;
-    background-color: #ffffff !important;
+    background-color: var(--theme-card-bg, #ffffff) !important;
 }
 
 body.theme-sunny_whisk .admin-main-content label {
-    color: #14213d !important;
+    color: var(--dark-text, #14213d) !important;
 }
 
 body.theme-sunny_whisk .status-select:focus {
-    border-color: #ff4f9e;
+    border-color: var(--primary, #ff4f9e);
     box-shadow: 0 0 0 3px rgba(255, 79, 158, 0.2);
 }
 
 body.theme-sunny_whisk .btn-outline {
     background: transparent !important;
-    border: 2px solid #ff4f9e !important;
-    color: #ff4f9e !important;
+    border: 2px solid var(--primary, #ff4f9e) !important;
+    color: var(--primary, #ff4f9e) !important;
 }
 
 body.theme-sunny_whisk .btn-outline:hover {
@@ -653,14 +653,14 @@ body.theme-sunny_whisk .btn-outline:hover {
 }
 
 body.theme-sunny_whisk .reorder-btn {
-    background: #bdeaf5 !important;
+    background: var(--theme-section-bg, #bdeaf5) !important;
     border: 1px solid #7dd8ea !important;
-    color: #14213d !important;
+    color: var(--dark-text, #14213d) !important;
 }
 
 body.theme-sunny_whisk .reorder-btn:hover:not(:disabled) {
-    background: #ff4f9e !important;
-    border-color: #ff4f9e !important;
+    background: var(--primary, #ff4f9e) !important;
+    border-color: var(--primary, #ff4f9e) !important;
     color: #fff !important;
 }
 
@@ -671,19 +671,19 @@ body.theme-sunny_whisk .form-builder-card,
 body.theme-sunny_whisk .order-card,
 body.theme-sunny_whisk .add-review-box,
 body.theme-sunny_whisk .payment-methods-card {
-    background: #ffffff !important;
+    background: var(--theme-card-bg, #ffffff) !important;
     border: 1px solid #7dd8ea;
 }
 
 body.theme-sunny_whisk .order-modal-card {
     border-radius: 28px !important;
     border: 3px solid #7dd8ea !important;
-    background: #ffffff !important;
+    background: var(--theme-card-bg, #ffffff) !important;
     box-shadow: 0 15px 40px rgba(20, 33, 61, 0.2) !important;
 }
 
 body.theme-sunny_whisk .sticky-order-summary-bar {
-    background: #bdeaf5 !important;
+    background: var(--theme-section-bg, #bdeaf5) !important;
     border: 2px solid #7dd8ea !important;
 }
 
@@ -691,21 +691,21 @@ body.theme-sunny_whisk .product,
 body.theme-sunny_whisk .option-chip {
     border-radius: 20px !important;
     border: 2px solid #7dd8ea !important;
-    background: #ffffff !important;
-    color: #14213d !important;
+    background: var(--theme-card-bg, #ffffff) !important;
+    color: var(--dark-text, #14213d) !important;
 }
 
 body.theme-sunny_whisk .product.selected,
 body.theme-sunny_whisk .option-chip.selected {
-    background: #ff4f9e !important;
-    color: #ffffff !important;
-    border-color: #14213d !important;
+    background: var(--primary, #ff4f9e) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
+    border-color: var(--dark-text, #14213d) !important;
     box-shadow: 0 8px 20px rgba(255, 79, 158, 0.4) !important;
 }
 
 body.theme-sunny_whisk .next-btn {
-    background: #ff4f9e !important;
-    color: #ffffff !important;
+    background: var(--primary, #ff4f9e) !important;
+    color: var(--theme-card-bg, #ffffff) !important;
     border-radius: 30px !important;
     box-shadow: 0 8px 25px rgba(255, 79, 158, 0.35) !important;
 }

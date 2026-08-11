@@ -9,7 +9,7 @@ body.theme-sweet_elegant {
     --theme-card-bg: #ffffff;
     --theme-section-bg: #fcebf1;
     --theme-accent-bg: #401829;
-    background-color: #fcebf1;
+    background-color: var(--theme-section-bg, #fcebf1);
 }
 
 /* EXACT ELEMENTOR WORDPRESS CLOUD DIVIDERS (Sweet & Elegant only) */
