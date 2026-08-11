@@ -299,6 +299,12 @@ class Tenant extends Model implements TenancyContract
      *                 modern_bakery's glassmorphism sections -- painting
      *                 them an opaque color removes the blur effect that's
      *                 the whole visual identity of that section).
+     *   - 'before'  : the section's real element has no background of its
+     *                 own -- a `::before` pseudo-element paints it instead
+     *                 (sunny_whisk's diagonal-clip band system). The override
+     *                 targets `{selector}::before`, since no specificity on
+     *                 the element's own background can paint over a
+     *                 pseudo-element layered visually on top of it.
      *
      * 'button' is null wherever that section renders no button in that
      * theme. 'button2' is set only where a section renders a SECOND,
@@ -360,10 +366,18 @@ class Tenant extends Model implements TenancyContract
         $map['country_farmhouse']['about'] = ['bg' => '.farmhouse-about', 'bg_mode' => 'flat', 'heading' => '.farmhouse-about h2', 'text' => '.farmhouse-about-copy p', 'button' => '.farmhouse-about .btn-primary', 'button2' => null];
         $map['country_farmhouse']['categories'] = ['bg' => '.farmhouse-menu-index-list', 'bg_mode' => 'flat', 'heading' => 'h2', 'text' => '.farmhouse-menu-item p', 'button' => '.farmhouse-menu-index .btn', 'button2' => null];
 
+        // rustic_kitchen and playful_treats paint .highlights-bar with a
+        // `background: linear-gradient(...) !important` shorthand, not a
+        // plain background-color -- 'flat' mode only overrides the color
+        // component, so the original gradient IMAGE stays on top and the
+        // override is invisible. Needs 'gradient' mode to clear the image.
+        $map['rustic_kitchen']['highlights']['bg_mode'] = 'gradient';
+        $map['playful_treats']['highlights']['bg_mode'] = 'gradient';
+
         $map['modern_bakery'] = [
             'hero' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h1', 'text' => null, 'button' => '.modern-hero .btn-primary', 'button2' => '.modern-hero .btn-secondary'],
             'about' => ['bg' => '.about-teaser-section', 'bg_mode' => 'flat', 'heading' => '.about-teaser-section h2', 'text' => '.about-teaser-section p', 'button' => '.about-teaser-section .btn-primary', 'button2' => null],
-            'highlights' => ['bg' => '.highlights-bar', 'bg_mode' => 'flat', 'heading' => '.highlight-item h4', 'text' => '.highlight-item p', 'button' => null, 'button2' => null],
+            'highlights' => ['bg' => '.highlights-bar', 'bg_mode' => 'gradient', 'heading' => '.highlight-item h4', 'text' => '.highlight-item p', 'button' => null, 'button2' => null],
             'promo_video' => ['bg' => '.modern-promo-teaser', 'bg_mode' => 'flat', 'heading' => '.modern-promo-teaser h2', 'text' => '.modern-promo-teaser p', 'button' => '.modern-promo-teaser .btn-primary', 'button2' => null],
             'categories' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => '#categories .btn-primary', 'button2' => null],
             'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'gradient', 'heading' => '.modern-cakes-banner h2', 'text' => '.whimsical-bullet-list li', 'button' => '.whimsical-section .btn-primary', 'button2' => null],
@@ -411,13 +425,30 @@ class Tenant extends Model implements TenancyContract
                 'promo_video' => ['bg' => ".{$p}-promo-banner, .video-promo-banner", 'bg_mode' => 'gradient', 'heading' => ".{$p}-promo-banner h2, .video-promo-banner h2", 'text' => ".{$p}-promo-banner p, .video-promo-banner p", 'button' => ".{$p}-promo-banner .btn-primary, .video-promo-banner .btn-primary", 'button2' => null],
                 'categories' => ['bg' => "#categories", 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-shelf-card p", 'button' => null, 'button2' => null],
                 'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-whimsical h2", 'text' => '.whimsical-bullet-list li', 'button' => null, 'button2' => null],
-                'how_it_works' => ['bg' => "#{$p}-band-white, .how-it-works-section", 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-step-copy p", 'button' => null, 'button2' => null],
+                'how_it_works' => ['bg' => '.how-it-works-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-step-copy p", 'button' => null, 'button2' => null],
                 'reviews' => ['bg' => '#reviews', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-review-card p", 'button' => null, 'button2' => null],
                 'faq' => ['bg' => '.faq-policies-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-faq-card p, .{$p}-accordion-item p", 'button' => null, 'button2' => null],
                 'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-video-banner .cta-content h2', 'text' => '.cta-video-banner .cta-content p', 'button' => '.cta-video-banner .btn-primary', 'button2' => null],
                 'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => '.gallery-card-info h4', 'button' => null, 'button2' => null],
             ];
         }
+
+        // sunny_whisk is the only theme in the $p-family loop whose section
+        // backgrounds are painted entirely by a `.sw-band-*::before` pseudo
+        // layer (clipped diagonal band) rather than the element itself --
+        // daily_batch/lavender_bloom/cherry_bakeshop/sage_sourdough set
+        // background directly on the real element, so they're unaffected.
+        // 'before' mode targets the pseudo-element instead of the section,
+        // since no amount of specificity on the section's own background
+        // can paint over a pseudo-element layered on top of it.
+        foreach (['categories', 'reviews', 'faq', 'featured_gallery', 'how_it_works'] as $__swSec) {
+            $map['sunny_whisk'][$__swSec]['bg_mode'] = 'before';
+        }
+
+        // lavender_bloom's hero is a multi-stop `linear-gradient(...)` (an
+        // actual image layer), not a solid color -- 'flat' mode only
+        // touches background-color, leaving the gradient visible on top.
+        $map['lavender_bloom']['hero']['bg_mode'] = 'gradient';
 
         return $map;
     }
