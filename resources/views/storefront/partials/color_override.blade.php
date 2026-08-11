@@ -36,6 +36,15 @@
                 $__rules[] = "body.theme-{$tenant->theme_id} {$__sel['button']} { color: {$__slots['button_text']} !important; }";
             }
         }
+
+        if (!empty($__sel['button2'])) {
+            if (!empty($__slots['button2_bg'])) {
+                $__rules[] = "body.theme-{$tenant->theme_id} {$__sel['button2']} { background: {$__slots['button2_bg']} !important; border-color: {$__slots['button2_bg']} !important; }";
+            }
+            if (!empty($__slots['button2_text'])) {
+                $__rules[] = "body.theme-{$tenant->theme_id} {$__sel['button2']} { color: {$__slots['button2_text']} !important; }";
+            }
+        }
     }
 @endphp
 @if(count($__rules))

@@ -4,6 +4,7 @@
     $__saved = data_get($tenant->section_colors, $secId, []);
     $__bgMode = $__sel['bg_mode'] ?? 'skip';
     $__hasButton = !empty($__sel['button']);
+    $__hasButton2 = !empty($__sel['button2']);
 
     $__fields = [];
     if ($__bgMode !== 'skip') {
@@ -12,8 +13,12 @@
     $__fields[] = ['slot' => 'heading', 'label' => 'Heading Text'];
     $__fields[] = ['slot' => 'text', 'label' => 'Body Text'];
     if ($__hasButton) {
-        $__fields[] = ['slot' => 'button_bg', 'label' => 'Button Background'];
-        $__fields[] = ['slot' => 'button_text', 'label' => 'Button Text'];
+        $__fields[] = ['slot' => 'button_bg', 'label' => $__hasButton2 ? 'Button 1 Background' : 'Button Background'];
+        $__fields[] = ['slot' => 'button_text', 'label' => $__hasButton2 ? 'Button 1 Text' : 'Button Text'];
+    }
+    if ($__hasButton2) {
+        $__fields[] = ['slot' => 'button2_bg', 'label' => 'Button 2 Background'];
+        $__fields[] = ['slot' => 'button2_text', 'label' => 'Button 2 Text'];
     }
 @endphp
 <div style="margin-top:14px; padding-top:14px; border-top:1px dashed #ddd;">

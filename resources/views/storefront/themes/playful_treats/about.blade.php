@@ -48,7 +48,7 @@
     <!-- HERO -->
     <section class="playful-page-hero">
         <span class="playful-page-hero-kicker">About Us</span>
-        <h1 class="playful-page-hero-title">Meet {{ $tenant->name }}</h1>
+        <h1 class="playful-page-hero-title">{{ $tenant->getSiteContent('about_hero_title', 'Meet ' . $tenant->name) }}</h1>
     </section>
 
     <!-- MEET THE BAKER — photo + bio + testimonial quote -->

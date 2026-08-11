@@ -47,7 +47,7 @@
 <div id="about-page-view">
     <section class="petal-page-hero">
         <span class="subheading">Our Story</span>
-        <h1 class="petal-page-hero-title">{{ $tenant->name }}</h1>
+        <h1 class="petal-page-hero-title">{{ $tenant->getSiteContent('about_hero_title', $tenant->name) }}</h1>
     </section>
 
     <section class="petal-about" style="padding-top:0;">

@@ -1914,6 +1914,18 @@
                         <div id="pagebuilder-page-panel-about" class="pagebuilder-page-panel" data-page="about" style="display:none; flex-direction:column; gap:6px;">
                             <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
                                 <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">Hero Banner</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Title</label>
+                                        <input type="text" name="about_hero_title" value="{{ data_get($siteContent, 'about_hero_title') }}" placeholder="Meet {{ $tenant->name }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
                                     <strong style="color:#27272a; font-size:0.85rem;">Customer Testimonial</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>

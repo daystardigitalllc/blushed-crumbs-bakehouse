@@ -47,7 +47,7 @@
 <div id="about-page-view">
     <section class="modern-page-hero">
         <span class="modern-page-hero-kicker">About Us</span>
-        <h1 class="modern-page-hero-title">Meet {{ $tenant->name }}</h1>
+        <h1 class="modern-page-hero-title">{{ $tenant->getSiteContent('about_hero_title', 'Meet ' . $tenant->name) }}</h1>
     </section>
 
     <section style="padding:0 25px 70px 25px;">

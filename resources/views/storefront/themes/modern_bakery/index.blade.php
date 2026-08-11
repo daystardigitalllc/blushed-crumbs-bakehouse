@@ -320,7 +320,7 @@
                 <!-- Homepage "Meet the Baker" teaser — its own toggleable Page
                      Builder section, drawn from the same about_bio/about_title
                      data used on the About page -->
-                <section style="padding:70px 25px;">
+                <section class="about-teaser-section" style="padding:70px 25px;">
                     <div class="modern-meet-baker">
                         <div class="modern-meet-baker-media">
                             @php

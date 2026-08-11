@@ -48,7 +48,7 @@
     <!-- HERO SECTION -->
     <section class="about-hero-section">
         <span class="about-hero-subtitle">ABOUT US</span>
-        <h1 class="about-hero-title">Who is {{ $tenant->name }}?</h1>
+        <h1 class="about-hero-title">{{ $tenant->getSiteContent('about_hero_title', 'Who is ' . $tenant->name . '?') }}</h1>
     </section>
 
     <!-- MEET THE FOUNDER SECTION -->

@@ -47,7 +47,7 @@
 <div id="about-page-view">
     <section class="midnight-page-hero">
         <span class="subheading">Our Story</span>
-        <h1 class="midnight-page-hero-title">{{ $tenant->name }}</h1>
+        <h1 class="midnight-page-hero-title">{{ $tenant->getSiteContent('about_hero_title', $tenant->name) }}</h1>
     </section>
 
     <section class="midnight-about">

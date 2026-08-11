@@ -520,7 +520,7 @@ class AdminController extends Controller
      */
     private function processSectionColorsInput(Request $request): array
     {
-        $slots = ['bg', 'heading', 'text', 'button_bg', 'button_text'];
+        $slots = ['bg', 'heading', 'text', 'button_bg', 'button_text', 'button2_bg', 'button2_text'];
         $sectionIds = array_keys(Tenant::getDefaultSectionSettings());
         $incoming = $request->input('section_colors', []);
 
@@ -702,6 +702,7 @@ class AdminController extends Controller
             'marquee_text' => $request->input('marquee_text', $currentContent['marquee_text'] ?? ''),
             'featured_gallery_title' => $request->input('featured_gallery_title', $currentContent['featured_gallery_title'] ?? ''),
             'featured_gallery_images' => $processedFeaturedImages,
+            'about_hero_title' => $request->input('about_hero_title', $currentContent['about_hero_title'] ?? ''),
             'about_testimonial_quote' => $request->input('about_testimonial_quote', $currentContent['about_testimonial_quote'] ?? ''),
             'about_testimonial_name' => $request->input('about_testimonial_name', $currentContent['about_testimonial_name'] ?? ''),
             'about_testimonial_role' => $request->input('about_testimonial_role', $currentContent['about_testimonial_role'] ?? ''),
@@ -870,6 +871,7 @@ class AdminController extends Controller
             'marquee_text' => $request->input('marquee_text', $currentContent['marquee_text'] ?? ''),
             'featured_gallery_title' => $request->input('featured_gallery_title', $currentContent['featured_gallery_title'] ?? ''),
             'featured_gallery_images' => $processedFeaturedImages,
+            'about_hero_title' => $request->input('about_hero_title', $currentContent['about_hero_title'] ?? ''),
             'about_testimonial_quote' => $request->input('about_testimonial_quote', $currentContent['about_testimonial_quote'] ?? ''),
             'about_testimonial_name' => $request->input('about_testimonial_name', $currentContent['about_testimonial_name'] ?? ''),
             'about_testimonial_role' => $request->input('about_testimonial_role', $currentContent['about_testimonial_role'] ?? ''),

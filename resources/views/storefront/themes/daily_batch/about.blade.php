@@ -48,7 +48,7 @@
     <!-- HERO -->
     <section class="db-page-hero">
         <span class="db-page-hero-kicker">About Us</span>
-        <h1 class="db-page-hero-title">Meet {{ $tenant->name }}</h1>
+        <h1 class="db-page-hero-title">{{ $tenant->getSiteContent('about_hero_title', 'Meet ' . $tenant->name) }}</h1>
     </section>
 
     <!-- MEET THE BAKER — circular photo + bio + testimonial quote -->

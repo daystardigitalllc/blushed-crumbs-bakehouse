@@ -143,6 +143,7 @@ class Tenant extends Model implements TenancyContract
             'featured_gallery_images',
             'about_title',
             'about_bio',
+            'about_hero_title',
             'about_testimonial_quote',
             'about_testimonial_name',
             'about_testimonial_role',
@@ -300,8 +301,13 @@ class Tenant extends Model implements TenancyContract
      *                 the whole visual identity of that section).
      *
      * 'button' is null wherever that section renders no button in that
-     * theme. Some entries need TWO selectors (space-separated) since a
-     * theme's primary + secondary CTA are separate classes.
+     * theme. 'button2' is set only where a section renders a SECOND,
+     * independently-colorable button (Hero's primary + secondary CTA in
+     * every theme but clean_minimal). Every button/button2 selector is
+     * scoped with that section's own wrapper class -- `.btn-primary` is a
+     * shared class reused across many sections (and the global order
+     * modal), so an unscoped selector here would recolor every button on
+     * the page, not just this section's.
      */
     public static function sectionColorSelectorMap(): array
     {
@@ -310,85 +316,106 @@ class Tenant extends Model implements TenancyContract
         // country_farmhouse) -- defined once, then only the real
         // differences are overridden per theme below.
         $sharedSkeleton = [
-            'highlights' => ['bg' => '.highlights-bar', 'bg_mode' => 'flat', 'heading' => '.highlight-item h4', 'text' => '.highlight-item p', 'button' => null],
-            'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => '.whimsical-col-right h2', 'text' => '.whimsical-bullet-list li', 'button' => null],
-            'reviews' => ['bg' => '#reviews.reviews-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null],
-            'faq' => ['bg' => '.faq-policies-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.faq-policies-section p', 'button' => null],
-            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
-            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null],
-            'how_it_works' => ['bg' => '.how-it-works-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.how-it-works-section p', 'button' => null],
+            'highlights' => ['bg' => '.highlights-bar', 'bg_mode' => 'flat', 'heading' => '.highlight-item h4', 'text' => '.highlight-item p', 'button' => null, 'button2' => null],
+            'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => '.whimsical-col-right h2', 'text' => '.whimsical-bullet-list li', 'button' => null, 'button2' => null],
+            'reviews' => ['bg' => '#reviews.reviews-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null, 'button2' => null],
+            'faq' => ['bg' => '.faq-policies-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.faq-policies-section p', 'button' => null, 'button2' => null],
+            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-video-banner .cta-content h2', 'text' => '.cta-video-banner .cta-content p', 'button' => '.cta-video-banner .btn-primary', 'button2' => null],
+            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null, 'button2' => null],
+            'how_it_works' => ['bg' => '.how-it-works-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.how-it-works-section p', 'button' => null, 'button2' => null],
+        ];
+
+        // Real per-theme hero wrapper class -- needed even where bg_mode is
+        // 'skip' (background is inline), purely so the button selectors
+        // below can be scoped to this section instead of hitting every
+        // `.btn-primary` on the page.
+        $heroWrapper = [
+            'sweet_elegant' => '.hero-section',
+            'rustic_kitchen' => '.rustic-hero-split',
+            'playful_treats' => '.playful-hero',
+            'country_farmhouse' => '.farmhouse-hero',
+            'modern_bakery' => '.modern-hero',
+            'artisan_sourdough' => '.petal-hero',
+            'clean_minimal' => '.midnight-hero',
+            'sunny_whisk' => '.sw-hero',
+            'daily_batch' => '.db-hero',
+            'lavender_bloom' => '.lb-hero',
+            'cherry_bakeshop' => '.cb-hero',
+            'sage_sourdough' => '.sg-hero',
         ];
 
         $map = [];
 
         foreach (['sweet_elegant', 'rustic_kitchen', 'playful_treats', 'country_farmhouse'] as $t) {
             $map[$t] = $sharedSkeleton;
-            $map[$t]['hero'] = ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h1', 'text' => '.subheading', 'button' => '.btn-primary, .btn-secondary'];
-            $map[$t]['about'] = ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h2', 'text' => 'p', 'button' => '.btn-primary'];
-            $map[$t]['categories'] = ['bg' => '#categories.categories-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => 'p', 'button' => null];
-            $map[$t]['promo_video'] = ['bg' => '.video-promo-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2, .video-promo-banner h2', 'text' => '.cta-content p, .video-promo-banner p', 'button' => '.video-promo-banner .btn-primary'];
+            $hw = $heroWrapper[$t];
+            $map[$t]['hero'] = ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h1', 'text' => '.subheading', 'button' => "{$hw} .btn-primary", 'button2' => "{$hw} .btn-secondary"];
+            $map[$t]['about'] = ['bg' => '.about-teaser-section', 'bg_mode' => 'flat', 'heading' => '.about-teaser-section h2', 'text' => '.about-teaser-section p', 'button' => '.about-teaser-section .btn-primary', 'button2' => null];
+            $map[$t]['categories'] = ['bg' => '#categories.categories-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '#categories p', 'button' => null, 'button2' => null];
+            $map[$t]['promo_video'] = ['bg' => '.video-promo-banner', 'bg_mode' => 'gradient', 'heading' => '.video-promo-banner h2', 'text' => '.video-promo-banner p', 'button' => '.video-promo-banner .btn-primary', 'button2' => null];
         }
 
-        // hero/about backgrounds are inline in the blade for these 4 --
-        // 'skip' above is deliberate (see bg_mode docblock); heading/text/
-        // button still work fine since those ARE real class selectors.
-        $map['country_farmhouse']['categories'] = ['bg' => '.farmhouse-menu-index-list', 'bg_mode' => 'flat', 'heading' => 'h2', 'text' => '.farmhouse-menu-item p', 'button' => '.farmhouse-menu-index .btn'];
+        // farmhouse's "about" and "categories" are bespoke with real
+        // classes of their own -- overrides the generic assignment above.
+        $map['country_farmhouse']['about'] = ['bg' => '.farmhouse-about', 'bg_mode' => 'flat', 'heading' => '.farmhouse-about h2', 'text' => '.farmhouse-about-copy p', 'button' => '.farmhouse-about .btn-primary', 'button2' => null];
+        $map['country_farmhouse']['categories'] = ['bg' => '.farmhouse-menu-index-list', 'bg_mode' => 'flat', 'heading' => 'h2', 'text' => '.farmhouse-menu-item p', 'button' => '.farmhouse-menu-index .btn', 'button2' => null];
 
         $map['modern_bakery'] = [
-            'hero' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h1', 'text' => null, 'button' => '.btn-primary, .btn-secondary'],
-            'about' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h2', 'text' => 'p', 'button' => '.btn-primary'],
-            'highlights' => ['bg' => '.highlights-bar', 'bg_mode' => 'flat', 'heading' => '.highlight-item h4', 'text' => '.highlight-item p', 'button' => null],
-            'promo_video' => ['bg' => '.modern-promo-teaser', 'bg_mode' => 'flat', 'heading' => '.modern-promo-teaser h2', 'text' => '.modern-promo-teaser p', 'button' => '.modern-promo-teaser .btn-primary'],
-            'categories' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => '.btn-primary'],
-            'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'gradient', 'heading' => '.modern-cakes-banner h2', 'text' => '.whimsical-bullet-list li', 'button' => '.whimsical-section .btn-primary'],
-            'how_it_works' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => null],
-            'reviews' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null],
-            'faq' => ['bg' => '.modern-orders-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.modern-accordion-item p', 'button' => null],
-            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
-            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null],
+            'hero' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h1', 'text' => null, 'button' => '.modern-hero .btn-primary', 'button2' => '.modern-hero .btn-secondary'],
+            'about' => ['bg' => '.about-teaser-section', 'bg_mode' => 'flat', 'heading' => '.about-teaser-section h2', 'text' => '.about-teaser-section p', 'button' => '.about-teaser-section .btn-primary', 'button2' => null],
+            'highlights' => ['bg' => '.highlights-bar', 'bg_mode' => 'flat', 'heading' => '.highlight-item h4', 'text' => '.highlight-item p', 'button' => null, 'button2' => null],
+            'promo_video' => ['bg' => '.modern-promo-teaser', 'bg_mode' => 'flat', 'heading' => '.modern-promo-teaser h2', 'text' => '.modern-promo-teaser p', 'button' => '.modern-promo-teaser .btn-primary', 'button2' => null],
+            'categories' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => '#categories .btn-primary', 'button2' => null],
+            'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'gradient', 'heading' => '.modern-cakes-banner h2', 'text' => '.whimsical-bullet-list li', 'button' => '.whimsical-section .btn-primary', 'button2' => null],
+            'how_it_works' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => null, 'button2' => null],
+            'reviews' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null, 'button2' => null],
+            'faq' => ['bg' => '.modern-orders-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.modern-accordion-item p', 'button' => null, 'button2' => null],
+            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-video-banner .cta-content h2', 'text' => '.cta-video-banner .cta-content p', 'button' => '.cta-video-banner .btn-primary', 'button2' => null],
+            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null, 'button2' => null],
         ];
 
         $map['artisan_sourdough'] = [
-            'hero' => ['bg' => '.petal-hero', 'bg_mode' => 'gradient', 'heading' => 'h1', 'text' => null, 'button' => '.btn-primary, .btn-secondary'],
-            'about' => ['bg' => '.petal-about', 'bg_mode' => 'flat', 'heading' => 'h2', 'text' => '.petal-about-copy p', 'button' => '.btn-primary'],
-            'highlights' => ['bg' => '.petal-features-row', 'bg_mode' => 'flat', 'heading' => '.petal-feature-card h4', 'text' => '.petal-feature-card p', 'button' => null],
-            'promo_video' => ['bg' => '.petal-promo', 'bg_mode' => 'gradient', 'heading' => '.petal-promo h2', 'text' => '.petal-promo p', 'button' => '.petal-promo .btn-primary'],
-            'categories' => ['bg' => '#categories.categories-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.petal-pick-card p', 'button' => null],
-            'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => '.whimsical-col-right h2', 'text' => '.whimsical-bullet-list li', 'button' => null],
-            'how_it_works' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => '.petal-step-row p', 'button' => null],
-            'reviews' => ['bg' => '#reviews.reviews-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null],
-            'faq' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => '.petal-accordion-item p', 'button' => null],
-            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
-            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null],
+            'hero' => ['bg' => '.petal-hero', 'bg_mode' => 'gradient', 'heading' => 'h1', 'text' => null, 'button' => '.petal-hero .btn-primary', 'button2' => '.petal-hero .btn-secondary'],
+            'about' => ['bg' => '.petal-about', 'bg_mode' => 'flat', 'heading' => '.petal-about h2', 'text' => '.petal-about-copy p', 'button' => '.petal-about .btn-primary', 'button2' => null],
+            'highlights' => ['bg' => '.petal-features-row', 'bg_mode' => 'flat', 'heading' => '.petal-feature-card h4', 'text' => '.petal-feature-card p', 'button' => null, 'button2' => null],
+            'promo_video' => ['bg' => '.petal-promo', 'bg_mode' => 'gradient', 'heading' => '.petal-promo h2', 'text' => '.petal-promo p', 'button' => '.petal-promo .btn-primary', 'button2' => null],
+            'categories' => ['bg' => '#categories.categories-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.petal-pick-card p', 'button' => null, 'button2' => null],
+            'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => '.whimsical-col-right h2', 'text' => '.whimsical-bullet-list li', 'button' => null, 'button2' => null],
+            'how_it_works' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => '.petal-step-row p', 'button' => null, 'button2' => null],
+            'reviews' => ['bg' => '#reviews.reviews-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null, 'button2' => null],
+            'faq' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => '.petal-accordion-item p', 'button' => null, 'button2' => null],
+            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-video-banner .cta-content h2', 'text' => '.cta-video-banner .cta-content p', 'button' => '.cta-video-banner .btn-primary', 'button2' => null],
+            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null, 'button2' => null],
         ];
 
         $map['clean_minimal'] = [
-            'hero' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.midnight-hero-copy h1', 'text' => '.midnight-hero-copy p', 'button' => '.midnight-hero-copy .btn-primary'],
-            'about' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h2', 'text' => 'p', 'button' => '.btn-primary'],
-            'highlights' => ['bg' => '.midnight-included', 'bg_mode' => 'skip', 'heading' => '.midnight-included-grid h4', 'text' => '.midnight-included-grid p', 'button' => null],
-            'promo_video' => ['bg' => '.midnight-spotlight', 'bg_mode' => 'flat', 'heading' => '.midnight-spotlight h2', 'text' => null, 'button' => '.midnight-spotlight .btn-primary'],
-            'categories' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => null],
-            'whimsical' => ['bg' => '.midnight-editorial', 'bg_mode' => 'skip', 'heading' => '.midnight-editorial-content h2', 'text' => '.midnight-editorial-content p', 'button' => null],
-            'how_it_works' => ['bg' => '.midnight-process-wrap', 'bg_mode' => 'flat', 'heading' => '.midnight-process-card .subheading', 'text' => '.midnight-process-step p', 'button' => null],
-            'reviews' => ['bg' => '#reviews.reviews-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null],
-            'faq' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h3', 'text' => '.midnight-feature-item p', 'button' => null],
-            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
-            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null],
+            'hero' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.midnight-hero-copy h1', 'text' => '.midnight-hero-copy p', 'button' => '.midnight-hero-copy .btn-primary', 'button2' => null],
+            'about' => ['bg' => '.about-teaser-section', 'bg_mode' => 'flat', 'heading' => '.about-teaser-section h2', 'text' => '.about-teaser-section p', 'button' => '.about-teaser-section .btn-primary', 'button2' => null],
+            'highlights' => ['bg' => '.midnight-included', 'bg_mode' => 'skip', 'heading' => '.midnight-included-grid h4', 'text' => '.midnight-included-grid p', 'button' => null, 'button2' => null],
+            'promo_video' => ['bg' => '.midnight-spotlight', 'bg_mode' => 'flat', 'heading' => '.midnight-spotlight h2', 'text' => null, 'button' => '.midnight-spotlight .btn-primary', 'button2' => null],
+            'categories' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => '.section-title-script', 'text' => null, 'button' => null, 'button2' => null],
+            'whimsical' => ['bg' => '.midnight-editorial', 'bg_mode' => 'skip', 'heading' => '.midnight-editorial-content h2', 'text' => '.midnight-editorial-content p', 'button' => null, 'button2' => null],
+            'how_it_works' => ['bg' => '.midnight-process-wrap', 'bg_mode' => 'flat', 'heading' => '.midnight-process-card .subheading', 'text' => '.midnight-process-step p', 'button' => null, 'button2' => null],
+            'reviews' => ['bg' => '#reviews.reviews-section', 'bg_mode' => 'flat', 'heading' => '.section-title-script', 'text' => '.cloud-review-card p', 'button' => null, 'button2' => null],
+            'faq' => ['bg' => null, 'bg_mode' => 'skip', 'heading' => 'h3', 'text' => '.midnight-feature-item p', 'button' => null, 'button2' => null],
+            'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-video-banner .cta-content h2', 'text' => '.cta-video-banner .cta-content p', 'button' => '.cta-video-banner .btn-primary', 'button2' => null],
+            'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'gradient', 'heading' => '.section-title-script', 'text' => '.gallery-card-info h4', 'button' => null, 'button2' => null],
         ];
 
         foreach (['sunny_whisk' => 'sw', 'daily_batch' => 'db', 'lavender_bloom' => 'lb', 'cherry_bakeshop' => 'cb', 'sage_sourdough' => 'sg'] as $t => $p) {
+            $hw = $heroWrapper[$t];
             $map[$t] = [
-                'hero' => ['bg' => $t === 'sunny_whisk' ? '.sw-hero-band' : ".{$p}-hero", 'bg_mode' => 'flat', 'heading' => "h1", 'text' => null, 'button' => '.btn-primary, .btn-secondary'],
-                'about' => ['bg' => ".{$p}-about-row", 'bg_mode' => 'skip', 'heading' => 'h2', 'text' => ".{$p}-about-copy p, .{$p}-about-copy-card p", 'button' => null],
-                'highlights' => ['bg' => ".{$p}-about-row, .sw-process", 'bg_mode' => 'skip', 'heading' => 'h4', 'text' => ".{$p}-highlight-list li, .sw-process-row p", 'button' => $t === 'sunny_whisk' ? '.sw-process-row .btn-primary' : null],
-                'promo_video' => ['bg' => ".{$p}-promo-banner, .video-promo-banner", 'bg_mode' => 'gradient', 'heading' => '.cta-content h2, .video-promo-banner h2', 'text' => '.cta-content p, .video-promo-banner p', 'button' => '.btn-primary'],
-                'categories' => ['bg' => "#categories", 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-shelf-card p", 'button' => null],
-                'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-whimsical h2", 'text' => '.whimsical-bullet-list li', 'button' => null],
-                'how_it_works' => ['bg' => "#{$p}-band-white, .how-it-works-section", 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-step-copy p", 'button' => null],
-                'reviews' => ['bg' => '#reviews', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-review-card p", 'button' => null],
-                'faq' => ['bg' => '.faq-policies-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-faq-card p, .{$p}-accordion-item p", 'button' => null],
-                'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-content h2', 'text' => '.cta-content p', 'button' => '.cta-content .btn-primary'],
-                'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => '.gallery-card-info h4', 'button' => null],
+                'hero' => ['bg' => $t === 'sunny_whisk' ? '.sw-hero-band' : $hw, 'bg_mode' => 'flat', 'heading' => "h1", 'text' => null, 'button' => "{$hw} .btn-primary", 'button2' => "{$hw} .btn-secondary"],
+                'about' => ['bg' => ".{$p}-about-row", 'bg_mode' => 'skip', 'heading' => 'h2', 'text' => ".{$p}-about-copy p, .{$p}-about-copy-card p", 'button' => null, 'button2' => null],
+                'highlights' => ['bg' => ".{$p}-about-row, .sw-process", 'bg_mode' => 'skip', 'heading' => 'h4', 'text' => ".{$p}-highlight-list li, .sw-process-row p", 'button' => $t === 'sunny_whisk' ? '.sw-process-row .btn-primary' : null, 'button2' => null],
+                'promo_video' => ['bg' => ".{$p}-promo-banner, .video-promo-banner", 'bg_mode' => 'gradient', 'heading' => ".{$p}-promo-banner h2, .video-promo-banner h2", 'text' => ".{$p}-promo-banner p, .video-promo-banner p", 'button' => ".{$p}-promo-banner .btn-primary, .video-promo-banner .btn-primary", 'button2' => null],
+                'categories' => ['bg' => "#categories", 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-shelf-card p", 'button' => null, 'button2' => null],
+                'whimsical' => ['bg' => '.whimsical-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-whimsical h2", 'text' => '.whimsical-bullet-list li', 'button' => null, 'button2' => null],
+                'how_it_works' => ['bg' => "#{$p}-band-white, .how-it-works-section", 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-step-copy p", 'button' => null, 'button2' => null],
+                'reviews' => ['bg' => '#reviews', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-review-card p", 'button' => null, 'button2' => null],
+                'faq' => ['bg' => '.faq-policies-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => ".{$p}-faq-card p, .{$p}-accordion-item p", 'button' => null, 'button2' => null],
+                'cta_banner' => ['bg' => '.cta-video-banner', 'bg_mode' => 'gradient', 'heading' => '.cta-video-banner .cta-content h2', 'text' => '.cta-video-banner .cta-content p', 'button' => '.cta-video-banner .btn-primary', 'button2' => null],
+                'featured_gallery' => ['bg' => '.featured-gallery-section', 'bg_mode' => 'flat', 'heading' => ".{$p}-section-title", 'text' => '.gallery-card-info h4', 'button' => null, 'button2' => null],
             ];
         }
 

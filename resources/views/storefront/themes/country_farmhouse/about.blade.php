@@ -47,7 +47,7 @@
 <div id="about-page-view">
     <section class="farmhouse-page-hero">
         <span class="farmhouse-page-hero-kicker">About Us</span>
-        <h1 class="farmhouse-page-hero-title">{{ $tenant->name }}</h1>
+        <h1 class="farmhouse-page-hero-title">{{ $tenant->getSiteContent('about_hero_title', $tenant->name) }}</h1>
     </section>
 
     <section class="farmhouse-about" style="padding-top:0;">

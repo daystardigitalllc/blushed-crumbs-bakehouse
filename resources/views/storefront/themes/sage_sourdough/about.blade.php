@@ -48,7 +48,7 @@
     <!-- HERO -->
     <section class="sg-page-hero">
         <span class="sg-page-hero-kicker">About Us</span>
-        <h1 class="sg-page-hero-title">Meet {{ $tenant->name }}</h1>
+        <h1 class="sg-page-hero-title">{{ $tenant->getSiteContent('about_hero_title', 'Meet ' . $tenant->name) }}</h1>
     </section>
 
     <!-- MEET THE BAKER -->

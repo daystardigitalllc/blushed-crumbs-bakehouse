@@ -84,7 +84,7 @@
                 </section>
             @elseif($secId === 'about')
                 <!-- About Teaser -->
-                <section style="padding:80px 25px; background:var(--theme-section-bg, var(--pink-bg, #fafafa)); text-align:center;">
+                <section class="about-teaser-section" style="padding:80px 25px; background:var(--theme-section-bg, var(--pink-bg, #fafafa)); text-align:center;">
                     <div style="max-width:900px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; gap:40px; text-align:left;">
                         @php
                             $aboutImg = !empty($tenant->gallery_images[0]) ? asset($tenant->gallery_images[0]) : null;
