@@ -1947,6 +1947,55 @@
                                     </div>
                                 </div>
                             </div>
+                            @php
+                                $__aboutNoSpecialties = in_array($tenant->theme_id, ['country_farmhouse', 'artisan_sourdough', 'clean_minimal']);
+                                $__aboutIngredientCount = $__aboutNoSpecialties ? 4 : 6;
+                            @endphp
+                            <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                    <strong style="color:#27272a; font-size:0.85rem;">Ingredients / Why Us</strong>
+                                    <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                </div>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <div style="margin-bottom:12px;">
+                                        <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Heading</label>
+                                        <input type="text" name="about_ingredients_title" value="{{ data_get($siteContent, 'about_ingredients_title') }}" placeholder="The Ingredients Behind {{ $tenant->name }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                    </div>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
+                                        @for($__ai = 0; $__ai < $__aboutIngredientCount; $__ai++)
+                                            <div style="padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:6px;">
+                                                <label style="font-weight:700; font-size:0.8rem; color:var(--dark-text);">Item {{ $__ai + 1 }}</label>
+                                                <input type="text" name="about_ingredients[{{ $__ai }}][title]" value="{{ data_get($siteContent, "about_ingredients.$__ai.title") }}" placeholder="Title" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.88rem;">
+                                                <textarea name="about_ingredients[{{ $__ai }}][text]" rows="2" placeholder="Description" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-family:inherit; font-size:0.85rem;">{{ data_get($siteContent, "about_ingredients.$__ai.text") }}</textarea>
+                                            </div>
+                                        @endfor
+                                    </div>
+                                </div>
+                            </div>
+                            @unless($__aboutNoSpecialties)
+                                <div class="section-manager-row" style="background:white; border-radius:8px; border:1px solid #e5e7eb; overflow:hidden;">
+                                    <div class="section-accordion-header" onclick="toggleSectionAccordion(this)" style="padding:9px 12px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; background:#fafafa; user-select:none;">
+                                        <strong style="color:#27272a; font-size:0.85rem;">Specialties</strong>
+                                        <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
+                                    </div>
+                                    <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                        <div style="margin-bottom:12px;">
+                                            <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Heading</label>
+                                            <input type="text" name="about_specialties_title" value="{{ data_get($siteContent, 'about_specialties_title') }}" placeholder="What We Bake Best" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
+                                        </div>
+                                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
+                                            @for($__as = 0; $__as < 3; $__as++)
+                                                <div style="padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:6px;">
+                                                    <label style="font-weight:700; font-size:0.8rem; color:var(--dark-text);">Card {{ $__as + 1 }}</label>
+                                                    <input type="text" name="about_specialties[{{ $__as }}][badge]" value="{{ data_get($siteContent, "about_specialties.$__as.badge") }}" placeholder="Badge (e.g. POPULAR)" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-size:0.82rem; text-transform:uppercase;">
+                                                    <input type="text" name="about_specialties[{{ $__as }}][title]" value="{{ data_get($siteContent, "about_specialties.$__as.title") }}" placeholder="Title" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.88rem;">
+                                                    <textarea name="about_specialties[{{ $__as }}][text]" rows="2" placeholder="Description" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-family:inherit; font-size:0.85rem;">{{ data_get($siteContent, "about_specialties.$__as.text") }}</textarea>
+                                                </div>
+                                            @endfor
+                                        </div>
+                                    </div>
+                                </div>
+                            @endunless
                         </div>
 
                         <!-- MENU PAGE PANEL -->

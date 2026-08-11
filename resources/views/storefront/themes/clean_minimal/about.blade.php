@@ -71,34 +71,34 @@
     </section>
 
     <section>
-        <h2 class="section-title-script" style="text-align:center; margin-bottom:35px;">Why {{ $tenant->name }}</h2>
+        <h2 class="section-title-script" style="text-align:center; margin-bottom:35px;">{{ $tenant->getSiteContent('about_ingredients_title', 'Why ' . $tenant->name) }}</h2>
         <div class="midnight-ingredients-list">
             <div class="midnight-ingredient-row">
                 <div class="midnight-icon-circle"><span class="material-symbols-outlined">home</span></div>
                 <div>
-                    <h3>Made From Scratch</h3>
-                    <p>Baked fresh using traditional techniques and real, quality ingredients.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.0.title', 'Made From Scratch') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.0.text', 'Baked fresh using traditional techniques and real, quality ingredients.') }}</p>
                 </div>
             </div>
             <div class="midnight-ingredient-row">
                 <div class="midnight-icon-circle"><span class="material-symbols-outlined">eco</span></div>
                 <div>
-                    <h3>Premium Ingredients</h3>
-                    <p>Carefully sourced, with no shortcuts on flavor or freshness.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.1.title', 'Premium Ingredients') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.1.text', 'Carefully sourced, with no shortcuts on flavor or freshness.') }}</p>
                 </div>
             </div>
             <div class="midnight-ingredient-row">
                 <div class="midnight-icon-circle"><span class="material-symbols-outlined">verified</span></div>
                 <div>
-                    <h3>Consistent Quality</h3>
-                    <p>Every order is held to the same high standard, every time.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.2.title', 'Consistent Quality') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.2.text', 'Every order is held to the same high standard, every time.') }}</p>
                 </div>
             </div>
             <div class="midnight-ingredient-row">
                 <div class="midnight-icon-circle"><span class="material-symbols-outlined">event</span></div>
                 <div>
-                    <h3>Custom Orders Welcome</h3>
-                    <p>Have something specific in mind? We'll work with you to make it happen.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.3.title', 'Custom Orders Welcome') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.3.text', "Have something specific in mind? We'll work with you to make it happen.") }}</p>
                 </div>
             </div>
         </div>

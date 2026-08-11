@@ -81,48 +81,48 @@
     <!-- WHY US — icon list -->
     <section class="cb-section cb-band-cream">
         <span class="cb-kicker" style="display:block; text-align:center;">Our Promise</span>
-        <h2 class="cb-section-title" style="text-align:center;">The Ingredients Behind {{ $tenant->name }}</h2>
+        <h2 class="cb-section-title" style="text-align:center;">{{ $tenant->getSiteContent('about_ingredients_title', 'The Ingredients Behind ' . $tenant->name) }}</h2>
         <div class="cb-ingredients-list">
             <div class="cb-ingredient-row">
                 <div class="cb-icon-circle"><span class="material-symbols-outlined">home</span></div>
                 <div>
-                    <h3>100% Homemade</h3>
-                    <p>Baked completely from scratch using traditional techniques and premium real ingredients.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.0.title', '100% Homemade') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.0.text', 'Baked completely from scratch using traditional techniques and premium real ingredients.') }}</p>
                 </div>
             </div>
             <div class="cb-ingredient-row">
                 <div class="cb-icon-circle"><span class="material-symbols-outlined">cake</span></div>
                 <div>
-                    <h3>Custom Design</h3>
-                    <p>Every order is designed uniquely to match your vision, theme, and celebration style.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.1.title', 'Custom Design') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.1.text', 'Every order is designed uniquely to match your vision, theme, and celebration style.') }}</p>
                 </div>
             </div>
             <div class="cb-ingredient-row">
                 <div class="cb-icon-circle"><span class="material-symbols-outlined">favorite</span></div>
                 <div>
-                    <h3>Made With Love</h3>
-                    <p>Rich flavors, real ingredients, and a whole lot of heart in every batch.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.2.title', 'Made With Love') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.2.text', 'Rich flavors, real ingredients, and a whole lot of heart in every batch.') }}</p>
                 </div>
             </div>
             <div class="cb-ingredient-row">
                 <div class="cb-icon-circle"><span class="material-symbols-outlined">event</span></div>
                 <div>
-                    <h3>Reliable Booking</h3>
-                    <p>Easy custom order scheduling with guaranteed calendar availability for your date.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.3.title', 'Reliable Booking') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.3.text', 'Easy custom order scheduling with guaranteed calendar availability for your date.') }}</p>
                 </div>
             </div>
             <div class="cb-ingredient-row">
                 <div class="cb-icon-circle"><span class="material-symbols-outlined">auto_awesome</span></div>
                 <div>
-                    <h3>Attention to Detail</h3>
-                    <p>Careful finishing touches and quality checks in every single bite.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.4.title', 'Attention to Detail') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.4.text', 'Careful finishing touches and quality checks in every single bite.') }}</p>
                 </div>
             </div>
             <div class="cb-ingredient-row">
                 <div class="cb-icon-circle"><span class="material-symbols-outlined">chat</span></div>
                 <div>
-                    <h3>Personalized Service</h3>
-                    <p>Direct communication with the baker to make your order stress-free.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.5.title', 'Personalized Service') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.5.text', 'Direct communication with the baker to make your order stress-free.') }}</p>
                 </div>
             </div>
         </div>
@@ -131,22 +131,22 @@
     <!-- SPECIALTIES -->
     <section class="cb-section cb-band-cherry">
         <span class="cb-kicker cb-kicker-light" style="display:block; text-align:center;">Fan Favorites</span>
-        <h2 class="cb-section-title" style="text-align:center;">What We Bake Best</h2>
+        <h2 class="cb-section-title" style="text-align:center;">{{ $tenant->getSiteContent('about_specialties_title', 'What We Bake Best') }}</h2>
         <div class="cb-specialties-row">
             <div class="cb-specialty-card">
-                <span class="cb-specialty-badge">POPULAR</span>
-                <h3>Custom Celebration Cakes</h3>
-                <p>Multi-tiered birthday, baby shower, and milestone cakes baked fresh for your big moment.</p>
+                <span class="cb-specialty-badge">{{ $tenant->getSiteContent('about_specialties.0.badge', 'POPULAR') }}</span>
+                <h3>{{ $tenant->getSiteContent('about_specialties.0.title', 'Custom Celebration Cakes') }}</h3>
+                <p>{{ $tenant->getSiteContent('about_specialties.0.text', 'Multi-tiered birthday, baby shower, and milestone cakes baked fresh for your big moment.') }}</p>
             </div>
             <div class="cb-specialty-card">
-                <span class="cb-specialty-badge">CLASSIC</span>
-                <h3>Retro Cupcakes &amp; Pies</h3>
-                <p>Old-fashioned favorites made the way they used to be — from scratch, every time.</p>
+                <span class="cb-specialty-badge">{{ $tenant->getSiteContent('about_specialties.1.badge', 'CLASSIC') }}</span>
+                <h3>{{ $tenant->getSiteContent('about_specialties.1.title', 'Retro Cupcakes & Pies') }}</h3>
+                <p>{{ $tenant->getSiteContent('about_specialties.1.text', 'Old-fashioned favorites made the way they used to be — from scratch, every time.') }}</p>
             </div>
             <div class="cb-specialty-card">
-                <span class="cb-specialty-badge">PARTY</span>
-                <h3>Dessert Bars &amp; Treat Boxes</h3>
-                <p>Gourmet filled cupcakes, dessert shooters, and chocolate-covered treat boxes.</p>
+                <span class="cb-specialty-badge">{{ $tenant->getSiteContent('about_specialties.2.badge', 'PARTY') }}</span>
+                <h3>{{ $tenant->getSiteContent('about_specialties.2.title', 'Dessert Bars & Treat Boxes') }}</h3>
+                <p>{{ $tenant->getSiteContent('about_specialties.2.text', 'Gourmet filled cupcakes, dessert shooters, and chocolate-covered treat boxes.') }}</p>
             </div>
         </div>
     </section>

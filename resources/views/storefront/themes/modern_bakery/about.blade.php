@@ -74,48 +74,48 @@
 
     <!-- WHY US -->
     <section>
-        <h2 class="section-title-script" style="text-align:center; margin-bottom:35px;">The Ingredients Behind {{ $tenant->name }}</h2>
+        <h2 class="section-title-script" style="text-align:center; margin-bottom:35px;">{{ $tenant->getSiteContent('about_ingredients_title', 'The Ingredients Behind ' . $tenant->name) }}</h2>
         <div class="modern-ingredients-list">
             <div class="modern-ingredient-row">
                 <div class="modern-icon-circle"><span class="material-symbols-outlined">home</span></div>
                 <div>
-                    <h3>100% Homemade</h3>
-                    <p>Baked completely from scratch using traditional family techniques and premium real ingredients.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.0.title', '100% Homemade') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.0.text', 'Baked completely from scratch using traditional family techniques and premium real ingredients.') }}</p>
                 </div>
             </div>
             <div class="modern-ingredient-row">
                 <div class="modern-icon-circle"><span class="material-symbols-outlined">cake</span></div>
                 <div>
-                    <h3>Custom Design</h3>
-                    <p>Every cake is designed uniquely to match your vision, theme, and celebration style.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.1.title', 'Custom Design') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.1.text', 'Every cake is designed uniquely to match your vision, theme, and celebration style.') }}</p>
                 </div>
             </div>
             <div class="modern-ingredient-row">
                 <div class="modern-icon-circle"><span class="material-symbols-outlined">eco</span></div>
                 <div>
-                    <h3>Fresh Flavors</h3>
-                    <p>Real fruit preserves, rich cocoa, real vanilla beans, and signature velvet frostings.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.2.title', 'Fresh Flavors') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.2.text', 'Real fruit preserves, rich cocoa, real vanilla beans, and signature velvet frostings.') }}</p>
                 </div>
             </div>
             <div class="modern-ingredient-row">
                 <div class="modern-icon-circle"><span class="material-symbols-outlined">event</span></div>
                 <div>
-                    <h3>Reliable Booking</h3>
-                    <p>Easy custom order scheduling with guaranteed calendar availability for your date.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.3.title', 'Reliable Booking') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.3.text', 'Easy custom order scheduling with guaranteed calendar availability for your date.') }}</p>
                 </div>
             </div>
             <div class="modern-ingredient-row">
                 <div class="modern-icon-circle"><span class="material-symbols-outlined">auto_awesome</span></div>
                 <div>
-                    <h3>Attention to Detail</h3>
-                    <p>Intricate piping, elegant edible details, and perfection in every single bite.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.4.title', 'Attention to Detail') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.4.text', 'Intricate piping, elegant edible details, and perfection in every single bite.') }}</p>
                 </div>
             </div>
             <div class="modern-ingredient-row">
                 <div class="modern-icon-circle"><span class="material-symbols-outlined">chat</span></div>
                 <div>
-                    <h3>Personalized Service</h3>
-                    <p>Direct communication with the baker to ensure your event dessert is stress-free.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.5.title', 'Personalized Service') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.5.text', 'Direct communication with the baker to ensure your event dessert is stress-free.') }}</p>
                 </div>
             </div>
         </div>
@@ -123,22 +123,22 @@
 
     <!-- SPECIALTIES -->
     <section>
-        <h2 class="section-title-script" style="text-align:center; margin-bottom:35px;">What We Bake Best</h2>
+        <h2 class="section-title-script" style="text-align:center; margin-bottom:35px;">{{ $tenant->getSiteContent('about_specialties_title', 'What We Bake Best') }}</h2>
         <div class="modern-specialties-row">
             <div class="modern-specialty-card">
-                <span class="modern-specialty-badge">POPULAR</span>
-                <h3>Custom Celebration Cakes</h3>
-                <p>Multi-tiered birthday, baby shower, and milestone cakes baked fresh for your big moment.</p>
+                <span class="modern-specialty-badge">{{ $tenant->getSiteContent('about_specialties.0.badge', 'POPULAR') }}</span>
+                <h3>{{ $tenant->getSiteContent('about_specialties.0.title', 'Custom Celebration Cakes') }}</h3>
+                <p>{{ $tenant->getSiteContent('about_specialties.0.text', 'Multi-tiered birthday, baby shower, and milestone cakes baked fresh for your big moment.') }}</p>
             </div>
             <div class="modern-specialty-card">
-                <span class="modern-specialty-badge">LUXURY</span>
-                <h3>Wedding Cake Experience</h3>
-                <p>Elegantly crafted wedding tiers, tasting boxes, and full dessert table styling.</p>
+                <span class="modern-specialty-badge">{{ $tenant->getSiteContent('about_specialties.1.badge', 'LUXURY') }}</span>
+                <h3>{{ $tenant->getSiteContent('about_specialties.1.title', 'Wedding Cake Experience') }}</h3>
+                <p>{{ $tenant->getSiteContent('about_specialties.1.text', 'Elegantly crafted wedding tiers, tasting boxes, and full dessert table styling.') }}</p>
             </div>
             <div class="modern-specialty-card">
-                <span class="modern-specialty-badge">PARTY</span>
-                <h3>Cupcakes &amp; Dessert Bars</h3>
-                <p>Gourmet filled cupcakes, dessert shooters, and chocolate-covered treat boxes.</p>
+                <span class="modern-specialty-badge">{{ $tenant->getSiteContent('about_specialties.2.badge', 'PARTY') }}</span>
+                <h3>{{ $tenant->getSiteContent('about_specialties.2.title', 'Cupcakes & Dessert Bars') }}</h3>
+                <p>{{ $tenant->getSiteContent('about_specialties.2.text', 'Gourmet filled cupcakes, dessert shooters, and chocolate-covered treat boxes.') }}</p>
             </div>
         </div>
     </section>

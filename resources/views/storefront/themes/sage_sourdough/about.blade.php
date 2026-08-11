@@ -81,48 +81,48 @@
     <!-- WHY US — icon list -->
     <section class="sg-section sg-band-cream">
         <span class="sg-kicker" style="display:block; text-align:center;">Our Promise</span>
-        <h2 class="sg-section-title" style="text-align:center;">The Ingredients Behind {{ $tenant->name }}</h2>
+        <h2 class="sg-section-title" style="text-align:center;">{{ $tenant->getSiteContent('about_ingredients_title', 'The Ingredients Behind ' . $tenant->name) }}</h2>
         <div class="sg-ingredients-list">
             <div class="sg-ingredient-row">
                 <div class="sg-icon-circle"><span class="material-symbols-outlined">home</span></div>
                 <div>
-                    <h3>Made From Scratch</h3>
-                    <p>Baked completely from scratch using traditional techniques and premium real ingredients.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.0.title', 'Made From Scratch') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.0.text', 'Baked completely from scratch using traditional techniques and premium real ingredients.') }}</p>
                 </div>
             </div>
             <div class="sg-ingredient-row">
                 <div class="sg-icon-circle"><span class="material-symbols-outlined">grass</span></div>
                 <div>
-                    <h3>Simple, Honest Ingredients</h3>
-                    <p>No shortcuts — just flour, butter, sugar, and time-honored methods done right.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.1.title', 'Simple, Honest Ingredients') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.1.text', 'No shortcuts — just flour, butter, sugar, and time-honored methods done right.') }}</p>
                 </div>
             </div>
             <div class="sg-ingredient-row">
                 <div class="sg-icon-circle"><span class="material-symbols-outlined">cake</span></div>
                 <div>
-                    <h3>Custom Design</h3>
-                    <p>Every order is designed uniquely to match your vision, theme, and celebration style.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.2.title', 'Custom Design') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.2.text', 'Every order is designed uniquely to match your vision, theme, and celebration style.') }}</p>
                 </div>
             </div>
             <div class="sg-ingredient-row">
                 <div class="sg-icon-circle"><span class="material-symbols-outlined">event</span></div>
                 <div>
-                    <h3>Reliable Booking</h3>
-                    <p>Easy custom order scheduling with guaranteed calendar availability for your date.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.3.title', 'Reliable Booking') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.3.text', 'Easy custom order scheduling with guaranteed calendar availability for your date.') }}</p>
                 </div>
             </div>
             <div class="sg-ingredient-row">
                 <div class="sg-icon-circle"><span class="material-symbols-outlined">auto_awesome</span></div>
                 <div>
-                    <h3>Attention to Detail</h3>
-                    <p>Careful finishing touches and quality checks in every single batch.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.4.title', 'Attention to Detail') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.4.text', 'Careful finishing touches and quality checks in every single batch.') }}</p>
                 </div>
             </div>
             <div class="sg-ingredient-row">
                 <div class="sg-icon-circle"><span class="material-symbols-outlined">chat</span></div>
                 <div>
-                    <h3>Personalized Service</h3>
-                    <p>Direct communication with the baker to make your order stress-free.</p>
+                    <h3>{{ $tenant->getSiteContent('about_ingredients.5.title', 'Personalized Service') }}</h3>
+                    <p>{{ $tenant->getSiteContent('about_ingredients.5.text', 'Direct communication with the baker to make your order stress-free.') }}</p>
                 </div>
             </div>
         </div>
@@ -131,22 +131,22 @@
     <!-- SPECIALTIES -->
     <section class="sg-section sg-band-sage">
         <span class="sg-kicker sg-kicker-light" style="display:block; text-align:center;">Fan Favorites</span>
-        <h2 class="sg-section-title" style="text-align:center;">What We Bake Best</h2>
+        <h2 class="sg-section-title" style="text-align:center;">{{ $tenant->getSiteContent('about_specialties_title', 'What We Bake Best') }}</h2>
         <div class="sg-specialties-row">
             <div class="sg-specialty-card">
-                <span class="sg-specialty-badge">POPULAR</span>
-                <h3>Custom Celebration Cakes</h3>
-                <p>Layer cakes, birthday cakes, and milestone cakes baked fresh for your big moment.</p>
+                <span class="sg-specialty-badge">{{ $tenant->getSiteContent('about_specialties.0.badge', 'POPULAR') }}</span>
+                <h3>{{ $tenant->getSiteContent('about_specialties.0.title', 'Custom Celebration Cakes') }}</h3>
+                <p>{{ $tenant->getSiteContent('about_specialties.0.text', 'Layer cakes, birthday cakes, and milestone cakes baked fresh for your big moment.') }}</p>
             </div>
             <div class="sg-specialty-card">
-                <span class="sg-specialty-badge">DAILY</span>
-                <h3>Fresh Sourdough Loaves</h3>
-                <p>Naturally leavened and baked in small batches every morning.</p>
+                <span class="sg-specialty-badge">{{ $tenant->getSiteContent('about_specialties.1.badge', 'DAILY') }}</span>
+                <h3>{{ $tenant->getSiteContent('about_specialties.1.title', 'Fresh Sourdough Loaves') }}</h3>
+                <p>{{ $tenant->getSiteContent('about_specialties.1.text', 'Naturally leavened and baked in small batches every morning.') }}</p>
             </div>
             <div class="sg-specialty-card">
-                <span class="sg-specialty-badge">SEASONAL</span>
-                <h3>Pastries &amp; Sweet Treats</h3>
-                <p>A rotating menu of hand-laminated pastries and gourmet baked goods.</p>
+                <span class="sg-specialty-badge">{{ $tenant->getSiteContent('about_specialties.2.badge', 'SEASONAL') }}</span>
+                <h3>{{ $tenant->getSiteContent('about_specialties.2.title', 'Pastries & Sweet Treats') }}</h3>
+                <p>{{ $tenant->getSiteContent('about_specialties.2.text', 'A rotating menu of hand-laminated pastries and gourmet baked goods.') }}</p>
             </div>
         </div>
     </section>

@@ -487,6 +487,7 @@ class AdminController extends Controller
         ]);
 
         $currentContent = $tenant->site_content ?? Tenant::getDefaultSiteContent();
+
         $updatedContent = array_merge($currentContent, [
             'contact_hours' => $data['contact_hours'] ?? ($currentContent['contact_hours'] ?? ''),
             'contact_location' => $data['contact_location'] ?? ($currentContent['contact_location'] ?? ''),
@@ -545,6 +546,40 @@ class AdminController extends Controller
         }
 
         return $colors;
+    }
+
+    /**
+     * The About page's "Ingredients" (title+text) and "Specialties"
+     * (badge+title+text) blocks are fixed-count grids in the blade files
+     * (4-6 items depending on theme), not an add/remove repeater -- so
+     * unlike highlights/how_it_works/reviews this always writes every
+     * slot (including blanks), letting the theme's own hardcoded copy
+     * show through via getSiteContent()'s fallback wherever a slot is
+     * left empty. Shared verbatim by saveSectionSettings() and
+     * previewSectionSettings().
+     */
+    private function processAboutListsInput(Request $request): array
+    {
+        $ingredientsInput = $request->input('about_ingredients', []);
+        $ingredients = [];
+        for ($i = 0; $i < 6; $i++) {
+            $ingredients[$i] = [
+                'title' => $ingredientsInput[$i]['title'] ?? '',
+                'text' => $ingredientsInput[$i]['text'] ?? '',
+            ];
+        }
+
+        $specialtiesInput = $request->input('about_specialties', []);
+        $specialties = [];
+        for ($i = 0; $i < 3; $i++) {
+            $specialties[$i] = [
+                'badge' => $specialtiesInput[$i]['badge'] ?? '',
+                'title' => $specialtiesInput[$i]['title'] ?? '',
+                'text' => $specialtiesInput[$i]['text'] ?? '',
+            ];
+        }
+
+        return ['about_ingredients' => $ingredients, 'about_specialties' => $specialties];
     }
 
     public function saveSectionSettings(Request $request)
@@ -675,6 +710,8 @@ class AdminController extends Controller
             }
         }
 
+        $aboutLists = $this->processAboutListsInput($request);
+
         $updatedContent = array_merge($currentContent, [
             'hero_subheading' => $request->input('hero_subheading', $currentContent['hero_subheading'] ?? ''),
             'hero_headline' => $request->input('hero_headline', $currentContent['hero_headline'] ?? ''),
@@ -706,6 +743,10 @@ class AdminController extends Controller
             'about_testimonial_quote' => $request->input('about_testimonial_quote', $currentContent['about_testimonial_quote'] ?? ''),
             'about_testimonial_name' => $request->input('about_testimonial_name', $currentContent['about_testimonial_name'] ?? ''),
             'about_testimonial_role' => $request->input('about_testimonial_role', $currentContent['about_testimonial_role'] ?? ''),
+            'about_ingredients_title' => $request->input('about_ingredients_title', $currentContent['about_ingredients_title'] ?? ''),
+            'about_ingredients' => $aboutLists['about_ingredients'],
+            'about_specialties_title' => $request->input('about_specialties_title', $currentContent['about_specialties_title'] ?? ''),
+            'about_specialties' => $aboutLists['about_specialties'],
             'menu_hero_subtitle' => $request->input('menu_hero_subtitle', $currentContent['menu_hero_subtitle'] ?? ''),
             'menu_hero_title' => $request->input('menu_hero_title', $currentContent['menu_hero_title'] ?? ''),
             'menu_hero_text' => $request->input('menu_hero_text', $currentContent['menu_hero_text'] ?? ''),
@@ -844,6 +885,8 @@ class AdminController extends Controller
             }
         }
 
+        $aboutLists = $this->processAboutListsInput($request);
+
         $updatedContent = array_merge($currentContent, [
             'hero_subheading' => $request->input('hero_subheading', $currentContent['hero_subheading'] ?? ''),
             'hero_headline' => $request->input('hero_headline', $currentContent['hero_headline'] ?? ''),
@@ -875,6 +918,10 @@ class AdminController extends Controller
             'about_testimonial_quote' => $request->input('about_testimonial_quote', $currentContent['about_testimonial_quote'] ?? ''),
             'about_testimonial_name' => $request->input('about_testimonial_name', $currentContent['about_testimonial_name'] ?? ''),
             'about_testimonial_role' => $request->input('about_testimonial_role', $currentContent['about_testimonial_role'] ?? ''),
+            'about_ingredients_title' => $request->input('about_ingredients_title', $currentContent['about_ingredients_title'] ?? ''),
+            'about_ingredients' => $aboutLists['about_ingredients'],
+            'about_specialties_title' => $request->input('about_specialties_title', $currentContent['about_specialties_title'] ?? ''),
+            'about_specialties' => $aboutLists['about_specialties'],
             'menu_hero_subtitle' => $request->input('menu_hero_subtitle', $currentContent['menu_hero_subtitle'] ?? ''),
             'menu_hero_title' => $request->input('menu_hero_title', $currentContent['menu_hero_title'] ?? ''),
             'menu_hero_text' => $request->input('menu_hero_text', $currentContent['menu_hero_text'] ?? ''),
