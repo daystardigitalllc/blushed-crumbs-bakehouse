@@ -11,6 +11,7 @@ use App\Models\Customer;
 use App\Models\GalleryItem;
 use App\Models\Order;
 use App\Mail\NewOrderNotification;
+use App\Mail\OrderConfirmation;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
@@ -237,6 +238,21 @@ class StorefrontController extends Controller
             Log::error('SMTP Email Order Error: ' . $e->getMessage());
         }
 
+        // Customer-facing confirmation -- separate try/catch from the baker
+        // notification above so a failure on one side (e.g. a typo'd routing
+        // email) never blocks the other from sending.
+        $customerEmailSent = false;
+        $customerEmailError = null;
+        if (!empty($order->client_email)) {
+            try {
+                Mail::to($order->client_email)->send(new OrderConfirmation($order, $tenant));
+                $customerEmailSent = true;
+            } catch (\Exception $e) {
+                $customerEmailError = $e->getMessage();
+                Log::error('SMTP Customer Confirmation Error: ' . $e->getMessage());
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Order submitted successfully!',
@@ -244,6 +260,8 @@ class StorefrontController extends Controller
             'email_sent' => $emailSent,
             'email_error' => $emailError,
             'routing_email' => $routingEmail,
+            'customer_email_sent' => $customerEmailSent,
+            'customer_email_error' => $customerEmailError,
             'order' => $order,
         ]);
     }
