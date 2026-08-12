@@ -539,6 +539,25 @@ body.ob-shell {
   box-shadow: 0 0 0 3px var(--ob-color-primary);
 }
 
+.ob-theme-swatch--locked {
+  cursor: not-allowed;
+  opacity: 0.65;
+  filter: grayscale(25%);
+  position: relative;
+}
+
+.ob-theme-lock-badge {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #92400e;
+  background: #fef3c7;
+  border-radius: 20px;
+  padding: 2px 8px;
+  margin-bottom: 4px;
+  width: fit-content;
+}
+
 .ob-chip-row {
   display: flex;
   flex-wrap: wrap;

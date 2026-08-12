@@ -162,7 +162,8 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                     <span>Email Marketing</span>
                     @if(($tenant->plan_tier ?? 'free') !== 'pro')
-                        <span style="font-size:0.62rem; font-weight:800; background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:10px; margin-left:auto;">PRO</span>
+                        {{-- Collection is free; only sending needs Pro — badge reflects that, not a full lock --}}
+                        <span style="font-size:0.62rem; font-weight:800; background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:10px; margin-left:auto;">SEND: PRO</span>
                     @endif
                 </button>
 
@@ -2652,95 +2653,91 @@
                 </div>
             </div>
 
-            <!-- TAB: Email Marketing (Pro only) -->
+            <!-- TAB: Email Marketing (collection free for everyone, sending is Pro) -->
             <div id="tab-email-marketing" class="tab-content">
                 <div class="section-header">
                     <h3>Email Marketing</h3>
-                    <p class="subtitle">Build a subscriber list and send offers or coupons straight to your customers' inboxes.</p>
+                    <p class="subtitle">Build a subscriber list for free. Sending offers and coupons is a Pro feature.</p>
                 </div>
 
-                @if(($tenant->plan_tier ?? 'free') === 'pro')
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-bottom:25px;">
-                        <!-- SUBSCRIBER LIST CARD -->
-                        <div class="form-builder-card">
-                            <h4 style="color:#5c1d37; margin-bottom:4px;">Subscriber List</h4>
-                            <p style="font-size:0.85rem; color:#666; margin-bottom:14px;"><span id="email-subscriber-count">{{ $emailSubscribers->count() }}</span> active subscriber{{ $emailSubscribers->count() === 1 ? '' : 's' }}</p>
+                @php $emailIsPro = ($tenant->plan_tier ?? 'free') === 'pro'; @endphp
 
-                            <form id="add-subscriber-form" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
-                                <input type="email" id="sub-email" placeholder="customer@email.com" required style="flex:1; min-width:180px; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                                <input type="text" id="sub-name" placeholder="Name (optional)" style="flex:1; min-width:140px; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                                <button type="submit" class="btn btn-primary">Add</button>
-                            </form>
-                            <button type="button" class="btn btn-outline" onclick="importCustomersToSubscribers()" style="width:100%; margin-bottom:14px;">Import All Customers With Emails</button>
-
-                            {{-- Fixed height (not max-height) so this box is always the same size —
-                                 whether there are 0 subscribers or 500, the card around it never grows;
-                                 ~3 rows fit before the list itself scrolls. --}}
-                            <div id="admin-subscribers-list" style="display:flex; flex-direction:column; gap:8px; height:190px; overflow-y:auto; padding-right:4px;">
-                                @forelse($emailSubscribers as $sub)
-                                    <div class="subscriber-item-row" data-id="{{ $sub->id }}" style="background:white; padding:10px 14px; border-radius:10px; border:1px solid #f0e4ea; display:flex; justify-content:space-between; align-items:center; gap:10px;">
-                                        <div style="overflow:hidden;">
-                                            <strong style="font-size:0.9rem; color:#5c1d37;">{{ $sub->name ?: $sub->email }}</strong>
-                                            @if($sub->name)<div style="font-size:0.78rem; color:#888;">{{ $sub->email }}</div>@endif
-                                        </div>
-                                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteSubscriber({{ $sub->id }}, this)">Remove</button>
-                                    </div>
-                                @empty
-                                    <p style="color:#888; text-align:center; padding:16px;" id="no-subscribers-msg">No subscribers yet. Add one above or import your customers.</p>
-                                @endforelse
-                            </div>
-                        </div>
-
-                        <!-- COMPOSE CAMPAIGN CARD -->
-                        <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                            <h4 style="color:#5c1d37; margin-bottom:12px;">Send a New Offer</h4>
-                            <form id="send-campaign-form" style="display:flex; flex-direction:column; gap:12px;">
-                                <div>
-                                    <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Subject Line</label>
-                                    <input type="text" id="campaign-subject" placeholder="e.g. 20% Off This Weekend Only!" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Message</label>
-                                    <textarea id="campaign-body" placeholder="Tell your customers about the offer..." required style="width:100%; height:120px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
-                                </div>
-                                <div>
-                                    <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Coupon Code (optional)</label>
-                                    <input type="text" id="campaign-coupon" placeholder="e.g. SWEET20" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                                </div>
-                                <button type="submit" id="send-campaign-btn" class="btn btn-primary" style="align-self:flex-start;">Send to {{ $emailSubscribers->count() }} Subscriber{{ $emailSubscribers->count() === 1 ? '' : 's' }}</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- CAMPAIGN HISTORY -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-bottom:25px;">
+                    <!-- SUBSCRIBER LIST CARD (free for everyone) -->
                     <div class="form-builder-card">
-                        <h4>Past Campaigns</h4>
-                        <div id="admin-campaigns-list" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-                            @forelse($emailCampaigns as $camp)
-                                <div style="background:white; padding:14px 16px; border-radius:10px; border:1px solid #f0e4ea; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
-                                    <div>
-                                        <strong style="font-size:0.92rem; color:#5c1d37;">{{ $camp->subject }}</strong>
-                                        <div style="font-size:0.78rem; color:#888;">{{ $camp->created_at->format('M j, Y g:ia') }}</div>
+                        <h4 style="color:#5c1d37; margin-bottom:4px;">Subscriber List</h4>
+                        <p style="font-size:0.85rem; color:#666; margin-bottom:14px;"><span id="email-subscriber-count">{{ $emailSubscribers->count() }}</span> active subscriber{{ $emailSubscribers->count() === 1 ? '' : 's' }}</p>
+
+                        <form id="add-subscriber-form" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+                            <input type="email" id="sub-email" placeholder="customer@email.com" required style="flex:1; min-width:180px; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
+                            <input type="text" id="sub-name" placeholder="Name (optional)" style="flex:1; min-width:140px; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </form>
+                        <button type="button" class="btn btn-outline" onclick="importCustomersToSubscribers()" style="width:100%; margin-bottom:14px;">Import All Customers With Emails</button>
+
+                        {{-- Fixed height (not max-height) so this box is always the same size —
+                             whether there are 0 subscribers or 500, the card around it never grows;
+                             ~3 rows fit before the list itself scrolls. --}}
+                        <div id="admin-subscribers-list" style="display:flex; flex-direction:column; gap:8px; height:190px; overflow-y:auto; padding-right:4px;">
+                            @forelse($emailSubscribers as $sub)
+                                <div class="subscriber-item-row" data-id="{{ $sub->id }}" style="background:white; padding:10px 14px; border-radius:10px; border:1px solid #f0e4ea; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                                    <div style="overflow:hidden;">
+                                        <strong style="font-size:0.9rem; color:#5c1d37;">{{ $sub->name ?: $sub->email }}</strong>
+                                        @if($sub->name)<div style="font-size:0.78rem; color:#888;">{{ $sub->email }}</div>@endif
                                     </div>
-                                    <span style="font-size:0.78rem; font-weight:700; padding:4px 10px; border-radius:12px; background:{{ $camp->status === 'sent' ? '#d1fae5' : ($camp->status === 'failed' ? '#fee2e2' : '#f3f4f6') }}; color:{{ $camp->status === 'sent' ? '#065f46' : ($camp->status === 'failed' ? '#b91c1c' : '#374151') }};">
-                                        {{ ucfirst($camp->status) }} — {{ $camp->sent_count }}/{{ $camp->recipient_count }}
-                                    </span>
+                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteSubscriber({{ $sub->id }}, this)">Remove</button>
                                 </div>
                             @empty
-                                <p style="color:#888; text-align:center; padding:16px;" id="no-campaigns-msg">No campaigns sent yet.</p>
+                                <p style="color:#888; text-align:center; padding:16px;" id="no-subscribers-msg">No subscribers yet. Add one above or import your customers.</p>
                             @endforelse
                         </div>
                     </div>
-                @else
-                    <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid var(--primary); padding:28px; border-radius:16px; max-width:560px;">
-                        <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Pro Feature</span>
-                        <h4 style="color:var(--dark-text); margin-top:10px; font-size:1.3rem;">Upgrade to Doughmain Pro ($29/month)</h4>
-                        <p style="font-size:0.92rem; color:#555; margin-top:6px; margin-bottom:18px;">Build a subscriber list from your customers and send email offers, coupons, and announcements — included with Pro.</p>
-                        <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff; font-weight:700; padding:12px 24px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:inline-block;">
-                            Upgrade to Pro ($29/mo)
-                        </a>
+
+                    <!-- COMPOSE CAMPAIGN CARD (anyone can draft; sending is Pro-gated server-side) -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
+                        <h4 style="color:#5c1d37; margin-bottom:12px;">Send a New Offer</h4>
+                        @unless($emailIsPro)
+                            <p style="font-size:0.82rem; color:#92400e; background:#fef3c7; padding:8px 12px; border-radius:10px; margin-bottom:12px;">🔒 Sending requires Pro ($29/mo) — draft your offer below, upgrade when you're ready to send it.</p>
+                        @endunless
+                        <form id="send-campaign-form" style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Subject Line</label>
+                                <input type="text" id="campaign-subject" placeholder="e.g. 20% Off This Weekend Only!" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
+                            </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Message</label>
+                                <textarea id="campaign-body" placeholder="Tell your customers about the offer..." required style="width:100%; height:120px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
+                            </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Coupon Code (optional)</label>
+                                <input type="text" id="campaign-coupon" placeholder="e.g. SWEET20" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
+                            </div>
+                            <button type="submit" id="send-campaign-btn" class="btn btn-primary" style="align-self:flex-start;">
+                                {{ $emailIsPro ? 'Send to ' . $emailSubscribers->count() . ' Subscriber' . ($emailSubscribers->count() === 1 ? '' : 's') : '🔒 Upgrade to Send' }}
+                            </button>
+                        </form>
                     </div>
-                @endif
+                </div>
+
+                <!-- CAMPAIGN HISTORY -->
+                <div class="form-builder-card">
+                    <h4>Past Campaigns</h4>
+                    <div id="admin-campaigns-list" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                        @forelse($emailCampaigns as $camp)
+                            <div style="background:white; padding:14px 16px; border-radius:10px; border:1px solid #f0e4ea; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+                                <div>
+                                    <strong style="font-size:0.92rem; color:#5c1d37;">{{ $camp->subject }}</strong>
+                                    <div style="font-size:0.78rem; color:#888;">{{ $camp->created_at->format('M j, Y g:ia') }}</div>
+                                </div>
+                                <span style="font-size:0.78rem; font-weight:700; padding:4px 10px; border-radius:12px; background:{{ $camp->status === 'sent' ? '#d1fae5' : ($camp->status === 'failed' ? '#fee2e2' : '#f3f4f6') }}; color:{{ $camp->status === 'sent' ? '#065f46' : ($camp->status === 'failed' ? '#b91c1c' : '#374151') }};">
+                                    {{ ucfirst($camp->status) }} — {{ $camp->sent_count }}/{{ $camp->recipient_count }}
+                                </span>
+                            </div>
+                        @empty
+                            <p style="color:#888; text-align:center; padding:16px;" id="no-campaigns-msg">No campaigns sent yet.</p>
+                        @endforelse
+                    </div>
+                </div>
             </div>
 
             <!-- TAB: Settings -->
