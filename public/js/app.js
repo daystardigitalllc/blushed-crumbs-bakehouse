@@ -4125,8 +4125,11 @@ window.updateLivePreviewColors = function() {
 
 window.updateLivePreviewFont = function(fontName) {
     let fontLink = document.getElementById('phone-preview-font-link');
+    let fontStyle = document.getElementById('phone-preview-font-style');
+    
     if (fontName === 'default') {
         if (fontLink) fontLink.remove();
+        if (fontStyle) fontStyle.remove();
         const viewport = document.querySelector('.phone-screen-viewport');
         if (viewport) viewport.style.fontFamily = "'Outfit', sans-serif";
         return;
@@ -4142,10 +4145,27 @@ window.updateLivePreviewFont = function(fontName) {
     const fontUrlName = fontName.replace(/ /g, '+');
     fontLink.href = `https://fonts.googleapis.com/css2?family=${fontUrlName}:wght@400;500;600;700;800&display=swap`;
 
-    const viewport = document.querySelector('.phone-screen-viewport');
-    if (viewport) {
-        viewport.style.setProperty('font-family', `'${fontName}', sans-serif`, 'important');
+    if (!fontStyle) {
+        fontStyle = document.createElement('style');
+        fontStyle.id = 'phone-preview-font-style';
+        document.head.appendChild(fontStyle);
     }
+    fontStyle.innerHTML = `
+        .phone-screen-viewport,
+        .phone-screen-viewport *,
+        .phone-screen-viewport h2,
+        .phone-screen-viewport h3,
+        .phone-screen-viewport h5,
+        .phone-screen-viewport strong,
+        .phone-screen-viewport p,
+        .phone-screen-viewport span,
+        .phone-screen-viewport label,
+        .phone-screen-viewport input,
+        .phone-screen-viewport select,
+        .phone-screen-viewport textarea {
+            font-family: '${fontName}', sans-serif !important;
+        }
+    `;
 };
 
 window.saveOrderFormDesign = function(e) {

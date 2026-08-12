@@ -133,6 +133,7 @@
         
         $__rules[] = "
             #order-modal-popup,
+            #order-modal-popup *,
             #order-modal-popup h2, 
             #order-modal-popup h3, 
             #order-modal-popup .step h2,
