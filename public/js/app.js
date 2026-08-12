@@ -1962,6 +1962,11 @@ function initAdminPortal() {
                 </div>
             `;
         }).join('');
+
+        // Apply custom live preview design overrides
+        if (window.updateLivePreviewColors) window.updateLivePreviewColors();
+        const fontSelect = document.getElementById('form_font_family');
+        if (fontSelect && window.updateLivePreviewFont) window.updateLivePreviewFont(fontSelect.value);
     };
 
     // Save Form Schema to Server Endpoint (Silent Auto-Save background worker)
@@ -4059,3 +4064,122 @@ function submitInvoiceEdits(sendAfter) {
         });
     }
 }
+
+// --- Custom Order Form Design Colors & Typography ---
+window.updateLivePreviewColors = function() {
+    const form = document.getElementById('order-form-style-config');
+    if (!form) return;
+
+    const modalBg = form.querySelector('input[name="colors[modal_bg]"]')?.value || '#ffffff';
+    const heading = form.querySelector('input[name="colors[heading]"]')?.value || '#e67399';
+    const text = form.querySelector('input[name="colors[text]"]')?.value || '#4a2133';
+    const accent = form.querySelector('input[name="colors[accent]"]')?.value || '#e67399';
+    const btnBg = form.querySelector('input[name="colors[btn_bg]"]')?.value || '#e67399';
+    const btnText = form.querySelector('input[name="colors[btn_text]"]')?.value || '#ffffff';
+
+    let styleBlock = document.getElementById('phone-preview-style-overrides');
+    if (!styleBlock) {
+        styleBlock = document.createElement('style');
+        styleBlock.id = 'phone-preview-style-overrides';
+        document.head.appendChild(styleBlock);
+    }
+
+    styleBlock.innerHTML = `
+        /* Live Phone Preview Custom Styling Overrides */
+        .phone-screen-viewport {
+            background-color: ${modalBg} !important;
+        }
+        .phone-screen-viewport h2, 
+        .phone-screen-viewport h3, 
+        .phone-screen-viewport h5, 
+        .phone-screen-viewport strong:not(.preview-price),
+        .phone-screen-viewport span.template-tile-icon {
+            color: ${heading} !important;
+        }
+        .phone-screen-viewport p, 
+        .phone-screen-viewport span:not(.preview-price):not(.template-tile-icon), 
+        .phone-screen-viewport label {
+            color: ${text} !important;
+        }
+        .phone-screen-viewport .btn-primary, 
+        .phone-screen-viewport button,
+        .phone-screen-viewport .advance-btn {
+            background-color: ${btnBg} !important;
+            border-color: ${btnBg} !important;
+            color: ${btnText} !important;
+        }
+        .phone-screen-viewport .preview-product-tile,
+        .phone-screen-viewport .preview-chip {
+            border-color: ${accent}33 !important;
+        }
+        .phone-screen-viewport .preview-product-tile:hover,
+        .phone-screen-viewport .preview-chip:hover {
+            border-color: ${accent} !important;
+        }
+        /* Style active/selected item mockups */
+        .phone-screen-viewport .preview-price {
+            color: ${accent} !important;
+        }
+    `;
+};
+
+window.updateLivePreviewFont = function(fontName) {
+    let fontLink = document.getElementById('phone-preview-font-link');
+    if (fontName === 'default') {
+        if (fontLink) fontLink.remove();
+        const viewport = document.querySelector('.phone-screen-viewport');
+        if (viewport) viewport.style.fontFamily = "'Outfit', sans-serif";
+        return;
+    }
+
+    if (!fontLink) {
+        fontLink = document.createElement('link');
+        fontLink.id = 'phone-preview-font-link';
+        fontLink.rel = 'stylesheet';
+        document.head.appendChild(fontLink);
+    }
+
+    const fontUrlName = fontName.replace(/ /g, '+');
+    fontLink.href = `https://fonts.googleapis.com/css2?family=${fontUrlName}:wght@400;500;600;700;800&display=swap`;
+
+    const viewport = document.querySelector('.phone-screen-viewport');
+    if (viewport) {
+        viewport.style.setProperty('font-family', `'${fontName}', sans-serif`, 'important');
+    }
+};
+
+window.saveOrderFormDesign = function(e) {
+    if (e) e.preventDefault();
+    const form = document.getElementById('order-form-style-config');
+    if (!form) return;
+    const formData = new FormData(form);
+    const status = document.getElementById('form-design-save-status');
+
+    fetch('/dashboard/form-builder/design', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.showToast('Order form design styling saved live!', 'success');
+            if (status) {
+                status.style.display = 'inline';
+                setTimeout(() => { status.style.display = 'none'; }, 3000);
+            }
+            // Sync storefront previews
+            window.updateLivePreviewColors();
+            const fontSelect = document.getElementById('form_font_family');
+            if (fontSelect) window.updateLivePreviewFont(fontSelect.value);
+        } else {
+            window.showToast(data.message || 'Failed to save form design.', 'error');
+        }
+    })
+    .catch(err => {
+        window.showToast('Error saving design: ' + err.message, 'error');
+    });
+};

@@ -72,6 +72,77 @@
             }
         }
     }
+
+    // --- Order Form Custom Colors & Typography Overrides ---
+    $__orderColors = $tenant->orderFormColors();
+    $__orderTypo = $tenant->orderFormTypography();
+
+    $__rules[] = "
+        /* Order Form Card overrides */
+        #order-modal-popup .order-modal-card {
+            background-color: {$__orderColors['modal_bg']} !important;
+        }
+        #order-modal-popup .step h2, 
+        #order-modal-popup h2, 
+        #order-modal-popup h3 {
+            color: {$__orderColors['heading']} !important;
+        }
+        #order-modal-popup, 
+        #order-modal-popup p, 
+        #order-modal-popup label, 
+        #order-modal-popup .product-desc,
+        #order-modal-popup .flavor-desc,
+        #order-modal-popup .frosting-desc,
+        #order-modal-popup .filling-desc,
+        #order-modal-popup span:not(#global-cart-total-estimate) {
+            color: {$__orderColors['text']} !important;
+        }
+        /* Sticky progress / estimate bar overrides */
+        #order-modal-popup .sticky-order-summary-bar {
+            background: {$__orderColors['accent']}08 !important;
+            border-color: {$__orderColors['accent']}33 !important;
+        }
+        #order-modal-popup #global-cart-total-estimate {
+            color: {$__orderColors['accent']} !important;
+        }
+        /* Buttons overrides */
+        #order-modal-popup .btn-primary,
+        #order-modal-popup button.advance-btn {
+            background-color: {$__orderColors['btn_bg']} !important;
+            border-color: {$__orderColors['btn_bg']} !important;
+            color: {$__orderColors['btn_text']} !important;
+        }
+        /* Option Card highlight overrides */
+        #order-modal-popup .product:hover,
+        #order-modal-popup .choice-chip:hover {
+            border-color: {$__orderColors['accent']} !important;
+        }
+        #order-modal-popup .product.selected,
+        #order-modal-popup .choice-chip.selected {
+            border-color: {$__orderColors['accent']} !important;
+            background-color: {$__orderColors['accent']}12 !important;
+            box-shadow: 0 0 0 2px {$__orderColors['accent']}33 !important;
+        }
+    ";
+
+    if ($__orderTypo['font_family'] !== 'default') {
+        $fontName = $__orderTypo['font_family'];
+        $fontUrlName = str_replace(' ', '+', $fontName);
+        // Prepend font @import to the rules array so it gets compiled before usages
+        array_unshift($__rules, "@import url('https://fonts.googleapis.com/css2?family={$fontUrlName}:wght@400;500;600;700;800&display=swap');");
+        
+        $__rules[] = "
+            #order-modal-popup,
+            #order-modal-popup h2, 
+            #order-modal-popup h3, 
+            #order-modal-popup .step h2,
+            #order-modal-popup button,
+            #order-modal-popup label,
+            #order-modal-popup p {
+                font-family: '{$fontName}', sans-serif !important;
+            }
+        ";
+    }
 @endphp
 @if(count($__rules))
 <style id="tenant-color-override">

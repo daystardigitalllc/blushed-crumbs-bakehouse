@@ -195,6 +195,36 @@ class AdminController extends Controller
         ]);
     }
 
+    public function saveOrderFormDesign(Request $request)
+    {
+        $tenant = $this->tenant($request);
+        $request->validate([
+            'colors' => 'nullable|array',
+            'typography' => 'nullable|array',
+        ]);
+
+        $design = [
+            'colors' => $request->input('colors', []),
+            'typography' => $request->input('typography', []),
+        ];
+
+        // Clean & validate hex codes
+        foreach (($design['colors'] ?? []) as $slot => $val) {
+            if ($val && !preg_match('/^#[0-9A-Fa-f]{3,8}$/', $val)) {
+                unset($design['colors'][$slot]);
+            }
+        }
+
+        $tenant->order_form_design = $design;
+        $tenant->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order form styling saved live!',
+            'design' => $tenant->order_form_design,
+        ]);
+    }
+
     public function saveBookingSettings(Request $request)
     {
         $tenant = $this->tenant($request);

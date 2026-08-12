@@ -1473,6 +1473,66 @@
                             </form>
                         </div>
 
+                        <!-- ORDER FORM STYLING & TYPOGRAPHY CARD -->
+                        <div class="form-builder-card" style="margin-bottom: 0;">
+                            <h4 style="color:#5c1d37; margin-bottom: 6px;">Form Styling &amp; Typography</h4>
+                            <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Customize the colors and typography of your storefront order form to match your bakery brand.</p>
+                            
+                            @php
+                                $formColors = $tenant->orderFormColors();
+                                $formTypo = $tenant->orderFormTypography();
+                            @endphp
+
+                            <form id="order-form-style-config" onsubmit="saveOrderFormDesign(event)">
+                                @csrf
+                                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:16px;">
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Modal Background</label>
+                                        <input type="color" name="colors[modal_bg]" value="{{ $formColors['modal_bg'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Heading / Titles</label>
+                                        <input type="color" name="colors[heading]" value="{{ $formColors['heading'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Primary Text</label>
+                                        <input type="color" name="colors[text]" value="{{ $formColors['text'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Interactive Accent</label>
+                                        <input type="color" name="colors[accent]" value="{{ $formColors['accent'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Button Background</label>
+                                        <input type="color" name="colors[btn_bg]" value="{{ $formColors['btn_bg'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Button Text</label>
+                                        <input type="color" name="colors[btn_text]" value="{{ $formColors['btn_text'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom:16px;">
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555; display:block; margin-bottom:6px;">Order Form Font (Typography)</label>
+                                    <select name="typography[font_family]" id="form_font_family" onchange="updateLivePreviewFont(this.value)" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                        <option value="default" {{ $formTypo['font_family'] === 'default' ? 'selected' : '' }}>Theme Default Font</option>
+                                        <option value="Inter" {{ $formTypo['font_family'] === 'Inter' ? 'selected' : '' }}>Inter (Sleek Sans-serif)</option>
+                                        <option value="Poppins" {{ $formTypo['font_family'] === 'Poppins' ? 'selected' : '' }}>Poppins (Friendly Sans-serif)</option>
+                                        <option value="Playfair Display" {{ $formTypo['font_family'] === 'Playfair Display' ? 'selected' : '' }}>Playfair Display (Elegant Serif)</option>
+                                        <option value="Oswald" {{ $formTypo['font_family'] === 'Oswald' ? 'selected' : '' }}>Oswald (Bold Headline)</option>
+                                        <option value="Great Vibes" {{ $formTypo['font_family'] === 'Great Vibes' ? 'selected' : '' }}>Great Vibes (Fancy Script)</option>
+                                        <option value="Fredoka" {{ $formTypo['font_family'] === 'Fredoka' ? 'selected' : '' }}>Fredoka (Rounded &amp; Whimsical)</option>
+                                        <option value="Fraunces" {{ $formTypo['font_family'] === 'Fraunces' ? 'selected' : '' }}>Fraunces (Vintage Serif)</option>
+                                    </select>
+                                </div>
+
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <button type="submit" class="btn btn-primary" style="padding:10px 24px; font-weight:700;">Save Form Design</button>
+                                    <span id="form-design-save-status" style="font-size:0.85rem; font-weight:600; color:#059669; display:none;">Styling saved live!</span>
+                                </div>
+                            </form>
+                        </div>
+
                         <!-- LIVE FIELDS TABLE WITH REORDER & SAVE -->
                         <div class="form-builder-card" style="margin-bottom: 0;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">

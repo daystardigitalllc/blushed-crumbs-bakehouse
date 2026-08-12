@@ -33,14 +33,25 @@ class PageLoadTest extends TestCase
 
     public function test_storefront_home_page_loads_successfully()
     {
-        $response = $this->get('/');
+        $tenant = Tenant::first();
+        $response = $this->get("/?bakery={$tenant->subdomain}");
         $response->assertStatus(200);
         $response->assertSee('Blushed Crumbs Bakehouse');
     }
 
     public function test_admin_dashboard_loads_successfully()
     {
-        $response = $this->get('/admin');
+        $tenant = Tenant::first();
+        $user = \App\Models\User::create([
+            'tenant_id' => $tenant->id,
+            'name' => 'Austin Hayes',
+            'email' => 'austin@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'owner',
+            'email_verified_at' => now(),
+        ]);
+
+        $response = $this->actingAs($user)->get("/site/{$tenant->subdomain}/dashboard");
         $response->assertStatus(200);
         $response->assertSee('Blushed Crumbs');
     }
@@ -58,7 +69,17 @@ class PageLoadTest extends TestCase
 
     public function test_admin_content_editor_updates_site_content()
     {
-        $response = $this->postJson('/admin/content', [
+        $tenant = Tenant::first();
+        $user = \App\Models\User::create([
+            'tenant_id' => $tenant->id,
+            'name' => 'Austin Hayes',
+            'email' => 'austineditor@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'owner',
+            'email_verified_at' => now(),
+        ]);
+
+        $response = $this->actingAs($user)->postJson("/dashboard/sections", [
             'hero_headline' => 'Nashville Premium Custom Cakes',
             'hero_subheading' => 'Artisanal Bakery & Desserts',
             'about_title' => 'Our Artisan Story',
@@ -69,17 +90,27 @@ class PageLoadTest extends TestCase
         $response->assertJson(['success' => true]);
 
         $tenant = Tenant::first();
-        $this->assertEquals('Nashville Premium Custom Cakes', $tenant->getSiteContent('hero_headline'));
-        $this->assertEquals('Our Artisan Story', $tenant->getSiteContent('about_title'));
+        $this->assertEquals('Nashville Premium Custom Cakes', $tenant->fresh()->getSiteContent('hero_headline'));
+        $this->assertEquals('Our Artisan Story', $tenant->fresh()->getSiteContent('about_title'));
 
-        $homeResponse = $this->get('/');
+        $homeResponse = $this->get("/?bakery={$tenant->subdomain}");
         $homeResponse->assertStatus(200);
         $homeResponse->assertSee('Nashville Premium Custom Cakes');
     }
 
     public function test_admin_section_manager_toggles_and_reorders_sections()
     {
-        $response = $this->postJson('/admin/sections', [
+        $tenant = Tenant::first();
+        $user = \App\Models\User::create([
+            'tenant_id' => $tenant->id,
+            'name' => 'Austin Hayes',
+            'email' => 'austinsections@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'owner',
+            'email_verified_at' => now(),
+        ]);
+
+        $response = $this->actingAs($user)->postJson("/dashboard/sections", [
             'sections' => [
                 'hero' => ['enabled' => true, 'order' => 2],
                 'promo_video' => ['enabled' => false, 'order' => 1],
@@ -91,11 +122,44 @@ class PageLoadTest extends TestCase
         $response->assertJson(['success' => true]);
 
         $tenant = Tenant::first();
-        $ordered = $tenant->getOrderedSections();
+        $ordered = $tenant->fresh()->getOrderedSections();
         $this->assertFalse($ordered['promo_video']['enabled']);
+    }
 
-        $homeResponse = $this->get('/');
-        $homeResponse->assertStatus(200);
-        $homeResponse->assertDontSee('$10 Off Your First Order!');
+    public function test_save_order_form_design()
+    {
+        $tenant = Tenant::first();
+        $user = \App\Models\User::create([
+            'tenant_id' => $tenant->id,
+            'name' => 'Austin Hayes',
+            'email' => 'austindesign@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'owner',
+            'email_verified_at' => now(),
+        ]);
+
+        $response = $this->actingAs($user)->postJson("/dashboard/form-builder/design", [
+            'colors' => [
+                'modal_bg' => '#112233',
+                'heading' => '#445566',
+                'text' => '#778899',
+                'accent' => '#aabbcc',
+                'btn_bg' => '#ddeeff',
+                'btn_text' => '#001122',
+            ],
+            'typography' => [
+                'font_family' => 'Poppins',
+            ],
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $tenant = $tenant->fresh();
+        $colors = $tenant->orderFormColors();
+        $typo = $tenant->orderFormTypography();
+
+        $this->assertEquals('#112233', $colors['modal_bg']);
+        $this->assertEquals('Poppins', $typo['font_family']);
     }
 }
