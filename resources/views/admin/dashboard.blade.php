@@ -120,8 +120,13 @@
             @endunless
 
             <nav class="admin-sidebar-nav" style="gap: 5px;">
+                <button class="admin-nav-item active" data-tab="tab-overview">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Overview</span>
+                </button>
+
                 <div class="sidebar-category-title">Operations</div>
-                <button class="admin-nav-item active" data-tab="tab-orders">
+                <button class="admin-nav-item" data-tab="tab-orders">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg>
                     <span>Orders</span>
                     @if($newInquiriesCount > 0)<span class="nav-inquiries-badge">{{ $newInquiriesCount }}</span>@endif
@@ -208,7 +213,72 @@
                 </div>
             @endif
             <!-- TAB 1: Orders -->
-            <div id="tab-orders" class="tab-content active">
+            <!-- TAB: Overview — the new default landing view. Pulls from data
+                 every other tab already computes ($urgentOrders, $thisMonthRevenue,
+                 $pendingOrders, $customerCount, $newInquiriesCount) rather than
+                 querying anything fresh, so a baker sees "how is my bakery doing
+                 right now" the moment they log in instead of jumping straight
+                 into the Orders list with no context. -->
+            <div id="tab-overview" class="tab-content active">
+                <div class="section-header">
+                    <h3>Welcome back{{ $tenant->name ? ', ' . $tenant->name : '' }}</h3>
+                    <p class="subtitle">Here's how things are looking today.</p>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px; margin-bottom:25px;">
+                    <div class="form-builder-card" style="text-align:center;">
+                        <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">This Month's Revenue</p>
+                        <p style="font-size:1.7rem; font-weight:800; color:var(--primary); margin:0;">${{ number_format($thisMonthRevenue, 2) }}</p>
+                    </div>
+                    <div class="form-builder-card" style="text-align:center; cursor:pointer;" onclick="window.switchDashboardTab('tab-orders')">
+                        <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">New Inquiries</p>
+                        <p style="font-size:1.7rem; font-weight:800; color:{{ $newInquiriesCount > 0 ? '#ef4444' : 'var(--admin-heading)' }}; margin:0;">{{ $newInquiriesCount }}</p>
+                    </div>
+                    <div class="form-builder-card" style="text-align:center; cursor:pointer;" onclick="window.switchDashboardTab('tab-orders')">
+                        <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">Pending Orders</p>
+                        <p style="font-size:1.7rem; font-weight:800; color:var(--admin-heading); margin:0;">{{ $pendingOrders }}</p>
+                    </div>
+                    {{-- Not clickable like the other tiles — there's no dedicated
+                         customers tab to send it to; $customers is queried by the
+                         controller but has no browsable list anywhere in this view yet. --}}
+                    <div class="form-builder-card" style="text-align:center;">
+                        <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">Total Customers</p>
+                        <p style="font-size:1.7rem; font-weight:800; color:var(--admin-heading); margin:0;">{{ $customerCount }}</p>
+                    </div>
+                </div>
+
+                <div class="form-builder-card" style="margin-bottom:25px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                        <h4 style="color:var(--admin-heading); margin:0;">Needs Your Attention</h4>
+                        @if($urgentOrders->count() > 5)
+                            <button type="button" class="btn btn-outline btn-sm" onclick="window.switchDashboardTab('tab-orders')">View All ({{ $urgentOrders->count() }})</button>
+                        @endif
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        @forelse($urgentOrders->take(5) as $order)
+                            <div style="background:var(--theme-card-bg, #fff); padding:12px 16px; border-radius:10px; border:1px solid var(--border-pink-subtle); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; cursor:pointer;" onclick="window.switchDashboardTab('tab-orders')">
+                                <div>
+                                    <strong style="font-size:0.92rem; color:var(--admin-heading);">{{ $order->client_name }}</strong>
+                                    <div style="font-size:0.78rem; color:var(--text-faint);">Due {{ $order->due_date?->format('M j, Y') ?? 'no date set' }} — #{{ $order->order_number }}</div>
+                                </div>
+                                <span style="font-size:0.78rem; font-weight:700; padding:4px 10px; border-radius:12px; background:var(--pink-bg); color:var(--admin-heading); text-transform:capitalize;">{{ str_replace('_', ' ', $order->status) }}</span>
+                            </div>
+                        @empty
+                            <p style="color:var(--text-faint); text-align:center; padding:20px;">Nothing urgent right now — you're all caught up.</p>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div class="form-builder-card" style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+                    <div>
+                        <h4 style="color:var(--admin-heading); margin:0 0 4px;">Want the full picture?</h4>
+                        <p style="font-size:0.85rem; color:var(--text-faint); margin:0;">Revenue trends, average order value, and repeat customer rate live in Insights.</p>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="window.switchDashboardTab('tab-insights')">Go to Insights</button>
+                </div>
+            </div>
+
+            <div id="tab-orders" class="tab-content">
                 <style>
                     /* --- Dashboard UI/UX Optimizations --- */
                     .collapsible-card {
