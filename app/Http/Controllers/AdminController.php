@@ -106,6 +106,28 @@ class AdminController extends Controller
             ->count();
         $customerCount = Customer::where('tenant_id', $tenant->id)->count();
 
+        // Insights tab stats. Free tenants only ever see $thisMonthRevenue
+        // (the teaser) — the rest render behind a blurred/locked panel in
+        // the view. Deliberately only order/customer aggregates (revenue
+        // trend, repeat rate, average order value): `orders.items` is a
+        // freeform JSON cart shaped by each tenant's own custom form
+        // builder schema, not a real product_id relationship, so a
+        // "best-selling product" breakdown isn't reliably computable from
+        // it without risking wrong numbers on a paid feature.
+        $revenueStatuses = ['completed', 'in_progress', 'ready', 'paid'];
+        $thisMonthRevenue = Order::where('tenant_id', $tenant->id)
+            ->whereIn('status', $revenueStatuses)
+            ->whereBetween('created_at', [now()->startOfMonth(), now()])
+            ->sum('total_price');
+        $lastMonthRevenue = Order::where('tenant_id', $tenant->id)
+            ->whereIn('status', $revenueStatuses)
+            ->whereBetween('created_at', [now()->subMonthNoOverflow()->startOfMonth(), now()->subMonthNoOverflow()->endOfMonth()])
+            ->sum('total_price');
+        $completedOrderCount = Order::where('tenant_id', $tenant->id)->whereIn('status', $revenueStatuses)->count();
+        $avgOrderValue = $completedOrderCount > 0 ? $totalRevenue / $completedOrderCount : 0;
+        $repeatCustomerCount = Customer::where('tenant_id', $tenant->id)->where('order_count', '>', 1)->count();
+        $repeatCustomerRate = $customerCount > 0 ? round(($repeatCustomerCount / $customerCount) * 100) : 0;
+
         $serverBookingSettings = $tenant->booking_settings ?? [];
         $siteContent = $tenant->site_content ?? \App\Models\Tenant::getDefaultSiteContent();
 
@@ -174,7 +196,8 @@ class AdminController extends Controller
             'customers', 'totalRevenue', 'pendingOrders', 'customerCount',
             'serverBookingSettings', 'siteContent', 'emailSubscribers', 'emailCampaigns',
             'onboardingChecklist', 'onboardingComplete',
-            'latestOnboardingDraft', 'onboardingNeedsAttention'
+            'latestOnboardingDraft', 'onboardingNeedsAttention',
+            'thisMonthRevenue', 'lastMonthRevenue', 'avgOrderValue', 'repeatCustomerRate'
         ));
     }
 

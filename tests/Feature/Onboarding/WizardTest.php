@@ -325,4 +325,36 @@ class WizardTest extends TestCase
         $component->call('changeTheme', 'sweet_elegant');
         $this->assertSame('modern_bakery', $draft->fresh()->theme_id);
     }
+
+    /**
+     * Regression: a free tenant's theme picker used to filter Pro themes
+     * out of the list entirely, so a free baker never even saw they
+     * existed. themesForPicker() must now show every theme, flagging the
+     * Pro-only ones as locked instead of hiding them — a soft upsell, not
+     * a silent omission.
+     */
+    public function test_theme_picker_shows_locked_pro_themes_to_free_tenant()
+    {
+        $user = $this->makeUser(['plan_tier' => 'free']);
+        $draft = OnboardingDraft::create(['tenant_id' => $user->tenant_id, 'version' => 1, 'status' => 'ready_for_review', 'theme_id' => 'rustic_kitchen']);
+
+        $component = Livewire::actingAs($user)->test(ReviewPanel::class, ['draftId' => $draft->id]);
+
+        $themes = collect($component->get('themesForPicker'))->keyBy('id');
+
+        $this->assertFalse($themes['rustic_kitchen']['locked']); // starter theme
+        $this->assertTrue($themes['playful_treats']['locked']); // pro-only theme, still present not hidden
+    }
+
+    public function test_theme_picker_shows_no_locked_themes_to_pro_tenant()
+    {
+        $user = $this->makeUser(['plan_tier' => 'pro']);
+        $draft = OnboardingDraft::create(['tenant_id' => $user->tenant_id, 'version' => 1, 'status' => 'ready_for_review', 'theme_id' => 'rustic_kitchen']);
+
+        $component = Livewire::actingAs($user)->test(ReviewPanel::class, ['draftId' => $draft->id]);
+
+        $themes = collect($component->get('themesForPicker'));
+
+        $this->assertTrue($themes->every(fn ($t) => $t['locked'] === false));
+    }
 }

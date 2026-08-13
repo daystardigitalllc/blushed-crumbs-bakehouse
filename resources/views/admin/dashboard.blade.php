@@ -154,6 +154,13 @@
                 </button>
 
                 <div class="sidebar-category-title" style="margin-top: 14px;">Growth &amp; Engagement</div>
+                <button class="admin-nav-item" data-tab="tab-insights">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M3 3v18h18"></path><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path></svg>
+                    <span>Insights</span>
+                    @if(($tenant->plan_tier ?? 'free') !== 'pro')
+                        <span style="font-size:0.62rem; font-weight:800; background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:10px; margin-left:auto;">PRO</span>
+                    @endif
+                </button>
                 <button class="admin-nav-item" data-tab="tab-reviews">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                     <span>Client Reviews</span>
@@ -2650,6 +2657,58 @@
                             @endforelse
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- TAB: Insights (top-line revenue free as a teaser; full breakdown is Pro) -->
+            <div id="tab-insights" class="tab-content">
+                <div class="section-header">
+                    <h3>Insights</h3>
+                    <p class="subtitle">See how your bakery is actually doing.</p>
+                </div>
+
+                @php $insightsIsPro = ($tenant->plan_tier ?? 'free') === 'pro'; @endphp
+
+                <div class="form-builder-card" style="margin-bottom:20px;">
+                    <h4 style="color:#5c1d37; margin-bottom:4px;">This Month's Revenue</h4>
+                    <p style="font-size:2.2rem; font-weight:800; color:var(--primary); margin:6px 0 0;">${{ number_format($thisMonthRevenue, 2) }}</p>
+                    <p style="font-size:0.82rem; color:#888; margin-top:4px;">From paid, in-progress, ready, and completed orders this month.</p>
+                </div>
+
+                <div style="position:relative;">
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; {{ $insightsIsPro ? '' : 'filter:blur(5px); user-select:none; pointer-events:none;' }}">
+                        <div class="form-builder-card">
+                            <h5 style="font-size:0.85rem; color:#888; text-transform:uppercase; font-weight:700; margin-bottom:8px;">Vs. Last Month</h5>
+                            @php
+                                $delta = $lastMonthRevenue > 0 ? round((($thisMonthRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100) : ($thisMonthRevenue > 0 ? 100 : 0);
+                            @endphp
+                            <p style="font-size:1.6rem; font-weight:800; color:{{ $delta >= 0 ? '#059669' : '#dc2626' }};">{{ $delta >= 0 ? '+' : '' }}{{ $delta }}%</p>
+                            <p style="font-size:0.8rem; color:#888;">Last month: ${{ number_format($lastMonthRevenue, 2) }}</p>
+                        </div>
+                        <div class="form-builder-card">
+                            <h5 style="font-size:0.85rem; color:#888; text-transform:uppercase; font-weight:700; margin-bottom:8px;">Average Order Value</h5>
+                            <p style="font-size:1.6rem; font-weight:800; color:#5c1d37;">${{ number_format($avgOrderValue, 2) }}</p>
+                            <p style="font-size:0.8rem; color:#888;">Across all completed orders.</p>
+                        </div>
+                        <div class="form-builder-card">
+                            <h5 style="font-size:0.85rem; color:#888; text-transform:uppercase; font-weight:700; margin-bottom:8px;">Repeat Customer Rate</h5>
+                            <p style="font-size:1.6rem; font-weight:800; color:#5c1d37;">{{ $repeatCustomerRate }}%</p>
+                            <p style="font-size:0.8rem; color:#888;">Customers with more than one order.</p>
+                        </div>
+                    </div>
+
+                    @unless($insightsIsPro)
+                        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+                            <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid var(--primary); padding:24px 28px; border-radius:16px; text-align:center; max-width:400px; box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+                                <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Pro Feature</span>
+                                <h4 style="color:var(--dark-text); margin-top:10px; font-size:1.15rem;">See the full breakdown</h4>
+                                <p style="font-size:0.88rem; color:#555; margin-top:6px; margin-bottom:16px;">Month-over-month trend, average order value, and repeat customer rate — upgrade to Pro to unlock.</p>
+                                <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff; font-weight:700; padding:10px 20px; border-radius:12px; text-decoration:none; display:inline-block;">
+                                    Upgrade to Pro ($29/mo)
+                                </a>
+                            </div>
+                        </div>
+                    @endunless
                 </div>
             </div>
 
