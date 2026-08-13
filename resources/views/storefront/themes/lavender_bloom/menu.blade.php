@@ -142,6 +142,9 @@
                 <a href="{{ route('storefront.gallery') }}">Gallery</a>
                 <a href="{{ route('storefront.policy') }}">Policy</a>
                 <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
+                @if($tenant->normalizedPresaleSettings()['enabled'] ?? false)
+                <a href="{{ route('storefront.presale') }}" class="nav-presale-btn">Shop Presale</a>
+                @endif
             </nav>
         </div>
     </div>

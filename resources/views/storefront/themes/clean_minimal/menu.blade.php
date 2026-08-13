@@ -135,6 +135,9 @@
                 <a href="{{ $navBakerPortalUrl }}">Dashboard</a>
             @endif
             <a href="#" onclick="openOrderModal()" class="nav-order-btn">Order Now</a>
+            @if($tenant->normalizedPresaleSettings()['enabled'] ?? false)
+            <a href="{{ route('storefront.presale') }}" class="nav-presale-btn">Shop Presale</a>
+            @endif
         </nav>
     </div>
 </header>

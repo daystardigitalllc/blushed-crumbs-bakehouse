@@ -131,6 +131,25 @@ body {
     opacity: 1 !important;
 }
 
+.nav-presale-btn {
+    background: transparent;
+    color: #e67399 !important;
+    border: 2px solid #e67399;
+    padding: 8px 24px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1rem;
+    white-space: nowrap;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+}
+
+.nav-presale-btn:hover {
+    background: #e67399;
+    color: white !important;
+    opacity: 1 !important;
+}
+
 /* ==========================================================================
    Entrance Animations (all themes)
    - Hero content animates in on load via CSS.
@@ -3399,6 +3418,14 @@ body.theme-cherry_bakeshop {
         display: inline-block !important;
     }
 
+    .nav-presale-btn {
+        padding: 5px 14px !important;
+        font-size: 0.8rem !important;
+        border-radius: 20px !important;
+        margin: 2px 0 0 4px !important;
+        display: inline-block !important;
+    }
+
     .admin-btn {
         padding: 5px 12px !important;
         font-size: 0.8rem !important;
@@ -3580,6 +3607,7 @@ body.theme-cherry_bakeshop {
     }
 
     .nav-order-btn,
+    .nav-presale-btn,
     .admin-btn {
         padding: 4px 10px !important;
         font-size: 0.75rem !important;

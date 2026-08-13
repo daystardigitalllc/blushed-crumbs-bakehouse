@@ -36,6 +36,7 @@ class Order extends Model
         'deposit_amount',
         'deposit_paid',
         'status',
+        'source',
     ];
 
     protected $casts = [

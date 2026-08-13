@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StorefrontController;
+use App\Http\Controllers\PresaleController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
@@ -97,6 +98,8 @@ Route::get('/policy', [StorefrontController::class, 'policy'])->name('storefront
 Route::get('/privacy', [StorefrontController::class, 'privacy'])->name('storefront.privacy');
 Route::get('/terms', [StorefrontController::class, 'terms'])->name('storefront.terms');
 Route::post('/order', [StorefrontController::class, 'submitOrder'])->name('storefront.order.submit');
+Route::get('/presale', [PresaleController::class, 'show'])->name('storefront.presale');
+Route::post('/presale/checkout', [PresaleController::class, 'submit'])->name('storefront.presale.submit');
 Route::get('/invoices/{invoiceNumber}', [StorefrontController::class, 'showInvoice'])->name('invoices.show');
 Route::post('/newsletter/subscribe', [\App\Http\Controllers\EmailMarketingController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/newsletter/unsubscribe/{token}', [\App\Http\Controllers\EmailMarketingController::class, 'unsubscribe'])->name('newsletter.unsubscribe');
@@ -165,6 +168,10 @@ Route::middleware(['auth', 'tenant.owner'])->prefix('dashboard')->group(function
     Route::delete('/gallery-categories', [AdminController::class, 'removeGalleryCategory'])->name('admin.gallery.categories.destroy');
     Route::post('/form-builder', [AdminController::class, 'saveFormSchema'])->name('admin.form.schema.save');
     Route::post('/settings/booking', [AdminController::class, 'saveBookingSettings'])->name('admin.settings.booking.save');
+    Route::post('/settings/presale', [AdminController::class, 'savePresaleSettings'])->name('admin.settings.presale.save');
+    Route::post('/presale-items', [AdminController::class, 'storePresaleItem'])->name('admin.presale-items.store');
+    Route::put('/presale-items/{id}', [AdminController::class, 'updatePresaleItem'])->name('admin.presale-items.update');
+    Route::delete('/presale-items/{id}', [AdminController::class, 'destroyPresaleItem'])->name('admin.presale-items.destroy');
     Route::post('/settings/email', [AdminController::class, 'saveEmailRouting'])->name('admin.settings.email.save');
     Route::post('/theme', [AdminController::class, 'saveTheme'])->name('admin.theme.save');
     Route::post('/settings/business', [AdminController::class, 'saveBusinessInfo'])->name('admin.settings.business');
