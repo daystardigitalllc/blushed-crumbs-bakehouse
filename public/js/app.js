@@ -2532,7 +2532,49 @@ window.addPresaleItem = async function() {
         });
         const data = await response.json();
         if (data.success) {
-            window.location.reload();
+            const grid = document.getElementById('presale-items-admin-grid');
+            if (grid) {
+                const emptyState = grid.querySelector('p');
+                if (emptyState) emptyState.remove();
+
+                const item = data.item;
+                const row = document.createElement('div');
+                row.className = 'presale-item-row';
+                row.dataset.id = item.id;
+                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid #f0e4ea; flex-wrap:wrap;';
+                const photoHtml = item.photo_path
+                    ? `<img src="/${item.photo_path}" alt="" style="width:44px; height:44px; object-fit:cover; border-radius:8px; border:1px solid #f0e4ea;">`
+                    : '';
+                row.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:200px;">
+                        ${photoHtml}
+                        <div>
+                            <strong style="color:#5c1d37;">${item.name}</strong>
+                            <span style="background:#f9e0eb; color:#7a2b4a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-left:8px;">min ${item.min_quantity} ${item.unit_label}</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:0.85rem; color:#999;">$</span>
+                        <input type="number" step="0.01" value="${parseFloat(item.price).toFixed(2)}" class="presale-price-input" style="width:80px;">
+                        <span style="font-size:0.8rem; color:#888;">/ ${item.unit_label}</span>
+                        <button class="btn btn-sm btn-secondary" onclick="window.updatePresaleItemPrice(${item.id}, this)">Save</button>
+                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="window.deletePresaleItem(${item.id}, this)">✕</button>
+                    </div>
+                `;
+                grid.appendChild(row);
+            }
+
+            // Reset the add-item form for the next entry
+            document.getElementById('new-presale-name').value = '';
+            document.getElementById('new-presale-price').value = '';
+            document.getElementById('new-presale-unit').value = 'each';
+            document.getElementById('new-presale-min-qty').value = '1';
+            const descEl = document.getElementById('new-presale-description');
+            if (descEl) descEl.value = '';
+            const photoInput = document.getElementById('new-presale-photo-path');
+            if (photoInput) photoInput.value = '';
+
+            if (typeof showToast === 'function') showToast('Presale item added!');
         } else {
             alert(data.message || 'Error adding presale item.');
         }
