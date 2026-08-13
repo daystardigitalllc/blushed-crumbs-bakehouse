@@ -69,6 +69,24 @@ class ReviewPanel extends Component
         return $this->tenant()->onboardingAvailableThemes($this->draft()->basics['selected_plan'] ?? null);
     }
 
+    /**
+     * Every theme the tenant could ever pick (minus sweet_elegant's
+     * hardcoded Blushed Crumbs exclusivity), each flagged 'locked' when it's
+     * not in availableThemes() — i.e. Pro-only and this tenant isn't Pro.
+     * Free bakers see the full theme lineup instead of a filtered subset,
+     * so browsing what they're missing becomes a soft upsell, same pattern
+     * as the admin dashboard's Website Settings theme picker.
+     */
+    #[Computed]
+    public function themesForPicker(): array
+    {
+        $available = $this->availableThemes();
+
+        return collect($this->tenant()->getAvailableThemesForTenant())
+            ->map(fn ($theme) => $theme + ['locked' => !array_key_exists($theme['id'], $available)])
+            ->all();
+    }
+
     private function itemsOfType(string $type): Collection
     {
         return OnboardingDraftItem::where('draft_id', $this->draftId)

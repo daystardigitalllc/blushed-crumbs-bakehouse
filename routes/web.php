@@ -167,6 +167,7 @@ Route::middleware(['auth', 'tenant.owner'])->prefix('dashboard')->group(function
     Route::post('/gallery-categories', [AdminController::class, 'addGalleryCategory'])->name('admin.gallery.categories.store');
     Route::delete('/gallery-categories', [AdminController::class, 'removeGalleryCategory'])->name('admin.gallery.categories.destroy');
     Route::post('/form-builder', [AdminController::class, 'saveFormSchema'])->name('admin.form.schema.save');
+    Route::post('/form-builder/design', [AdminController::class, 'saveOrderFormDesign'])->name('admin.form.design.save');
     Route::post('/settings/booking', [AdminController::class, 'saveBookingSettings'])->name('admin.settings.booking.save');
     Route::post('/settings/presale', [AdminController::class, 'savePresaleSettings'])->name('admin.settings.presale.save');
     Route::post('/presale-items', [AdminController::class, 'storePresaleItem'])->name('admin.presale-items.store');

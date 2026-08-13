@@ -304,11 +304,6 @@
                                         <div class="gallery-card-img-wrap">
                                             <img src="{{ asset($fSrc) }}" alt="{{ $fImg['title'] ?? ($tenant->name . ' Featured Creation') }}" loading="lazy" decoding="async">
                                         </div>
-                                        @if(!empty($fImg['title']))
-                                            <div class="gallery-card-info">
-                                                <h4>{{ $fImg['title'] }}</h4>
-                                            </div>
-                                        @endif
                                     </div>
                                 @endif
                             @endforeach

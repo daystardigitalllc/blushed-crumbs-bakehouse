@@ -2,14 +2,21 @@
     <section class="ob-review-section">
         <h2>Theme</h2>
         <div class="ob-theme-grid">
-            @foreach ($this->availableThemes as $key => $theme)
+            @foreach ($this->themesForPicker as $theme)
                 <button
                     type="button"
-                    wire:key="theme-{{ $key }}"
-                    wire:click="changeTheme('{{ $key }}')"
-                    class="ob-theme-swatch {{ $this->draft->theme_id === $key ? 'ob-theme-swatch--selected' : '' }}"
+                    wire:key="theme-{{ $theme['id'] }}"
+                    @if($theme['locked'])
+                        onclick="alert('Upgrade to Pro ($29/mo) to unlock this premium theme!')"
+                    @else
+                        wire:click="changeTheme('{{ $theme['id'] }}')"
+                    @endif
+                    class="ob-theme-swatch {{ $this->draft->theme_id === $theme['id'] ? 'ob-theme-swatch--selected' : '' }} {{ $theme['locked'] ? 'ob-theme-swatch--locked' : '' }}"
                     style="background: {{ $theme['preview_bg'] }}; border-color: {{ $theme['preview_accent'] }};"
                 >
+                    @if($theme['locked'])
+                        <span class="ob-theme-lock-badge">🔒 Pro</span>
+                    @endif
                     <span style="color: {{ $theme['preview_accent'] }}">{{ $theme['name'] }}</span>
                 </button>
             @endforeach

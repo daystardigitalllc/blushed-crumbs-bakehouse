@@ -62,6 +62,7 @@ class Tenant extends Model implements TenancyContract
         'theme_id',
         'pending_pro_theme_id',
         'section_colors',
+        'order_form_design',
         'logo_path',
         'gallery_images',
         'gallery_categories',
@@ -91,6 +92,7 @@ class Tenant extends Model implements TenancyContract
         'site_content' => 'array',
         'section_settings' => 'array',
         'section_colors' => 'array',
+        'order_form_design' => 'array',
         'booking_settings' => 'array',
         'presale_settings' => 'array',
         'ai_generated_content' => 'array',
@@ -508,6 +510,46 @@ class Tenant extends Model implements TenancyContract
         }
 
         return $vars;
+    }
+
+    public function orderFormColors(): array
+    {
+        $defaults = [
+            'modal_bg' => '#ffffff',
+            'heading' => '#e67399',
+            'text' => '#4a2133',
+            'accent' => '#e67399',
+            'btn_bg' => '#e67399',
+            'btn_text' => '#ffffff',
+        ];
+
+        $palette = $this->themePaletteDefaults();
+        if (!empty($palette['bg'])) {
+            $defaults['modal_bg'] = '#ffffff';
+        }
+        if (!empty($palette['heading'])) {
+            $defaults['heading'] = $palette['heading'];
+            $defaults['text'] = $palette['text'] ?? $palette['heading'];
+        }
+        if (!empty($palette['button_bg'])) {
+            $defaults['accent'] = $palette['button_bg'];
+            $defaults['btn_bg'] = $palette['button_bg'];
+        }
+        if (!empty($palette['button_text'])) {
+            $defaults['btn_text'] = $palette['button_text'];
+        }
+
+        $overrides = $this->order_form_design['colors'] ?? [];
+        return array_merge($defaults, $overrides);
+    }
+
+    public function orderFormTypography(): array
+    {
+        $defaults = [
+            'font_family' => 'default',
+        ];
+        $overrides = $this->order_form_design['typography'] ?? [];
+        return array_merge($defaults, $overrides);
     }
 
     public function getOrderedSections()

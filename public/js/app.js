@@ -1962,6 +1962,11 @@ function initAdminPortal() {
                 </div>
             `;
         }).join('');
+
+        // Apply custom live preview design overrides
+        if (window.updateLivePreviewColors) window.updateLivePreviewColors();
+        const fontSelect = document.getElementById('form_font_family');
+        if (fontSelect && window.updateLivePreviewFont) window.updateLivePreviewFont(fontSelect.value);
     };
 
     // Save Form Schema to Server Endpoint (Silent Auto-Save background worker)
@@ -2962,6 +2967,51 @@ window.deletePresaleItem = async function(itemId, btnElement) {
         });
     }
 
+    // Add Customer Form (Customers tab)
+    const custForm = document.getElementById('add-customer-form');
+    if (custForm) {
+        custForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('cust-name');
+            const emailInput = document.getElementById('cust-email');
+            const phoneInput = document.getElementById('cust-phone');
+            const notesInput = document.getElementById('cust-notes');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+            fetch('/dashboard/customers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: nameInput.value,
+                    email: emailInput.value,
+                    phone: phoneInput.value,
+                    notes: notesInput.value,
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.customer) {
+                    addCustomerRow(data.customer);
+                    nameInput.value = '';
+                    emailInput.value = '';
+                    phoneInput.value = '';
+                    notesInput.value = '';
+                    if (window.showToast) window.showToast('Customer added!', 'success');
+                } else {
+                    alert(data.message || 'Could not add customer.');
+                }
+            })
+            .catch(err => {
+                console.error('Error adding customer:', err);
+                alert('An error occurred.');
+            });
+        });
+    }
+
     // Add Subscriber Form (Email Marketing tab)
     const subForm = document.getElementById('add-subscriber-form');
     if (subForm) {
@@ -3100,6 +3150,37 @@ function subscriberCountDelta(delta) {
     if (sendBtn) {
         sendBtn.textContent = `Send to ${next} Subscriber${next === 1 ? '' : 's'}`;
     }
+}
+
+function addCustomerRow(customer) {
+    const list = document.getElementById('admin-customers-list');
+    if (!list) return;
+
+    const emptyMsg = document.getElementById('no-customers-msg');
+    if (emptyMsg) emptyMsg.remove();
+
+    const row = document.createElement('div');
+    row.className = 'customer-item-row';
+    row.dataset.id = customer.id;
+    row.style.cssText = 'background:white; padding:14px 16px; border-radius:12px; border:1px solid var(--border-pink-subtle); box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap;';
+
+    const contact = [customer.email, customer.phone].filter(Boolean).join(' · ') || 'No contact info on file';
+    const totalSpent = parseFloat(customer.total_spent || 0).toFixed(2);
+    const orderCount = customer.order_count || 0;
+
+    row.innerHTML = `
+        <div>
+            <strong style="color:var(--admin-heading); font-size:0.98rem;"></strong>
+            <div style="font-size:0.8rem; color:var(--text-faint); margin-top:2px;"></div>
+        </div>
+        <div style="text-align:right;">
+            <div style="font-weight:800; color:var(--primary); font-size:1rem;">$${totalSpent}</div>
+            <div style="font-size:0.78rem; color:var(--text-faint);">${orderCount} order${orderCount === 1 ? '' : 's'}</div>
+        </div>
+    `;
+    row.querySelector('strong').textContent = customer.name;
+    row.querySelector('div > div').textContent = contact;
+    list.prepend(row);
 }
 
 function addSubscriberRows(subscribers) {
@@ -4207,3 +4288,142 @@ function submitInvoiceEdits(sendAfter) {
         });
     }
 }
+
+// --- Custom Order Form Design Colors & Typography ---
+window.updateLivePreviewColors = function() {
+    const form = document.getElementById('order-form-style-config');
+    if (!form) return;
+
+    const modalBg = form.querySelector('input[name="colors[modal_bg]"]')?.value || '#ffffff';
+    const heading = form.querySelector('input[name="colors[heading]"]')?.value || '#e67399';
+    const text = form.querySelector('input[name="colors[text]"]')?.value || '#4a2133';
+    const accent = form.querySelector('input[name="colors[accent]"]')?.value || '#e67399';
+    const btnBg = form.querySelector('input[name="colors[btn_bg]"]')?.value || '#e67399';
+    const btnText = form.querySelector('input[name="colors[btn_text]"]')?.value || '#ffffff';
+
+    let styleBlock = document.getElementById('phone-preview-style-overrides');
+    if (!styleBlock) {
+        styleBlock = document.createElement('style');
+        styleBlock.id = 'phone-preview-style-overrides';
+        document.head.appendChild(styleBlock);
+    }
+
+    styleBlock.innerHTML = `
+        /* Live Phone Preview Custom Styling Overrides */
+        .phone-screen-viewport {
+            background-color: ${modalBg} !important;
+        }
+        .phone-screen-viewport h2, 
+        .phone-screen-viewport h3, 
+        .phone-screen-viewport h5, 
+        .phone-screen-viewport strong:not(.preview-price),
+        .phone-screen-viewport span.template-tile-icon {
+            color: ${heading} !important;
+        }
+        .phone-screen-viewport p, 
+        .phone-screen-viewport span:not(.preview-price):not(.template-tile-icon), 
+        .phone-screen-viewport label {
+            color: ${text} !important;
+        }
+        .phone-screen-viewport .btn-primary, 
+        .phone-screen-viewport button,
+        .phone-screen-viewport .advance-btn {
+            background-color: ${btnBg} !important;
+            border-color: ${btnBg} !important;
+            color: ${btnText} !important;
+        }
+        .phone-screen-viewport .preview-product-tile,
+        .phone-screen-viewport .preview-chip {
+            border-color: ${accent}33 !important;
+        }
+        .phone-screen-viewport .preview-product-tile:hover,
+        .phone-screen-viewport .preview-chip:hover {
+            border-color: ${accent} !important;
+        }
+        /* Style active/selected item mockups */
+        .phone-screen-viewport .preview-price {
+            color: ${accent} !important;
+        }
+    `;
+};
+
+window.updateLivePreviewFont = function(fontName) {
+    let fontLink = document.getElementById('phone-preview-font-link');
+    let fontStyle = document.getElementById('phone-preview-font-style');
+    
+    if (fontName === 'default') {
+        if (fontLink) fontLink.remove();
+        if (fontStyle) fontStyle.remove();
+        const viewport = document.querySelector('.phone-screen-viewport');
+        if (viewport) viewport.style.fontFamily = "'Outfit', sans-serif";
+        return;
+    }
+
+    if (!fontLink) {
+        fontLink = document.createElement('link');
+        fontLink.id = 'phone-preview-font-link';
+        fontLink.rel = 'stylesheet';
+        document.head.appendChild(fontLink);
+    }
+
+    const fontUrlName = fontName.replace(/ /g, '+');
+    fontLink.href = `https://fonts.googleapis.com/css2?family=${fontUrlName}:wght@400;500;600;700;800&display=swap`;
+
+    if (!fontStyle) {
+        fontStyle = document.createElement('style');
+        fontStyle.id = 'phone-preview-font-style';
+        document.head.appendChild(fontStyle);
+    }
+    fontStyle.innerHTML = `
+        .phone-screen-viewport,
+        .phone-screen-viewport *,
+        .phone-screen-viewport h2,
+        .phone-screen-viewport h3,
+        .phone-screen-viewport h5,
+        .phone-screen-viewport strong,
+        .phone-screen-viewport p,
+        .phone-screen-viewport span,
+        .phone-screen-viewport label,
+        .phone-screen-viewport input,
+        .phone-screen-viewport select,
+        .phone-screen-viewport textarea {
+            font-family: '${fontName}', sans-serif !important;
+        }
+    `;
+};
+
+window.saveOrderFormDesign = function(e) {
+    if (e) e.preventDefault();
+    const form = document.getElementById('order-form-style-config');
+    if (!form) return;
+    const formData = new FormData(form);
+    const status = document.getElementById('form-design-save-status');
+
+    fetch('/dashboard/form-builder/design', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.showToast('Order form design styling saved live!', 'success');
+            if (status) {
+                status.style.display = 'inline';
+                setTimeout(() => { status.style.display = 'none'; }, 3000);
+            }
+            // Sync storefront previews
+            window.updateLivePreviewColors();
+            const fontSelect = document.getElementById('form_font_family');
+            if (fontSelect) window.updateLivePreviewFont(fontSelect.value);
+        } else {
+            window.showToast(data.message || 'Failed to save form design.', 'error');
+        }
+    })
+    .catch(err => {
+        window.showToast('Error saving design: ' + err.message, 'error');
+    });
+};

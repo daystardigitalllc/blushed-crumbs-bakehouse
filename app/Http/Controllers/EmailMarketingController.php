@@ -28,12 +28,20 @@ class EmailMarketingController extends Controller
         return auth()->user()?->tenant ?? Tenant::first();
     }
 
+    /**
+     * Only sending is Pro-gated — collection (add/import/remove
+     * subscribers) is free for every tenant so a baker builds a real list
+     * before she ever hits a paywall. Letting her watch that list grow with
+     * a locked "Send" button is a stronger upgrade prompt than hiding the
+     * whole feature: she's already invested the effort, and the value
+     * (an audience to email) is concrete and hers, not a generic pitch.
+     */
     private function requirePro(Tenant $tenant)
     {
         if ($tenant->plan_tier !== 'pro') {
             return response()->json([
                 'success' => false,
-                'message' => 'Email Marketing is available on Doughmain Pro only. Upgrade to Pro to build a subscriber list and send offers.',
+                'message' => 'Sending campaigns is available on Doughmain Pro only. Your subscriber list is yours to keep growing free — upgrade to Pro to actually send to it.',
             ], 403);
         }
 
@@ -43,9 +51,6 @@ class EmailMarketingController extends Controller
     public function storeSubscriber(Request $request)
     {
         $tenant = $this->tenant($request);
-        if ($blocked = $this->requirePro($tenant)) {
-            return $blocked;
-        }
 
         $validated = $request->validate([
             'email' => 'required|email|max:255',
@@ -63,9 +68,6 @@ class EmailMarketingController extends Controller
     public function destroySubscriber(Request $request, EmailSubscriber $subscriber)
     {
         $tenant = $this->tenant($request);
-        if ($blocked = $this->requirePro($tenant)) {
-            return $blocked;
-        }
 
         if ($subscriber->tenant_id !== $tenant->id) {
             abort(404);
@@ -84,9 +86,6 @@ class EmailMarketingController extends Controller
     public function importCustomers(Request $request)
     {
         $tenant = $this->tenant($request);
-        if ($blocked = $this->requirePro($tenant)) {
-            return $blocked;
-        }
 
         $customers = Customer::where('tenant_id', $tenant->id)
             ->whereNotNull('email')

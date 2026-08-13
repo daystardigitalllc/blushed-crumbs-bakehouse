@@ -109,6 +109,28 @@ class AdminController extends Controller
             ->count();
         $customerCount = Customer::where('tenant_id', $tenant->id)->count();
 
+        // Insights tab stats. Free tenants only ever see $thisMonthRevenue
+        // (the teaser) — the rest render behind a blurred/locked panel in
+        // the view. Deliberately only order/customer aggregates (revenue
+        // trend, repeat rate, average order value): `orders.items` is a
+        // freeform JSON cart shaped by each tenant's own custom form
+        // builder schema, not a real product_id relationship, so a
+        // "best-selling product" breakdown isn't reliably computable from
+        // it without risking wrong numbers on a paid feature.
+        $revenueStatuses = ['completed', 'in_progress', 'ready', 'paid'];
+        $thisMonthRevenue = Order::where('tenant_id', $tenant->id)
+            ->whereIn('status', $revenueStatuses)
+            ->whereBetween('created_at', [now()->startOfMonth(), now()])
+            ->sum('total_price');
+        $lastMonthRevenue = Order::where('tenant_id', $tenant->id)
+            ->whereIn('status', $revenueStatuses)
+            ->whereBetween('created_at', [now()->subMonthNoOverflow()->startOfMonth(), now()->subMonthNoOverflow()->endOfMonth()])
+            ->sum('total_price');
+        $completedOrderCount = Order::where('tenant_id', $tenant->id)->whereIn('status', $revenueStatuses)->count();
+        $avgOrderValue = $completedOrderCount > 0 ? $totalRevenue / $completedOrderCount : 0;
+        $repeatCustomerCount = Customer::where('tenant_id', $tenant->id)->where('order_count', '>', 1)->count();
+        $repeatCustomerRate = $customerCount > 0 ? round(($repeatCustomerCount / $customerCount) * 100) : 0;
+
         $serverBookingSettings = $tenant->booking_settings ?? [];
         $siteContent = $tenant->site_content ?? \App\Models\Tenant::getDefaultSiteContent();
 
@@ -177,7 +199,8 @@ class AdminController extends Controller
             'customers', 'totalRevenue', 'pendingOrders', 'customerCount',
             'serverBookingSettings', 'siteContent', 'emailSubscribers', 'emailCampaigns',
             'onboardingChecklist', 'onboardingComplete',
-            'latestOnboardingDraft', 'onboardingNeedsAttention'
+            'latestOnboardingDraft', 'onboardingNeedsAttention',
+            'thisMonthRevenue', 'lastMonthRevenue', 'avgOrderValue', 'repeatCustomerRate'
         ));
     }
 
@@ -195,6 +218,36 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'Form steps and layout saved live!',
             'schema' => $tenant->form_schema,
+        ]);
+    }
+
+    public function saveOrderFormDesign(Request $request)
+    {
+        $tenant = $this->tenant($request);
+        $request->validate([
+            'colors' => 'nullable|array',
+            'typography' => 'nullable|array',
+        ]);
+
+        $design = [
+            'colors' => $request->input('colors', []),
+            'typography' => $request->input('typography', []),
+        ];
+
+        // Clean & validate hex codes
+        foreach (($design['colors'] ?? []) as $slot => $val) {
+            if ($val && !preg_match('/^#[0-9A-Fa-f]{3,8}$/', $val)) {
+                unset($design['colors'][$slot]);
+            }
+        }
+
+        $tenant->order_form_design = $design;
+        $tenant->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order form styling saved live!',
+            'design' => $tenant->order_form_design,
         ]);
     }
 
@@ -1126,9 +1179,9 @@ class AdminController extends Controller
         $customer = Customer::create([
             'tenant_id' => $tenant->id,
             'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'notes' => $validated['notes'],
+            'email' => $validated['email'] ?? null,
+            'phone' => $validated['phone'] ?? null,
+            'notes' => $validated['notes'] ?? null,
         ]);
 
         return response()->json([

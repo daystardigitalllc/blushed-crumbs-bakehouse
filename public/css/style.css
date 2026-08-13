@@ -9,6 +9,25 @@
     --dark-text: #4a2133;
     --light-text: #666666;
     --card-shadow: 0 8px 30px rgba(74, 33, 51, 0.08);
+
+    /* Admin dashboard chrome tokens — Phase 1 of the admin design-token
+       extraction (dashboard.blade.php had ~150+ raw hex literals repeated
+       across ~4,000 lines instead of referencing shared values). The
+       muted-text/border/danger ones stay fixed regardless of theme —
+       neutral utility colors, not brand color. --admin-heading is the
+       exception: it's an alias for --dark-text (already redefined per
+       `body.theme-*`, see the "Admin dashboard, themed to match" block
+       below), completing that existing per-theme re-skin — the sidebar,
+       active nav tab, and page background already followed the tenant's
+       theme; headings across every tab's cards never did, purely because
+       they were hardcoded to one fixed plum instead of referencing the
+       same variable the rest of the admin chrome already uses. */
+    --admin-heading: var(--dark-text);
+    --text-faint: #888888;
+    --border-light: #dddddd;
+    --border-subtle: #eeeeee;
+    --border-pink-subtle: #f0e4ea;
+    --danger: #d9534f;
 }
 
 /* Google Fonts' official base rule for the Material Symbols ligature font
@@ -1264,6 +1283,119 @@ body.theme-modern_bakery .modern-grid .gallery-card-img-wrap {
         max-width: 300px;
         margin: 0 auto;
     }
+}
+
+/* ── Admin dashboard, themed to match (same approach as rustic_kitchen) ──
+   .admin-sidebar / .admin-nav-item.active / .admin-main-content already
+   read --theme-accent-bg / --primary / --theme-section-bg (set above), so
+   the sidebar, active nav tab, and page background re-skin automatically
+   for every tab. What's left is the form controls and cards each tab's
+   content actually uses, which are hard-coded pink/plum in the base admin
+   styles regardless of theme. Unlike rustic_kitchen/playful_treats (which
+   hardcode their own hex per rule), these reference the theme's own CSS
+   variables directly — same visual result, one fewer place for the two to
+   drift out of sync. --theme-card-bg is a translucent glass value here
+   (this theme's whole look), which reads poorly as a form-field/card
+   background, so those specifically use a solid white instead. */
+body.theme-modern_bakery .admin-mobile-header {
+    background: var(--dark-text) !important;
+}
+
+body.theme-modern_bakery .admin-main-content input[type="text"],
+body.theme-modern_bakery .admin-main-content input[type="number"],
+body.theme-modern_bakery .admin-main-content input[type="email"],
+body.theme-modern_bakery .admin-main-content input[type="tel"],
+body.theme-modern_bakery .admin-main-content input[type="url"],
+body.theme-modern_bakery .admin-main-content select,
+body.theme-modern_bakery .admin-main-content textarea {
+    border: 1.5px solid rgba(67, 56, 202, 0.45) !important;
+    background-color: #ffffff !important;
+    color: var(--dark-text) !important;
+}
+
+body.theme-modern_bakery .admin-main-content input:focus,
+body.theme-modern_bakery .admin-main-content select:focus,
+body.theme-modern_bakery .admin-main-content textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(67, 56, 202, 0.25) !important;
+    background-color: #ffffff !important;
+}
+
+body.theme-modern_bakery .admin-main-content label {
+    color: var(--dark-text) !important;
+}
+
+body.theme-modern_bakery .status-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.25);
+}
+
+body.theme-modern_bakery .btn-outline {
+    background: transparent !important;
+    border: 2px solid var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+body.theme-modern_bakery .btn-outline:hover {
+    background: var(--pink-bg) !important;
+}
+
+body.theme-modern_bakery .reorder-btn {
+    background: var(--pink-bg) !important;
+    border: 1px solid rgba(67, 56, 202, 0.45) !important;
+    color: var(--dark-text) !important;
+}
+
+body.theme-modern_bakery .reorder-btn:hover:not(:disabled) {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+}
+
+body.theme-modern_bakery .form-builder-card,
+body.theme-modern_bakery .order-card,
+body.theme-modern_bakery .add-review-box,
+body.theme-modern_bakery .payment-methods-card {
+    background: #ffffff !important;
+    border: 1px solid rgba(67, 56, 202, 0.45) !important;
+}
+
+body.theme-modern_bakery #tab-page-builder .form-builder-card {
+    border-color: var(--primary) !important;
+}
+
+body.theme-modern_bakery #tab-page-builder h4,
+body.theme-modern_bakery #tab-page-builder h6,
+body.theme-modern_bakery #tab-page-builder strong {
+    color: var(--dark-text) !important;
+}
+
+body.theme-modern_bakery #tab-page-builder .section-manager-row {
+    border-color: rgba(67, 56, 202, 0.45) !important;
+}
+
+body.theme-modern_bakery #tab-page-builder .section-accordion-header {
+    background: var(--pink-bg) !important;
+}
+
+body.theme-modern_bakery #tab-page-builder .section-accordion-body {
+    border-top-color: rgba(67, 56, 202, 0.45) !important;
+}
+
+body.theme-modern_bakery #tab-page-builder .drag-handle,
+body.theme-modern_bakery #tab-page-builder .accordion-arrow {
+    color: var(--primary) !important;
+}
+
+body.theme-modern_bakery #tab-page-builder [style*="border:1px solid #eee"] {
+    background: var(--pink-bg) !important;
+    border-color: rgba(67, 56, 202, 0.45) !important;
+}
+
+body.theme-modern_bakery #section-manager-msg {
+    background: var(--pink-bg) !important;
+    color: var(--dark-text) !important;
+    border-color: rgba(67, 56, 202, 0.45) !important;
 }
 
 /* 4. 🧁 PLAYFUL TREATS THEME — "Pastry Corner" reference site
@@ -2722,6 +2854,117 @@ body.theme-country_farmhouse .farmhouse-grid .gallery-card-img-wrap {
     }
 }
 
+/* ── Admin dashboard, themed to match (same approach as rustic_kitchen) ──
+   .admin-sidebar / .admin-nav-item.active / .admin-main-content already
+   read --theme-accent-bg / --primary / --theme-section-bg (set above), so
+   the sidebar, active nav tab, and page background re-skin automatically
+   for every tab. What's left is the form controls and cards each tab's
+   content actually uses, which are hard-coded pink/plum in the base admin
+   styles regardless of theme. Unlike rustic_kitchen/playful_treats (which
+   hardcode their own hex per rule), these reference the theme's own CSS
+   variables directly — same visual result, one fewer place for the two to
+   drift out of sync. */
+body.theme-country_farmhouse .admin-mobile-header {
+    background: var(--dark-text) !important;
+}
+
+body.theme-country_farmhouse .admin-main-content input[type="text"],
+body.theme-country_farmhouse .admin-main-content input[type="number"],
+body.theme-country_farmhouse .admin-main-content input[type="email"],
+body.theme-country_farmhouse .admin-main-content input[type="tel"],
+body.theme-country_farmhouse .admin-main-content input[type="url"],
+body.theme-country_farmhouse .admin-main-content select,
+body.theme-country_farmhouse .admin-main-content textarea {
+    border: 1.5px solid rgba(193, 129, 10, 0.45) !important;
+    background-color: var(--theme-card-bg) !important;
+    color: var(--dark-text) !important;
+}
+
+body.theme-country_farmhouse .admin-main-content input:focus,
+body.theme-country_farmhouse .admin-main-content select:focus,
+body.theme-country_farmhouse .admin-main-content textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(193, 129, 10, 0.25) !important;
+    background-color: var(--theme-card-bg) !important;
+}
+
+body.theme-country_farmhouse .admin-main-content label {
+    color: var(--dark-text) !important;
+}
+
+body.theme-country_farmhouse .status-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(193, 129, 10, 0.25);
+}
+
+body.theme-country_farmhouse .btn-outline {
+    background: transparent !important;
+    border: 2px solid var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+body.theme-country_farmhouse .btn-outline:hover {
+    background: var(--pink-bg) !important;
+}
+
+body.theme-country_farmhouse .reorder-btn {
+    background: var(--pink-bg) !important;
+    border: 1px solid rgba(193, 129, 10, 0.45) !important;
+    color: var(--dark-text) !important;
+}
+
+body.theme-country_farmhouse .reorder-btn:hover:not(:disabled) {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+}
+
+body.theme-country_farmhouse .form-builder-card,
+body.theme-country_farmhouse .order-card,
+body.theme-country_farmhouse .add-review-box,
+body.theme-country_farmhouse .payment-methods-card {
+    background: var(--theme-card-bg) !important;
+    border: 1px solid rgba(193, 129, 10, 0.45) !important;
+}
+
+body.theme-country_farmhouse #tab-page-builder .form-builder-card {
+    border-color: var(--primary) !important;
+}
+
+body.theme-country_farmhouse #tab-page-builder h4,
+body.theme-country_farmhouse #tab-page-builder h6,
+body.theme-country_farmhouse #tab-page-builder strong {
+    color: var(--dark-text) !important;
+}
+
+body.theme-country_farmhouse #tab-page-builder .section-manager-row {
+    border-color: rgba(193, 129, 10, 0.45) !important;
+}
+
+body.theme-country_farmhouse #tab-page-builder .section-accordion-header {
+    background: var(--pink-bg) !important;
+}
+
+body.theme-country_farmhouse #tab-page-builder .section-accordion-body {
+    border-top-color: rgba(193, 129, 10, 0.45) !important;
+}
+
+body.theme-country_farmhouse #tab-page-builder .drag-handle,
+body.theme-country_farmhouse #tab-page-builder .accordion-arrow {
+    color: var(--primary) !important;
+}
+
+body.theme-country_farmhouse #tab-page-builder [style*="border:1px solid #eee"] {
+    background: var(--pink-bg) !important;
+    border-color: rgba(193, 129, 10, 0.45) !important;
+}
+
+body.theme-country_farmhouse #section-manager-msg {
+    background: var(--pink-bg) !important;
+    color: var(--dark-text) !important;
+    border-color: rgba(193, 129, 10, 0.45) !important;
+}
+
 /* 6. 🌸 PETAL & CRUMB THEME — dusty mauve & cream, romantic serif,
    floating rounded cards. Pro tier (see Tenant::getStarterThemes()). */
 body.theme-artisan_sourdough {
@@ -3252,6 +3495,117 @@ body.theme-artisan_sourdough .petal-ingredient-row p {
         max-width: 320px;
         margin: 0 auto;
     }
+}
+
+/* ── Admin dashboard, themed to match (same approach as rustic_kitchen) ──
+   .admin-sidebar / .admin-nav-item.active / .admin-main-content already
+   read --theme-accent-bg / --primary / --theme-section-bg (set above), so
+   the sidebar, active nav tab, and page background re-skin automatically
+   for every tab. What's left is the form controls and cards each tab's
+   content actually uses, which are hard-coded pink/plum in the base admin
+   styles regardless of theme. Unlike rustic_kitchen/playful_treats (which
+   hardcode their own hex per rule), these reference the theme's own CSS
+   variables directly — same visual result, one fewer place for the two to
+   drift out of sync. */
+body.theme-artisan_sourdough .admin-mobile-header {
+    background: var(--dark-text) !important;
+}
+
+body.theme-artisan_sourdough .admin-main-content input[type="text"],
+body.theme-artisan_sourdough .admin-main-content input[type="number"],
+body.theme-artisan_sourdough .admin-main-content input[type="email"],
+body.theme-artisan_sourdough .admin-main-content input[type="tel"],
+body.theme-artisan_sourdough .admin-main-content input[type="url"],
+body.theme-artisan_sourdough .admin-main-content select,
+body.theme-artisan_sourdough .admin-main-content textarea {
+    border: 1.5px solid rgba(139, 90, 69, 0.45) !important;
+    background-color: var(--theme-card-bg) !important;
+    color: var(--dark-text) !important;
+}
+
+body.theme-artisan_sourdough .admin-main-content input:focus,
+body.theme-artisan_sourdough .admin-main-content select:focus,
+body.theme-artisan_sourdough .admin-main-content textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(139, 90, 69, 0.25) !important;
+    background-color: var(--theme-card-bg) !important;
+}
+
+body.theme-artisan_sourdough .admin-main-content label {
+    color: var(--dark-text) !important;
+}
+
+body.theme-artisan_sourdough .status-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(139, 90, 69, 0.25);
+}
+
+body.theme-artisan_sourdough .btn-outline {
+    background: transparent !important;
+    border: 2px solid var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+body.theme-artisan_sourdough .btn-outline:hover {
+    background: var(--pink-bg) !important;
+}
+
+body.theme-artisan_sourdough .reorder-btn {
+    background: var(--pink-bg) !important;
+    border: 1px solid rgba(139, 90, 69, 0.45) !important;
+    color: var(--dark-text) !important;
+}
+
+body.theme-artisan_sourdough .reorder-btn:hover:not(:disabled) {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+}
+
+body.theme-artisan_sourdough .form-builder-card,
+body.theme-artisan_sourdough .order-card,
+body.theme-artisan_sourdough .add-review-box,
+body.theme-artisan_sourdough .payment-methods-card {
+    background: var(--theme-card-bg) !important;
+    border: 1px solid rgba(139, 90, 69, 0.45) !important;
+}
+
+body.theme-artisan_sourdough #tab-page-builder .form-builder-card {
+    border-color: var(--primary) !important;
+}
+
+body.theme-artisan_sourdough #tab-page-builder h4,
+body.theme-artisan_sourdough #tab-page-builder h6,
+body.theme-artisan_sourdough #tab-page-builder strong {
+    color: var(--dark-text) !important;
+}
+
+body.theme-artisan_sourdough #tab-page-builder .section-manager-row {
+    border-color: rgba(139, 90, 69, 0.45) !important;
+}
+
+body.theme-artisan_sourdough #tab-page-builder .section-accordion-header {
+    background: var(--pink-bg) !important;
+}
+
+body.theme-artisan_sourdough #tab-page-builder .section-accordion-body {
+    border-top-color: rgba(139, 90, 69, 0.45) !important;
+}
+
+body.theme-artisan_sourdough #tab-page-builder .drag-handle,
+body.theme-artisan_sourdough #tab-page-builder .accordion-arrow {
+    color: var(--primary) !important;
+}
+
+body.theme-artisan_sourdough #tab-page-builder [style*="border:1px solid #eee"] {
+    background: var(--pink-bg) !important;
+    border-color: rgba(139, 90, 69, 0.45) !important;
+}
+
+body.theme-artisan_sourdough #section-manager-msg {
+    background: var(--pink-bg) !important;
+    color: var(--dark-text) !important;
+    border-color: rgba(139, 90, 69, 0.45) !important;
 }
 
 /* 7. 🌙 MIDNIGHT BAKEHOUSE THEME — deep navy & brushed gold, elegant
@@ -3885,6 +4239,117 @@ body.theme-clean_minimal .midnight-ingredient-row p {
     body.theme-clean_minimal .midnight-process-card {
         padding: 40px 25px;
     }
+}
+
+/* ── Admin dashboard, themed to match (same approach as rustic_kitchen) ──
+   .admin-sidebar / .admin-nav-item.active / .admin-main-content already
+   read --theme-accent-bg / --primary / --theme-section-bg (set above), so
+   the sidebar, active nav tab, and page background re-skin automatically
+   for every tab. What's left is the form controls and cards each tab's
+   content actually uses, which are hard-coded pink/plum in the base admin
+   styles regardless of theme. Unlike rustic_kitchen/playful_treats (which
+   hardcode their own hex per rule), these reference the theme's own CSS
+   variables directly — same visual result, one fewer place for the two to
+   drift out of sync. */
+body.theme-clean_minimal .admin-mobile-header {
+    background: var(--dark-text) !important;
+}
+
+body.theme-clean_minimal .admin-main-content input[type="text"],
+body.theme-clean_minimal .admin-main-content input[type="number"],
+body.theme-clean_minimal .admin-main-content input[type="email"],
+body.theme-clean_minimal .admin-main-content input[type="tel"],
+body.theme-clean_minimal .admin-main-content input[type="url"],
+body.theme-clean_minimal .admin-main-content select,
+body.theme-clean_minimal .admin-main-content textarea {
+    border: 1.5px solid rgba(184, 147, 90, 0.45) !important;
+    background-color: var(--theme-card-bg) !important;
+    color: var(--dark-text) !important;
+}
+
+body.theme-clean_minimal .admin-main-content input:focus,
+body.theme-clean_minimal .admin-main-content select:focus,
+body.theme-clean_minimal .admin-main-content textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(184, 147, 90, 0.25) !important;
+    background-color: var(--theme-card-bg) !important;
+}
+
+body.theme-clean_minimal .admin-main-content label {
+    color: var(--dark-text) !important;
+}
+
+body.theme-clean_minimal .status-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(184, 147, 90, 0.25);
+}
+
+body.theme-clean_minimal .btn-outline {
+    background: transparent !important;
+    border: 2px solid var(--primary) !important;
+    color: var(--primary) !important;
+}
+
+body.theme-clean_minimal .btn-outline:hover {
+    background: var(--pink-bg) !important;
+}
+
+body.theme-clean_minimal .reorder-btn {
+    background: var(--pink-bg) !important;
+    border: 1px solid rgba(184, 147, 90, 0.45) !important;
+    color: var(--dark-text) !important;
+}
+
+body.theme-clean_minimal .reorder-btn:hover:not(:disabled) {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+}
+
+body.theme-clean_minimal .form-builder-card,
+body.theme-clean_minimal .order-card,
+body.theme-clean_minimal .add-review-box,
+body.theme-clean_minimal .payment-methods-card {
+    background: var(--theme-card-bg) !important;
+    border: 1px solid rgba(184, 147, 90, 0.45) !important;
+}
+
+body.theme-clean_minimal #tab-page-builder .form-builder-card {
+    border-color: var(--primary) !important;
+}
+
+body.theme-clean_minimal #tab-page-builder h4,
+body.theme-clean_minimal #tab-page-builder h6,
+body.theme-clean_minimal #tab-page-builder strong {
+    color: var(--dark-text) !important;
+}
+
+body.theme-clean_minimal #tab-page-builder .section-manager-row {
+    border-color: rgba(184, 147, 90, 0.45) !important;
+}
+
+body.theme-clean_minimal #tab-page-builder .section-accordion-header {
+    background: var(--pink-bg) !important;
+}
+
+body.theme-clean_minimal #tab-page-builder .section-accordion-body {
+    border-top-color: rgba(184, 147, 90, 0.45) !important;
+}
+
+body.theme-clean_minimal #tab-page-builder .drag-handle,
+body.theme-clean_minimal #tab-page-builder .accordion-arrow {
+    color: var(--primary) !important;
+}
+
+body.theme-clean_minimal #tab-page-builder [style*="border:1px solid #eee"] {
+    background: var(--pink-bg) !important;
+    border-color: rgba(184, 147, 90, 0.45) !important;
+}
+
+body.theme-clean_minimal #section-manager-msg {
+    background: var(--pink-bg) !important;
+    color: var(--dark-text) !important;
+    border-color: rgba(184, 147, 90, 0.45) !important;
 }
 
 /* 8. ☀️ SUNNY WHISK THEME — playful diagonal color-block layout: sky blue,

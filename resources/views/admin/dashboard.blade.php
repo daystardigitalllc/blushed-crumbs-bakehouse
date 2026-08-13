@@ -120,8 +120,13 @@
             @endunless
 
             <nav class="admin-sidebar-nav" style="gap: 5px;">
+                <button class="admin-nav-item active" data-tab="tab-overview">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Overview</span>
+                </button>
+
                 <div class="sidebar-category-title">Operations</div>
-                <button class="admin-nav-item active" data-tab="tab-orders">
+                <button class="admin-nav-item" data-tab="tab-orders">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path></svg>
                     <span>Orders</span>
                     @if($newInquiriesCount > 0)<span class="nav-inquiries-badge">{{ $newInquiriesCount }}</span>@endif
@@ -129,6 +134,10 @@
                 <button class="admin-nav-item" data-tab="tab-invoices">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                     <span>Invoices &amp; Payments</span>
+                </button>
+                <button class="admin-nav-item" data-tab="tab-customers">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Customers</span>
                 </button>
                 <button class="admin-nav-item" data-tab="tab-calendar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -159,6 +168,13 @@
                 </button>
 
                 <div class="sidebar-category-title" style="margin-top: 14px;">Growth &amp; Engagement</div>
+                <button class="admin-nav-item" data-tab="tab-insights">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M3 3v18h18"></path><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path></svg>
+                    <span>Insights</span>
+                    @if(($tenant->plan_tier ?? 'free') !== 'pro')
+                        <span style="font-size:0.62rem; font-weight:800; background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:10px; margin-left:auto;">PRO</span>
+                    @endif
+                </button>
                 <button class="admin-nav-item" data-tab="tab-reviews">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                     <span>Client Reviews</span>
@@ -167,7 +183,8 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                     <span>Email Marketing</span>
                     @if(($tenant->plan_tier ?? 'free') !== 'pro')
-                        <span style="font-size:0.62rem; font-weight:800; background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:10px; margin-left:auto;">PRO</span>
+                        {{-- Collection is free; only sending needs Pro — badge reflects that, not a full lock --}}
+                        <span style="font-size:0.62rem; font-weight:800; background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:10px; margin-left:auto;">SEND: PRO</span>
                     @endif
                 </button>
 
@@ -205,7 +222,69 @@
                 </div>
             @endif
             <!-- TAB 1: Orders -->
-            <div id="tab-orders" class="tab-content active">
+            <!-- TAB: Overview — the new default landing view. Pulls from data
+                 every other tab already computes ($urgentOrders, $thisMonthRevenue,
+                 $pendingOrders, $customerCount, $newInquiriesCount) rather than
+                 querying anything fresh, so a baker sees "how is my bakery doing
+                 right now" the moment they log in instead of jumping straight
+                 into the Orders list with no context. -->
+            <div id="tab-overview" class="tab-content active">
+                <div class="section-header">
+                    <h3>Welcome back{{ $tenant->name ? ', ' . $tenant->name : '' }}</h3>
+                    <p class="subtitle">Here's how things are looking today.</p>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px; margin-bottom:25px;">
+                    <div class="form-builder-card" style="text-align:center;">
+                        <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">This Month's Revenue</p>
+                        <p style="font-size:1.7rem; font-weight:800; color:var(--primary); margin:0;">${{ number_format($thisMonthRevenue, 2) }}</p>
+                    </div>
+                    <div class="form-builder-card" style="text-align:center; cursor:pointer;" onclick="window.switchDashboardTab('tab-orders')">
+                        <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">New Inquiries</p>
+                        <p style="font-size:1.7rem; font-weight:800; color:{{ $newInquiriesCount > 0 ? '#ef4444' : 'var(--admin-heading)' }}; margin:0;">{{ $newInquiriesCount }}</p>
+                    </div>
+                    <div class="form-builder-card" style="text-align:center; cursor:pointer;" onclick="window.switchDashboardTab('tab-orders')">
+                        <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">Pending Orders</p>
+                        <p style="font-size:1.7rem; font-weight:800; color:var(--admin-heading); margin:0;">{{ $pendingOrders }}</p>
+                    </div>
+                    <div class="form-builder-card" style="text-align:center; cursor:pointer;" onclick="window.switchDashboardTab('tab-customers')">
+                        <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">Total Customers</p>
+                        <p style="font-size:1.7rem; font-weight:800; color:var(--admin-heading); margin:0;">{{ $customerCount }}</p>
+                    </div>
+                </div>
+
+                <div class="form-builder-card" style="margin-bottom:25px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                        <h4 style="color:var(--admin-heading); margin:0;">Needs Your Attention</h4>
+                        @if($urgentOrders->count() > 5)
+                            <button type="button" class="btn btn-outline btn-sm" onclick="window.switchDashboardTab('tab-orders')">View All ({{ $urgentOrders->count() }})</button>
+                        @endif
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        @forelse($urgentOrders->take(5) as $order)
+                            <div style="background:var(--theme-card-bg, #fff); padding:12px 16px; border-radius:10px; border:1px solid var(--border-pink-subtle); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; cursor:pointer;" onclick="window.switchDashboardTab('tab-orders')">
+                                <div>
+                                    <strong style="font-size:0.92rem; color:var(--admin-heading);">{{ $order->client_name }}</strong>
+                                    <div style="font-size:0.78rem; color:var(--text-faint);">Due {{ $order->due_date?->format('M j, Y') ?? 'no date set' }} — #{{ $order->order_number }}</div>
+                                </div>
+                                <span style="font-size:0.78rem; font-weight:700; padding:4px 10px; border-radius:12px; background:var(--pink-bg); color:var(--admin-heading); text-transform:capitalize;">{{ str_replace('_', ' ', $order->status) }}</span>
+                            </div>
+                        @empty
+                            <p style="color:var(--text-faint); text-align:center; padding:20px;">Nothing urgent right now — you're all caught up.</p>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div class="form-builder-card" style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+                    <div>
+                        <h4 style="color:var(--admin-heading); margin:0 0 4px;">Want the full picture?</h4>
+                        <p style="font-size:0.85rem; color:var(--text-faint); margin:0;">Revenue trends, average order value, and repeat customer rate live in Insights.</p>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="window.switchDashboardTab('tab-insights')">Go to Insights</button>
+                </div>
+            </div>
+
+            <div id="tab-orders" class="tab-content">
                 <style>
                     /* --- Dashboard UI/UX Optimizations --- */
                     .collapsible-card {
@@ -474,7 +553,7 @@
                         margin: 0;
                         font-size: 1.05rem;
                         font-weight: 700;
-                        color: #5c1d37;
+                        color: var(--admin-heading);
                     }
                     .oc-header-bottomrow {
                         display: flex;
@@ -847,7 +926,7 @@
                                             </span>
                                         </div>
                                         
-                                        <h5 style="margin:0 0 6px 0; font-size:0.95rem; font-weight:700; color:#5c1d37;">{{ $order->client_name }}</h5>
+                                        <h5 style="margin:0 0 6px 0; font-size:0.95rem; font-weight:700; color:var(--admin-heading);">{{ $order->client_name }}</h5>
                                         
                                         @if($order->allergies)
                                             <span style="display:inline-block; font-size:0.68rem; font-weight:700; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; margin-bottom:8px; border:1px solid #fca5a5;">⚠️ ALLERGIES</span>
@@ -1201,7 +1280,7 @@
 
                         content.innerHTML = `
                             <div class="due-badge ${order.isUrgent ? 'due-urgent' : 'due-normal'}" style="margin-bottom:10px;">DUE: ${esc(order.dueDateFormatted)} (${esc(order.timeSlot)})</div>
-                            <h4 style="margin:0 0 10px; font-size:1.15rem; font-weight:700; color:#5c1d37;">#${esc(order.orderNumber)} - ${esc(order.clientName)}</h4>
+                            <h4 style="margin:0 0 10px; font-size:1.15rem; font-weight:700; color:var(--admin-heading);">#${esc(order.orderNumber)} - ${esc(order.clientName)}</h4>
                             <p><strong>Phone:</strong> ${esc(order.clientPhone)} | <strong>Email:</strong> ${esc(order.clientEmail)}</p>
                             <p><strong>Fulfillment:</strong> ${esc((order.fulfillmentType || '').toUpperCase())} ${order.deliveryAddress ? '(' + esc(order.deliveryAddress) + ')' : ''}</p>
                             ${order.items && order.items.length ? `<div style="margin-top:12px;"><strong style="display:block; margin-bottom:6px; font-size:0.85rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em;">Order Items</strong>${order.items.map(i => `<p style="font-size:1.1rem; color:#1e293b; margin:2px 0;">${esc(i)}</p>`).join('')}</div>` : ''}
@@ -1356,11 +1435,11 @@
 
                         <!-- ADD STEP / FIELD CARD -->
                         <div class="form-builder-card" style="margin-bottom: 0;">
-                            <h4 style="color:#5c1d37; margin-bottom: 6px;">Add Step or Field</h4>
-                            <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Add custom steps to gather flavors, details, or choices on your storefront order form.</p>
+                            <h4 style="color:var(--admin-heading); margin-bottom: 6px;">Add Step or Field</h4>
+                            <p style="font-size:0.85rem; color:var(--light-text); margin-bottom:15px;">Add custom steps to gather flavors, details, or choices on your storefront order form.</p>
                             <form id="add-field-form" class="form-builder-grid">
                                 <div style="grid-column: 1 / -1;">
-                                    <label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:10px;">Select Field Template</label>
+                                    <label style="font-weight:700; color:var(--admin-heading); display:block; margin-bottom:10px;">Select Field Template</label>
                                     
                                     <!-- Hidden select input backing the builder state -->
                                     <select id="field-type" onchange="toggleOptionsRow(this.value)" style="display:none;">
@@ -1383,7 +1462,7 @@
                                     </select>
                                     
                                     <!-- Visual Grid Selector Tiles -->
-                                    <div class="template-selector-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; max-height: 230px; overflow-y: auto; padding: 6px; border: 1px solid #f0e4ea; border-radius: 14px; background: #faf8f9; -webkit-overflow-scrolling: touch;">
+                                    <div class="template-selector-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; max-height: 230px; overflow-y: auto; padding: 6px; border: 1px solid var(--border-pink-subtle); border-radius: 14px; background: #faf8f9; -webkit-overflow-scrolling: touch;">
                                         <div class="template-tile selected-tile" data-type="products" onclick="selectTemplateTile('products')">
                                             <span class="template-tile-icon">🧁</span>
                                             <span class="template-tile-label">Product Catalog</span>
@@ -1459,9 +1538,9 @@
                                     <textarea id="field-description" placeholder="e.g. Select all options that apply... (for Terms & Conditions steps, add the actual policy text afterward using the Edit Policy Text button below)" style="width:100%; height:80px; padding:9px; border-radius:8px; border:1px solid #ccc; font-family:inherit;"></textarea>
                                 </div>
                                 <div id="field-options-row" style="grid-column: 1 / -1; margin-top: 10px;">
-                                    <label style="font-weight:700; color:#5c1d37; display:block; margin-bottom:8px;">
+                                    <label style="font-weight:700; color:var(--admin-heading); display:block; margin-bottom:8px;">
                                         Step Options &amp; Extra Charges
-                                        <span style="font-weight:500; font-size:0.85rem; color:#888;">(Separate inputs for option names and optional extra charges)</span>
+                                        <span style="font-weight:500; font-size:0.85rem; color:var(--text-faint);">(Separate inputs for option names and optional extra charges)</span>
                                     </label>
                                     
                                     <!-- Dynamic Option Rows Container -->
@@ -1481,12 +1560,72 @@
                             </form>
                         </div>
 
+                        <!-- ORDER FORM STYLING & TYPOGRAPHY CARD -->
+                        <div class="form-builder-card" style="margin-bottom: 0;">
+                            <h4 style="color:var(--admin-heading); margin-bottom: 6px;">Form Styling &amp; Typography</h4>
+                            <p style="font-size:0.85rem; color:var(--light-text); margin-bottom:15px;">Customize the colors and typography of your storefront order form to match your bakery brand.</p>
+                            
+                            @php
+                                $formColors = $tenant->orderFormColors();
+                                $formTypo = $tenant->orderFormTypography();
+                            @endphp
+
+                            <form id="order-form-style-config" onsubmit="saveOrderFormDesign(event)">
+                                @csrf
+                                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:16px;">
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Modal Background</label>
+                                        <input type="color" name="colors[modal_bg]" value="{{ $formColors['modal_bg'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Heading / Titles</label>
+                                        <input type="color" name="colors[heading]" value="{{ $formColors['heading'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Primary Text</label>
+                                        <input type="color" name="colors[text]" value="{{ $formColors['text'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Interactive Accent</label>
+                                        <input type="color" name="colors[accent]" value="{{ $formColors['accent'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Button Background</label>
+                                        <input type="color" name="colors[btn_bg]" value="{{ $formColors['btn_bg'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                    <div>
+                                        <label style="font-weight:600; font-size:0.78rem; color:#555; display:block; margin-bottom:4px;">Button Text</label>
+                                        <input type="color" name="colors[btn_text]" value="{{ $formColors['btn_text'] }}" onchange="updateLivePreviewColors()" style="width:100%; height:36px; border-radius:6px; border:1px solid #ccc; cursor:pointer;">
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom:16px;">
+                                    <label style="font-weight:600; font-size:0.82rem; color:#555; display:block; margin-bottom:6px;">Order Form Font (Typography)</label>
+                                    <select name="typography[font_family]" id="form_font_family" onchange="updateLivePreviewFont(this.value)" style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;">
+                                        <option value="default" {{ $formTypo['font_family'] === 'default' ? 'selected' : '' }}>Theme Default Font</option>
+                                        <option value="Inter" {{ $formTypo['font_family'] === 'Inter' ? 'selected' : '' }}>Inter (Sleek Sans-serif)</option>
+                                        <option value="Poppins" {{ $formTypo['font_family'] === 'Poppins' ? 'selected' : '' }}>Poppins (Friendly Sans-serif)</option>
+                                        <option value="Playfair Display" {{ $formTypo['font_family'] === 'Playfair Display' ? 'selected' : '' }}>Playfair Display (Elegant Serif)</option>
+                                        <option value="Oswald" {{ $formTypo['font_family'] === 'Oswald' ? 'selected' : '' }}>Oswald (Bold Headline)</option>
+                                        <option value="Great Vibes" {{ $formTypo['font_family'] === 'Great Vibes' ? 'selected' : '' }}>Great Vibes (Fancy Script)</option>
+                                        <option value="Fredoka" {{ $formTypo['font_family'] === 'Fredoka' ? 'selected' : '' }}>Fredoka (Rounded &amp; Whimsical)</option>
+                                        <option value="Fraunces" {{ $formTypo['font_family'] === 'Fraunces' ? 'selected' : '' }}>Fraunces (Vintage Serif)</option>
+                                    </select>
+                                </div>
+
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <button type="submit" class="btn btn-primary" style="padding:10px 24px; font-weight:700;">Save Form Design</button>
+                                    <span id="form-design-save-status" style="font-size:0.85rem; font-weight:600; color:#059669; display:none;">Styling saved live!</span>
+                                </div>
+                            </form>
+                        </div>
+
                         <!-- LIVE FIELDS TABLE WITH REORDER & SAVE -->
                         <div class="form-builder-card" style="margin-bottom: 0;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
                                 <div>
-                                    <h4 style="margin-bottom:4px; color:#5c1d37;">Configured Form Steps &amp; Fields</h4>
-                                    <span style="font-size:0.85rem; color:#888; font-weight:500;">Drag rows, or use the arrows, to reorder steps.</span>
+                                    <h4 style="margin-bottom:4px; color:var(--admin-heading);">Configured Form Steps &amp; Fields</h4>
+                                    <span style="font-size:0.85rem; color:var(--text-faint); font-weight:500;">Drag rows, or use the arrows, to reorder steps.</span>
                                 </div>
                                 <div style="display:flex; align-items:center; gap:8px; background:#f0fdf4; border:1px solid #bbf7d0; padding:6px 14px; border-radius:20px; transition: all 0.3s ease;" id="autosave-indicator">
                                     <span style="font-size:0.75rem; color:#15803d; font-weight:800; display:flex; align-items:center; gap:6px;">
@@ -1498,7 +1637,7 @@
 
                             <div class="field-table-wrapper" style="border: none; background: transparent; padding: 0; box-shadow: none;">
                                 <div id="custom-fields-cards-container" style="display:flex; flex-direction:column; gap:14px;">
-                                    <div style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem; background:#fff; border-radius:12px; border:1px dashed #f0e4ea;">
+                                    <div style="text-align:center; padding:32px; color:#aaa; font-size:0.95rem; background:#fff; border-radius:12px; border:1px dashed var(--border-pink-subtle);">
                                         Loading configured form steps…
                                     </div>
                                 </div>
@@ -1510,7 +1649,7 @@
                     <div class="form-builder-right-col" style="position: sticky; top: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%;">
                         
                         <div style="width:100%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                            <div style="font-weight: 700; font-size: 0.85rem; color: #5c1d37; text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
+                            <div style="font-weight: 700; font-size: 0.85rem; color: var(--admin-heading); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 8px;">
                                 <span>Storefront Form Preview</span>
                                 <span style="background: #e67399; color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; text-transform: none; font-weight: 800;">Real-Time</span>
                             </div>
@@ -1531,8 +1670,8 @@
                             <div class="phone-screen-viewport" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 32px 16px 24px 16px; background: #fff5f8; font-family: 'Outfit', sans-serif;">
                                 <!-- Storefront Header mockup -->
                                 <div style="text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(230,115,153,0.15); padding-bottom: 12px;">
-                                    <h5 style="font-family: 'Great Vibes', cursive; font-size: 1.8rem; color: #5c1d37; margin: 0;">{{ $tenant->name }}</h5>
-                                    <span style="font-size: 0.7rem; color: #888;">Storefront Order Form</span>
+                                    <h5 style="font-family: 'Great Vibes', cursive; font-size: 1.8rem; color: var(--admin-heading); margin: 0;">{{ $tenant->name }}</h5>
+                                    <span style="font-size: 0.7rem; color: var(--text-faint);">Storefront Order Form</span>
                                 </div>
 
                                 <!-- Live Interactive Preview Content -->
@@ -1542,13 +1681,13 @@
                             </div>
 
                             <!-- Home Bar -->
-                            <div class="order-form-preview-home-bar" style="height: 15px; background: #ffffff; display: flex; justify-content: center; align-items: center; border-top: 1px solid #eee;">
+                            <div class="order-form-preview-home-bar" style="height: 15px; background: #ffffff; display: flex; justify-content: center; align-items: center; border-top: 1px solid var(--border-subtle);">
                                 <div style="width: 80px; height: 4px; background: #ccc; border-radius: 10px;"></div>
                             </div>
                         </div>
 
                         <!-- Quick guide -->
-                        <span style="font-size: 0.78rem; color: #888; text-align: center; max-width: 280px; line-height: 1.4;">
+                        <span style="font-size: 0.78rem; color: var(--text-faint); text-align: center; max-width: 280px; line-height: 1.4;">
                             Changes made to steps on the left will immediately sync inside this storefront preview mockup.
                         </span>
                     </div>
@@ -1637,9 +1776,9 @@
                                     </div>
 
                                     <!-- EXPANDABLE ACCORDION BODY WITH SECTION COPY & CONTENT EDITORS -->
-                                    <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
                                         @if($secId === 'hero')
-                                            <div style="margin-bottom:12px; padding:12px; border-radius:10px; border:1px solid #eee;">
+                                            <div style="margin-bottom:12px; padding:12px; border-radius:10px; border:1px solid var(--border-subtle);">
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Background (Image or Video)</label>
                                                 <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                     <input type="text" id="hero_bg_url" name="hero_bg_url" value="{{ data_get($siteContent, 'hero_bg_url', '') }}" placeholder="URL or uploaded path (e.g. storage/hero.mp4)" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
@@ -1682,11 +1821,11 @@
                                             @php $hlList = data_get($siteContent, 'highlights', []); @endphp
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                                 @for($h = 0; $h < 4; $h++)
-                                                    <div style="padding:14px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;">
+                                                    <div style="padding:14px; border-radius:10px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:8px;">
                                                         <label style="font-weight:700; font-size:0.85rem; color:var(--dark-text);">Highlight {{ $h+1 }}</label>
 
                                                         <div>
-                                                            <label style="font-size:0.78rem; color:#666; display:block; margin-bottom:3px; font-weight:600;">Icon</label>
+                                                            <label style="font-size:0.78rem; color:var(--light-text); display:block; margin-bottom:3px; font-weight:600;">Icon</label>
                                                             <div style="display:flex; gap:8px; align-items:center;">
                                                                 <input type="text" id="hl-icon-input-{{ $h }}" name="highlights[{{ $h }}][icon]" value="{{ $hlList[$h]['icon'] ?? '🎂' }}" style="width:50px; text-align:center; padding:6px; border-radius:6px; border:1px solid #ccc; font-size:1.1rem;">
                                                                 <button type="button" class="btn btn-sm btn-outline" onclick="openIconPicker(document.getElementById('hl-icon-input-{{ $h }}'))" style="padding:5px 10px; font-size:0.8rem; border-color:var(--primary); color:var(--dark-text);">Select Icon</button>
@@ -1694,12 +1833,12 @@
                                                         </div>
 
                                                         <div>
-                                                            <label style="font-size:0.78rem; color:#666; display:block; margin-bottom:3px; font-weight:600;">Title</label>
+                                                            <label style="font-size:0.78rem; color:var(--light-text); display:block; margin-bottom:3px; font-weight:600;">Title</label>
                                                             <input type="text" name="highlights[{{ $h }}][title]" value="{{ $hlList[$h]['title'] ?? '' }}" placeholder="Badge Title (e.g. Easy Catering)" style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.88rem; background:white;">
                                                         </div>
 
                                                         <div>
-                                                            <label style="font-size:0.78rem; color:#666; display:block; margin-bottom:3px; font-weight:600;">Description</label>
+                                                            <label style="font-size:0.78rem; color:var(--light-text); display:block; margin-bottom:3px; font-weight:600;">Description</label>
                                                             <input type="text" name="highlights[{{ $h }}][desc]" value="{{ $hlList[$h]['desc'] ?? '' }}" placeholder="Badge Subtext..." style="width:100%; padding:8px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.85rem; background:white;">
                                                         </div>
                                                     </div>
@@ -1717,7 +1856,7 @@
 
                                             <div id="accordion-categories-list" style="display:flex; flex-direction:column; gap:12px;">
                                                 @foreach($catList as $cIdx => $cat)
-                                                    <div class="accordion-category-item" style="padding:16px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:10px;">
+                                                    <div class="accordion-category-item" style="padding:16px; border-radius:10px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:10px;">
                                                         <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
                                                             <input type="text" name="categories[{{ $cIdx }}][title]" value="{{ $cat['title'] ?? '' }}" placeholder="Category Title (e.g. Single Tier Cakes)" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-weight:700; font-size:0.95rem;">
                                                             <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-category-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:4px 10px; font-size:0.8rem;">Delete</button>
@@ -1739,7 +1878,7 @@
                                                                 </label>
                                                             </div>
                                                             <div id="cat_preview_{{ $cIdx }}" style="margin-top:8px; {{ !empty($cat['image_url']) ? 'display:flex;' : 'display:none;' }} align-items:center; gap:8px;">
-                                                                <img src="{{ !empty($cat['image_url']) ? asset($cat['image_url']) : '' }}" style="width:38px; height:38px; object-fit:cover; border-radius:6px; border:1px solid #ddd;">
+                                                                <img src="{{ !empty($cat['image_url']) ? asset($cat['image_url']) : '' }}" style="width:38px; height:38px; object-fit:cover; border-radius:6px; border:1px solid var(--border-light);">
                                                                 <span style="font-size:0.78rem; color:#15803d; font-weight:600;">Photo attached</span>
                                                             </div>
                                                         </div>
@@ -1751,7 +1890,7 @@
                                             </button>
 
                                         @elseif($secId === 'whimsical')
-                                            <div style="margin-bottom:12px; padding:12px; border-radius:10px; border:1px solid #eee;">
+                                            <div style="margin-bottom:12px; padding:12px; border-radius:10px; border:1px solid var(--border-subtle);">
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Photo</label>
                                                 <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                     <input type="text" id="whimsical_image_url" name="whimsical_image_url" value="{{ data_get($siteContent, 'whimsical_image_url', '') }}" placeholder="Select photo or upload..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-size:0.85rem;">
@@ -1762,7 +1901,7 @@
                                                     </label>
                                                 </div>
                                                 <div id="whimsical_preview" style="margin-top:8px; {{ !empty(data_get($siteContent, 'whimsical_image_url')) ? 'display:flex;' : 'display:none;' }} align-items:center; gap:10px;">
-                                                    <img src="{{ !empty(data_get($siteContent, 'whimsical_image_url')) ? asset(data_get($siteContent, 'whimsical_image_url')) : '' }}" style="height:48px; width:48px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
+                                                    <img src="{{ !empty(data_get($siteContent, 'whimsical_image_url')) ? asset(data_get($siteContent, 'whimsical_image_url')) : '' }}" style="height:48px; width:48px; object-fit:cover; border-radius:8px; border:1px solid var(--border-light);">
                                                     <span style="font-size:0.8rem; color:#15803d; font-weight:600;">Photo attached</span>
                                                 </div>
                                             </div>
@@ -1773,7 +1912,7 @@
                                             <div style="margin-bottom:10px;">
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555;">Scrolling Banner Text</label>
                                                 <input type="text" name="marquee_text" value="{{ data_get($siteContent, 'marquee_text', 'Custom Cakes') }}" placeholder="e.g. Fresh Sourdough" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
-                                                <span style="font-size:0.75rem; color:#888;">The repeating scrolling text banner shown on the homepage.</span>
+                                                <span style="font-size:0.75rem; color:var(--text-faint);">The repeating scrolling text banner shown on the homepage.</span>
                                             </div>
                                             <div>
                                                 <label style="font-weight:600; font-size:0.82rem; color:#555; display:block; margin-bottom:6px;">Specialty Bullets</label>
@@ -1788,7 +1927,7 @@
 
                                         @elseif($secId === 'promo_video')
                                             <div style="display:flex; flex-direction:column; gap:10px;">
-                                                <div style="padding:12px; border-radius:10px; border:1px solid #eee;">
+                                                <div style="padding:12px; border-radius:10px; border:1px solid var(--border-subtle);">
                                                     <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background</label>
                                                     <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                         <input type="text" id="promo_video_url" name="promo_video_url" value="{{ data_get($siteContent, 'promo_video_url', '') }}" placeholder="Upload custom video or image URL..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
@@ -1824,7 +1963,7 @@
                                             </div>
                                             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
                                                 @for($s = 0; $s < 3; $s++)
-                                                    <div style="padding:12px; border-radius:10px; border:1px solid #eee;">
+                                                    <div style="padding:12px; border-radius:10px; border:1px solid var(--border-subtle);">
                                                         <label style="font-weight:700; font-size:0.8rem; color:var(--dark-text);">Step {{ $s+1 }}</label>
                                                         <input type="text" name="how_it_works[{{ $s }}][title]" value="{{ $hwList[$s]['title'] ?? '' }}" placeholder="Step Title..." style="width:100%; margin-top:6px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.85rem;">
                                                         <textarea name="how_it_works[{{ $s }}][desc]" rows="2" placeholder="Step Description..." style="width:100%; margin-top:6px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-size:0.82rem; font-family:inherit;">{{ $hwList[$s]['desc'] ?? '' }}</textarea>
@@ -1839,7 +1978,7 @@
                                             @endif
                                             <div id="accordion-reviews-list" style="display:flex; flex-direction:column; gap:10px;">
                                                 @foreach($revList as $rIdx => $rev)
-                                                    <div class="accordion-review-item" style="padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;">
+                                                    <div class="accordion-review-item" style="padding:12px; border-radius:10px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:8px;">
                                                         <div style="display:flex; justify-content:space-between; align-items:center;">
                                                             <input type="text" name="reviews[{{ $rIdx }}][name]" value="{{ $rev['name'] ?? '' }}" placeholder="Customer Name (e.g. Kristen Ramirez)" style="width:240px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
                                                             <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-review-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">Delete</button>
@@ -1854,7 +1993,7 @@
                                             @php $faqList = data_get($siteContent, 'faqs', []); @endphp
                                             <div id="accordion-faqs-list" style="display:flex; flex-direction:column; gap:10px;">
                                                 @foreach($faqList as $fIdx => $faq)
-                                                    <div class="accordion-faq-item" style="padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:8px;">
+                                                    <div class="accordion-faq-item" style="padding:12px; border-radius:10px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:8px;">
                                                         <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
                                                             <input type="text" name="faqs[{{ $fIdx }}][q]" value="{{ $faq['q'] ?? '' }}" placeholder="Question (e.g. How far in advance should I order?)" style="flex:1; padding:6px 10px; border-radius:6px; border:1px solid #ccc; font-weight:700;">
                                                             <button type="button" class="btn btn-sm btn-outline" onclick="this.closest('.accordion-faq-item').remove()" style="color:#dc2626; border-color:#fca5a5; padding:2px 8px; font-size:0.78rem;">Delete</button>
@@ -1867,7 +2006,7 @@
 
                                         @elseif($secId === 'cta_banner')
                                             <div style="display:flex; flex-direction:column; gap:10px;">
-                                                <div style="padding:12px; border-radius:10px; border:1px solid #eee;">
+                                                <div style="padding:12px; border-radius:10px; border:1px solid var(--border-subtle);">
                                                     <label style="font-weight:600; font-size:0.82rem; color:#555;">Video / Image Background</label>
                                                     <div style="display:flex; gap:10px; align-items:center; margin-top:4px;">
                                                         <input type="text" id="cta_banner_url" name="cta_banner_url" value="{{ data_get($siteContent, 'cta_banner_url', '') }}" placeholder="Upload custom background media URL..." style="flex:1; padding:8px; border-radius:8px; border:1px solid #ccc; font-family:monospace; font-size:0.85rem;">
@@ -1919,7 +2058,7 @@
                                             <div id="featured-gallery-preview-strip" style="display:flex; flex-wrap:wrap; gap:10px;"></div>
 
                                         @else
-                                            <p style="font-size:0.85rem; color:#666; margin:0;">No additional settings for this section — use Save to apply its order and visibility.</p>
+                                            <p style="font-size:0.85rem; color:var(--light-text); margin:0;">No additional settings for this section — use Save to apply its order and visibility.</p>
                                         @endif
 
                                         @include('admin.partials.section_color_picker', ['secId' => $secId])
@@ -1935,7 +2074,7 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">Hero Banner</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
                                     <div>
                                         <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Title</label>
                                         <input type="text" name="about_hero_title" value="{{ data_get($siteContent, 'about_hero_title') }}" placeholder="Meet {{ $tenant->name }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
@@ -1947,8 +2086,8 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">Founder Story</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
-                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">Also shown on your homepage's <strong>About / Our Story</strong> section.</p>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:var(--light-text); margin:0 0 12px 0;">Also shown on your homepage's <strong>About / Our Story</strong> section.</p>
                                     <div>
                                         <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Title</label>
                                         <input type="text" id="about_title_page_about" value="{{ data_get($siteContent, 'about_title') }}" placeholder="About Our Bakery" oninput="var m=document.getElementById('about_title_home'); if(m) m.value=this.value;" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc; margin-bottom:12px;">
@@ -1964,7 +2103,7 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">Customer Testimonial</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
                                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                         <div style="grid-column:1/-1;">
                                             <label style="font-weight:600; font-size:0.82rem; color:#555;">Customer Testimonial Quote</label>
@@ -1990,14 +2129,14 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">Ingredients / Why Us</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
                                     <div style="margin-bottom:12px;">
                                         <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Heading</label>
                                         <input type="text" name="about_ingredients_title" value="{{ data_get($siteContent, 'about_ingredients_title') }}" placeholder="The Ingredients Behind {{ $tenant->name }}" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
                                     </div>
                                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
                                         @for($__ai = 0; $__ai < $__aboutIngredientCount; $__ai++)
-                                            <div style="padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:6px;">
+                                            <div style="padding:12px; border-radius:10px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:6px;">
                                                 <label style="font-weight:700; font-size:0.8rem; color:var(--dark-text);">Item {{ $__ai + 1 }}</label>
                                                 <input type="text" name="about_ingredients[{{ $__ai }}][title]" value="{{ data_get($siteContent, "about_ingredients.$__ai.title") }}" placeholder="Title" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.88rem;">
                                                 <textarea name="about_ingredients[{{ $__ai }}][text]" rows="2" placeholder="Description" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-family:inherit; font-size:0.85rem;">{{ data_get($siteContent, "about_ingredients.$__ai.text") }}</textarea>
@@ -2012,14 +2151,14 @@
                                         <strong style="color:#27272a; font-size:0.85rem;">Specialties</strong>
                                         <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                     </div>
-                                    <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                    <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
                                         <div style="margin-bottom:12px;">
                                             <label style="font-weight:600; font-size:0.82rem; color:#555;">Section Heading</label>
                                             <input type="text" name="about_specialties_title" value="{{ data_get($siteContent, 'about_specialties_title') }}" placeholder="What We Bake Best" style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
                                         </div>
                                         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
                                             @for($__as = 0; $__as < 3; $__as++)
-                                                <div style="padding:12px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:6px;">
+                                                <div style="padding:12px; border-radius:10px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:6px;">
                                                     <label style="font-weight:700; font-size:0.8rem; color:var(--dark-text);">Card {{ $__as + 1 }}</label>
                                                     <input type="text" name="about_specialties[{{ $__as }}][badge]" value="{{ data_get($siteContent, "about_specialties.$__as.badge") }}" placeholder="Badge (e.g. POPULAR)" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-size:0.82rem; text-transform:uppercase;">
                                                     <input type="text" name="about_specialties[{{ $__as }}][title]" value="{{ data_get($siteContent, "about_specialties.$__as.title") }}" placeholder="Title" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; font-weight:600; font-size:0.88rem;">
@@ -2039,7 +2178,7 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">Hero Banner</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
                                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                         <div>
                                             <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Eyebrow</label>
@@ -2061,8 +2200,8 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">"No Menu Yet" Placeholder</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
-                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">Shown only until you upload a menu image/PDF or add products in the <strong>Menu Manager</strong>.</p>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:var(--light-text); margin:0 0 12px 0;">Shown only until you upload a menu image/PDF or add products in the <strong>Menu Manager</strong>.</p>
                                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                         <div>
                                             <label style="font-weight:600; font-size:0.82rem; color:#555;">Title</label>
@@ -2084,7 +2223,7 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">Hero Banner</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
                                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                         <div>
                                             <label style="font-weight:600; font-size:0.82rem; color:#555;">Hero Title</label>
@@ -2102,8 +2241,8 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">"No Photos Yet" Placeholder</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
-                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">Shown only until you upload a photo in <strong>Device Gallery</strong>.</p>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:var(--light-text); margin:0 0 12px 0;">Shown only until you upload a photo in <strong>Device Gallery</strong>.</p>
                                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
                                         <div>
                                             <label style="font-weight:600; font-size:0.82rem; color:#555;">Title</label>
@@ -2125,8 +2264,8 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">Intro Text</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
-                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">The deposit %, fees, and hours further down this page are still under <strong>Settings → Business Info & SEO → Policy Page Numbers</strong>.</p>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:var(--light-text); margin:0 0 12px 0;">The deposit %, fees, and hours further down this page are still under <strong>Settings → Business Info & SEO → Policy Page Numbers</strong>.</p>
                                     <div>
                                         <label style="font-weight:600; font-size:0.82rem; color:#555;">Intro Paragraph</label>
                                         <input type="text" name="policy_intro_text" value="{{ data_get($siteContent, 'policy_intro_text') }}" placeholder="Please read carefully before placing your order..." style="width:100%; padding:9px; border-radius:8px; border:1px solid #ccc;">
@@ -2138,8 +2277,8 @@
                                     <strong style="color:#27272a; font-size:0.85rem;">Product Wording</strong>
                                     <span class="accordion-arrow" style="font-size:0.78rem; color:#a1a1aa; transition:transform 0.2s ease;">▾</span>
                                 </div>
-                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid #eee; background:#ffffff;">
-                                    <p style="font-size:0.8rem; color:#666; margin:0 0 12px 0;">The "Cakes &amp; Allergy Disclosure" card (and a couple other mentions on this page) uses whatever word you set here — change it if you don't sell cakes.</p>
+                                <div class="section-accordion-body" style="display:none; padding:12px; border-top:1px solid var(--border-subtle); background:#ffffff;">
+                                    <p style="font-size:0.8rem; color:var(--light-text); margin:0 0 12px 0;">The "Cakes &amp; Allergy Disclosure" card (and a couple other mentions on this page) uses whatever word you set here — change it if you don't sell cakes.</p>
                                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
                                         <div>
                                             <label style="font-weight:600; font-size:0.82rem; color:#555;">Singular (e.g. "cake")</label>
@@ -2336,11 +2475,11 @@
                 <!-- COLLAPSIBLE ADD PRODUCT DRAWER -->
                 <div class="form-builder-card" id="add-product-drawer-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa); margin-bottom:20px; padding:0; overflow:hidden; transition: box-shadow 0.2s ease;">
                     <div onclick="toggleAddProductDrawer()" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:16px 20px; user-select:none;">
-                        <h4 style="color:#5c1d37; margin:0; font-size:1.1rem; font-weight:700;">+ Add New Product</h4>
+                        <h4 style="color:var(--admin-heading); margin:0; font-size:1.1rem; font-weight:700;">+ Add New Product</h4>
                         <span id="add-product-drawer-chevron" style="font-size:0.9rem; color:var(--primary); font-weight:bold;">▼</span>
                     </div>
                     
-                    <div id="add-product-drawer-content" style="display:none; padding:0 20px 20px 20px; border-top:1px solid #f0e4ea; margin-top:0;">
+                    <div id="add-product-drawer-content" style="display:none; padding:0 20px 20px 20px; border-top:1px solid var(--border-pink-subtle); margin-top:0;">
                         <form id="add-product-form" class="form-builder-grid" action="{{ route('admin.products.store') }}" method="POST" style="margin-top:16px;">
                             @csrf
                             <div>
@@ -2374,16 +2513,16 @@
                     <h4>Current Product Catalog</h4>
                     <div id="products-admin-grid">
                         @foreach($products as $prod)
-                            <div class="product-item-row" data-id="{{ $prod->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid #f0e4ea;">
+                            <div class="product-item-row" data-id="{{ $prod->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:13px 16px; border-bottom:1px solid var(--border-pink-subtle);">
                                 <div>
-                                    <strong style="color:#5c1d37;">{{ $prod->name }}</strong>
+                                    <strong style="color:var(--admin-heading);">{{ $prod->name }}</strong>
                                     <span style="background:#f9e0eb; color:#7a2b4a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-left:8px;">{{ $prod->category }}</span>
                                 </div>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <span style="font-size:0.85rem; color:#999;">$</span>
                                     <input type="number" step="0.01" value="{{ number_format($prod->price, 2, '.', '') }}" class="prod-price-input" style="width:80px;">
                                     <button class="btn btn-sm btn-secondary" onclick="updateProductPrice({{ $prod->id }}, this)">Save</button>
-                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteProduct({{ $prod->id }}, this)">✕</button>
+                                    <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger);" onclick="deleteProduct({{ $prod->id }}, this)">✕</button>
                                 </div>
                             </div>
                         @endforeach
@@ -2410,39 +2549,39 @@
                     <form onsubmit="handleSaveMenuSettings(event)" enctype="multipart/form-data">
                         <!-- Menu Display Type Selector Cards -->
                         <div style="margin-bottom: 24px;">
-                            <label style="font-weight:700; color:#5c1d37; font-size:0.95rem; display:block; margin-bottom:12px;">Menu Source Option</label>
+                            <label style="font-weight:700; color:var(--admin-heading); font-size:0.95rem; display:block; margin-bottom:12px;">Menu Source Option</label>
                             <input type="hidden" name="menu_type" id="admin_menu_type" value="{{ $menuType }}">
                             
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
                                 <!-- Option 1: Digital Products Catalog -->
-                                <div class="menu-source-card {{ $menuType !== 'image' ? 'active-source' : '' }}" onclick="switchMenuSource('text')" style="background:#fff; border:2px solid #f0e4ea; border-radius:14px; padding:18px; cursor:pointer; transition:all 0.2s ease;">
+                                <div class="menu-source-card {{ $menuType !== 'image' ? 'active-source' : '' }}" onclick="switchMenuSource('text')" style="background:#fff; border:2px solid var(--border-pink-subtle); border-radius:14px; padding:18px; cursor:pointer; transition:all 0.2s ease;">
                                     <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
                                         <span style="font-size:1.8rem;">🍰</span>
-                                        <div style="font-weight:700; color:#5c1d37; font-size:1rem;">Products Catalog Menu</div>
+                                        <div style="font-weight:700; color:var(--admin-heading); font-size:1rem;">Products Catalog Menu</div>
                                     </div>
-                                    <p style="font-size:0.8rem; color:#666; margin:0; line-height:1.4;">Auto-generate a beautiful interactive menu on your public website directly from the products in your inventory.</p>
+                                    <p style="font-size:0.8rem; color:var(--light-text); margin:0; line-height:1.4;">Auto-generate a beautiful interactive menu on your public website directly from the products in your inventory.</p>
                                 </div>
                                 
                                 <!-- Option 2: Uploaded Menu Image / PDF -->
-                                <div class="menu-source-card {{ $menuType === 'image' ? 'active-source' : '' }}" onclick="switchMenuSource('image')" style="background:#fff; border:2px solid #f0e4ea; border-radius:14px; padding:18px; cursor:pointer; transition:all 0.2s ease;">
+                                <div class="menu-source-card {{ $menuType === 'image' ? 'active-source' : '' }}" onclick="switchMenuSource('image')" style="background:#fff; border:2px solid var(--border-pink-subtle); border-radius:14px; padding:18px; cursor:pointer; transition:all 0.2s ease;">
                                     <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
                                         <span style="font-size:1.8rem;">📸</span>
-                                        <div style="font-weight:700; color:#5c1d37; font-size:1rem;">Upload Menu Image / PDF</div>
+                                        <div style="font-weight:700; color:var(--admin-heading); font-size:1rem;">Upload Menu Image / PDF</div>
                                     </div>
-                                    <p style="font-size:0.8rem; color:#666; margin:0; line-height:1.4;">Upload a picture or PDF document of your bakery's print menu to display directly on your storefront.</p>
+                                    <p style="font-size:0.8rem; color:var(--light-text); margin:0; line-height:1.4;">Upload a picture or PDF document of your bakery's print menu to display directly on your storefront.</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- SOURCE SECTION 1: Product Catalog Note -->
                         <div id="source-sect-catalog" style="display: {{ $menuType !== 'image' ? 'block' : 'none' }}; margin-bottom: 24px; background: #fff5f8; border: 1px solid #f8c6d7; border-radius: 12px; padding: 16px;">
-                            <span style="font-weight:700; color:#5c1d37; font-size:0.9rem; display:block; margin-bottom:4px;">✓ Catalog Integration Active</span>
-                            <span style="font-size:0.82rem; color:#666; line-height:1.4;">Your menu is auto-generated using items in your catalog list above. Customers can browse these goods in the styled theme design on your public <a href="/menu" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:underline;">/menu</a> page.</span>
+                            <span style="font-weight:700; color:var(--admin-heading); font-size:0.9rem; display:block; margin-bottom:4px;">✓ Catalog Integration Active</span>
+                            <span style="font-size:0.82rem; color:var(--light-text); line-height:1.4;">Your menu is auto-generated using items in your catalog list above. Customers can browse these goods in the styled theme design on your public <a href="/menu" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:underline;">/menu</a> page.</span>
                         </div>
 
                         <!-- SOURCE SECTION 2: Menu File Upload -->
-                        <div id="source-sect-upload" style="display: {{ $menuType === 'image' ? 'block' : 'none' }}; margin-bottom: 24px; background:#ffffff; border:1px solid #f0e4ea; border-radius:14px; padding:20px;">
-                            <label style="font-weight:700; color:#5c1d37; font-size:0.9rem; display:block; margin-bottom:10px;">
+                        <div id="source-sect-upload" style="display: {{ $menuType === 'image' ? 'block' : 'none' }}; margin-bottom: 24px; background:#ffffff; border:1px solid var(--border-pink-subtle); border-radius:14px; padding:20px;">
+                            <label style="font-weight:700; color:var(--admin-heading); font-size:0.9rem; display:block; margin-bottom:10px;">
                                 Upload Official Bakery Menu Image/PDF
                             </label>
 
@@ -2465,7 +2604,7 @@
                                 </div>
                                 <small style="color:#64748b; font-size:0.8rem; display:block; margin-bottom:6px;">Upload new file below to replace current file:</small>
                             @else
-                                <div style="background:#faf8f9; border:1px dashed #f8c6d7; border-radius:8px; padding:12px; margin-bottom:12px; font-size:0.82rem; color:#888;">
+                                <div style="background:#faf8f9; border:1px dashed #f8c6d7; border-radius:8px; padding:12px; margin-bottom:12px; font-size:0.82rem; color:var(--text-faint);">
                                     No official menu image/PDF uploaded yet. Select a file below to upload.
                                 </div>
                             @endif
@@ -2514,7 +2653,7 @@
                     <p class="subtitle">These show up as filter buttons on your public gallery page and as options when tagging a photo.</p>
                     <div id="gallery-category-chips" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;">
                         @foreach($galleryCategories as $cat)
-                            <span class="gallery-category-chip" data-category="{{ $cat }}" style="display:flex; align-items:center; gap:6px; background:var(--theme-section-bg, #fff7fa); border:1px solid #f0d4e4; color:#5c1d37; font-weight:600; font-size:0.85rem; padding:6px 8px 6px 14px; border-radius:20px;">
+                            <span class="gallery-category-chip" data-category="{{ $cat }}" style="display:flex; align-items:center; gap:6px; background:var(--theme-section-bg, #fff7fa); border:1px solid #f0d4e4; color:var(--admin-heading); font-weight:600; font-size:0.85rem; padding:6px 8px 6px 14px; border-radius:20px;">
                                 <span class="gallery-category-chip-label">{{ $cat }}</span>
                                 <button type="button" onclick="removeGalleryCategory('{{ $cat }}', this)" style="background:none; border:none; color:#a1a1aa; cursor:pointer; font-size:0.95rem; line-height:1; padding:2px 4px;" title="Remove category">✕</button>
                             </span>
@@ -2544,8 +2683,8 @@
                             <div>
                                 <label>Select Image Files From Your Device</label>
                                 <div id="gal-device-dropzone" style="border:2px dashed var(--primary); background:var(--theme-section-bg, #fff7fa); padding:30px 20px; border-radius:16px; text-align:center; cursor:pointer;" onclick="document.getElementById('gal-image-file').click();">
-                                    <p style="font-size:1.05rem; font-weight:600; color:#5c1d37;" id="gal-dropzone-text">Click to select photos from device or drag images here</p>
-                                    <span style="font-size:12px; color:#888;">Select multiple at once — Supports JPG, PNG, WEBP, GIF (Up to 10MB each)</span>
+                                    <p style="font-size:1.05rem; font-weight:600; color:var(--admin-heading);" id="gal-dropzone-text">Click to select photos from device or drag images here</p>
+                                    <span style="font-size:12px; color:var(--text-faint);">Select multiple at once — Supports JPG, PNG, WEBP, GIF (Up to 10MB each)</span>
                                 </div>
                                 <input type="file" id="gal-image-file" name="images[]" accept="image/*" multiple style="display:none;" required>
                             </div>
@@ -2577,7 +2716,7 @@
                                             @endif
                                         </select>
                                     </div>
-                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
+                                    <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger);" onclick="deleteGalleryItem({{ $item->id }}, this)">Delete</button>
                                 </div>
                             @endforeach
                         </div>
@@ -2599,7 +2738,7 @@
                     <h4>Recent Invoices</h4>
                     <table style="width:100%; border-collapse:collapse; text-align:left; margin-top:10px;">
                         <thead>
-                            <tr style="border-bottom:2px solid #f0e4ea;">
+                            <tr style="border-bottom:2px solid var(--border-pink-subtle);">
                                 <th style="padding:12px 8px;">Invoice #</th>
                                 <th style="padding:12px 8px;">Client</th>
                                 <th style="padding:12px 8px;">Amount</th>
@@ -2609,7 +2748,7 @@
                         </thead>
                         <tbody id="admin-invoices-tbody">
                             @forelse($invoices as $inv)
-                                <tr id="invoice-row-{{ $inv->id }}" style="border-bottom:1px solid #f0e4ea;" data-invoice="{{ json_encode([
+                                <tr id="invoice-row-{{ $inv->id }}" style="border-bottom:1px solid var(--border-pink-subtle);" data-invoice="{{ json_encode([
                                     'id' => $inv->id,
                                     'order_id' => $inv->order_id,
                                     'subtotal' => (float) ($inv->subtotal ?? $inv->total_amount),
@@ -2638,12 +2777,12 @@
                                         <button class="btn btn-sm btn-outline" onclick="copyClientPayLink('{{ $inv->invoice_number }}')">Copy Link</button>
                                         <button class="btn btn-sm btn-outline" onclick="openInvoiceEditModal(this)">Edit</button>
                                         <button class="btn btn-sm btn-primary" onclick="sendInvoice('{{ $inv->id }}')">Send</button>
-                                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="deleteInvoice({{ $inv->id }}, this)">Delete</button>
+                                        <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger);" onclick="deleteInvoice({{ $inv->id }}, this)">Delete</button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr id="no-invoices-row">
-                                    <td colspan="5" style="text-align:center; padding:20px; color:#888;">No invoices created yet.</td>
+                                    <td colspan="5" style="text-align:center; padding:20px; color:var(--text-faint);">No invoices created yet.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -2652,7 +2791,7 @@
 
                 <!-- ACCEPTED PAYMENT METHODS: CHECKBOX + HANDLE -->
                 <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                    <h4 style="color:#5c1d37;">Accepted Payment Methods</h4>
+                    <h4 style="color:var(--admin-heading);">Accepted Payment Methods</h4>
                     <p class="subtitle">Check the payment methods you accept, then enter your handle, username, or email for each one. Customers will see these on their invoice — you need at least one set up before you can send an invoice.</p>
                     <style>
                         .pm-icon-badge { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1rem; flex-shrink:0; box-shadow: 0 2px 5px rgba(0,0,0,0.12); }
@@ -2675,8 +2814,8 @@
                         @endphp
                         @foreach($knownPaymentMethods as $pmKey => $pmMeta)
                             @php $pmExisting = is_string($existingPayments[$pmKey] ?? null) ? trim($existingPayments[$pmKey]) : ''; @endphp
-                            <div class="payment-method-toggle-row {{ $pmExisting !== '' ? 'pm-checked' : '' }}" id="pm-row-{{ $pmKey }}" style="border:1.5px solid #eee; border-radius:12px; padding:14px 16px; background:white;">
-                                <label style="display:flex; align-items:center; gap:12px; font-weight:700; color:#5c1d37; cursor:pointer; margin:0;">
+                            <div class="payment-method-toggle-row {{ $pmExisting !== '' ? 'pm-checked' : '' }}" id="pm-row-{{ $pmKey }}" style="border:1.5px solid var(--border-subtle); border-radius:12px; padding:14px 16px; background:white;">
+                                <label style="display:flex; align-items:center; gap:12px; font-weight:700; color:var(--admin-heading); cursor:pointer; margin:0;">
                                     <input type="checkbox" class="pm-toggle" id="pm-toggle-{{ $pmKey }}" data-key="{{ $pmKey }}" {{ $pmExisting !== '' ? 'checked' : '' }} onchange="togglePaymentMethodInput('{{ $pmKey }}')" style="width:18px; height:18px; accent-color: var(--primary); cursor:pointer; flex-shrink:0;">
                                     <span class="pm-icon-badge" style="background:{{ $pmMeta['bg'] }}; color:{{ $pmMeta['fg'] }};">{{ $pmMeta['icon'] }}</span>
                                     <span style="font-size:1rem;">{{ $pmMeta['label'] }}</span>
@@ -2701,15 +2840,15 @@
                 <div class="reviews-tab-grid" style="display:grid; grid-template-columns:minmax(280px, 380px) 1fr; gap:20px; align-items:start;">
                     <!-- ADD NEW REVIEW CARD -->
                     <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                        <h4 style="color:#5c1d37; margin-bottom:12px;">Add New Client Review</h4>
+                        <h4 style="color:var(--admin-heading); margin-bottom:12px;">Add New Client Review</h4>
                         <form id="add-review-form" style="display:flex; flex-direction:column; gap:12px;">
                             <div>
-                                <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Client Name</label>
-                                <input type="text" id="rev-client-name" class="form-control" placeholder="e.g. Lynne Escue" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Client Name</label>
+                                <input type="text" id="rev-client-name" class="form-control" placeholder="e.g. Lynne Escue" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
                             </div>
                             <div>
-                                <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Review Text</label>
-                                <textarea id="rev-text" class="form-control" placeholder="Paste client review text here..." required style="width:100%; height:90px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Review Text</label>
+                                <textarea id="rev-text" class="form-control" placeholder="Paste client review text here..." required style="width:100%; height:90px; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light); font-family:inherit;"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Publish Review to Storefront</button>
                         </form>
@@ -2718,117 +2857,232 @@
                     <!-- PUBLISHED REVIEWS LIST -->
                     <div class="form-builder-card">
                         <h4>Published Reviews</h4>
-                        <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Currently live on your storefront:</p>
+                        <p style="font-size:0.85rem; color:var(--light-text); margin-bottom:14px;">Currently live on your storefront:</p>
 
                         <div id="admin-reviews-list" style="display:flex; flex-direction:column; gap:12px;">
                             @forelse($reviews as $rev)
-                                <div class="review-item-row" data-id="{{ $rev->id }}" style="background:white; padding:16px; border-radius:12px; border:1px solid #f0e4ea; box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:flex-start; gap:15px;">
+                                <div class="review-item-row" data-id="{{ $rev->id }}" style="background:white; padding:16px; border-radius:12px; border:1px solid var(--border-pink-subtle); box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:flex-start; gap:15px;">
                                     <div>
                                         <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                                            <strong style="color:#5c1d37; font-size:1rem;">{{ $rev->client_name }}</strong>
+                                            <strong style="color:var(--admin-heading); font-size:1rem;">{{ $rev->client_name }}</strong>
                                             <span style="color:#ffc107; font-size:0.9rem;">★★★★★</span>
                                         </div>
                                         <p style="font-size:0.9rem; color:#555; margin:0; line-height:1.5;">"{{ $rev->review_text }}"</p>
                                     </div>
-                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteReview({{ $rev->id }}, this)">Delete</button>
+                                    <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger); flex-shrink:0;" onclick="deleteReview({{ $rev->id }}, this)">Delete</button>
                                 </div>
                             @empty
-                                <p style="color:#888; text-align:center; padding:20px;">No reviews added yet. Use the form above to publish client reviews!</p>
+                                <p style="color:var(--text-faint); text-align:center; padding:20px;">No reviews added yet. Use the form above to publish client reviews!</p>
                             @endforelse
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB: Email Marketing (Pro only) -->
-            <div id="tab-email-marketing" class="tab-content">
+            <!-- TAB: Customers — $customers was already queried by the controller
+                 (sorted by total_spent desc) for a long time with no view ever
+                 rendering it; every customer here comes either from a real order
+                 (Customer::findOrCreateFromOrder) or manual entry via the form
+                 below, which POSTs to the already-existing storeCustomer
+                 endpoint. No delete action — a customer row can be the only
+                 record tying historical orders together (Order::customer_id),
+                 so removing one isn't a safe no-side-effect action the way
+                 deleting a subscriber or review is. -->
+            <div id="tab-customers" class="tab-content">
                 <div class="section-header">
-                    <h3>Email Marketing</h3>
-                    <p class="subtitle">Build a subscriber list and send offers or coupons straight to your customers' inboxes.</p>
+                    <h3>Customers</h3>
+                    <p class="subtitle">Everyone who's ordered from you, plus anyone you've added by hand.</p>
                 </div>
 
-                @if(($tenant->plan_tier ?? 'free') === 'pro')
-                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-bottom:25px;">
-                        <!-- SUBSCRIBER LIST CARD -->
-                        <div class="form-builder-card">
-                            <h4 style="color:#5c1d37; margin-bottom:4px;">Subscriber List</h4>
-                            <p style="font-size:0.85rem; color:#666; margin-bottom:14px;"><span id="email-subscriber-count">{{ $emailSubscribers->count() }}</span> active subscriber{{ $emailSubscribers->count() === 1 ? '' : 's' }}</p>
-
-                            <form id="add-subscriber-form" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
-                                <input type="email" id="sub-email" placeholder="customer@email.com" required style="flex:1; min-width:180px; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                                <input type="text" id="sub-name" placeholder="Name (optional)" style="flex:1; min-width:140px; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                                <button type="submit" class="btn btn-primary">Add</button>
-                            </form>
-                            <button type="button" class="btn btn-outline" onclick="importCustomersToSubscribers()" style="width:100%; margin-bottom:14px;">Import All Customers With Emails</button>
-
-                            {{-- Fixed height (not max-height) so this box is always the same size —
-                                 whether there are 0 subscribers or 500, the card around it never grows;
-                                 ~3 rows fit before the list itself scrolls. --}}
-                            <div id="admin-subscribers-list" style="display:flex; flex-direction:column; gap:8px; height:190px; overflow-y:auto; padding-right:4px;">
-                                @forelse($emailSubscribers as $sub)
-                                    <div class="subscriber-item-row" data-id="{{ $sub->id }}" style="background:white; padding:10px 14px; border-radius:10px; border:1px solid #f0e4ea; display:flex; justify-content:space-between; align-items:center; gap:10px;">
-                                        <div style="overflow:hidden;">
-                                            <strong style="font-size:0.9rem; color:#5c1d37;">{{ $sub->name ?: $sub->email }}</strong>
-                                            @if($sub->name)<div style="font-size:0.78rem; color:#888;">{{ $sub->email }}</div>@endif
-                                        </div>
-                                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f; flex-shrink:0;" onclick="deleteSubscriber({{ $sub->id }}, this)">Remove</button>
-                                    </div>
-                                @empty
-                                    <p style="color:#888; text-align:center; padding:16px;" id="no-subscribers-msg">No subscribers yet. Add one above or import your customers.</p>
-                                @endforelse
+                <div style="display:grid; grid-template-columns:minmax(280px, 380px) 1fr; gap:20px; align-items:start;">
+                    <!-- ADD CUSTOMER CARD -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
+                        <h4 style="color:var(--admin-heading); margin-bottom:12px;">Add a Customer</h4>
+                        <form id="add-customer-form" style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Name</label>
+                                <input type="text" id="cust-name" placeholder="e.g. Priya Patel" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
                             </div>
-                        </div>
-
-                        <!-- COMPOSE CAMPAIGN CARD -->
-                        <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                            <h4 style="color:#5c1d37; margin-bottom:12px;">Send a New Offer</h4>
-                            <form id="send-campaign-form" style="display:flex; flex-direction:column; gap:12px;">
-                                <div>
-                                    <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Subject Line</label>
-                                    <input type="text" id="campaign-subject" placeholder="e.g. 20% Off This Weekend Only!" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                                </div>
-                                <div>
-                                    <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Message</label>
-                                    <textarea id="campaign-body" placeholder="Tell your customers about the offer..." required style="width:100%; height:120px; padding:10px 14px; border-radius:10px; border:1px solid #ddd; font-family:inherit;"></textarea>
-                                </div>
-                                <div>
-                                    <label style="font-weight:700; font-size:0.85rem; color:#5c1d37; display:block; margin-bottom:4px;">Coupon Code (optional)</label>
-                                    <input type="text" id="campaign-coupon" placeholder="e.g. SWEET20" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid #ddd;">
-                                </div>
-                                <button type="submit" id="send-campaign-btn" class="btn btn-primary" style="align-self:flex-start;">Send to {{ $emailSubscribers->count() }} Subscriber{{ $emailSubscribers->count() === 1 ? '' : 's' }}</button>
-                            </form>
-                        </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Email (optional)</label>
+                                <input type="email" id="cust-email" placeholder="customer@email.com" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
+                            </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Phone (optional)</label>
+                                <input type="text" id="cust-phone" placeholder="(555) 123-4567" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
+                            </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Notes (optional)</label>
+                                <textarea id="cust-notes" placeholder="Allergy notes, preferences, anything worth remembering..." style="width:100%; height:70px; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light); font-family:inherit;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Add Customer</button>
+                        </form>
                     </div>
 
-                    <!-- CAMPAIGN HISTORY -->
+                    <!-- CUSTOMER LIST -->
                     <div class="form-builder-card">
-                        <h4>Past Campaigns</h4>
-                        <div id="admin-campaigns-list" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-                            @forelse($emailCampaigns as $camp)
-                                <div style="background:white; padding:14px 16px; border-radius:10px; border:1px solid #f0e4ea; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <h4>{{ $customerCount }} Customer{{ $customerCount === 1 ? '' : 's' }}</h4>
+                        <p style="font-size:0.85rem; color:var(--light-text); margin-bottom:14px;">Sorted by total spent.</p>
+
+                        <div id="admin-customers-list" style="display:flex; flex-direction:column; gap:10px;">
+                            @forelse($customers as $cust)
+                                <div class="customer-item-row" data-id="{{ $cust->id }}" style="background:white; padding:14px 16px; border-radius:12px; border:1px solid var(--border-pink-subtle); box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap;">
                                     <div>
-                                        <strong style="font-size:0.92rem; color:#5c1d37;">{{ $camp->subject }}</strong>
-                                        <div style="font-size:0.78rem; color:#888;">{{ $camp->created_at->format('M j, Y g:ia') }}</div>
+                                        <strong style="color:var(--admin-heading); font-size:0.98rem;">{{ $cust->name }}</strong>
+                                        <div style="font-size:0.8rem; color:var(--text-faint); margin-top:2px;">
+                                            {{ collect([$cust->email, $cust->phone])->filter()->implode(' · ') ?: 'No contact info on file' }}
+                                        </div>
                                     </div>
-                                    <span style="font-size:0.78rem; font-weight:700; padding:4px 10px; border-radius:12px; background:{{ $camp->status === 'sent' ? '#d1fae5' : ($camp->status === 'failed' ? '#fee2e2' : '#f3f4f6') }}; color:{{ $camp->status === 'sent' ? '#065f46' : ($camp->status === 'failed' ? '#b91c1c' : '#374151') }};">
-                                        {{ ucfirst($camp->status) }} — {{ $camp->sent_count }}/{{ $camp->recipient_count }}
-                                    </span>
+                                    <div style="text-align:right;">
+                                        <div style="font-weight:800; color:var(--primary); font-size:1rem;">${{ number_format($cust->total_spent ?? 0, 2) }}</div>
+                                        <div style="font-size:0.78rem; color:var(--text-faint);">{{ $cust->order_count ?? 0 }} order{{ ($cust->order_count ?? 0) === 1 ? '' : 's' }}</div>
+                                    </div>
                                 </div>
                             @empty
-                                <p style="color:#888; text-align:center; padding:16px;" id="no-campaigns-msg">No campaigns sent yet.</p>
+                                <p id="no-customers-msg" style="color:var(--text-faint); text-align:center; padding:20px;">No customers yet — they'll appear here automatically the first time someone orders, or you can add one by hand.</p>
                             @endforelse
                         </div>
                     </div>
-                @else
-                    <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid var(--primary); padding:28px; border-radius:16px; max-width:560px;">
-                        <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Pro Feature</span>
-                        <h4 style="color:var(--dark-text); margin-top:10px; font-size:1.3rem;">Upgrade to Doughmain Pro ($29/month)</h4>
-                        <p style="font-size:0.92rem; color:#555; margin-top:6px; margin-bottom:18px;">Build a subscriber list from your customers and send email offers, coupons, and announcements — included with Pro.</p>
-                        <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff; font-weight:700; padding:12px 24px; border-radius:12px; text-align:center; box-shadow:0 4px 12px rgba(109,40,217,0.3); text-decoration:none; display:inline-block;">
-                            Upgrade to Pro ($29/mo)
-                        </a>
+                </div>
+            </div>
+
+            <!-- TAB: Insights (top-line revenue free as a teaser; full breakdown is Pro) -->
+            <div id="tab-insights" class="tab-content">
+                <div class="section-header">
+                    <h3>Insights</h3>
+                    <p class="subtitle">See how your bakery is actually doing.</p>
+                </div>
+
+                @php $insightsIsPro = ($tenant->plan_tier ?? 'free') === 'pro'; @endphp
+
+                <div class="form-builder-card" style="margin-bottom:20px;">
+                    <h4 style="color:var(--admin-heading); margin-bottom:4px;">This Month's Revenue</h4>
+                    <p style="font-size:2.2rem; font-weight:800; color:var(--primary); margin:6px 0 0;">${{ number_format($thisMonthRevenue, 2) }}</p>
+                    <p style="font-size:0.82rem; color:var(--text-faint); margin-top:4px;">From paid, in-progress, ready, and completed orders this month.</p>
+                </div>
+
+                <div style="position:relative;">
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; {{ $insightsIsPro ? '' : 'filter:blur(5px); user-select:none; pointer-events:none;' }}">
+                        <div class="form-builder-card">
+                            <h5 style="font-size:0.85rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:8px;">Vs. Last Month</h5>
+                            @php
+                                $delta = $lastMonthRevenue > 0 ? round((($thisMonthRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100) : ($thisMonthRevenue > 0 ? 100 : 0);
+                            @endphp
+                            <p style="font-size:1.6rem; font-weight:800; color:{{ $delta >= 0 ? '#059669' : '#dc2626' }};">{{ $delta >= 0 ? '+' : '' }}{{ $delta }}%</p>
+                            <p style="font-size:0.8rem; color:var(--text-faint);">Last month: ${{ number_format($lastMonthRevenue, 2) }}</p>
+                        </div>
+                        <div class="form-builder-card">
+                            <h5 style="font-size:0.85rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:8px;">Average Order Value</h5>
+                            <p style="font-size:1.6rem; font-weight:800; color:var(--admin-heading);">${{ number_format($avgOrderValue, 2) }}</p>
+                            <p style="font-size:0.8rem; color:var(--text-faint);">Across all completed orders.</p>
+                        </div>
+                        <div class="form-builder-card">
+                            <h5 style="font-size:0.85rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:8px;">Repeat Customer Rate</h5>
+                            <p style="font-size:1.6rem; font-weight:800; color:var(--admin-heading);">{{ $repeatCustomerRate }}%</p>
+                            <p style="font-size:0.8rem; color:var(--text-faint);">Customers with more than one order.</p>
+                        </div>
                     </div>
-                @endif
+
+                    @unless($insightsIsPro)
+                        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+                            <div style="background:linear-gradient(135deg, #FAF8FF, #f5f3ff); border:2px solid var(--primary); padding:24px 28px; border-radius:16px; text-align:center; max-width:400px; box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+                                <span style="background:var(--primary); color:white; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; text-transform:uppercase;">Pro Feature</span>
+                                <h4 style="color:var(--dark-text); margin-top:10px; font-size:1.15rem;">See the full breakdown</h4>
+                                <p style="font-size:0.88rem; color:#555; margin-top:6px; margin-bottom:16px;">Month-over-month trend, average order value, and repeat customer rate — upgrade to Pro to unlock.</p>
+                                <a href="https://buy.stripe.com/eVq00jeoj4aB62QanW2Ry0k?client_reference_id={{ $tenant->id }}&prefilled_email={{ urlencode($tenant->email ?? '') }}" target="_blank" style="background:linear-gradient(135deg, #6d28d9, #8b5cf6); color:#ffffff; font-weight:700; padding:10px 20px; border-radius:12px; text-decoration:none; display:inline-block;">
+                                    Upgrade to Pro ($29/mo)
+                                </a>
+                            </div>
+                        </div>
+                    @endunless
+                </div>
+            </div>
+
+            <!-- TAB: Email Marketing (collection free for everyone, sending is Pro) -->
+            <div id="tab-email-marketing" class="tab-content">
+                <div class="section-header">
+                    <h3>Email Marketing</h3>
+                    <p class="subtitle">Build a subscriber list for free. Sending offers and coupons is a Pro feature.</p>
+                </div>
+
+                @php $emailIsPro = ($tenant->plan_tier ?? 'free') === 'pro'; @endphp
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:25px; margin-bottom:25px;">
+                    <!-- SUBSCRIBER LIST CARD (free for everyone) -->
+                    <div class="form-builder-card">
+                        <h4 style="color:var(--admin-heading); margin-bottom:4px;">Subscriber List</h4>
+                        <p style="font-size:0.85rem; color:var(--light-text); margin-bottom:14px;"><span id="email-subscriber-count">{{ $emailSubscribers->count() }}</span> active subscriber{{ $emailSubscribers->count() === 1 ? '' : 's' }}</p>
+
+                        <form id="add-subscriber-form" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+                            <input type="email" id="sub-email" placeholder="customer@email.com" required style="flex:1; min-width:180px; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
+                            <input type="text" id="sub-name" placeholder="Name (optional)" style="flex:1; min-width:140px; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </form>
+                        <button type="button" class="btn btn-outline" onclick="importCustomersToSubscribers()" style="width:100%; margin-bottom:14px;">Import All Customers With Emails</button>
+
+                        {{-- Fixed height (not max-height) so this box is always the same size —
+                             whether there are 0 subscribers or 500, the card around it never grows;
+                             ~3 rows fit before the list itself scrolls. --}}
+                        <div id="admin-subscribers-list" style="display:flex; flex-direction:column; gap:8px; height:190px; overflow-y:auto; padding-right:4px;">
+                            @forelse($emailSubscribers as $sub)
+                                <div class="subscriber-item-row" data-id="{{ $sub->id }}" style="background:white; padding:10px 14px; border-radius:10px; border:1px solid var(--border-pink-subtle); display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                                    <div style="overflow:hidden;">
+                                        <strong style="font-size:0.9rem; color:var(--admin-heading);">{{ $sub->name ?: $sub->email }}</strong>
+                                        @if($sub->name)<div style="font-size:0.78rem; color:var(--text-faint);">{{ $sub->email }}</div>@endif
+                                    </div>
+                                    <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--danger); flex-shrink:0;" onclick="deleteSubscriber({{ $sub->id }}, this)">Remove</button>
+                                </div>
+                            @empty
+                                <p style="color:var(--text-faint); text-align:center; padding:16px;" id="no-subscribers-msg">No subscribers yet. Add one above or import your customers.</p>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <!-- COMPOSE CAMPAIGN CARD (anyone can draft; sending is Pro-gated server-side) -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
+                        <h4 style="color:var(--admin-heading); margin-bottom:12px;">Send a New Offer</h4>
+                        @unless($emailIsPro)
+                            <p style="font-size:0.82rem; color:#92400e; background:#fef3c7; padding:8px 12px; border-radius:10px; margin-bottom:12px;">🔒 Sending requires Pro ($29/mo) — draft your offer below, upgrade when you're ready to send it.</p>
+                        @endunless
+                        <form id="send-campaign-form" style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Subject Line</label>
+                                <input type="text" id="campaign-subject" placeholder="e.g. 20% Off This Weekend Only!" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
+                            </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Message</label>
+                                <textarea id="campaign-body" placeholder="Tell your customers about the offer..." required style="width:100%; height:120px; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light); font-family:inherit;"></textarea>
+                            </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Coupon Code (optional)</label>
+                                <input type="text" id="campaign-coupon" placeholder="e.g. SWEET20" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
+                            </div>
+                            <button type="submit" id="send-campaign-btn" class="btn btn-primary" style="align-self:flex-start;">
+                                {{ $emailIsPro ? 'Send to ' . $emailSubscribers->count() . ' Subscriber' . ($emailSubscribers->count() === 1 ? '' : 's') : '🔒 Upgrade to Send' }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- CAMPAIGN HISTORY -->
+                <div class="form-builder-card">
+                    <h4>Past Campaigns</h4>
+                    <div id="admin-campaigns-list" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                        @forelse($emailCampaigns as $camp)
+                            <div style="background:white; padding:14px 16px; border-radius:10px; border:1px solid var(--border-pink-subtle); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+                                <div>
+                                    <strong style="font-size:0.92rem; color:var(--admin-heading);">{{ $camp->subject }}</strong>
+                                    <div style="font-size:0.78rem; color:var(--text-faint);">{{ $camp->created_at->format('M j, Y g:ia') }}</div>
+                                </div>
+                                <span style="font-size:0.78rem; font-weight:700; padding:4px 10px; border-radius:12px; background:{{ $camp->status === 'sent' ? '#d1fae5' : ($camp->status === 'failed' ? '#fee2e2' : '#f3f4f6') }}; color:{{ $camp->status === 'sent' ? '#065f46' : ($camp->status === 'failed' ? '#b91c1c' : '#374151') }};">
+                                    {{ ucfirst($camp->status) }} — {{ $camp->sent_count }}/{{ $camp->recipient_count }}
+                                </span>
+                            </div>
+                        @empty
+                            <p style="color:var(--text-faint); text-align:center; padding:16px;" id="no-campaigns-msg">No campaigns sent yet.</p>
+                        @endforelse
+                    </div>
+                </div>
             </div>
 
             <!-- TAB: Settings -->
@@ -2850,8 +3104,8 @@
                 <div id="settings-sect-brand">
                     <!-- EMAIL ROUTING SETTINGS CARD -->
                     <div class="form-builder-card" style="border: 2px solid var(--primary); background: var(--theme-section-bg, #fff7fa); margin-bottom: 20px;">
-                        <h4 style="color:#5c1d37; margin-bottom: 6px;">Order Email Routing</h4>
-                        <p style="font-size:0.85rem; color:#666; margin-bottom:12px;">All completed storefront order entries will be sent to this address:</p>
+                        <h4 style="color:var(--admin-heading); margin-bottom: 6px;">Order Email Routing</h4>
+                        <p style="font-size:0.85rem; color:var(--light-text); margin-bottom:12px;">All completed storefront order entries will be sent to this address:</p>
                         <form id="email-routing-form" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
                             <input type="email" id="admin-routing-email" value="{{ $tenant->email ?? '' }}" placeholder="e.g. baker@yourbakehouse.com" required style="flex:1; min-width:220px; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
                             <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Save</button>
@@ -2862,7 +3116,7 @@
                     <!-- BAKERY LOGO MANAGEMENT CARD -->
                     <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #f5f3ff); margin-bottom:20px;">
                         <h4 style="color:var(--dark-text); margin-bottom:6px;">Brand Logo</h4>
-                        <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Shown in the header and footer across all your storefront pages.</p>
+                        <p style="font-size:0.88rem; color:var(--light-text); margin-bottom:16px;">Shown in the header and footer across all your storefront pages.</p>
 
                         <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
                             <div style="width:90px; height:90px; border-radius:16px; background:#ffffff; border:2px dashed var(--theme-section-bg, #c4b5fd); display:flex; align-items:center; justify-content:center; overflow:hidden; padding:6px;">
@@ -2885,7 +3139,7 @@
                     <!-- BUSINESS INFO & SEO CARD -->
                     <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #f0fdf4); margin-bottom:20px;">
                         <h4 style="color:var(--dark-text); margin-bottom:6px;">Business Info &amp; SEO</h4>
-                        <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Contact details shown on your storefront, plus the title &amp; description search engines show for your site.</p>
+                        <p style="font-size:0.88rem; color:var(--light-text); margin-bottom:16px;">Contact details shown on your storefront, plus the title &amp; description search engines show for your site.</p>
 
                         <div id="business-info-msg" style="display:none; margin-bottom:14px; background:var(--theme-section-bg, #d1fae5); color:var(--dark-text); padding:10px 14px; border-radius:10px; font-size:0.88rem; font-weight:600; border:1px solid var(--theme-section-bg, #a7f3d0);"></div>
 
@@ -2950,7 +3204,7 @@
 
                             <div style="border-top:1px solid var(--theme-section-bg, #a7f3d0); padding-top:14px; margin-bottom:16px;">
                                 <h5 style="font-size:0.9rem; color:var(--dark-text); margin-bottom:4px;">Policy Page Numbers</h5>
-                                <p style="font-size:0.8rem; color:#666; margin-bottom:10px;">Used on your <a href="{{ route('storefront.policy') }}" target="_blank" style="color:var(--primary); text-decoration:underline;">Policy page</a> — the rest of that page's wording is shared, but these numbers are yours to correct.</p>
+                                <p style="font-size:0.8rem; color:var(--light-text); margin-bottom:10px;">Used on your <a href="{{ route('storefront.policy') }}" target="_blank" style="color:var(--primary); text-decoration:underline;">Policy page</a> — the rest of that page's wording is shared, but these numbers are yours to correct.</p>
                                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
                                     <div>
                                         <label style="font-weight:600; font-size:0.82rem; color:#555;">Deposit %</label>
@@ -2995,8 +3249,8 @@
                     <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
                         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
                             <div>
-                                <h4 style="color:#5c1d37; margin:0;">Storefront Theme</h4>
-                                <p style="font-size:0.88rem; color:#666; margin-top:4px;">Pick a design template. Colors and layout update automatically.</p>
+                                <h4 style="color:var(--admin-heading); margin:0;">Storefront Theme</h4>
+                                <p style="font-size:0.88rem; color:var(--light-text); margin-top:4px;">Pick a design template. Colors and layout update automatically.</p>
                             </div>
                             <a href="{{ $tenant->publicUrl() }}" target="_blank" class="btn btn-outline btn-sm" style="font-weight:700; border-color:var(--primary); color:var(--primary);">View Live Storefront ↗</a>
                         </div>
@@ -3017,12 +3271,12 @@
                                 @endphp
                                 <div class="bakery-theme-card"
                                      onclick="{{ $isLockedTheme ? "alert('Upgrade to Pro ($29/mo) to unlock this premium theme!')" : "selectBakeryTheme('".$t['id']."', this, ".\Illuminate\Support\Js::from($t['name']).")" }}"
-                                     style="border:{{ $currentTheme === $t['id'] ? '3px solid var(--primary)' : '2px solid #ddd' }}; background:white; padding:22px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
-                                    <div style="height:80px; background:{{ $t['preview_bg'] }}; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; border:1px solid #eee;">
+                                     style="border:{{ $currentTheme === $t['id'] ? '3px solid var(--primary)' : '2px solid var(--border-light)' }}; background:white; padding:22px; border-radius:14px; cursor:{{ $isLockedTheme ? 'not-allowed' : 'pointer' }}; position:relative; transition:transform 0.15s ease, border-color 0.15s ease; box-shadow:0 4px 12px rgba(0,0,0,0.05); {{ $isLockedTheme ? 'opacity:0.65; filter:grayscale(25%);' : '' }}">
+                                    <div style="height:80px; background:{{ $t['preview_bg'] }}; border-radius:10px; margin-bottom:12px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border-subtle);">
                                         <span style="font-weight:800; color:{{ $t['preview_accent'] }}; font-size:1.1rem;">{{ $t['name'] }}</span>
                                     </div>
-                                    <h5 style="font-size:1rem; font-weight:700; color:#5c1d37; margin-bottom:4px;">{{ $t['name'] }}</h5>
-                                    <p style="font-size:0.8rem; color:#666; line-height:1.4;">{{ $t['subtitle'] }}</p>
+                                    <h5 style="font-size:1rem; font-weight:700; color:var(--admin-heading); margin-bottom:4px;">{{ $t['name'] }}</h5>
+                                    <p style="font-size:0.8rem; color:var(--light-text); line-height:1.4;">{{ $t['subtitle'] }}</p>
                                     @if($currentTheme === $t['id'])
                                         <span class="theme-badge" style="display:inline-block; margin-top:8px; font-size:0.75rem; background:var(--primary); color:white; padding:3px 10px; border-radius:20px; font-weight:700;">Active Theme</span>
                                     @elseif($tenant->plan_tier === 'pro' && !$isStarterTheme)
@@ -3043,12 +3297,12 @@
                     <!-- BOOKING RULES CARD -->
                     <div class="form-builder-card">
                         <h4>Order Lead Time</h4>
-                        <p style="font-size:0.9rem; color:#666; margin-bottom:18px;">Prevent customers from selecting a completion date that is too soon to fulfill.</p>
+                        <p style="font-size:0.9rem; color:var(--light-text); margin-bottom:18px;">Prevent customers from selecting a completion date that is too soon to fulfill.</p>
 
                         <div class="settings-toggle-row" id="lead-time-toggle-row">
                             <div>
                                 <strong>Block orders within 3 days of today</strong>
-                                <p style="font-size:0.82rem; color:#888; margin-top:2px;">Customers cannot pick a date within 3 days of placing their order.</p>
+                                <p style="font-size:0.82rem; color:var(--text-faint); margin-top:2px;">Customers cannot pick a date within 3 days of placing their order.</p>
                             </div>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="lead-time-enabled" checked onchange="toggleLeadTimeInput(this)">
@@ -3202,8 +3456,8 @@
 
                 <!-- CARD 1: RECURRING WEEKLY CLOSED DAYS -->
                 <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
-                    <h4 style="color:#5c1d37;">Weekly Recurring Closed Days</h4>
-                    <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">Days you're regularly closed (e.g. Saturdays &amp; Sundays) are automatically blocked on the order form calendar.</p>
+                    <h4 style="color:var(--admin-heading);">Weekly Recurring Closed Days</h4>
+                    <p style="font-size:0.88rem; color:var(--light-text); margin-bottom:16px;">Days you're regularly closed (e.g. Saturdays &amp; Sundays) are automatically blocked on the order form calendar.</p>
 
                     <div style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
                         @foreach([
@@ -3218,7 +3472,7 @@
                         @php
                             $isClosedChecked = in_array((int)$dayVal, $serverBookingSettings['recurring_closed_days'] ?? [0, 1]);
                         @endphp
-                        <label style="display:flex; align-items:center; gap:8px; background:white; padding:10px 16px; border-radius:12px; border:1px solid #f0e4ea; font-weight:600; cursor:pointer; user-select:none;">
+                        <label style="display:flex; align-items:center; gap:8px; background:white; padding:10px 16px; border-radius:12px; border:1px solid var(--border-pink-subtle); font-weight:600; cursor:pointer; user-select:none;">
                             <input type="checkbox" class="recurring-closed-checkbox" value="{{ $dayVal }}" {{ $isClosedChecked ? 'checked' : '' }}>
                             <span>{{ $dayName }}</span>
                         </label>
@@ -3236,20 +3490,20 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:20px;">
                         <div>
                             <h4 style="margin-bottom:4px;">Date Blackout Calendar</h4>
-                            <p style="font-size:0.85rem; color:#888; margin:0;">Click any date below to toggle it blocked or available.</p>
+                            <p style="font-size:0.85rem; color:var(--text-faint); margin:0;">Click any date below to toggle it blocked or available.</p>
                         </div>
                         <!-- Month Navigation -->
                         <div style="display:flex; align-items:center; gap:10px; background:#fff0f5; padding:6px 14px; border-radius:14px; border:1px solid var(--theme-section-bg, #f8c6d7);">
                             <button class="btn btn-sm btn-outline" style="padding:4px 10px;" onclick="changeAdminCalMonth(-1)">◀ Prev</button>
-                            <span id="admin-cal-month-year" style="font-weight:800; color:#5c1d37; min-width:130px; text-align:center;">{{ now()->format('F Y') }}</span>
+                            <span id="admin-cal-month-year" style="font-weight:800; color:var(--admin-heading); min-width:130px; text-align:center;">{{ now()->format('F Y') }}</span>
                             <button class="btn btn-sm btn-outline" style="padding:4px 10px;" onclick="changeAdminCalMonth(1)">Next ▶</button>
                         </div>
                     </div>
 
                     <!-- Legend -->
-                    <div style="display:flex; gap:16px; flex-wrap:wrap; font-size:0.82rem; margin-bottom:18px; padding:10px 14px; background:#fafafa; border-radius:10px; border:1px solid #eee;">
+                    <div style="display:flex; gap:16px; flex-wrap:wrap; font-size:0.82rem; margin-bottom:18px; padding:10px 14px; background:#fafafa; border-radius:10px; border:1px solid var(--border-subtle);">
                         <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:50%; background:#28a745; display:inline-block;"></span> Available</span>
-                        <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:50%; background:#d9534f; display:inline-block;"></span> Custom Blocked Date</span>
+                        <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:50%; background:var(--danger); display:inline-block;"></span> Custom Blocked Date</span>
                         <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px; height:12px; border-radius:50%; background:#6f42c1; display:inline-block;"></span> Weekly Closed Day</span>
                     </div>
 
@@ -3290,10 +3544,10 @@
                     </div>
 
                     <!-- Manual Date Picker Quick Add -->
-                    <div style="margin-top:24px; padding-top:20px; border-top:1px solid #f0e4ea; display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+                    <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--border-pink-subtle); display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
                         <div>
-                            <label style="font-size:0.85rem; font-weight:700; color:#5c1d37; display:block; margin-bottom:6px;">Block Specific Date Manually</label>
-                            <input type="date" id="manual-block-date" style="padding:10px 14px; border-radius:10px; border:1px solid #f0e4ea;">
+                            <label style="font-size:0.85rem; font-weight:700; color:var(--admin-heading); display:block; margin-bottom:6px;">Block Specific Date Manually</label>
+                            <input type="date" id="manual-block-date" style="padding:10px 14px; border-radius:10px; border:1px solid var(--border-pink-subtle);">
                         </div>
                         <button class="btn btn-primary" onclick="addManualBlockedDate()">Block Date</button>
                     </div>
@@ -3302,7 +3556,7 @@
                 <!-- CARD 3: LIST OF CURRENTLY BLOCKED DATES -->
                 <div class="form-builder-card">
                     <h4>Currently Blocked Custom Dates</h4>
-                    <p style="font-size:0.85rem; color:#666; margin-bottom:14px;">Blacked out for client orders:</p>
+                    <p style="font-size:0.85rem; color:var(--light-text); margin-bottom:14px;">Blacked out for client orders:</p>
                     <div id="admin-blocked-dates-list" style="display:flex; flex-wrap:wrap; gap:10px;">
                         @forelse($serverBookingSettings['blocked_dates'] ?? ['2026-07-04', '2026-07-25'] as $bDate)
                             <div class="blocked-date-badge">
@@ -3662,12 +3916,12 @@
                 const wrap = document.getElementById('featured-gallery-preview-strip');
                 if (!wrap) return;
                 if (featuredGallerySelection.length === 0) {
-                    wrap.innerHTML = '<p style="color:#888; font-size:0.85rem; margin:0;">No featured photos selected yet.</p>';
+                    wrap.innerHTML = '<p style="color:var(--text-faint); font-size:0.85rem; margin:0;">No featured photos selected yet.</p>';
                     return;
                 }
                 wrap.innerHTML = featuredGallerySelection.map((img, i) => `
                     <div class="featured-preview-thumb" style="position:relative; width:80px; height:80px;">
-                        <img src="${location.origin}/${img.path}" style="width:100%; height:100%; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
+                        <img src="${location.origin}/${img.path}" style="width:100%; height:100%; object-fit:cover; border-radius:8px; border:1px solid var(--border-light);">
                         <button type="button" onclick="removeFeaturedPreviewItem(${i})" title="Remove" style="position:absolute; top:-6px; right:-6px; background:#dc2626; color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; line-height:1;">✕</button>
                     </div>
                 `).join('');
@@ -3686,7 +3940,7 @@
                 const idx = list.querySelectorAll('.accordion-category-item').length;
                 const div = document.createElement('div');
                 div.className = 'accordion-category-item';
-                div.style.cssText = 'padding:16px; border-radius:10px; border:1px solid #eee; display:flex; flex-direction:column; gap:10px;';
+                div.style.cssText = 'padding:16px; border-radius:10px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; gap:10px;';
                 div.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
                         <input type="text" name="categories[${idx}][title]" placeholder="Category Title (e.g. Gourmet Cupcakes)" style="flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ccc; font-weight:700; font-size:0.95rem;">
@@ -3707,7 +3961,7 @@
                             </label>
                         </div>
                         <div id="cat_preview_${idx}" style="margin-top:8px; display:none; align-items:center; gap:8px;">
-                            <img src="" style="width:38px; height:38px; object-fit:cover; border-radius:6px; border:1px solid #ddd;">
+                            <img src="" style="width:38px; height:38px; object-fit:cover; border-radius:6px; border:1px solid var(--border-light);">
                             <span style="font-size:0.78rem; color:#15803d; font-weight:600;">Photo attached</span>
                         </div>
                     </div>
@@ -4009,8 +4263,8 @@
     <!-- INVOICE EDIT / CREATION MODAL -->
 <div id="invoice-edit-modal" class="order-modal-overlay" style="display:none; z-index:9999;">
     <div class="order-modal-card" style="max-width: 500px; width:90%;">
-        <div class="order-modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:12px; margin-bottom:16px;">
-            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; color:#5c1d37; margin:0;">Invoice Details</h2>
+        <div class="order-modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-subtle); padding-bottom:12px; margin-bottom:16px;">
+            <h2 style="font-size:1.25rem; font-family:'Outfit',sans-serif; color:var(--admin-heading); margin:0;">Invoice Details</h2>
             <button class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeInvoiceEditModal()">✕</button>
         </div>
         <div class="order-modal-body">
@@ -4020,11 +4274,11 @@
 
                 <div style="margin-bottom: 15px;">
                     <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Order Subtotal ($)</label>
-                    <input type="number" step="0.01" id="edit-invoice-subtotal" class="form-control" oninput="recalculateInvoiceTotal()" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                    <input type="number" step="0.01" id="edit-invoice-subtotal" class="form-control" oninput="recalculateInvoiceTotal()" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-pink-subtle); font-size:1rem;">
                 </div>
 
-                <div style="margin-bottom: 15px; padding:12px; background:#fafafa; border-radius:10px; border:1px solid #f0e4ea;">
-                    <p style="font-size:0.78rem; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.03em; margin:0 0 10px;">Adjustments (optional)</p>
+                <div style="margin-bottom: 15px; padding:12px; background:#fafafa; border-radius:10px; border:1px solid var(--border-pink-subtle);">
+                    <p style="font-size:0.78rem; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.03em; margin:0 0 10px;">Adjustments (optional)</p>
 
                     <div style="display:flex; gap:10px; margin-bottom:10px;">
                         <input type="text" id="edit-invoice-fee-label" placeholder="Fee label (e.g. Delivery Fee)" style="flex:1; padding:9px 12px; border-radius:8px; border:1px solid #e2d9de; font-size:0.85rem;">
@@ -4044,21 +4298,21 @@
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom: 15px;">
                     <div>
                         <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Total Amount ($)</label>
-                        <input type="number" step="0.01" id="edit-invoice-total" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                        <input type="number" step="0.01" id="edit-invoice-total" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-pink-subtle); font-size:1rem;">
                     </div>
                     <div>
                         <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Deposit Amount ($)</label>
-                        <input type="number" step="0.01" id="edit-invoice-deposit" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:1rem;">
+                        <input type="number" step="0.01" id="edit-invoice-deposit" class="form-control" required style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-pink-subtle); font-size:1rem;">
                     </div>
                 </div>
                 <p style="font-size:0.78rem; color:#999; margin:-10px 0 15px;">Total is auto-filled from subtotal + adjustments above — feel free to type your own final number instead.</p>
 
                 <div style="margin-bottom: 20px;">
                     <label style="display:block; margin-bottom:5px; font-weight:bold; font-size:0.9rem; color:#444;">Baker Notes & Payment Instructions</label>
-                    <textarea id="edit-invoice-notes" class="form-control" rows="3" placeholder="e.g. Please send Venmo deposit to @Blushed_Crumbs with Order # in memo..." style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid #f0e4ea; font-size:0.9rem; font-family:inherit;"></textarea>
+                    <textarea id="edit-invoice-notes" class="form-control" rows="3" placeholder="e.g. Please send Venmo deposit to @Blushed_Crumbs with Order # in memo..." style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-pink-subtle); font-size:0.9rem; font-family:inherit;"></textarea>
                 </div>
 
-                <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid #eee; padding-top:16px;">
+                <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border-subtle); padding-top:16px;">
                     <button type="button" class="btn btn-outline" onclick="closeInvoiceEditModal()">Cancel</button>
                     <button type="button" class="btn btn-outline" onclick="saveInvoiceEdits()" style="border-color:var(--primary); color:var(--primary);">Save Invoice</button>
                     <button type="button" class="btn btn-primary" onclick="saveAndSendInvoice()">Save &amp; Send</button>
@@ -4074,7 +4328,7 @@
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--theme-section-bg, #e9d5ff); padding-bottom:12px; margin-bottom:16px;">
             <div>
                 <h3 style="margin:0; color:var(--dark-text); font-size:1.2rem; font-family:'Outfit',sans-serif;">Device Gallery Media Picker</h3>
-                <p style="margin:2px 0 0 0; font-size:0.82rem; color:#666;">Click any photo thumbnail to attach it to this section.</p>
+                <p style="margin:2px 0 0 0; font-size:0.82rem; color:var(--light-text);">Click any photo thumbnail to attach it to this section.</p>
             </div>
             <button type="button" class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeGalleryPickerModal()">✕</button>
         </div>
@@ -4088,9 +4342,9 @@
                     <span style="font-size:0.7rem; color:var(--primary);">{{ $gItem->category }}</span>
                 </div>
             @empty
-                <div style="grid-column:1 / -1; text-align:center; padding:30px; color:#666;">
+                <div style="grid-column:1 / -1; text-align:center; padding:30px; color:var(--light-text);">
                     <p style="margin:0; font-weight:600;">No images in Device Gallery yet.</p>
-                    <p style="font-size:0.8rem; color:#888;">Upload photos under the <strong>Device Gallery</strong> sidebar tab first or upload directly below.</p>
+                    <p style="font-size:0.8rem; color:var(--text-faint);">Upload photos under the <strong>Device Gallery</strong> sidebar tab first or upload directly below.</p>
                 </div>
             @endforelse
         </div>
@@ -4128,8 +4382,8 @@
     <div class="order-modal-card" style="max-width: 650px; width:92%; max-height:85vh; overflow-y:auto; display:flex; flex-direction:column; background:#ffffff; border-radius:16px; border:2px solid var(--primary); padding:20px; box-shadow:0 20px 50px rgba(230,115,153,0.2);">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--theme-section-bg, #f8c6d7); padding-bottom:12px; margin-bottom:16px;">
             <div>
-                <h3 style="margin:0; color:#5c1d37; font-size:1.2rem; font-family:'Outfit',sans-serif;">Edit Terms &amp; Policy Text</h3>
-                <p style="margin:2px 0 0 0; font-size:0.82rem; color:#666;">Leave blank to show the default message: <em>"Please consult the bakery directly for their order policies and terms."</em></p>
+                <h3 style="margin:0; color:var(--admin-heading); font-size:1.2rem; font-family:'Outfit',sans-serif;">Edit Terms &amp; Policy Text</h3>
+                <p style="margin:2px 0 0 0; font-size:0.82rem; color:var(--light-text);">Leave blank to show the default message: <em>"Please consult the bakery directly for their order policies and terms."</em></p>
             </div>
             <button type="button" class="btn btn-outline" style="border:none; font-size:1.2rem; cursor:pointer;" onclick="closeTermsEditModal()">✕</button>
         </div>
@@ -4156,7 +4410,7 @@
         <div id="tour-step-dots" style="display:flex; justify-content:center; gap:8px; margin-bottom:22px;"></div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-            <button type="button" class="btn btn-outline" onclick="skipAdminTour()" style="font-size:0.82rem; color:#888; border-color:#ddd;">Skip Tour</button>
+            <button type="button" class="btn btn-outline" onclick="skipAdminTour()" style="font-size:0.82rem; color:var(--text-faint); border-color:var(--border-light);">Skip Tour</button>
             <div style="display:flex; gap:10px;">
                 <button type="button" class="btn btn-outline" id="tour-back-btn" onclick="prevAdminTourStep()">← Back</button>
                 <button type="button" class="btn btn-primary" id="tour-next-btn" onclick="nextAdminTourStep()" style="background:var(--primary); border:none;">Next →</button>
