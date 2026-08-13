@@ -9,6 +9,24 @@
     --dark-text: #4a2133;
     --light-text: #666666;
     --card-shadow: 0 8px 30px rgba(74, 33, 51, 0.08);
+
+    /* Admin dashboard chrome tokens — Phase 1 of the admin design-token
+       extraction (dashboard.blade.php had ~150+ raw hex literals repeated
+       across ~4,000 lines instead of referencing shared values). Each one
+       defaults to the exact hex it's replacing, so introducing them is a
+       zero-visual-diff change; these are neutral utility colors (headings,
+       muted text, borders, danger actions) shared by every tenant's admin
+       view regardless of their storefront theme — deliberately NOT wired
+       to shift per `body.theme-*` the way --primary/--dark-text do, since
+       that's a real brand decision (should a baker's own dashboard chrome
+       match their storefront?) left for a deliberate follow-up, not an
+       accidental side effect of a token refactor. */
+    --admin-heading: #5c1d37;
+    --text-faint: #888888;
+    --border-light: #dddddd;
+    --border-subtle: #eeeeee;
+    --border-pink-subtle: #f0e4ea;
+    --danger: #d9534f;
 }
 
 /* Google Fonts' official base rule for the Material Symbols ligature font
