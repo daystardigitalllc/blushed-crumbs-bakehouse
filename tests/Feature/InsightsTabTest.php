@@ -104,4 +104,44 @@ class InsightsTabTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('50%'); // 1 of 2 customers is a repeat customer
     }
+
+    /**
+     * Regression test for the orders.status CHECK constraint on SQLite: the
+     * 2026_08_02_182724_add_paid_to_orders_status_enum migration must actually
+     * widen the constraint on SQLite (not just MySQL), since the Insights
+     * revenue calculations above rely on 'paid' being a valid order status.
+     */
+    public function test_order_can_be_created_with_paid_status(): void
+    {
+        $tenant = Tenant::create([
+            'name' => 'Insights Test Bakery',
+            'slug' => 'insights-test-' . Str::random(8),
+            'owner_name' => 'Test Owner',
+            'email' => Str::random(8) . '@example.com',
+            'plan_tier' => 'free',
+            'theme_id' => 'rustic_kitchen',
+            'is_active' => true,
+        ]);
+
+        $order = Order::create([
+            'tenant_id' => $tenant->id,
+            'order_number' => 'ORD-' . Str::random(8),
+            'client_name' => 'Jane Doe',
+            'client_email' => 'jane@example.com',
+            'client_phone' => '555-1234',
+            'due_date' => now()->addDays(7),
+            'items' => [['name' => 'Custom Cake', 'qty' => 1]],
+            'subtotal' => 100.00,
+            'discount_amount' => 0,
+            'total_price' => 100.00,
+            'deposit_amount' => 50.00,
+            'deposit_paid' => true,
+            'status' => 'paid',
+        ]);
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'status' => 'paid',
+        ]);
+    }
 }
