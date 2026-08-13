@@ -61,6 +61,7 @@ class PresaleController extends Controller
             'due_date' => 'required|date_format:Y-m-d',
             'fulfillment_type' => 'required|string|in:pickup,delivery',
             'delivery_address' => 'nullable|string|max:500',
+            'special_notes' => 'nullable|string|max:2000',
             'items' => 'required|array|min:1',
             'items.*.presale_item_id' => 'required|integer',
             'items.*.quantity' => 'required|integer|min:1',
@@ -137,6 +138,7 @@ class PresaleController extends Controller
         $clientEmail = filter_var(trim($validated['client_email']), FILTER_SANITIZE_EMAIL);
         $clientPhone = strip_tags(trim($validated['client_phone']));
         $deliveryAddress = !empty($validated['delivery_address']) ? strip_tags(trim($validated['delivery_address'])) : null;
+        $specialNotes = !empty($validated['special_notes']) ? strip_tags(trim($validated['special_notes'])) : null;
 
         $customer = Customer::findOrCreateFromOrder($tenant->id, $clientName, $clientEmail, $clientPhone);
 
@@ -152,6 +154,7 @@ class PresaleController extends Controller
             'due_date' => $dueDate->format('Y-m-d'),
             'fulfillment_type' => $validated['fulfillment_type'],
             'delivery_address' => $deliveryAddress,
+            'special_notes' => $specialNotes,
             'items' => $lineItems,
             'total_price' => $total,
             'deposit_amount' => 0,

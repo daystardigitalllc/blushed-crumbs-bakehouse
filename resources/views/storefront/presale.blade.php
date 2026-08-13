@@ -215,6 +215,8 @@
                     <input type="tel" id="presale-client-phone" placeholder="(555) 555-5555">
                 </div>
             </div>
+            <label>Message, Flavor, or Theme Requests (optional)</label>
+            <textarea id="presale-special-notes" rows="3" placeholder="Let us know any flavor preferences, theme ideas, or special requests..." style="margin-bottom:0;"></textarea>
         </div>
 
         <div class="error-msg" id="presale-error"></div>
@@ -333,6 +335,7 @@
         const clientPhone = document.getElementById('presale-client-phone').value.trim();
         const dueDate = document.getElementById('presale-due-date').value;
         const deliveryAddress = document.getElementById('presale-delivery-address')?.value.trim() || '';
+        const specialNotes = document.getElementById('presale-special-notes')?.value.trim() || '';
 
         if (items.length === 0) {
             errorEl.textContent = 'Please select at least one item.';
@@ -376,6 +379,7 @@
                     due_date: dueDate,
                     fulfillment_type: fulfillment,
                     delivery_address: deliveryAddress || null,
+                    special_notes: specialNotes || null,
                     items: items,
                 })
             });
