@@ -135,6 +135,10 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                     <span>Invoices &amp; Payments</span>
                 </button>
+                <button class="admin-nav-item" data-tab="tab-customers">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Customers</span>
+                </button>
                 <button class="admin-nav-item" data-tab="tab-calendar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     <span>Availability &amp; Dates</span>
@@ -238,10 +242,7 @@
                         <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">Pending Orders</p>
                         <p style="font-size:1.7rem; font-weight:800; color:var(--admin-heading); margin:0;">{{ $pendingOrders }}</p>
                     </div>
-                    {{-- Not clickable like the other tiles — there's no dedicated
-                         customers tab to send it to; $customers is queried by the
-                         controller but has no browsable list anywhere in this view yet. --}}
-                    <div class="form-builder-card" style="text-align:center;">
+                    <div class="form-builder-card" style="text-align:center; cursor:pointer;" onclick="window.switchDashboardTab('tab-customers')">
                         <p style="font-size:0.78rem; color:var(--text-faint); text-transform:uppercase; font-weight:700; margin-bottom:6px;">Total Customers</p>
                         <p style="font-size:1.7rem; font-weight:800; color:var(--admin-heading); margin:0;">{{ $customerCount }}</p>
                     </div>
@@ -2724,6 +2725,73 @@
                                 </div>
                             @empty
                                 <p style="color:var(--text-faint); text-align:center; padding:20px;">No reviews added yet. Use the form above to publish client reviews!</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Customers — $customers was already queried by the controller
+                 (sorted by total_spent desc) for a long time with no view ever
+                 rendering it; every customer here comes either from a real order
+                 (Customer::findOrCreateFromOrder) or manual entry via the form
+                 below, which POSTs to the already-existing storeCustomer
+                 endpoint. No delete action — a customer row can be the only
+                 record tying historical orders together (Order::customer_id),
+                 so removing one isn't a safe no-side-effect action the way
+                 deleting a subscriber or review is. -->
+            <div id="tab-customers" class="tab-content">
+                <div class="section-header">
+                    <h3>Customers</h3>
+                    <p class="subtitle">Everyone who's ordered from you, plus anyone you've added by hand.</p>
+                </div>
+
+                <div style="display:grid; grid-template-columns:minmax(280px, 380px) 1fr; gap:20px; align-items:start;">
+                    <!-- ADD CUSTOMER CARD -->
+                    <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
+                        <h4 style="color:var(--admin-heading); margin-bottom:12px;">Add a Customer</h4>
+                        <form id="add-customer-form" style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Name</label>
+                                <input type="text" id="cust-name" placeholder="e.g. Priya Patel" required style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
+                            </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Email (optional)</label>
+                                <input type="email" id="cust-email" placeholder="customer@email.com" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
+                            </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Phone (optional)</label>
+                                <input type="text" id="cust-phone" placeholder="(555) 123-4567" style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light);">
+                            </div>
+                            <div>
+                                <label style="font-weight:700; font-size:0.85rem; color:var(--admin-heading); display:block; margin-bottom:4px;">Notes (optional)</label>
+                                <textarea id="cust-notes" placeholder="Allergy notes, preferences, anything worth remembering..." style="width:100%; height:70px; padding:10px 14px; border-radius:10px; border:1px solid var(--border-light); font-family:inherit;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Add Customer</button>
+                        </form>
+                    </div>
+
+                    <!-- CUSTOMER LIST -->
+                    <div class="form-builder-card">
+                        <h4>{{ $customerCount }} Customer{{ $customerCount === 1 ? '' : 's' }}</h4>
+                        <p style="font-size:0.85rem; color:var(--light-text); margin-bottom:14px;">Sorted by total spent.</p>
+
+                        <div id="admin-customers-list" style="display:flex; flex-direction:column; gap:10px;">
+                            @forelse($customers as $cust)
+                                <div class="customer-item-row" data-id="{{ $cust->id }}" style="background:white; padding:14px 16px; border-radius:12px; border:1px solid var(--border-pink-subtle); box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap;">
+                                    <div>
+                                        <strong style="color:var(--admin-heading); font-size:0.98rem;">{{ $cust->name }}</strong>
+                                        <div style="font-size:0.8rem; color:var(--text-faint); margin-top:2px;">
+                                            {{ collect([$cust->email, $cust->phone])->filter()->implode(' · ') ?: 'No contact info on file' }}
+                                        </div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <div style="font-weight:800; color:var(--primary); font-size:1rem;">${{ number_format($cust->total_spent ?? 0, 2) }}</div>
+                                        <div style="font-size:0.78rem; color:var(--text-faint);">{{ $cust->order_count ?? 0 }} order{{ ($cust->order_count ?? 0) === 1 ? '' : 's' }}</div>
+                                    </div>
+                                </div>
+                            @empty
+                                <p id="no-customers-msg" style="color:var(--text-faint); text-align:center; padding:20px;">No customers yet — they'll appear here automatically the first time someone orders, or you can add one by hand.</p>
                             @endforelse
                         </div>
                     </div>

@@ -1139,9 +1139,9 @@ class AdminController extends Controller
         $customer = Customer::create([
             'tenant_id' => $tenant->id,
             'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'notes' => $validated['notes'],
+            'email' => $validated['email'] ?? null,
+            'phone' => $validated['phone'] ?? null,
+            'notes' => $validated['notes'] ?? null,
         ]);
 
         return response()->json([

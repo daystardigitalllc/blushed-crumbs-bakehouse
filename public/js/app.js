@@ -2819,6 +2819,51 @@ window.deleteProduct = async function(productId, btnElement) {
         });
     }
 
+    // Add Customer Form (Customers tab)
+    const custForm = document.getElementById('add-customer-form');
+    if (custForm) {
+        custForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('cust-name');
+            const emailInput = document.getElementById('cust-email');
+            const phoneInput = document.getElementById('cust-phone');
+            const notesInput = document.getElementById('cust-notes');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+            fetch('/dashboard/customers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: nameInput.value,
+                    email: emailInput.value,
+                    phone: phoneInput.value,
+                    notes: notesInput.value,
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.customer) {
+                    addCustomerRow(data.customer);
+                    nameInput.value = '';
+                    emailInput.value = '';
+                    phoneInput.value = '';
+                    notesInput.value = '';
+                    if (window.showToast) window.showToast('Customer added!', 'success');
+                } else {
+                    alert(data.message || 'Could not add customer.');
+                }
+            })
+            .catch(err => {
+                console.error('Error adding customer:', err);
+                alert('An error occurred.');
+            });
+        });
+    }
+
     // Add Subscriber Form (Email Marketing tab)
     const subForm = document.getElementById('add-subscriber-form');
     if (subForm) {
@@ -2957,6 +3002,37 @@ function subscriberCountDelta(delta) {
     if (sendBtn) {
         sendBtn.textContent = `Send to ${next} Subscriber${next === 1 ? '' : 's'}`;
     }
+}
+
+function addCustomerRow(customer) {
+    const list = document.getElementById('admin-customers-list');
+    if (!list) return;
+
+    const emptyMsg = document.getElementById('no-customers-msg');
+    if (emptyMsg) emptyMsg.remove();
+
+    const row = document.createElement('div');
+    row.className = 'customer-item-row';
+    row.dataset.id = customer.id;
+    row.style.cssText = 'background:white; padding:14px 16px; border-radius:12px; border:1px solid var(--border-pink-subtle); box-shadow:0 4px 12px rgba(0,0,0,0.03); display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap;';
+
+    const contact = [customer.email, customer.phone].filter(Boolean).join(' · ') || 'No contact info on file';
+    const totalSpent = parseFloat(customer.total_spent || 0).toFixed(2);
+    const orderCount = customer.order_count || 0;
+
+    row.innerHTML = `
+        <div>
+            <strong style="color:var(--admin-heading); font-size:0.98rem;"></strong>
+            <div style="font-size:0.8rem; color:var(--text-faint); margin-top:2px;"></div>
+        </div>
+        <div style="text-align:right;">
+            <div style="font-weight:800; color:var(--primary); font-size:1rem;">$${totalSpent}</div>
+            <div style="font-size:0.78rem; color:var(--text-faint);">${orderCount} order${orderCount === 1 ? '' : 's'}</div>
+        </div>
+    `;
+    row.querySelector('strong').textContent = customer.name;
+    row.querySelector('div > div').textContent = contact;
+    list.prepend(row);
 }
 
 function addSubscriberRows(subscribers) {
