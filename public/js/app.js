@@ -812,12 +812,20 @@ function init12StepOrderForm() {
         });
     }
 
-    // Step 11: Terms Checkbox Enablement
+    // Terms Checkbox Enablement — the Accept button's id is
+    // `to-step-{{ $nextStepNum }}` (order_modal.blade.php), a number
+    // derived from this tenant's own custom form_schema step order, not a
+    // fixed value. A hardcoded 'to-step-12' here only happened to work for
+    // a tenant whose terms step landed at exactly step 11; for any other
+    // step order (e.g. blushedcrumbsbakehouse's) the button was never
+    // found, so the checkbox never enabled it. Scoping the lookup to the
+    // checkbox's own step container finds the right button regardless of
+    // its number.
     const termsCheck = document.getElementById('terms-agree-checkbox');
-    const step11Next = document.getElementById('to-step-12');
-    if (termsCheck && step11Next) {
+    const termsNextBtn = termsCheck?.closest('.step')?.querySelector('.next-btn');
+    if (termsCheck && termsNextBtn) {
         termsCheck.addEventListener('change', () => {
-            step11Next.disabled = !termsCheck.checked;
+            termsNextBtn.disabled = !termsCheck.checked;
         });
     }
 
