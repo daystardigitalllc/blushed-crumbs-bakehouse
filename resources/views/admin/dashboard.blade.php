@@ -143,6 +143,11 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     <span>Availability &amp; Dates</span>
                 </button>
+                <button class="admin-nav-item" data-tab="tab-presale">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"></path><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"></path><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4z"></path></svg>
+                    <span>Presale</span>
+                    @if(!empty($presaleSettings['enabled']))<span class="nav-inquiries-badge" style="background:#16a34a;">LIVE</span>@endif
+                </button>
 
                 <div class="sidebar-category-title" style="margin-top: 14px;">Catalog &amp; Storefront</div>
                 <button class="admin-nav-item" data-tab="tab-products">
@@ -730,6 +735,9 @@
 
                                 <div class="oc-header-bottomrow">
                                     <div class="oc-badges">
+                                        @if(($order->source ?? 'custom') === 'presale')
+                                            <span class="allergy-pinned-badge" style="background:#f9e0eb; color:#7a2b4a;">🎃 PRESALE</span>
+                                        @endif
                                         @if($order->allergies)
                                             <span class="allergy-pinned-badge">⚠️ ALLERGIES</span>
                                         @endif
@@ -2315,6 +2323,146 @@
                         <p style="font-size:0.76rem; color:#999; margin-top:8px; margin-bottom:0;">Shows your unsaved edits as you type — nothing here is public until you click <strong>Save All Changes</strong>. Use <strong>Show Live</strong> to see what's actually published right now.</p>
                     </div>
                 </div>
+                </div>
+            </div>
+
+            <div id="tab-presale" class="tab-content">
+                <div class="section-header">
+                    <h3>Presale</h3>
+                    <p class="subtitle">Run a limited-time predesigned menu (e.g. a holiday collection) that customers can check out from instantly — separate from your custom order form.</p>
+                </div>
+
+                <div class="form-builder-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa);">
+                    <div class="settings-toggle-row" id="presale-enabled-toggle-row">
+                        <div>
+                            <strong>Presale is {{ !empty($presaleSettings['enabled']) ? 'live' : 'off' }}</strong>
+                            <p style="font-size:0.82rem; color:#888; margin-top:2px;">When on, a "Shop Presale" button appears on your storefront linking to your presale menu.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="presale-enabled" {{ !empty($presaleSettings['enabled']) ? 'checked' : '' }} onchange="window.savePresaleSettings()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    @if(empty($tenant->normalizedPaymentMethods()))
+                        <p style="font-size:0.82rem; color:#b45309; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:10px 14px; margin-top:14px;">
+                            ⚠️ Set up at least one payment method in Invoices &amp; Payments before turning presale on — customers won't be able to check out without it.
+                        </p>
+                    @endif
+                </div>
+
+                <div class="form-builder-card" style="margin-top:20px;">
+                    <h4>Presale Details</h4>
+                    <div class="form-builder-grid" style="margin-top:12px;">
+                        <div>
+                            <label>Presale Title</label>
+                            <input type="text" id="presale-title" value="{{ $presaleSettings['title'] ?? 'Holiday Presale' }}" placeholder="e.g. Halloween Presale">
+                        </div>
+                        <div>
+                            <label>Subtitle</label>
+                            <input type="text" id="presale-subtitle" value="{{ $presaleSettings['subtitle'] ?? '' }}" placeholder="e.g. Spooky treats made sweet">
+                        </div>
+                        <div>
+                            <label>Pickup Window Start</label>
+                            <input type="date" id="presale-pickup-start" value="{{ $presaleSettings['pickup_start_date'] ?? '' }}">
+                        </div>
+                        <div>
+                            <label>Pickup Window End</label>
+                            <input type="date" id="presale-pickup-end" value="{{ $presaleSettings['pickup_end_date'] ?? '' }}">
+                        </div>
+                        <div>
+                            <label>Sales Tax Rate (%)</label>
+                            <input type="number" id="presale-tax-rate" value="{{ $presaleSettings['tax_rate'] ?? 0 }}" min="0" max="100" step="0.01" placeholder="e.g. 7.25">
+                        </div>
+                    </div>
+
+                    <div class="settings-toggle-row" style="margin-top:18px;">
+                        <div>
+                            <strong>Offer delivery for presale orders</strong>
+                            <p style="font-size:0.82rem; color:#888; margin-top:2px;">If off, customers can only pick up presale orders.</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="presale-delivery-enabled" {{ !empty($presaleSettings['delivery_enabled']) ? 'checked' : '' }} onchange="document.getElementById('presale-delivery-fee-wrapper').style.display = this.checked ? 'block' : 'none';">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div id="presale-delivery-fee-wrapper" style="display:{{ !empty($presaleSettings['delivery_enabled']) ? 'block' : 'none' }}; margin-top:12px; max-width:240px;">
+                        <label>Delivery Fee ($)</label>
+                        <input type="number" id="presale-delivery-fee" value="{{ $presaleSettings['delivery_fee'] ?? 0 }}" min="0" step="0.01">
+                    </div>
+
+                    <div style="margin-top:18px;">
+                        <button type="button" class="btn btn-primary" onclick="window.savePresaleSettings()">Save Presale Settings</button>
+                        <span id="presale-settings-save-msg" style="display:none; color:#16a34a; font-weight:700; margin-left:10px; font-size:0.85rem;">✓ Saved</span>
+                    </div>
+                </div>
+
+                <!-- COLLAPSIBLE ADD PRESALE ITEM DRAWER -->
+                <div class="form-builder-card" id="add-presale-item-drawer-card" style="border:2px solid var(--primary); background:var(--theme-section-bg, #fff7fa); margin-top:25px; padding:0; overflow:hidden;">
+                    <div onclick="toggleAddPresaleItemDrawer()" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:16px 20px; user-select:none;">
+                        <h4 style="color:#5c1d37; margin:0; font-size:1.1rem; font-weight:700;">+ Add Presale Item</h4>
+                        <span id="add-presale-item-drawer-chevron" style="font-size:0.9rem; color:var(--primary); font-weight:bold;">▼</span>
+                    </div>
+
+                    <div id="add-presale-item-drawer-content" style="display:none; padding:0 20px 20px 20px; border-top:1px solid #f0e4ea; margin-top:0;">
+                        <div class="form-builder-grid" style="margin-top:16px;">
+                            <div>
+                                <label>Item Name</label>
+                                <input type="text" id="new-presale-name" placeholder="e.g. 6&quot; Heart Stab Cake">
+                            </div>
+                            <div>
+                                <label>Price ($)</label>
+                                <input type="number" id="new-presale-price" placeholder="65.00" step="0.01">
+                            </div>
+                            <div>
+                                <label>Unit Label</label>
+                                <input type="text" id="new-presale-unit" placeholder="each, dozen, loaf..." value="each">
+                            </div>
+                            <div>
+                                <label>Minimum Order Quantity</label>
+                                <input type="number" id="new-presale-min-qty" placeholder="1" value="1" min="1">
+                            </div>
+                            <div style="grid-column: 1 / -1;">
+                                <label>Description (optional)</label>
+                                <textarea id="new-presale-description" rows="2" placeholder="Short description shown to customers..."></textarea>
+                            </div>
+                            <div style="grid-column: 1 / -1;">
+                                <label>Photo (optional)</label>
+                                <input type="file" accept="image/*" onchange="window.uploadSectionMedia(this, 'new-presale-photo-path')">
+                                <input type="hidden" id="new-presale-photo-path" value="">
+                            </div>
+                            <div style="grid-column: 1 / -1; margin-top:8px;">
+                                <button type="button" class="btn btn-primary" style="width:100%;" onclick="window.addPresaleItem()">+ Add Item to Presale Menu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-builder-card" style="margin-top:20px;">
+                    <h4>Presale Menu Items</h4>
+                    <div id="presale-items-admin-grid">
+                        @forelse($presaleItems as $pItem)
+                            <div class="presale-item-row" data-id="{{ $pItem->id }}" style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid #f0e4ea; flex-wrap:wrap;">
+                                <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:200px;">
+                                    @if($pItem->photo_path)
+                                        <img src="{{ asset($pItem->photo_path) }}" alt="" style="width:44px; height:44px; object-fit:cover; border-radius:8px; border:1px solid #f0e4ea;">
+                                    @endif
+                                    <div>
+                                        <strong style="color:#5c1d37;">{{ $pItem->name }}</strong>
+                                        <span style="background:#f9e0eb; color:#7a2b4a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-left:8px;">min {{ $pItem->min_quantity }} {{ $pItem->unit_label }}</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:0.85rem; color:#999;">$</span>
+                                    <input type="number" step="0.01" value="{{ number_format($pItem->price, 2, '.', '') }}" class="presale-price-input" style="width:80px;">
+                                    <span style="font-size:0.8rem; color:#888;">/ {{ $pItem->unit_label }}</span>
+                                    <button class="btn btn-sm btn-secondary" onclick="window.updatePresaleItemPrice({{ $pItem->id }}, this)">Save</button>
+                                    <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="window.deletePresaleItem({{ $pItem->id }}, this)">✕</button>
+                                </div>
+                            </div>
+                        @empty
+                            <p style="font-size:0.9rem; color:#888; padding:16px;">No presale items yet — add your first one above.</p>
+                        @endforelse
+                    </div>
                 </div>
             </div>
 

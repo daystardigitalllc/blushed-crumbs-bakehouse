@@ -2459,6 +2459,196 @@ window.deleteProduct = async function(productId, btnElement) {
     }
 };
 
+/* ============================================
+   PRESALE TAB
+   ============================================ */
+
+window.toggleAddPresaleItemDrawer = function() {
+    const content = document.getElementById('add-presale-item-drawer-content');
+    const chevron = document.getElementById('add-presale-item-drawer-chevron');
+    if (!content) return;
+    const isOpen = content.style.display === 'block';
+    content.style.display = isOpen ? 'none' : 'block';
+    if (chevron) chevron.textContent = isOpen ? '▼' : '▲';
+};
+
+window.savePresaleSettings = function() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    const payload = {
+        enabled: document.getElementById('presale-enabled')?.checked || false,
+        title: document.getElementById('presale-title')?.value || '',
+        subtitle: document.getElementById('presale-subtitle')?.value || '',
+        pickup_start_date: document.getElementById('presale-pickup-start')?.value || null,
+        pickup_end_date: document.getElementById('presale-pickup-end')?.value || null,
+        tax_rate: parseFloat(document.getElementById('presale-tax-rate')?.value || '0'),
+        delivery_enabled: document.getElementById('presale-delivery-enabled')?.checked || false,
+        delivery_fee: parseFloat(document.getElementById('presale-delivery-fee')?.value || '0'),
+    };
+
+    fetch('/dashboard/settings/presale', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const msg = document.getElementById('presale-settings-save-msg');
+            if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
+            if (typeof showToast === 'function') showToast('Presale settings saved!');
+        } else {
+            alert(data.message || 'Error saving presale settings.');
+        }
+    })
+    .catch(err => {
+        console.error('Save presale settings error:', err);
+        alert('An error occurred while saving presale settings.');
+    });
+};
+
+window.addPresaleItem = async function() {
+    const name = document.getElementById('new-presale-name')?.value.trim();
+    const price = document.getElementById('new-presale-price')?.value;
+    const unitLabel = document.getElementById('new-presale-unit')?.value.trim() || 'each';
+    const minQty = document.getElementById('new-presale-min-qty')?.value || 1;
+    const description = document.getElementById('new-presale-description')?.value.trim();
+    const photoPath = document.getElementById('new-presale-photo-path')?.value;
+
+    if (!name || !price) {
+        alert('Please enter at least a name and price.');
+        return;
+    }
+
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        const response = await fetch('/dashboard/presale-items', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                name, price, unit_label: unitLabel, min_quantity: minQty,
+                description: description || null, photo_path: photoPath || null,
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+            const grid = document.getElementById('presale-items-admin-grid');
+            if (grid) {
+                const emptyState = grid.querySelector('p');
+                if (emptyState) emptyState.remove();
+
+                const item = data.item;
+                const row = document.createElement('div');
+                row.className = 'presale-item-row';
+                row.dataset.id = item.id;
+                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid #f0e4ea; flex-wrap:wrap;';
+                const photoHtml = item.photo_path
+                    ? `<img src="/${item.photo_path}" alt="" style="width:44px; height:44px; object-fit:cover; border-radius:8px; border:1px solid #f0e4ea;">`
+                    : '';
+                row.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:200px;">
+                        ${photoHtml}
+                        <div>
+                            <strong style="color:#5c1d37;">${item.name}</strong>
+                            <span style="background:#f9e0eb; color:#7a2b4a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:20px; margin-left:8px;">min ${item.min_quantity} ${item.unit_label}</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:0.85rem; color:#999;">$</span>
+                        <input type="number" step="0.01" value="${parseFloat(item.price).toFixed(2)}" class="presale-price-input" style="width:80px;">
+                        <span style="font-size:0.8rem; color:#888;">/ ${item.unit_label}</span>
+                        <button class="btn btn-sm btn-secondary" onclick="window.updatePresaleItemPrice(${item.id}, this)">Save</button>
+                        <button class="btn btn-sm btn-outline" style="color:#d9534f; border-color:#d9534f;" onclick="window.deletePresaleItem(${item.id}, this)">✕</button>
+                    </div>
+                `;
+                grid.appendChild(row);
+            }
+
+            // Reset the add-item form for the next entry
+            document.getElementById('new-presale-name').value = '';
+            document.getElementById('new-presale-price').value = '';
+            document.getElementById('new-presale-unit').value = 'each';
+            document.getElementById('new-presale-min-qty').value = '1';
+            const descEl = document.getElementById('new-presale-description');
+            if (descEl) descEl.value = '';
+            const photoInput = document.getElementById('new-presale-photo-path');
+            if (photoInput) photoInput.value = '';
+
+            if (typeof showToast === 'function') showToast('Presale item added!');
+        } else {
+            alert(data.message || 'Error adding presale item.');
+        }
+    } catch (err) {
+        console.error('Add presale item error:', err);
+        alert('An error occurred while adding the presale item.');
+    }
+};
+
+window.updatePresaleItemPrice = async function(itemId, btnElement) {
+    const row = btnElement.closest('.presale-item-row');
+    if (!row) return;
+    const priceInput = row.querySelector('.presale-price-input');
+    if (!priceInput) return;
+    const newPrice = parseFloat(priceInput.value);
+
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        const response = await fetch(`/dashboard/presale-items/${itemId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ price: newPrice })
+        });
+        const data = await response.json();
+        if (data.success) {
+            if (typeof showToast === 'function') showToast('Presale item price updated!');
+        } else {
+            alert(data.message || 'Error updating presale item.');
+        }
+    } catch (err) {
+        console.error('Update presale item error:', err);
+        alert('An error occurred while updating the presale item.');
+    }
+};
+
+window.deletePresaleItem = async function(itemId, btnElement) {
+    if (!confirm('Are you sure you want to delete this presale item?')) return;
+    const row = btnElement.closest('.presale-item-row');
+
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        const response = await fetch(`/dashboard/presale-items/${itemId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        });
+        const data = await response.json();
+        if (data.success) {
+            if (row) row.remove();
+            if (typeof showToast === 'function') showToast('Presale item deleted!');
+        } else {
+            alert(data.message || 'Error deleting presale item.');
+        }
+    } catch (err) {
+        console.error('Delete presale item error:', err);
+        alert('An error occurred while deleting the presale item.');
+    }
+};
+
     // Add Gallery Image Form (Device Upload Supported via AJAX!)
     const galleryForm = document.getElementById('add-gallery-form');
     if (galleryForm) {

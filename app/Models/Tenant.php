@@ -73,6 +73,7 @@ class Tenant extends Model implements TenancyContract
         'site_content',
         'section_settings',
         'booking_settings',
+        'presale_settings',
         'calendar_configured_at',
         'ai_generated_content',
         'onboarding_completed',
@@ -93,6 +94,7 @@ class Tenant extends Model implements TenancyContract
         'section_colors' => 'array',
         'order_form_design' => 'array',
         'booking_settings' => 'array',
+        'presale_settings' => 'array',
         'ai_generated_content' => 'array',
         'gallery_images' => 'array',
         'gallery_categories' => 'array',
@@ -1004,6 +1006,29 @@ class Tenant extends Model implements TenancyContract
         }
 
         return $out;
+    }
+
+    /**
+     * The baker's presale (predesigned-menu instant checkout) config, merged
+     * over defaults so every reader gets a complete shape regardless of what
+     * has actually been saved yet.
+     */
+    public function normalizedPresaleSettings(): array
+    {
+        $defaults = [
+            'enabled' => false,
+            'title' => 'Holiday Presale',
+            'subtitle' => '',
+            'pickup_start_date' => null,
+            'pickup_end_date' => null,
+            'tax_rate' => 0,
+            'delivery_enabled' => false,
+            'delivery_fee' => 0,
+        ];
+
+        $raw = is_array($this->presale_settings) ? $this->presale_settings : [];
+
+        return array_merge($defaults, $raw);
     }
 
     /**

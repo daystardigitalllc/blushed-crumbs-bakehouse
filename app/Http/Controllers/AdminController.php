@@ -10,6 +10,7 @@ use App\Models\Tenant;
 use App\Models\Order;
 use App\Models\Invoice;
 use App\Models\Product;
+use App\Models\PresaleItem;
 use App\Models\Review;
 use App\Models\Customer;
 use App\Models\GalleryItem;
@@ -90,6 +91,8 @@ class AdminController extends Controller
         $allOrders = Order::where('tenant_id', $tenant->id)->orderBy('due_date', 'asc')->get();
         $invoices = Invoice::where('tenant_id', $tenant->id)->latest()->get();
         $products = Product::where('tenant_id', $tenant->id)->orderBy('sort_order')->get();
+        $presaleItems = PresaleItem::where('tenant_id', $tenant->id)->orderBy('sort_order')->get();
+        $presaleSettings = $tenant->normalizedPresaleSettings();
         $reviews = Review::where('tenant_id', $tenant->id)->latest()->get();
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
         $supportTickets = SupportTicket::where('tenant_id', $tenant->id)->latest()->get();
@@ -192,7 +195,7 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact(
             'tenant', 'urgentOrders', 'allOrders', 'invoices',
-            'products', 'reviews', 'gallery', 'supportTickets',
+            'products', 'presaleItems', 'presaleSettings', 'reviews', 'gallery', 'supportTickets',
             'customers', 'totalRevenue', 'pendingOrders', 'customerCount',
             'serverBookingSettings', 'siteContent', 'emailSubscribers', 'emailCampaigns',
             'onboardingChecklist', 'onboardingComplete',
@@ -269,6 +272,43 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'Booking availability settings saved!',
             'settings' => $tenant->booking_settings,
+        ]);
+    }
+
+    public function savePresaleSettings(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        $validated = $request->validate([
+            'enabled' => 'sometimes|boolean',
+            'title' => 'nullable|string|max:255',
+            'subtitle' => 'nullable|string|max:500',
+            'pickup_start_date' => 'nullable|date_format:Y-m-d',
+            'pickup_end_date' => 'nullable|date_format:Y-m-d|after_or_equal:pickup_start_date',
+            'tax_rate' => 'nullable|numeric|min:0|max:100',
+            'delivery_enabled' => 'sometimes|boolean',
+            'delivery_fee' => 'nullable|numeric|min:0',
+        ]);
+
+        $settings = array_merge($tenant->normalizedPresaleSettings(), [
+            'enabled' => $request->boolean('enabled'),
+            'title' => $validated['title'] ?? 'Holiday Presale',
+            'subtitle' => $validated['subtitle'] ?? '',
+            'pickup_start_date' => $validated['pickup_start_date'] ?? null,
+            'pickup_end_date' => $validated['pickup_end_date'] ?? null,
+            'tax_rate' => (float) ($validated['tax_rate'] ?? 0),
+            'delivery_enabled' => $request->boolean('delivery_enabled'),
+            'delivery_fee' => (float) ($validated['delivery_fee'] ?? 0),
+        ]);
+
+        $tenant->presale_settings = $settings;
+        $tenant->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Presale settings saved!',
+            'settings' => $settings,
+            'needs_payment_setup' => empty($tenant->normalizedPaymentMethods()),
         ]);
     }
 
@@ -1733,5 +1773,77 @@ class AdminController extends Controller
         }
 
         return redirect()->back()->with('success', 'Product deleted successfully!');
+    }
+
+    // ─── Presale Items ───
+
+    public function storePresaleItem(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'price' => 'required|numeric|min:0',
+            'unit_label' => 'nullable|string|max:50',
+            'min_quantity' => 'nullable|integer|min:1',
+            'photo_path' => 'nullable|string|max:500',
+        ]);
+
+        $maxSort = PresaleItem::where('tenant_id', $tenant->id)->max('sort_order') ?? 0;
+
+        $item = PresaleItem::create([
+            'tenant_id' => $tenant->id,
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'price' => $validated['price'],
+            'unit_label' => $validated['unit_label'] ?: 'each',
+            'min_quantity' => $validated['min_quantity'] ?? 1,
+            'photo_path' => $validated['photo_path'] ?? null,
+            'is_active' => true,
+            'sort_order' => $maxSort + 1,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Presale item added!',
+            'item' => $item,
+        ]);
+    }
+
+    public function updatePresaleItem(Request $request, $id)
+    {
+        $tenant = $this->tenant($request);
+        $item = PresaleItem::where('tenant_id', $tenant->id)->where('id', $id)->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|nullable|string|max:1000',
+            'price' => 'sometimes|required|numeric|min:0',
+            'unit_label' => 'sometimes|nullable|string|max:50',
+            'min_quantity' => 'sometimes|integer|min:1',
+            'photo_path' => 'sometimes|nullable|string|max:500',
+            'is_active' => 'sometimes|boolean',
+        ]);
+
+        $item->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Presale item updated!',
+            'item' => $item,
+        ]);
+    }
+
+    public function destroyPresaleItem(Request $request, $id)
+    {
+        $tenant = $this->tenant($request);
+        $item = PresaleItem::where('tenant_id', $tenant->id)->where('id', $id)->firstOrFail();
+        $item->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Presale item deleted!',
+        ]);
     }
 }
