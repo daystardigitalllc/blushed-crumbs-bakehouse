@@ -622,7 +622,7 @@ body.theme-modern_bakery .modern-grid .gallery-card-img-wrap {
     body.theme-modern_bakery .modern-promo-teaser {
         grid-template-columns: 1fr;
         text-align: center;
-        padding: 50px 25px;
+        padding: 50px 18px;
     }
 
     body.theme-modern_bakery .modern-orders-grid {
