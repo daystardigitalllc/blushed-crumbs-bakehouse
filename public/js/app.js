@@ -1804,6 +1804,13 @@ function initAdminPortal() {
         if (value === '—' || value === 'Add subtext...') value = '';
         window._customFields[idx][key] = value.trim();
         if (window.updateLivePreview) window.updateLivePreview();
+        // Fires on blur (title/subtext/options/description contenteditable
+        // fields, see renderFieldsTable()) — structural edits (reorder, add,
+        // delete a step) already save via renderFieldsTable()'s own
+        // auto-save call, but editing a step's existing text never routed
+        // through that, so it only ever updated the in-memory copy and the
+        // live preview, never the server.
+        window.saveFormSchemaToServer();
     };
 
     // Live Storefront Form Builder Preview Render Engine
