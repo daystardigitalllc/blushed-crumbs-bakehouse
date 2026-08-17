@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/storefront-base.css') }}">
-    <link rel="stylesheet" href="{{ asset($tenant->themeCssPath()) }}">
+    <link rel="stylesheet" href="{{ asset('css/storefront-base.css') }}?v={{ filemtime(public_path('css/storefront-base.css')) }}">
+    <link rel="stylesheet" href="{{ asset($tenant->themeCssPath()) }}?v={{ filemtime(public_path($tenant->themeCssPath())) }}">
     @include('storefront.partials.color_override')
 </head>
 <body class="theme-{{ $tenant->theme_id ?? 'sweet_elegant' }}">
