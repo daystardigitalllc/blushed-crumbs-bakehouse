@@ -58,6 +58,20 @@
                     <div class="info-value">{{ $order->delivery_address }}</div>
                 </div>
                 @endif
+                @if($order->fulfillment_type === 'shipping')
+                <div class="info-row">
+                    <div class="info-label">Ship To State:</div>
+                    <div class="info-value">{{ $order->shipping_state }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Shipping Address:</div>
+                    <div class="info-value">{{ $order->shipping_address }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Shipping Fee:</div>
+                    <div class="info-value">{{ $order->shipping_fee > 0 ? '$' . number_format($order->shipping_fee, 2) : 'To be determined — we\'ll follow up with a quote' }}</div>
+                </div>
+                @endif
             </div>
 
             <div class="section-title">🍰 Your Order</div>

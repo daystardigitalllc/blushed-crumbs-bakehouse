@@ -7,7 +7,18 @@
             @php
                 $steps = $tenant->form_schema ?? [];
                 $totalSteps = count($steps);
+                $fulfillmentSettings = $tenant->normalizedFulfillmentSettings();
+                $fulfillmentOptions = [];
+                if (!empty($fulfillmentSettings['pickup_enabled'])) $fulfillmentOptions[] = 'pickup';
+                if (!empty($fulfillmentSettings['delivery_enabled'])) $fulfillmentOptions[] = 'delivery';
+                if (!empty($fulfillmentSettings['shipping_enabled'])) $fulfillmentOptions[] = 'shipping';
+                if (empty($fulfillmentOptions)) $fulfillmentOptions[] = 'pickup';
+                $fulfillmentLabels = ['pickup' => 'Pickup', 'delivery' => 'Delivery', 'shipping' => 'Shipping'];
             @endphp
+            <script>
+                window._fulfillmentSettings = @json($fulfillmentSettings);
+                window._fulfillmentOptions = @json($fulfillmentOptions);
+            </script>
 
             @if($totalSteps > 0)
                 <!-- STICKY ORDER ESTIMATE BAR & PROGRESS INDICATOR -->
@@ -132,18 +143,36 @@
                             </div>
 
                         @elseif($type === 'fulfillment')
-                            <div id="fulfillment-grid" class="fulfillment-options" style="display:flex; justify-content:center; gap:20px; margin-bottom:20px;">
-                                <div class="product token-option active" data-value="pickup" style="padding:15px 30px; border-radius:12px; cursor:pointer;">
-                                    <strong>Pickup</strong>
-                                </div>
-                                <div class="product token-option" data-value="delivery" style="padding:15px 30px; border-radius:12px; cursor:pointer;">
-                                    <strong>Delivery</strong>
-                                </div>
+                            <div id="fulfillment-grid" class="fulfillment-options" style="display:flex; justify-content:center; gap:20px; margin-bottom:20px; flex-wrap:wrap;">
+                                @foreach($fulfillmentOptions as $foIndex => $foValue)
+                                    <div class="product token-option {{ $foIndex === 0 ? 'active' : '' }}" data-value="{{ $foValue }}" style="padding:15px 30px; border-radius:12px; cursor:pointer;">
+                                        <strong>{{ $fulfillmentLabels[$foValue] }}</strong>
+                                    </div>
+                                @endforeach
                             </div>
 
                             <div id="address-wrapper" class="hidden-field" style="display:none; margin-bottom:20px;">
                                 <p style="text-align:left; margin-top: 15px; font-weight: 600; color: var(--dark-text);">Delivery Address</p>
                                 <input type="text" id="delivery-address" placeholder="Street Address, City, State, ZIP" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc;">
+                            </div>
+
+                            <div id="shipping-wrapper" class="hidden-field" style="display:none; margin-bottom:20px;">
+                                <p style="text-align:left; margin-top: 15px; font-weight: 600; color: var(--dark-text);">Ship To State</p>
+                                <select id="shipping-state" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc; margin-bottom:12px;">
+                                    <option value="">Select a state...</option>
+                                    @foreach(($fulfillmentSettings['shipping_states'] ?? []) as $shipAbbr)
+                                        <option value="{{ $shipAbbr }}">{{ $shipAbbr }}</option>
+                                    @endforeach
+                                </select>
+                                <p style="text-align:left; font-weight: 600; color: var(--dark-text);">Shipping Address</p>
+                                <input type="text" id="shipping-address" placeholder="Street Address, City, ZIP" style="width:100%; padding:12px; border-radius:10px; border:1px solid #ccc; margin-bottom:12px;">
+                                <p style="text-align:left; font-size:0.9rem; color:var(--dark-text); font-weight:600;">
+                                    @if(($fulfillmentSettings['shipping_rate_mode'] ?? 'flat') === 'flat')
+                                        Shipping cost: ${{ number_format($fulfillmentSettings['shipping_flat_rate'] ?? 0, 2) }}
+                                    @else
+                                        Shipping cost: to be determined — we'll follow up with a quote.
+                                    @endif
+                                </p>
                             </div>
 
                             <div id="time-slot-wrapper">

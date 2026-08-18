@@ -74,6 +74,7 @@ class Tenant extends Model implements TenancyContract
         'section_settings',
         'booking_settings',
         'presale_settings',
+        'fulfillment_settings',
         'calendar_configured_at',
         'ai_generated_content',
         'onboarding_completed',
@@ -95,6 +96,7 @@ class Tenant extends Model implements TenancyContract
         'order_form_design' => 'array',
         'booking_settings' => 'array',
         'presale_settings' => 'array',
+        'fulfillment_settings' => 'array',
         'ai_generated_content' => 'array',
         'gallery_images' => 'array',
         'gallery_categories' => 'array',
@@ -1027,6 +1029,28 @@ class Tenant extends Model implements TenancyContract
         ];
 
         $raw = is_array($this->presale_settings) ? $this->presale_settings : [];
+
+        return array_merge($defaults, $raw);
+    }
+
+    /**
+     * Which fulfillment methods (pickup/delivery/shipping) the baker offers
+     * on their order form, plus shipping config. Defaults preserve the
+     * original always-on pickup+delivery behavior for tenants who existed
+     * before this setting did.
+     */
+    public function normalizedFulfillmentSettings(): array
+    {
+        $defaults = [
+            'pickup_enabled' => true,
+            'delivery_enabled' => true,
+            'shipping_enabled' => false,
+            'shipping_states' => [],
+            'shipping_rate_mode' => 'flat',
+            'shipping_flat_rate' => 0,
+        ];
+
+        $raw = is_array($this->fulfillment_settings) ? $this->fulfillment_settings : [];
 
         return array_merge($defaults, $raw);
     }

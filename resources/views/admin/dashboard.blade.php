@@ -787,6 +787,16 @@
                                             ({{ $order->delivery_address }})
                                         @endif
                                     </p>
+                                    @if($order->fulfillment_type == 'shipping')
+                                        <p><strong>Ship To:</strong> {{ $order->shipping_state }} — {{ $order->shipping_address }}</p>
+                                        <p><strong>Shipping Fee:</strong>
+                                            @if($order->shipping_fee > 0)
+                                                ${{ number_format($order->shipping_fee, 2) }}
+                                            @else
+                                                TBD — follow up with customer
+                                            @endif
+                                        </p>
+                                    @endif
 
                                     @if(!empty($order->items) && is_array($order->items))
                                         <div class="order-items-section" style="margin-top:12px;">
@@ -898,6 +908,9 @@
                                             'clientEmail' => $order->client_email,
                                             'fulfillmentType' => $order->fulfillment_type,
                                             'deliveryAddress' => $order->delivery_address,
+                                            'shippingAddress' => $order->shipping_address,
+                                            'shippingState' => $order->shipping_state,
+                                            'shippingFee' => number_format((float) ($order->shipping_fee ?? 0), 2),
                                             'dueDateFormatted' => $dueDate->format('M d, Y'),
                                             'timeSlot' => $order->time_slot,
                                             'isUrgent' => $isUrgent,
@@ -1283,6 +1296,7 @@
                             <h4 style="margin:0 0 10px; font-size:1.15rem; font-weight:700; color:var(--admin-heading);">#${esc(order.orderNumber)} - ${esc(order.clientName)}</h4>
                             <p><strong>Phone:</strong> ${esc(order.clientPhone)} | <strong>Email:</strong> ${esc(order.clientEmail)}</p>
                             <p><strong>Fulfillment:</strong> ${esc((order.fulfillmentType || '').toUpperCase())} ${order.deliveryAddress ? '(' + esc(order.deliveryAddress) + ')' : ''}</p>
+                            ${order.fulfillmentType === 'shipping' ? `<p><strong>Ship To:</strong> ${esc(order.shippingState || '')} — ${esc(order.shippingAddress || '')}</p><p><strong>Shipping Fee:</strong> ${parseFloat(order.shippingFee) > 0 ? '$' + esc(order.shippingFee) : 'TBD — follow up with customer'}</p>` : ''}
                             ${order.items && order.items.length ? `<div style="margin-top:12px;"><strong style="display:block; margin-bottom:6px; font-size:0.85rem; color:#64748b; text-transform:uppercase; letter-spacing:0.05em;">Order Items</strong>${order.items.map(i => `<p style="font-size:1.1rem; color:#1e293b; margin:2px 0;">${esc(i)}</p>`).join('')}</div>` : ''}
                             ${order.flavors ? `<p style="font-size:1.1rem; font-weight:600; color:#1e293b; margin-top:12px;"><strong>Flavors:</strong> ${esc(order.flavors)}</p>` : ''}
                             ${order.frosting ? `<p style="font-size:1.1rem; font-weight:600; color:#1e293b; margin-top:6px;"><strong>Frosting:</strong> ${esc(order.frosting)}</p>` : ''}
@@ -3317,6 +3331,83 @@
                                 <button class="btn btn-primary" onclick="saveLeadTime()">Save Setting</button>
                                 <span id="lead-time-save-msg" style="font-size:0.85rem; color:#28a745; display:none;">Saved!</span>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- FULFILLMENT OPTIONS CARD -->
+                    <div class="form-builder-card" style="margin-top:20px;">
+                        <h4>Fulfillment Options</h4>
+                        <p style="font-size:0.9rem; color:var(--light-text); margin-bottom:18px;">Choose which ways customers can receive their order. Only the options you enable here show up on your order form.</p>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <strong>Allow Pickup</strong>
+                                <p style="font-size:0.82rem; color:var(--text-faint); margin-top:2px;">Customers can pick up their order in person.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="fulfillment-pickup-enabled" {{ !empty($fulfillmentSettings['pickup_enabled']) ? 'checked' : '' }}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row" style="margin-top:12px;">
+                            <div>
+                                <strong>Allow Delivery</strong>
+                                <p style="font-size:0.82rem; color:var(--text-faint); margin-top:2px;">Customers can enter an address for you to deliver to.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="fulfillment-delivery-enabled" {{ !empty($fulfillmentSettings['delivery_enabled']) ? 'checked' : '' }}>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row" style="margin-top:12px;">
+                            <div>
+                                <strong>Allow Shipping</strong>
+                                <p style="font-size:0.82rem; color:var(--text-faint); margin-top:2px;">Customers can have their order shipped to select states.</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="fulfillment-shipping-enabled" {{ !empty($fulfillmentSettings['shipping_enabled']) ? 'checked' : '' }} onchange="document.getElementById('fulfillment-shipping-config').style.display = this.checked ? 'block' : 'none';">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div id="fulfillment-shipping-config" style="display:{{ !empty($fulfillmentSettings['shipping_enabled']) ? 'block' : 'none' }}; margin-top:18px; padding-top:18px; border-top:1px solid #f0e4ea;">
+                            <label>States You Ship To</label>
+                            <div style="display:flex; gap:10px; margin:8px 0 10px 0;">
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="window.toggleAllShippingStates(true)">Select All</button>
+                                <button type="button" class="btn btn-sm btn-outline" onclick="window.toggleAllShippingStates(false)">Clear All</button>
+                            </div>
+                            <div id="fulfillment-states-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(90px, 1fr)); gap:8px; max-height:220px; overflow-y:auto; padding:12px; border:1px solid #f0e4ea; border-radius:10px; background:#fff;">
+                                @php $selectedStates = $fulfillmentSettings['shipping_states'] ?? []; @endphp
+                                @foreach($usStates as $stateData)
+                                    <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer;">
+                                        <input type="checkbox" class="fulfillment-state-checkbox" value="{{ $stateData['abbr'] }}" {{ in_array($stateData['abbr'], $selectedStates) ? 'checked' : '' }}>
+                                        {{ $stateData['abbr'] }}
+                                    </label>
+                                @endforeach
+                            </div>
+
+                            <label style="margin-top:18px;">Shipping Rate</label>
+                            <div style="display:flex; gap:16px; margin:8px 0 12px 0;">
+                                <label style="display:flex; align-items:center; gap:6px; font-weight:600; cursor:pointer;">
+                                    <input type="radio" name="fulfillment-shipping-rate-mode" value="flat" {{ ($fulfillmentSettings['shipping_rate_mode'] ?? 'flat') === 'flat' ? 'checked' : '' }} onchange="document.getElementById('fulfillment-flat-rate-wrapper').style.display = 'block';">
+                                    Flat Rate
+                                </label>
+                                <label style="display:flex; align-items:center; gap:6px; font-weight:600; cursor:pointer;">
+                                    <input type="radio" name="fulfillment-shipping-rate-mode" value="tbd" {{ ($fulfillmentSettings['shipping_rate_mode'] ?? 'flat') === 'tbd' ? 'checked' : '' }} onchange="document.getElementById('fulfillment-flat-rate-wrapper').style.display = 'none';">
+                                    TBD — I'll follow up with a quote
+                                </label>
+                            </div>
+                            <div id="fulfillment-flat-rate-wrapper" style="display:{{ ($fulfillmentSettings['shipping_rate_mode'] ?? 'flat') === 'flat' ? 'block' : 'none' }}; max-width:200px;">
+                                <label>Flat Shipping Rate ($)</label>
+                                <input type="number" id="fulfillment-shipping-flat-rate" min="0" step="0.01" value="{{ $fulfillmentSettings['shipping_flat_rate'] ?? 0 }}">
+                            </div>
+                        </div>
+
+                        <div style="margin-top:18px;">
+                            <button type="button" class="btn btn-primary" onclick="window.saveFulfillmentSettings()">Save Fulfillment Options</button>
+                            <span id="fulfillment-settings-save-msg" style="display:none; color:#16a34a; font-weight:700; margin-left:10px; font-size:0.85rem;">✓ Saved</span>
                         </div>
                     </div>
                 </div>

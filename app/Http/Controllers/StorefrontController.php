@@ -133,8 +133,11 @@ class StorefrontController extends Controller
             'client_phone' => 'required|string|max:50',
             'due_date' => 'nullable|string|max:50',
             'time_slot' => 'nullable|string|max:50',
-            'fulfillment_type' => 'nullable|string|max:50',
+            'fulfillment_type' => 'nullable|string|in:pickup,delivery,shipping|max:50',
             'delivery_address' => 'nullable|string|max:500',
+            'shipping_address' => 'nullable|string|max:500',
+            'shipping_state' => 'nullable|string|max:2',
+            'shipping_fee' => 'nullable|numeric|min:0',
             'special_notes' => 'nullable|string|max:2000',
             'allergies' => 'nullable|string|max:1000',
             'total_price' => 'nullable|numeric',
@@ -145,6 +148,9 @@ class StorefrontController extends Controller
         $clientEmail = filter_var(trim($validated['client_email']), FILTER_SANITIZE_EMAIL);
         $clientPhone = strip_tags(trim($validated['client_phone']));
         $deliveryAddress = isset($validated['delivery_address']) ? strip_tags(trim($validated['delivery_address'])) : null;
+        $shippingAddress = isset($validated['shipping_address']) ? strip_tags(trim($validated['shipping_address'])) : null;
+        $shippingState = isset($validated['shipping_state']) ? strtoupper(strip_tags(trim($validated['shipping_state']))) : null;
+        $shippingFee = isset($validated['shipping_fee']) ? (float) $validated['shipping_fee'] : 0;
         $specialNotes = isset($validated['special_notes']) ? strip_tags(trim($validated['special_notes'])) : null;
         $allergies = isset($validated['allergies']) ? strip_tags(trim($validated['allergies'])) : null;
 
@@ -209,6 +215,9 @@ class StorefrontController extends Controller
             'time_slot' => strip_tags($request->input('time_slot', '8:30 AM')),
             'fulfillment_type' => strip_tags($request->input('fulfillment_type', 'pickup')),
             'delivery_address' => $deliveryAddress,
+            'shipping_address' => $shippingAddress,
+            'shipping_state' => $shippingState,
+            'shipping_fee' => $shippingFee,
             'items' => $items ?? [],
             'flavors' => $flavors ?? [],
             'frosting' => $frosting ?? [],

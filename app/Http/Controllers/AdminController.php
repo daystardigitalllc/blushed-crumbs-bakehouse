@@ -93,6 +93,8 @@ class AdminController extends Controller
         $products = Product::where('tenant_id', $tenant->id)->orderBy('sort_order')->get();
         $presaleItems = PresaleItem::where('tenant_id', $tenant->id)->orderBy('sort_order')->get();
         $presaleSettings = $tenant->normalizedPresaleSettings();
+        $fulfillmentSettings = $tenant->normalizedFulfillmentSettings();
+        $usStates = config('cottage_food_laws.states', []);
         $reviews = Review::where('tenant_id', $tenant->id)->latest()->get();
         $gallery = GalleryItem::where('tenant_id', $tenant->id)->latest()->get();
         $supportTickets = SupportTicket::where('tenant_id', $tenant->id)->latest()->get();
@@ -195,7 +197,7 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact(
             'tenant', 'urgentOrders', 'allOrders', 'invoices',
-            'products', 'presaleItems', 'presaleSettings', 'reviews', 'gallery', 'supportTickets',
+            'products', 'presaleItems', 'presaleSettings', 'fulfillmentSettings', 'usStates', 'reviews', 'gallery', 'supportTickets',
             'customers', 'totalRevenue', 'pendingOrders', 'customerCount',
             'serverBookingSettings', 'siteContent', 'emailSubscribers', 'emailCampaigns',
             'onboardingChecklist', 'onboardingComplete',
@@ -272,6 +274,71 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'Booking availability settings saved!',
             'settings' => $tenant->booking_settings,
+        ]);
+    }
+
+    public function saveFulfillmentSettings(Request $request)
+    {
+        $tenant = $this->tenant($request);
+
+        $validAbbrs = array_column(config('cottage_food_laws.states', []), 'abbr');
+
+        $validated = $request->validate([
+            'pickup_enabled' => 'sometimes|boolean',
+            'delivery_enabled' => 'sometimes|boolean',
+            'shipping_enabled' => 'sometimes|boolean',
+            'shipping_states' => 'nullable|array',
+            'shipping_states.*' => 'string|in:' . implode(',', $validAbbrs),
+            'shipping_rate_mode' => 'nullable|string|in:flat,tbd',
+            'shipping_flat_rate' => 'nullable|numeric|min:0',
+        ]);
+
+        $pickupEnabled = $request->boolean('pickup_enabled');
+        $deliveryEnabled = $request->boolean('delivery_enabled');
+        $shippingEnabled = $request->boolean('shipping_enabled');
+
+        if (!$pickupEnabled && !$deliveryEnabled && !$shippingEnabled) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You must enable at least one fulfillment option.',
+            ], 422);
+        }
+
+        $shippingStates = $validated['shipping_states'] ?? [];
+        $shippingRateMode = $validated['shipping_rate_mode'] ?? 'flat';
+        $shippingFlatRate = (float) ($validated['shipping_flat_rate'] ?? 0);
+
+        if ($shippingEnabled) {
+            if (empty($shippingStates)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Select at least one state you ship to.',
+                ], 422);
+            }
+            if ($shippingRateMode === 'flat' && $shippingFlatRate <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Enter a flat shipping rate greater than $0, or switch to "TBD".',
+                ], 422);
+            }
+        }
+
+        $settings = [
+            'pickup_enabled' => $pickupEnabled,
+            'delivery_enabled' => $deliveryEnabled,
+            'shipping_enabled' => $shippingEnabled,
+            'shipping_states' => $shippingStates,
+            'shipping_rate_mode' => $shippingRateMode,
+            'shipping_flat_rate' => $shippingFlatRate,
+        ];
+
+        $tenant->fulfillment_settings = $settings;
+        $tenant->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fulfillment options saved!',
+            'settings' => $settings,
         ]);
     }
 

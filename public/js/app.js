@@ -679,12 +679,20 @@ const state = {
     selectedFrosting: [],
     selectedFillings: [],
     fulfillment: 'pickup',
+    shippingFee: 0,
     discounts: 0,
     subtotal: 0,
     total: 0,
     deposit: 0,
     uploadedFiles: []
 };
+
+function updateFulfillmentWrappers() {
+    const addrWrap = document.getElementById('address-wrapper');
+    const shipWrap = document.getElementById('shipping-wrapper');
+    if (addrWrap) addrWrap.style.display = state.fulfillment === 'delivery' ? 'block' : 'none';
+    if (shipWrap) shipWrap.style.display = state.fulfillment === 'shipping' ? 'block' : 'none';
+}
 
 // Modal Order Form Triggers
 function initOrderModalTrigger() {
@@ -758,19 +766,30 @@ function init12StepOrderForm() {
     setupMultiSelectGrid('frosting-list', state.selectedFrosting);
     setupMultiSelectGrid('filling-list', state.selectedFillings);
 
-    // Step 7: Fulfillment Option Toggle
+    // Step 7: Fulfillment Option Toggle (Pickup / Delivery / Shipping)
     const fulfillmentGrid = document.getElementById('fulfillment-grid');
     if (fulfillmentGrid) {
+        // Sync state.fulfillment to whichever chip actually rendered as
+        // active server-side (the first enabled option), rather than
+        // trusting a hardcoded default that could be disabled by the baker.
+        const activeChip = fulfillmentGrid.querySelector('.token-option.active');
+        if (activeChip) state.fulfillment = activeChip.dataset.value;
+        updateFulfillmentWrappers();
+
         fulfillmentGrid.addEventListener('click', (e) => {
             const card = e.target.closest('.token-option');
             if (!card) return;
             document.querySelectorAll('.token-option').forEach(c => c.classList.remove('active'));
             card.classList.add('active');
             state.fulfillment = card.dataset.value;
-
-            const addrWrap = document.getElementById('address-wrapper');
-            if (addrWrap) addrWrap.style.display = state.fulfillment === 'delivery' ? 'block' : 'none';
+            updateFulfillmentWrappers();
+            updateCartSummary();
         });
+    }
+
+    const shippingStateSelect = document.getElementById('shipping-state');
+    if (shippingStateSelect) {
+        shippingStateSelect.addEventListener('change', updateCartSummary);
     }
 
     // Step 9: Social Media Discounts
@@ -850,6 +869,8 @@ function init12StepOrderForm() {
             // Selected Time slot radio
             const selectedTimeSlot = document.querySelector('input[name="order-time"]:checked')?.value || '9:30 AM';
             const deliveryAddressVal = document.getElementById('delivery-address')?.value || '';
+            const shippingAddressVal = document.getElementById('shipping-address')?.value || '';
+            const shippingStateVal = document.getElementById('shipping-state')?.value || '';
 
             const formData = new FormData();
             formData.append('client_name', clientName);
@@ -859,6 +880,9 @@ function init12StepOrderForm() {
             formData.append('time_slot', selectedTimeSlot);
             formData.append('fulfillment_type', state.fulfillment || 'pickup');
             formData.append('delivery_address', deliveryAddressVal);
+            formData.append('shipping_address', shippingAddressVal);
+            formData.append('shipping_state', shippingStateVal);
+            formData.append('shipping_fee', state.shippingFee || 0);
             formData.append('special_notes', notesVal);
             formData.append('allergies', allergiesVal);
             formData.append('total_price', state.total || 0);
@@ -988,7 +1012,15 @@ function updateCartSummary() {
         }
     });
 
-    state.total = Math.max(0, state.subtotal + optionAddons - state.discounts);
+    // Shipping fee, if the customer currently has Shipping selected and the
+    // baker charges a flat rate (TBD-mode shipping adds nothing here — the
+    // baker follows up with a quote after the order comes in).
+    const fSettings = window._fulfillmentSettings || {};
+    state.shippingFee = (state.fulfillment === 'shipping' && fSettings.shipping_rate_mode === 'flat')
+        ? parseFloat(fSettings.shipping_flat_rate || 0)
+        : 0;
+
+    state.total = Math.max(0, state.subtotal + optionAddons - state.discounts + state.shippingFee);
     state.deposit = state.total * 0.5;
 
     const itemsSummaryText = state.selectedProducts.length > 0
@@ -3522,6 +3554,51 @@ window.saveLeadTime = function() {
         if (window.markOnboardingStepDone) window.markOnboardingStepDone('calendar');
     })
     .catch(err => console.error('Save Lead Time Error:', err));
+};
+
+// ── Fulfillment Options (Pickup / Delivery / Shipping) ─────
+window.toggleAllShippingStates = function(checked) {
+    document.querySelectorAll('.fulfillment-state-checkbox').forEach(cb => { cb.checked = checked; });
+};
+
+window.saveFulfillmentSettings = function() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    const shippingStates = Array.from(document.querySelectorAll('.fulfillment-state-checkbox:checked')).map(cb => cb.value);
+    const rateModeInput = document.querySelector('input[name="fulfillment-shipping-rate-mode"]:checked');
+
+    const payload = {
+        pickup_enabled: document.getElementById('fulfillment-pickup-enabled')?.checked || false,
+        delivery_enabled: document.getElementById('fulfillment-delivery-enabled')?.checked || false,
+        shipping_enabled: document.getElementById('fulfillment-shipping-enabled')?.checked || false,
+        shipping_states: shippingStates,
+        shipping_rate_mode: rateModeInput ? rateModeInput.value : 'flat',
+        shipping_flat_rate: parseFloat(document.getElementById('fulfillment-shipping-flat-rate')?.value || '0'),
+    };
+
+    fetch('/dashboard/settings/fulfillment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const msg = document.getElementById('fulfillment-settings-save-msg');
+            if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
+            if (typeof showToast === 'function') showToast('Fulfillment options saved!');
+        } else {
+            alert(data.message || 'Error saving fulfillment options.');
+        }
+    })
+    .catch(err => {
+        console.error('Save fulfillment settings error:', err);
+        alert('An error occurred while saving fulfillment options.');
+    });
 };
 
 // ── Color Scheme ───────────────────────────
