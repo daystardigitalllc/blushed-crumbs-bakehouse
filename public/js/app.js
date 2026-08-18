@@ -831,12 +831,20 @@ function init12StepOrderForm() {
         });
     }
 
-    // Step 11: Terms Checkbox Enablement
+    // Terms Checkbox Enablement — the Accept button's id is
+    // `to-step-{{ $nextStepNum }}` (order_modal.blade.php), a number
+    // derived from this tenant's own custom form_schema step order, not a
+    // fixed value. A hardcoded 'to-step-12' here only happened to work for
+    // a tenant whose terms step landed at exactly step 11; for any other
+    // step order (e.g. blushedcrumbsbakehouse's) the button was never
+    // found, so the checkbox never enabled it. Scoping the lookup to the
+    // checkbox's own step container finds the right button regardless of
+    // its number.
     const termsCheck = document.getElementById('terms-agree-checkbox');
-    const step11Next = document.getElementById('to-step-12');
-    if (termsCheck && step11Next) {
+    const termsNextBtn = termsCheck?.closest('.step')?.querySelector('.next-btn');
+    if (termsCheck && termsNextBtn) {
         termsCheck.addEventListener('change', () => {
-            step11Next.disabled = !termsCheck.checked;
+            termsNextBtn.disabled = !termsCheck.checked;
         });
     }
 
@@ -1828,6 +1836,13 @@ function initAdminPortal() {
         if (value === '—' || value === 'Add subtext...') value = '';
         window._customFields[idx][key] = value.trim();
         if (window.updateLivePreview) window.updateLivePreview();
+        // Fires on blur (title/subtext/options/description contenteditable
+        // fields, see renderFieldsTable()) — structural edits (reorder, add,
+        // delete a step) already save via renderFieldsTable()'s own
+        // auto-save call, but editing a step's existing text never routed
+        // through that, so it only ever updated the in-memory copy and the
+        // live preview, never the server.
+        window.saveFormSchemaToServer();
     };
 
     // Live Storefront Form Builder Preview Render Engine

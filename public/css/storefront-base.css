@@ -1378,6 +1378,24 @@ body.theme-cherry_bakeshop {
     text-align: left;
 }
 
+/* Real regression from the style.css -> storefront-base.css split: the two
+   @media blocks below (and a third further down) set `flex-direction` and
+   `gap` on `.hero-buttons` assuming it's already a flex container, but the
+   base rule that actually made it one (`display:flex`) never got carried
+   over in the split — it only ever existed in the old monolithic style.css,
+   which the live storefront hasn't loaded since the split. Every theme
+   except sweet_elegant and sunny_whisk (which each define their own
+   complete `display:flex` .hero-buttons rule) was affected: with no flex
+   container, `flex-direction:column` on mobile did nothing, so the two
+   hero CTA buttons rendered as plain inline elements crammed against each
+   other with no gap, on both mobile and desktop. */
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
 /* COMPREHENSIVE TABLET & MOBILE RESPONSIVE DESIGN SYSTEM */
 
 /* Tablet & Mobile (<= 768px) */
