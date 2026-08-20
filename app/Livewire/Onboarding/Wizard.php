@@ -98,7 +98,12 @@ class Wizard extends Component
         $tenantId = auth()->user()->tenant_id;
 
         if ($draft) {
-            abort_unless($draft->tenant_id === $tenantId, 403);
+            // Superadmins can open any tenant's draft for support/diagnostics
+            // (mirrors EnsureBakerOwnsTenant's dashboard-route bypass) — every
+            // other read below derives its tenant from $this->draft rather
+            // than auth()->user()->tenant_id, so the wizard actually operates
+            // on the draft's tenant instead of the viewing superadmin's own.
+            abort_unless($draft->tenant_id === $tenantId || auth()->user()->isSuperAdmin(), 403);
             $this->draftId = $draft->id;
         } else {
             $existing = OnboardingDraft::where('tenant_id', $tenantId)
@@ -134,7 +139,7 @@ class Wizard extends Component
     public function draft(): OnboardingDraft
     {
         $draft = OnboardingDraft::findOrFail($this->draftId);
-        abort_unless($draft->tenant_id === auth()->user()->tenant_id, 403);
+        abort_unless($draft->tenant_id === auth()->user()->tenant_id || auth()->user()->isSuperAdmin(), 403);
 
         return $draft;
     }
@@ -142,7 +147,10 @@ class Wizard extends Component
     #[Computed]
     public function tenant(): Tenant
     {
-        return Tenant::findOrFail(auth()->user()->tenant_id);
+        // Derived from the already-authorized draft (not auth()->user()
+        // directly) so a superadmin viewing another tenant's draft operates
+        // on *that* tenant, not their own.
+        return Tenant::findOrFail($this->draft->tenant_id);
     }
 
     /** Signed URL the hand-written uploader JS posts each file to (see Phase 2's OnboardingUploadController). */
