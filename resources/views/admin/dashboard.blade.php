@@ -16,6 +16,8 @@
 <script>
     window._serverFormSchema = @json($serverFormSchema);
     window._serverBookingSettings = @json($serverBookingSettings);
+    window._fulfillmentSettings = @json($fulfillmentSettings);
+    window._usStateAbbrs = @json(collect($usStates)->pluck('abbr')->values());
 </script>
 <!-- Quill.js WYSIWYG Editor -->
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
@@ -3361,49 +3363,7 @@
                             </label>
                         </div>
 
-                        <div class="settings-toggle-row" style="margin-top:12px;">
-                            <div>
-                                <strong>Allow Shipping</strong>
-                                <p style="font-size:0.82rem; color:var(--text-faint); margin-top:2px;">Customers can have their order shipped to select states.</p>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="fulfillment-shipping-enabled" {{ !empty($fulfillmentSettings['shipping_enabled']) ? 'checked' : '' }} onchange="document.getElementById('fulfillment-shipping-config').style.display = this.checked ? 'block' : 'none';">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-
-                        <div id="fulfillment-shipping-config" style="display:{{ !empty($fulfillmentSettings['shipping_enabled']) ? 'block' : 'none' }}; margin-top:18px; padding-top:18px; border-top:1px solid #f0e4ea;">
-                            <label>States You Ship To</label>
-                            <div style="display:flex; gap:10px; margin:8px 0 10px 0;">
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="window.toggleAllShippingStates(true)">Select All</button>
-                                <button type="button" class="btn btn-sm btn-outline" onclick="window.toggleAllShippingStates(false)">Clear All</button>
-                            </div>
-                            <div id="fulfillment-states-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(90px, 1fr)); gap:8px; max-height:220px; overflow-y:auto; padding:12px; border:1px solid #f0e4ea; border-radius:10px; background:#fff;">
-                                @php $selectedStates = $fulfillmentSettings['shipping_states'] ?? []; @endphp
-                                @foreach($usStates as $stateData)
-                                    <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer;">
-                                        <input type="checkbox" class="fulfillment-state-checkbox" value="{{ $stateData['abbr'] }}" {{ in_array($stateData['abbr'], $selectedStates) ? 'checked' : '' }}>
-                                        {{ $stateData['abbr'] }}
-                                    </label>
-                                @endforeach
-                            </div>
-
-                            <label style="margin-top:18px;">Shipping Rate</label>
-                            <div style="display:flex; gap:16px; margin:8px 0 12px 0;">
-                                <label style="display:flex; align-items:center; gap:6px; font-weight:600; cursor:pointer;">
-                                    <input type="radio" name="fulfillment-shipping-rate-mode" value="flat" {{ ($fulfillmentSettings['shipping_rate_mode'] ?? 'flat') === 'flat' ? 'checked' : '' }} onchange="document.getElementById('fulfillment-flat-rate-wrapper').style.display = 'block';">
-                                    Flat Rate
-                                </label>
-                                <label style="display:flex; align-items:center; gap:6px; font-weight:600; cursor:pointer;">
-                                    <input type="radio" name="fulfillment-shipping-rate-mode" value="tbd" {{ ($fulfillmentSettings['shipping_rate_mode'] ?? 'flat') === 'tbd' ? 'checked' : '' }} onchange="document.getElementById('fulfillment-flat-rate-wrapper').style.display = 'none';">
-                                    TBD — I'll follow up with a quote
-                                </label>
-                            </div>
-                            <div id="fulfillment-flat-rate-wrapper" style="display:{{ ($fulfillmentSettings['shipping_rate_mode'] ?? 'flat') === 'flat' ? 'block' : 'none' }}; max-width:200px;">
-                                <label>Flat Shipping Rate ($)</label>
-                                <input type="number" id="fulfillment-shipping-flat-rate" min="0" step="0.01" value="{{ $fulfillmentSettings['shipping_flat_rate'] ?? 0 }}">
-                            </div>
-                        </div>
+                        <p style="font-size:0.82rem; color:var(--text-faint); margin-top:12px;">Want to offer shipping? Add a "Fulfillment & Time Slots" step to your <a href="#" onclick="window.switchDashboardTab && switchDashboardTab('tab-form-builder'); return false;" style="color:var(--primary); font-weight:700;">Order Form Builder</a> — shipping states and rates are configured right there.</p>
 
                         <div style="margin-top:18px;">
                             <button type="button" class="btn btn-primary" onclick="window.saveFulfillmentSettings()">Save Fulfillment Options</button>

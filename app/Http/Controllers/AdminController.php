@@ -277,9 +277,17 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * Two separate admin UIs post here with only their own slice of the
+     * fields (Settings > Booking Rules sends pickup/delivery; the Order
+     * Form Builder's fulfillment step sends the shipping fields) — so any
+     * field not present in this request falls back to whatever's already
+     * saved rather than getting clobbered to a default.
+     */
     public function saveFulfillmentSettings(Request $request)
     {
         $tenant = $this->tenant($request);
+        $current = $tenant->normalizedFulfillmentSettings();
 
         $validAbbrs = array_column(config('cottage_food_laws.states', []), 'abbr');
 
@@ -287,15 +295,15 @@ class AdminController extends Controller
             'pickup_enabled' => 'sometimes|boolean',
             'delivery_enabled' => 'sometimes|boolean',
             'shipping_enabled' => 'sometimes|boolean',
-            'shipping_states' => 'nullable|array',
+            'shipping_states' => 'sometimes|array',
             'shipping_states.*' => 'string|in:' . implode(',', $validAbbrs),
-            'shipping_rate_mode' => 'nullable|string|in:flat,tbd',
-            'shipping_flat_rate' => 'nullable|numeric|min:0',
+            'shipping_rate_mode' => 'sometimes|string|in:flat,tbd',
+            'shipping_flat_rate' => 'sometimes|numeric|min:0',
         ]);
 
-        $pickupEnabled = $request->boolean('pickup_enabled');
-        $deliveryEnabled = $request->boolean('delivery_enabled');
-        $shippingEnabled = $request->boolean('shipping_enabled');
+        $pickupEnabled = $request->has('pickup_enabled') ? $request->boolean('pickup_enabled') : $current['pickup_enabled'];
+        $deliveryEnabled = $request->has('delivery_enabled') ? $request->boolean('delivery_enabled') : $current['delivery_enabled'];
+        $shippingEnabled = $request->has('shipping_enabled') ? $request->boolean('shipping_enabled') : $current['shipping_enabled'];
 
         if (!$pickupEnabled && !$deliveryEnabled && !$shippingEnabled) {
             return response()->json([
@@ -304,9 +312,9 @@ class AdminController extends Controller
             ], 422);
         }
 
-        $shippingStates = $validated['shipping_states'] ?? [];
-        $shippingRateMode = $validated['shipping_rate_mode'] ?? 'flat';
-        $shippingFlatRate = (float) ($validated['shipping_flat_rate'] ?? 0);
+        $shippingStates = $request->has('shipping_states') ? ($validated['shipping_states'] ?? []) : $current['shipping_states'];
+        $shippingRateMode = $validated['shipping_rate_mode'] ?? $current['shipping_rate_mode'];
+        $shippingFlatRate = $request->has('shipping_flat_rate') ? (float) $validated['shipping_flat_rate'] : (float) $current['shipping_flat_rate'];
 
         if ($shippingEnabled) {
             if (empty($shippingStates)) {

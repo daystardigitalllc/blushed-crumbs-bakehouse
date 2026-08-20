@@ -1640,6 +1640,59 @@ function initAdminPortal() {
         }
     }
 
+    // Inline "Allow Shipping" toggle + states/rate config, shown inside the
+    // fulfillment step's own card so shipping setup lives right where the
+    // baker is already editing that step — see AdminController::
+    // saveFulfillmentSettings() for why this posts a partial payload safely.
+    function renderFulfillmentShippingBlock(i) {
+        const fs = window._fulfillmentSettings || {};
+        const states = window._usStateAbbrs || [];
+        const shippingChecked = !!fs.shipping_enabled;
+        const rateMode = fs.shipping_rate_mode || 'flat';
+        const flatRate = fs.shipping_flat_rate || 0;
+        const selectedStates = fs.shipping_states || [];
+
+        return `
+            <div style="margin-top:14px; padding-top:12px; border-top:1px dashed #f0d8e2;">
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer; font-size:0.85rem; font-weight:700; color:#5c1d37;">
+                    <input type="checkbox" id="fb-ship-enabled-${i}" ${shippingChecked ? 'checked' : ''} onchange="document.getElementById('fb-ship-config-${i}').style.display = this.checked ? 'block' : 'none';">
+                    Allow Shipping
+                </label>
+                <div id="fb-ship-config-${i}" style="display:${shippingChecked ? 'block' : 'none'}; margin-top:10px;">
+                    <span style="font-size:0.72rem; color:#888; font-weight:700; display:block; margin-bottom:6px;">States You Ship To</span>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <button type="button" class="btn btn-sm btn-secondary" style="font-size:0.7rem; padding:3px 8px;" onclick="window.toggleAllFbShippingStates(${i}, true)">Select All</button>
+                        <button type="button" class="btn btn-sm btn-outline" style="font-size:0.7rem; padding:3px 8px;" onclick="window.toggleAllFbShippingStates(${i}, false)">Clear All</button>
+                    </div>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(56px, 1fr)); gap:6px; max-height:140px; overflow-y:auto; padding:8px; border:1px solid #f0e4ea; border-radius:8px; background:#fff; margin-bottom:10px;">
+                        ${states.map(abbr => `
+                            <label style="display:flex; align-items:center; gap:4px; font-size:0.75rem; cursor:pointer;">
+                                <input type="checkbox" class="fb-ship-state-cb-${i}" value="${abbr}" ${selectedStates.includes(abbr) ? 'checked' : ''}>
+                                ${abbr}
+                            </label>
+                        `).join('')}
+                    </div>
+                    <span style="font-size:0.72rem; color:#888; font-weight:700; display:block; margin-bottom:6px;">Shipping Rate</span>
+                    <div style="display:flex; gap:14px; margin-bottom:8px;">
+                        <label style="display:flex; align-items:center; gap:5px; font-size:0.78rem; font-weight:600; cursor:pointer;">
+                            <input type="radio" name="fb-ship-rate-mode-${i}" value="flat" ${rateMode === 'flat' ? 'checked' : ''} onchange="document.getElementById('fb-ship-flat-wrap-${i}').style.display='block';">
+                            Flat Rate
+                        </label>
+                        <label style="display:flex; align-items:center; gap:5px; font-size:0.78rem; font-weight:600; cursor:pointer;">
+                            <input type="radio" name="fb-ship-rate-mode-${i}" value="tbd" ${rateMode === 'tbd' ? 'checked' : ''} onchange="document.getElementById('fb-ship-flat-wrap-${i}').style.display='none';">
+                            TBD — I'll follow up with a quote
+                        </label>
+                    </div>
+                    <div id="fb-ship-flat-wrap-${i}" style="display:${rateMode === 'flat' ? 'block' : 'none'}; max-width:140px; margin-bottom:10px;">
+                        <input type="number" id="fb-ship-flat-rate-${i}" min="0" step="0.01" value="${flatRate}" placeholder="$ rate" style="width:100%; padding:6px 8px; border-radius:6px; border:1px solid #e2c7d4; font-size:0.8rem;">
+                    </div>
+                    <button type="button" class="btn btn-sm btn-primary" style="font-size:0.75rem;" onclick="window.saveShippingOptions(${i})">Save Shipping Options</button>
+                    <span id="fb-ship-save-msg-${i}" style="display:none; color:#16a34a; font-weight:700; margin-left:8px; font-size:0.78rem;">✓ Saved</span>
+                </div>
+            </div>
+        `;
+    }
+
     // Render Form Studio Fields Visual Cards (Baker UI Optimizations)
     function renderFieldsTable() {
         const container = document.getElementById('custom-fields-cards-container');
@@ -1701,6 +1754,9 @@ function initAdminPortal() {
                         <span style="font-size:0.8rem; color:#5c1d37; background:#fff; border:1px solid #f8c6d7; border-radius:8px; padding:4px 8px; cursor:text; display:inline-block; text-align:left; word-break:break-all;" contenteditable="true" onblur="updateField(${i}, 'options', this.innerText)" title="Edit Options (comma separated)">${f.options || '—'}</span>
                     </div>
                 `;
+                if (f.type === 'fulfillment') {
+                    previewDetails += renderFulfillmentShippingBlock(i);
+                }
             } else if (f.type === 'terms') {
                 previewDetails = `
                     <div style="margin-top: 8px; display:flex; align-items:center; gap:10px; text-align:left;">
@@ -3572,23 +3628,17 @@ window.saveLeadTime = function() {
 };
 
 // ── Fulfillment Options (Pickup / Delivery / Shipping) ─────
-window.toggleAllShippingStates = function(checked) {
-    document.querySelectorAll('.fulfillment-state-checkbox').forEach(cb => { cb.checked = checked; });
-};
-
 window.saveFulfillmentSettings = function() {
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
-    const shippingStates = Array.from(document.querySelectorAll('.fulfillment-state-checkbox:checked')).map(cb => cb.value);
-    const rateModeInput = document.querySelector('input[name="fulfillment-shipping-rate-mode"]:checked');
-
+    // Shipping's own toggle/states/rate live inline in the Order Form
+    // Builder's fulfillment step card now (see renderFulfillmentShippingBlock
+    // + window.saveShippingOptions) and post there independently — this
+    // payload only ever carries pickup/delivery, and the backend preserves
+    // whatever shipping config is already saved.
     const payload = {
         pickup_enabled: document.getElementById('fulfillment-pickup-enabled')?.checked || false,
         delivery_enabled: document.getElementById('fulfillment-delivery-enabled')?.checked || false,
-        shipping_enabled: document.getElementById('fulfillment-shipping-enabled')?.checked || false,
-        shipping_states: shippingStates,
-        shipping_rate_mode: rateModeInput ? rateModeInput.value : 'flat',
-        shipping_flat_rate: parseFloat(document.getElementById('fulfillment-shipping-flat-rate')?.value || '0'),
     };
 
     fetch('/dashboard/settings/fulfillment', {
@@ -3613,6 +3663,49 @@ window.saveFulfillmentSettings = function() {
     .catch(err => {
         console.error('Save fulfillment settings error:', err);
         alert('An error occurred while saving fulfillment options.');
+    });
+};
+
+window.toggleAllFbShippingStates = function(i, checked) {
+    document.querySelectorAll('.fb-ship-state-cb-' + i).forEach(cb => { cb.checked = checked; });
+};
+
+window.saveShippingOptions = function(i) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    const shippingStates = Array.from(document.querySelectorAll('.fb-ship-state-cb-' + i + ':checked')).map(cb => cb.value);
+    const rateModeInput = document.querySelector(`input[name="fb-ship-rate-mode-${i}"]:checked`);
+
+    const payload = {
+        shipping_enabled: document.getElementById('fb-ship-enabled-' + i)?.checked || false,
+        shipping_states: shippingStates,
+        shipping_rate_mode: rateModeInput ? rateModeInput.value : 'flat',
+        shipping_flat_rate: parseFloat(document.getElementById('fb-ship-flat-rate-' + i)?.value || '0'),
+    };
+
+    fetch('/dashboard/settings/fulfillment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window._fulfillmentSettings = data.settings;
+            const msg = document.getElementById('fb-ship-save-msg-' + i);
+            if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
+            if (typeof showToast === 'function') showToast('Shipping options saved!');
+        } else {
+            alert(data.message || 'Error saving shipping options.');
+        }
+    })
+    .catch(err => {
+        console.error('Save shipping options error:', err);
+        alert('An error occurred while saving shipping options.');
     });
 };
 
