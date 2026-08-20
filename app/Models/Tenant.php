@@ -1034,16 +1034,15 @@ class Tenant extends Model implements TenancyContract
     }
 
     /**
-     * Which fulfillment methods (pickup/delivery/shipping) the baker offers
-     * on their order form, plus shipping config. Defaults preserve the
-     * original always-on pickup+delivery behavior for tenants who existed
-     * before this setting did.
+     * Which fulfillment methods the baker offers on their order form, plus
+     * shipping config. Pickup and delivery are always on — there's no admin
+     * toggle for either, bakers are expected to offer at least one and
+     * disabling both would leave an order form with no way to receive an
+     * order. Shipping is the only genuinely optional method.
      */
     public function normalizedFulfillmentSettings(): array
     {
         $defaults = [
-            'pickup_enabled' => true,
-            'delivery_enabled' => true,
             'shipping_enabled' => false,
             'shipping_states' => [],
             'shipping_rate_mode' => 'flat',
@@ -1052,7 +1051,10 @@ class Tenant extends Model implements TenancyContract
 
         $raw = is_array($this->fulfillment_settings) ? $this->fulfillment_settings : [];
 
-        return array_merge($defaults, $raw);
+        return array_merge($defaults, $raw, [
+            'pickup_enabled' => true,
+            'delivery_enabled' => true,
+        ]);
     }
 
     /**

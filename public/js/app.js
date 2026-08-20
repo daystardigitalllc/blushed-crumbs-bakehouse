@@ -690,8 +690,12 @@ const state = {
 function updateFulfillmentWrappers() {
     const addrWrap = document.getElementById('address-wrapper');
     const shipWrap = document.getElementById('shipping-wrapper');
+    const timeSlotWrap = document.getElementById('time-slot-wrapper');
     if (addrWrap) addrWrap.style.display = state.fulfillment === 'delivery' ? 'block' : 'none';
     if (shipWrap) shipWrap.style.display = state.fulfillment === 'shipping' ? 'block' : 'none';
+    // Shipping has no pickup/delivery time frame to pick, so hide it entirely
+    // when shipping is selected — a shipped order doesn't need a time slot.
+    if (timeSlotWrap) timeSlotWrap.style.display = state.fulfillment === 'shipping' ? 'none' : 'block';
 }
 
 // Modal Order Form Triggers
@@ -3628,44 +3632,6 @@ window.saveLeadTime = function() {
 };
 
 // ── Fulfillment Options (Pickup / Delivery / Shipping) ─────
-window.saveFulfillmentSettings = function() {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-
-    // Shipping's own toggle/states/rate live inline in the Order Form
-    // Builder's fulfillment step card now (see renderFulfillmentShippingBlock
-    // + window.saveShippingOptions) and post there independently — this
-    // payload only ever carries pickup/delivery, and the backend preserves
-    // whatever shipping config is already saved.
-    const payload = {
-        pickup_enabled: document.getElementById('fulfillment-pickup-enabled')?.checked || false,
-        delivery_enabled: document.getElementById('fulfillment-delivery-enabled')?.checked || false,
-    };
-
-    fetch('/dashboard/settings/fulfillment', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            const msg = document.getElementById('fulfillment-settings-save-msg');
-            if (msg) { msg.style.display = 'inline'; setTimeout(() => msg.style.display = 'none', 2500); }
-            if (typeof showToast === 'function') showToast('Fulfillment options saved!');
-        } else {
-            alert(data.message || 'Error saving fulfillment options.');
-        }
-    })
-    .catch(err => {
-        console.error('Save fulfillment settings error:', err);
-        alert('An error occurred while saving fulfillment options.');
-    });
-};
-
 window.toggleAllFbShippingStates = function(i, checked) {
     document.querySelectorAll('.fb-ship-state-cb-' + i).forEach(cb => { cb.checked = checked; });
 };

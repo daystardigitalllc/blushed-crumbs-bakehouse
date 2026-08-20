@@ -3336,40 +3336,6 @@
                         </div>
                     </div>
 
-                    <!-- FULFILLMENT OPTIONS CARD -->
-                    <div class="form-builder-card" style="margin-top:20px;">
-                        <h4>Fulfillment Options</h4>
-                        <p style="font-size:0.9rem; color:var(--light-text); margin-bottom:18px;">Choose which ways customers can receive their order. Only the options you enable here show up on your order form.</p>
-
-                        <div class="settings-toggle-row">
-                            <div>
-                                <strong>Allow Pickup</strong>
-                                <p style="font-size:0.82rem; color:var(--text-faint); margin-top:2px;">Customers can pick up their order in person.</p>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="fulfillment-pickup-enabled" {{ !empty($fulfillmentSettings['pickup_enabled']) ? 'checked' : '' }}>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-
-                        <div class="settings-toggle-row" style="margin-top:12px;">
-                            <div>
-                                <strong>Allow Delivery</strong>
-                                <p style="font-size:0.82rem; color:var(--text-faint); margin-top:2px;">Customers can enter an address for you to deliver to.</p>
-                            </div>
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="fulfillment-delivery-enabled" {{ !empty($fulfillmentSettings['delivery_enabled']) ? 'checked' : '' }}>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-
-                        <p style="font-size:0.82rem; color:var(--text-faint); margin-top:12px;">Want to offer shipping? Add a "Fulfillment & Time Slots" step to your <a href="#" onclick="window.switchDashboardTab && switchDashboardTab('tab-form-builder'); return false;" style="color:var(--primary); font-weight:700;">Order Form Builder</a> — shipping states and rates are configured right there.</p>
-
-                        <div style="margin-top:18px;">
-                            <button type="button" class="btn btn-primary" onclick="window.saveFulfillmentSettings()">Save Fulfillment Options</button>
-                            <span id="fulfillment-settings-save-msg" style="display:none; color:#16a34a; font-weight:700; margin-left:10px; font-size:0.85rem;">✓ Saved</span>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- SECTION 3: Plan & Domains -->
