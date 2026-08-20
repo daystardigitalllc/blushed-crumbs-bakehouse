@@ -23,7 +23,7 @@ class ActivityFeed extends Component
     public function mount(int $draftId): void
     {
         $draft = OnboardingDraft::findOrFail($draftId);
-        abort_unless($draft->tenant_id === auth()->user()->tenant_id, 403);
+        abort_unless($draft->tenant_id === auth()->user()->tenant_id || auth()->user()->isSuperAdmin(), 403);
 
         $this->draftId = $draftId;
     }

@@ -34,7 +34,7 @@ class ReviewPanel extends Component
     public function draft(): OnboardingDraft
     {
         $draft = OnboardingDraft::findOrFail($this->draftId);
-        abort_unless($draft->tenant_id === auth()->user()->tenant_id, 403);
+        abort_unless($draft->tenant_id === auth()->user()->tenant_id || auth()->user()->isSuperAdmin(), 403);
 
         return $draft;
     }
